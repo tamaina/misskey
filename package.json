@@ -1,7 +1,7 @@
 {
 	"name": "misskey",
 	"author": "syuilo <i@syuilo.com>",
-	"version": "11.36.0",
+	"version": "11.36.0-dev.51.899c14a",
 	"codename": "daybreak",
 	"repository": {
 		"type": "git",
