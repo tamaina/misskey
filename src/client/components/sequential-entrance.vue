@@ -42,21 +42,20 @@ export default Vue.extend({
 		beforeEnter(el) {
 			el.style.opacity = 0;
 			el.style.transform = this.direction === 'down' ? 'translateY(-64px)' : 'translateY(64px)';
-			let index = this.$options.i;
-			const delay = this.delay * index;
+			const delay = this.delay * this.$options.i;
 			el.style.transition = [getComputedStyle(el).transition, `transform 0.7s cubic-bezier(0.23, 1, 0.32, 1) ${delay}ms`, `opacity 0.7s cubic-bezier(0.23, 1, 0.32, 1) ${delay}ms`].filter(x => x != '').join(',');
 			this.$options.i++;
+			this.$nextTick().then(() => {
+				this.$options.i--;
+			});
 		},
 		enter(el, done) {
-			setTimeout(() => {
-				el.style.opacity = 1;
-				el.style.transform = 'translateY(0px)';
-				el.addEventListener('transitionend', () => {
-					el.style.transition = '';
-					this.$options.i--;
-					done();
-				}, { once: true });
-			});
+			el.style.opacity = 1;
+			el.style.transform = 'translateY(0px)';
+			el.addEventListener('transitionend', () => {
+				el.style.transition = '';
+				done();
+			}, { once: true });
 		},
 		leave(el) {
 			el.style.opacity = 0;
