@@ -101,7 +101,10 @@ router.get('/api-doc', async ctx => {
 router.get('/url', require('./url-preview'));
 
 router.get('/api.json', async ctx => {
-	ctx.body = genOpenapiSpec();
+	await send(ctx as any, '/assets/api.json', {
+		root: client
+	});
+	// ctx.body = genOpenapiSpec();
 });
 
 router.get('/docs.json', async ctx => {
