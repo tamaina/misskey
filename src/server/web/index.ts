@@ -101,9 +101,18 @@ router.get('/apple-touch-icon.png', async ctx => {
 	});
 });
 
-router.get('/twemoji/:x([\\da-f]+).svg', async ctx => {
-	await send(ctx as any, `/${ctx.params.x}.svg`, {
-		root: `${_dirname}/../../../twemoji/assets/svg/`,
+router.get('/twemoji/(.*)', async ctx => {
+	const path = ctx.path.replace('/twemoji/', '');
+
+	if (!path.match(/^[0-9a-f-]+\.svg$/)) {
+		ctx.status = 404;
+		return;
+	}
+
+	ctx.set('Content-Security-Policy', `default-src 'none'; style-src 'unsafe-inline'`);
+
+	await send(ctx as any, path, {
+		root: `${_dirname}/../../../node_modules/@discordapp/twemoji/dist/svg/`,
 		maxage: ms('30 days'),
 	});
 });
