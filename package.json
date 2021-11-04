@@ -1,6 +1,6 @@
 {
 	"name": "misskey",
-	"version": "12.94.1-p1.19",
+	"version": "12.95.0-p1.1",
 	"codename": "indigo",
 	"repository": {
 		"type": "git",
@@ -43,7 +43,7 @@
 		"@koa/cors": "3.1.0",
 		"@koa/multer": "3.0.0",
 		"@koa/router": "9.0.1",
-		"@sentry/browser": "5.29.2",
+		"@sentry/browser": "6.14.0",
 		"@sentry/tracing": "5.29.2",
 		"@sinonjs/fake-timers": "7.1.2",
 		"@syuilo/aiscript": "0.11.1",
