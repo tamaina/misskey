@@ -16,8 +16,9 @@ import * as url from '@/scripts/url';
 const iconUrl = (name: string) => `/static-assets/notification-badges/${name}.png`;
 
 export async function createNotification<K extends keyof pushNotificationDataMap>(data: pushNotificationDataMap[K]) {
+	console.log('createNotification 1');
 	const n = await composeNotification(data);
-
+	console.log('createNotification 2', n);
 	if (n) {
 		return self.registration.showNotification(...n);
 	} else {

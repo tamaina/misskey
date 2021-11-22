@@ -55,6 +55,7 @@ self.addEventListener('push', ev => {
 			// case 'driveFileCreated':
 			case 'notification':
 			case 'unreadMessagingMessage':
+				console.log('notification', data);
 				return createNotification(data);
 			/*
 			case 'readAllNotifications':
