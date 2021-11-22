@@ -89,7 +89,7 @@ self.addEventListener('push', ev => {
 			*/
 		}
 
-		createEmptyNotification();
+		return createEmptyNotification();
 	}));
 });
 //#endregion
