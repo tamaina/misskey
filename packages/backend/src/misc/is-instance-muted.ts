@@ -1,11 +1,15 @@
-import { Packed } from './schema';
+import { Packed } from "./schema";
 
-export function isInstanceMuted(note: Packed<'Note'>, muted_instances: string[]): boolean {
-	const note_user = note.user;
-	const note_reply_user = note.reply?.user;
-	const note_renote_user = note.renote?.user;
+export function isInstanceMuted(note: Packed<'Note'>, mutedInstances: Set<string>): boolean {
+	if (mutedInstances.has(note?.user?.host ?? '')) return true;
+	if (mutedInstances.has(note?.reply?.user?.host ?? '')) return true;
+	if (mutedInstances.has(note?.renote?.user?.host ?? '')) return true;
 
-	return muted_instances.includes(note_user.host ?? '') ||
-		muted_instances.includes(note_reply_user?.host ?? '') ||
-		muted_instances.includes(note_renote_user?.host ?? '');
+	return false;
+}
+
+export function isUserFromMutedInstance(notif: Packed<'Notification'>, mutedInstances: Set<string>): boolean {
+	if (mutedInstances.has(notif?.user?.host ?? '')) return true;
+
+	return false;
 }

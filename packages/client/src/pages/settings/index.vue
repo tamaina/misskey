@@ -41,8 +41,8 @@ export default defineComponent({
 	props: {
 		initialPage: {
 			type: String,
-			required: false
-		}
+			required: false,
+		},
 	},
 
 	setup(props, context) {
@@ -137,6 +137,11 @@ export default defineComponent({
 				to: '/settings/import-export',
 				active: page.value === 'import-export',
 			}, {
+				icon: 'fas fa-volume-mute',
+				text: i18n.locale.instanceMute,
+				to: "/settings/instance-mute",
+				active: page.value === "instance-mute",
+			}, {
 				icon: 'fas fa-ban',
 				text: i18n.locale.muteAndBlock,
 				to: '/settings/mute-block',
@@ -195,7 +200,7 @@ export default defineComponent({
 				case 'notifications': return defineAsyncComponent(() => import('./notifications.vue'));
 				case 'mute-block': return defineAsyncComponent(() => import('./mute-block.vue'));
 				case 'word-mute': return defineAsyncComponent(() => import('./word-mute.vue'));
-				case 'instance-mute': return defineAsyncComponent(() => import('./instance-mute.vue'));
+				case "instance-mute": return defineAsyncComponent(() => import("./instance-mute.vue"));
 				case 'integration': return defineAsyncComponent(() => import('./integration.vue'));
 				case 'security': return defineAsyncComponent(() => import('./security.vue'));
 				case '2fa': return defineAsyncComponent(() => import('./2fa.vue'));
@@ -230,44 +235,57 @@ export default defineComponent({
 			return null;
 		});
 
-		watch(component, () => {
-			pageProps.value = {};
+		watch(
+			component,
+			() => {
+				pageProps.value = {};
 
-			if (page.value) {
-				if (page.value.startsWith('registry/keys/system/')) {
-					pageProps.value.scope = page.value.replace('registry/keys/system/', '').split('/');
+				if (page.value) {
+					if (page.value.startsWith("registry/keys/system/")) {
+						pageProps.value.scope = page.value
+							.replace("registry/keys/system/", "")
+							.split("/");
+					}
+					if (page.value.startsWith("registry/value/system/")) {
+						const path = page.value
+							.replace("registry/value/system/", "")
+							.split("/");
+						pageProps.value.xKey = path.pop();
+						pageProps.value.scope = path;
+					}
 				}
-				if (page.value.startsWith('registry/value/system/')) {
-					const path = page.value.replace('registry/value/system/', '').split('/');
-					pageProps.value.xKey = path.pop();
-					pageProps.value.scope = path;
+
+				nextTick(() => {
+					scroll(el.value, { top: 0 });
+				});
+			},
+			{ immediate: true }
+		);
+
+		watch(
+			() => props.initialPage,
+			() => {
+				if (props.initialPage == null && !narrow.value) {
+					page.value = "profile";
+				} else {
+					page.value = props.initialPage;
+					if (props.initialPage == null) {
+						INFO.value = indexInfo;
+					}
 				}
 			}
-
-			nextTick(() => {
-				scroll(el.value, { top: 0 });
-			});
-		}, { immediate: true });
-
-		watch(() => props.initialPage, () => {
-			if (props.initialPage == null && !narrow.value) {
-				page.value = 'profile';
-			} else {
-				page.value = props.initialPage;
-				if (props.initialPage == null) {
-					INFO.value = indexInfo;
-				}
-			}
-		});
+		);
 
 		onMounted(() => {
 			narrow.value = el.value.offsetWidth < 800;
 			if (!narrow.value) {
-				page.value = 'profile';
+				page.value = "profile";
 			}
 		});
 
-		const emailNotConfigured = computed(() => instance.enableEmail && ($i.email == null || !$i.emailVerified));
+		const emailNotConfigured = computed(
+			() => instance.enableEmail && ($i.email == null || !$i.emailVerified)
+		);
 
 		const onInfo = (info) => {
 			childInfo.value = info;
