@@ -814,6 +814,7 @@ continueThread: "さらにスレッドを見る"
 deleteAccountConfirm: "アカウントが削除されます。よろしいですか？"
 incorrectPassword: "パスワードが間違っています。"
 voteConfirm: "「{choice}」に投票しますか？"
+hide: "隠す"
 
 _emailUnavailable:
   used: "既に使用されています"
@@ -1025,7 +1026,7 @@ _wordMute:
   mutedNotes: "ミュートされたノート"
 
 _instanceMute:
-  instanceMuteDescription: "ミュートしたインスタンスのユーザーからの返信を含めて、設定したインスタンスの全てのノートとRenoteをミュートします。"
+  instanceMuteDescription: "ミュートしたインスタンスのユーザーへの返信を含めて、設定したインスタンスの全てのノートとRenoteをミュートします。"
   instanceMuteDescription2: "改行で区切って設定します"
   title: "設定したインスタンスのノートを隠します。"
   heading: "ミュートするインスタンス"
@@ -1320,6 +1321,8 @@ _exportOrImport:
   muteList: "ミュート"
   blockingList: "ブロック"
   userLists: "リスト"
+  excludeMutingUsers: "ミュートしているユーザーを除外"
+  excludeInactiveUsers: "使われていないアカウントを除外"
 
 _charts:
   federationInstancesIncDec: "連合の増減"

@@ -1,36 +1,27 @@
 <template>
-	<div>
-		<FormBase>
-			<div class="_formItem">
-				<FormInfo>{{ $ts._instanceMute.title}}</FormInfo>
-				<FormTextarea v-model="instanceMutes">
-					<span>{{$ts._instanceMute.heading}}</span>
-					<template #desc>{{ $ts._instanceMute.instanceMuteDescription}}<br>{{$ts._instanceMute.instanceMuteDescription2}}</template>
-				</FormTextarea>
-			</div>
-		<FormButton @click="save()" primary inline :disabled="!changed"><i class="fas fa-save"></i> {{ $ts.save }}</FormButton>
-		</FormBase>
-	</div>
+<div class="_formRoot">
+	<MkInfo>{{ $ts._instanceMute.title }}</MkInfo>
+	<FormTextarea v-model="instanceMutes" class="_formBlock">
+		<template #label>{{ $ts._instanceMute.heading }}</template>
+		<template #caption>{{ $ts._instanceMute.instanceMuteDescription }}<br>{{ $ts._instanceMute.instanceMuteDescription2 }}</template>
+	</FormTextarea>
+	<MkButton primary :disabled="!changed" class="_formBlock" @click="save()"><i class="fas fa-save"></i> {{ $ts.save }}</MkButton>
+</div>
 </template>
 
 <script>
-import { defineComponent } from 'vue'
-import FormBase from '@/components/debobigego/base.vue';
-import FormTextarea from '@/components/debobigego/textarea.vue';
-import FormInfo from '@/components/debobigego/info.vue';
-import FormKeyValueView from '@/components/debobigego/key-value-view.vue';
-import FormButton from '@/components/debobigego/button.vue';
+import { defineComponent } from 'vue';
+import FormTextarea from '@/components/form/textarea.vue';
+import MkInfo from '@/components/ui/info.vue';
+import MkButton from '@/components/ui/button.vue';
 import * as os from '@/os';
-import number from '@/filters/number';
 import * as symbols from '@/symbols';
 
 export default defineComponent({
 	components: {
-		FormBase,
-		FormButton,
+		MkButton,
 		FormTextarea,
-		FormKeyValueView,
-		FormInfo,
+		MkInfo,
 	},
 
 	emits: ['info'],
@@ -47,7 +38,7 @@ export default defineComponent({
 		}
 	},
 
-		watch: {
+	watch: {
 		instanceMutes: {
 			handler() {
 				this.changed = true;
@@ -76,8 +67,6 @@ export default defineComponent({
 			// Refresh filtered list to signal to the user how they've been saved
 			this.instanceMutes = mutes.join('\n');
 		},
-
-		number //?
 	}
 })
 </script>
