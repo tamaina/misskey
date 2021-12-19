@@ -57,8 +57,8 @@ self.lib.onpush = (ev: ServiceWorkerGlobalScopeEventMap['push']) => {
 		includeUncontrolled: true,
 		type: 'window'
 	}).then(async <K extends keyof pushNotificationDataMap>(clients: readonly WindowClient[]) => {
-		// // クライアントがあったらストリームに接続しているということなので通知しない
-		// if (clients.length != 0) return;
+		// クライアントがあったらストリームに接続しているということなので通知しない
+		if (clients.length != 0) return;
 
 		const data: pushNotificationDataMap[K] = ev.data?.json();
 
@@ -68,7 +68,6 @@ self.lib.onpush = (ev: ServiceWorkerGlobalScopeEventMap['push']) => {
 			case 'unreadMessagingMessage':
 				console.log('notification', data);
 				return createNotification(data);
-			/*
 			case 'readAllNotifications':
 				for (const n of await self.registration.getNotifications()) {
 					if (n?.data?.type === 'notification') n.close();
@@ -97,7 +96,6 @@ self.lib.onpush = (ev: ServiceWorkerGlobalScopeEventMap['push']) => {
 						}
 				}
 				break;
-			*/
 		}
 
 		return createEmptyNotification();
