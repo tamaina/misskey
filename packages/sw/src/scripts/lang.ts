@@ -1,24 +1,22 @@
 /*
  * Language manager for SW
  */
-// !C2MOD
 declare var self: ServiceWorkerGlobalScope;
 
-import { get, set, createStore, UseStore } from 'idb-keyval';
+import { get, set } from 'idb-keyval';
 import { I18n } from '@/scripts/i18n';
 
 class SwLang {
-	public store: UseStore = createStore('keyval-store', 'keyval');
 	public cacheName = `mk-cache-${_VERSION_}`;
 
-	public lang: Promise<string> = get('lang', this.store).then(async prelang => {
+	public lang: Promise<string> = get('lang').then(async prelang => {
 		if (!prelang) return 'en-US';
 		return prelang;
 	});
 
 	public setLang(newLang: string) {
 		this.lang = Promise.resolve(newLang);
-		set('lang', newLang, this.store);
+		set('lang', newLang);
 		return this.fetchLocale();
 	}
 
