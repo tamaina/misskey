@@ -18,4 +18,8 @@ export const store = markRaw(new Storage('audio-visual', {
 		where: 'account',
 		default: [] as avInfo[],
 	},
+	currentPlayer: {
+		where: 'account',
+		default: null as null | string, // uuid
+	}
 }));
