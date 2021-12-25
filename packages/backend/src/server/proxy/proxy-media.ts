@@ -7,6 +7,7 @@ import { downloadUrl } from '@/misc/download-url';
 import { detectType } from '@/misc/get-file-info';
 import { StatusError } from '@/misc/fetch';
 import * as sharp from 'sharp';
+import { FILE_TYPE_WHITELIST } from '@/const';
 
 export async function proxyMedia(ctx: Koa.Context) {
 	const url = 'url' in ctx.query ? ctx.query.url : 'https://' + ctx.params.url;
@@ -19,7 +20,7 @@ export async function proxyMedia(ctx: Koa.Context) {
 
 		const { mime, ext } = await detectType(path);
 
-		if (!mime.startsWith('image/')) throw 403;
+		if (!FILE_TYPE_WHITELIST.includes(mime)) throw 403;
 
 		let image: IImage;
 
