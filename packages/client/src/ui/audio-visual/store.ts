@@ -2,7 +2,7 @@ import { markRaw } from 'vue';
 import { Storage } from '../../pizzax';
 import { avInfo } from './types';
 
-export const store = markRaw(new Storage('audio-visual', {
+export const avStore = markRaw(new Storage('audio-visual', {
 	playing: {
 		where: 'account',
 		default: null as null | {
