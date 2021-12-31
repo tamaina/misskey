@@ -1,5 +1,6 @@
 import { markRaw, ref } from 'vue';
 import { Storage } from './pizzax';
+import { get, set } from './scripts/idb-proxy';
 import { Theme } from './scripts/theme';
 
 export const postFormActions = [];
@@ -237,6 +238,13 @@ type Plugin = {
 	ast: any[];
 };
 
+type ColdDeviceStorageKey = keyof typeof ColdDeviceStorage.default;
+type ColdDeviceStorageCallback<K extends ColdDeviceStorageKey> = (value: typeof ColdDeviceStorage.default[K]) => void;
+type ColdDeviceStorageWatcher<K extends ColdDeviceStorageKey> = {
+	key: K,
+	callback: ColdDeviceStorageCallback<K>;
+};
+
 /**
  * 常にメモリにロードしておく必要がないような設定情報を保管するストレージ(非リアクティブ)
  */
@@ -261,34 +269,34 @@ export class ColdDeviceStorage {
 		roomUseOrthographicCamera: true,
 	};
 
-	public static watchers = [];
+	public static watchers = [] as ColdDeviceStorageWatcher<ColdDeviceStorageKey>[];
 
-	public static get<T extends keyof typeof ColdDeviceStorage.default>(key: T): typeof ColdDeviceStorage.default[T] {
+	public static async get<T extends keyof typeof ColdDeviceStorage.default>(key: T): Promise<typeof ColdDeviceStorage.default[T]> {
 		// TODO: indexedDBにする
 		//       ただしその際はnullチェックではなくキー存在チェックにしないとダメ
 		//       (indexedDBはnullを保存できるため、ユーザーが意図してnullを格納した可能性がある)
-		const value = localStorage.getItem(PREFIX + key);
+		const value = await get(PREFIX + key);
 		if (value == null) {
 			return ColdDeviceStorage.default[key];
 		} else {
-			return JSON.parse(value);
+			return value;
 		}
 	}
 
-	public static set<T extends keyof typeof ColdDeviceStorage.default>(key: T, value: typeof ColdDeviceStorage.default[T]): void {
-		localStorage.setItem(PREFIX + key, JSON.stringify(value));
+	public static async set<T extends ColdDeviceStorageKey>(key: T, value: typeof ColdDeviceStorage.default[T]): Promise<void> {
+		await set(PREFIX + key, JSON.stringify(value));
 
 		for (const watcher of this.watchers) {
 			if (watcher.key === key) watcher.callback(value);
 		}
 	}
 
-	public static watch(key, callback) {
+	public static watch<T extends ColdDeviceStorageKey>(key: T, callback: ColdDeviceStorageCallback<T>) {
 		this.watchers.push({ key, callback });
 	}
 
 	// TODO: VueのcustomRef使うと良い感じになるかも
-	public static ref<T extends keyof typeof ColdDeviceStorage.default>(key: T) {
+	public static ref<T extends ColdDeviceStorageKey>(key: T) {
 		const v = ColdDeviceStorage.get(key);
 		const r = ref(v);
 		// TODO: このままではwatcherがリークするので開放する方法を考える
