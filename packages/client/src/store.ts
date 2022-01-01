@@ -239,10 +239,9 @@ type Plugin = {
 };
 
 type ColdDeviceStorageKey = keyof typeof ColdDeviceStorage.default;
-type ColdDeviceStorageCallback<K extends ColdDeviceStorageKey> = (value: typeof ColdDeviceStorage.default[K]) => void;
-type ColdDeviceStorageWatcher<K extends ColdDeviceStorageKey> = {
-	key: K,
-	callback: ColdDeviceStorageCallback<K>;
+type ColdDeviceStorageWatcher = {
+	key: ColdDeviceStorageKey,
+	callback: (value: typeof ColdDeviceStorage.default[ColdDeviceStorageKey]) => void;
 };
 
 /**
@@ -269,7 +268,7 @@ export class ColdDeviceStorage {
 		roomUseOrthographicCamera: true,
 	};
 
-	public static watchers = [] as ColdDeviceStorageWatcher<ColdDeviceStorageKey>[];
+	public static watchers = [] as Array<ColdDeviceStorageWatcher>;
 
 	public static async get<T extends keyof typeof ColdDeviceStorage.default>(key: T): Promise<typeof ColdDeviceStorage.default[T]> {
 		// TODO: indexedDBにする
@@ -291,7 +290,7 @@ export class ColdDeviceStorage {
 		}
 	}
 
-	public static watch<T extends ColdDeviceStorageKey>(key: T, callback: ColdDeviceStorageCallback<T>) {
+	public static watch<T extends ColdDeviceStorageKey>(key: T, callback: ColdDeviceStorageWatcher['callback']) {
 		this.watchers.push({ key, callback });
 	}
 
