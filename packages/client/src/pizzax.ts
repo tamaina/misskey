@@ -22,8 +22,6 @@ export class Storage<T extends StateDef> {
 	public readonly state: { [K in keyof T]: T[K]['default'] };
 	public readonly reactiveState: { [K in keyof T]: Ref<T[K]['default']> };
 
-	private connection = stream.useChannel('main');
-
 	constructor(key: string, def: T) {
 		this.key = key;
 		this.keyForLocalStorage = 'pizzax::' + key;
