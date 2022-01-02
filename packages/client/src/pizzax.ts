@@ -30,14 +30,14 @@ export class Storage<T extends StateDef> {
 	public readonly state = {} as State<T>;
 	public readonly reactiveState = {} as ReactiveState<T>;
 
-	// indexedDB保存を重複させないために簡易的にキューイング
-	private nextIdbJob: Promise<any> = Promise.resolve();
+	// 簡易的にキューイングして占有ロックとする
+	private currentIdbJob: Promise<any> = Promise.resolve();
 	private addIdbSetJob<T>(job: () => Promise<T>) {
-		const promise = this.nextIdbJob.then(job, e => {
+		const promise = this.currentIdbJob.then(job, e => {
 			console.error('Pizzax failed to save data to idb!', e);
 			return job();
 		});
-		this.nextIdbJob = promise;
+		this.currentIdbJob = promise;
 		return promise;
 	}
 
@@ -166,6 +166,7 @@ export class Storage<T extends StateDef> {
 
 	public reset(key: keyof T) {
 		this.set(key, this.def[key].default);
+		return this.def[key].default;
 	}
 
 	/**
