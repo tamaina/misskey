@@ -57,9 +57,6 @@ self.lib.onpush = (ev: ServiceWorkerGlobalScopeEventMap['push']) => {
 		includeUncontrolled: true,
 		type: 'window'
 	}).then(async <K extends keyof pushNotificationDataMap>(clients: readonly WindowClient[]) => {
-		// クライアントがあったらストリームに接続しているということなので通知しない
-		if (clients.length != 0) return;
-
 		const data: pushNotificationDataMap[K] = ev.data?.json();
 
 		switch (data.type) {
