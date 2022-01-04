@@ -225,7 +225,6 @@ export const defaultStore = markRaw(new Storage('base', {
 }));
 
 // TODO: 他のタブと永続化されたstateを同期
-
 const PREFIX = 'miux:';
 
 type Plugin = {
@@ -246,17 +245,6 @@ export class ColdDeviceStorage {
 		darkTheme: require('@/themes/d-dark.json5') as Theme,
 		syncDeviceDarkMode: true,
 		plugins: [] as Plugin[],
-		mediaVolume: 0.5,
-		sound_masterVolume: 0.3,
-		sound_note: { type: 'syuilo/down', volume: 1 },
-		sound_noteMy: { type: 'syuilo/up', volume: 1 },
-		sound_notification: { type: 'syuilo/pope2', volume: 1 },
-		sound_chat: { type: 'syuilo/pope1', volume: 1 },
-		sound_chatBg: { type: 'syuilo/waon', volume: 1 },
-		sound_antenna: { type: 'syuilo/triple', volume: 1 },
-		sound_channel: { type: 'syuilo/square-pico', volume: 1 },
-		sound_reversiPutBlack: { type: 'syuilo/kick', volume: 0.3 },
-		sound_reversiPutWhite: { type: 'syuilo/snare', volume: 0.3 },
 		roomGraphicsQuality: 'medium' as 'cheep' | 'low' | 'medium' | 'high' | 'ultra',
 		roomUseOrthographicCamera: true,
 	};

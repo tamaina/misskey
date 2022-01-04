@@ -38,8 +38,11 @@ import { reloadChannel } from '@/scripts/unison-reload';
 import { reactionPicker } from '@/scripts/reaction-picker';
 import { getUrlWithoutLoginId } from '@/scripts/login-id';
 import { getAccountFromId } from '@/scripts/get-account-from-id';
+import { deckStore } from './ui/deck/deck-store';
 
 console.info(`Misskey v${version}`);
+
+await defaultStore.ready;
 
 if (_DEV_) {
 	console.warn('Development mode!!!');
@@ -204,6 +207,9 @@ if (splash) splash.addEventListener('transitionend', () => {
 
 const rootEl = document.createElement('div');
 document.body.appendChild(rootEl);
+
+if (ui === 'deck') await deckStore.ready;
+
 app.mount(rootEl);
 
 // boot.jsのやつを解除
