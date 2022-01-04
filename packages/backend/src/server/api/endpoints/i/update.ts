@@ -176,6 +176,7 @@ export const meta = {
 	},
 };
 
+// eslint-disable-next-line import/no-default-export
 export default define(meta, async (ps, _user, token) => {
 	const user = await Users.findOneOrFail(_user.id);
 	const isSecure = token == null;
