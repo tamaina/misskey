@@ -14,7 +14,7 @@ export const defaultValues = {
 
 async function getFileNameFromType(type: string, userId: string) {
 	const state = await get(`pizzax::sound::cache::${userId}`);
-	return (state && state[`sound_${type}`]) || defaultValues[`sound_${type}`];
+	return (state && state[`sound_${type}`].type) || defaultValues[`sound_${type}`];
 }
 
 export async function getSoundUrl(type: string, userId: string) {
