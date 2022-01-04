@@ -64,6 +64,8 @@ self.lib.onpush = (ev: ServiceWorkerGlobalScopeEventMap['push']) => {
 			case 'notification':
 			case 'unreadMessagingMessage':
 				console.log('notification', data);
+				// クライアントがあったらストリームに接続しているということなので通知しない
+				if (clients.length != 0) return;
 				return createNotification(data);
 			case 'readAllNotifications':
 				for (const n of await self.registration.getNotifications()) {
