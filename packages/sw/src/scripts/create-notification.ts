@@ -11,6 +11,7 @@ import { I18n } from '@/scripts/i18n';
 import { getAccountFromId } from '@/scripts/get-account-from-id';
 import { char2fileName } from '@/scripts/twemoji-base';
 import * as url from '@/scripts/url';
+import { getSoundUrl } from '@/scripts/sounds';
 
 const iconUrl = (name: string) => `/static-assets/notification-badges/${name}.png`;
 
@@ -50,6 +51,7 @@ async function composeNotification<K extends keyof pushNotificationDataMap>(data
 						body: getUserName(data.body.user),
 						icon: data.body.user.avatarUrl,
 						badge: iconUrl('user-plus'),
+						sound: await getSoundUrl('notification', data.userId),
 						data,
 						actions: userDetail.isFollowing ? [] : [
 							{
@@ -57,13 +59,14 @@ async function composeNotification<K extends keyof pushNotificationDataMap>(data
 								title: t('_notification._actions.followBack')
 							}
 						],
-					}];
+					} as any];
 
 				case 'mention':
 					return [t('_notification.youGotMention', { name: getUserName(data.body.user) }), {
 						body: data.body.note.text || '',
 						icon: data.body.user.avatarUrl,
 						badge: iconUrl('at'),
+						sound: await getSoundUrl('notification', data.userId),
 						data,
 						actions: [
 							{
@@ -71,13 +74,14 @@ async function composeNotification<K extends keyof pushNotificationDataMap>(data
 								title: t('_notification._actions.reply')
 							}
 						],
-					}];
+					} as any];
 
 				case 'reply':
 					return [t('_notification.youGotReply', { name: getUserName(data.body.user) }), {
 						body: data.body.note.text || '',
 						icon: data.body.user.avatarUrl,
 						badge: iconUrl('reply'),
+						sound: await getSoundUrl('notification', data.userId),
 						data,
 						actions: [
 							{
@@ -85,13 +89,14 @@ async function composeNotification<K extends keyof pushNotificationDataMap>(data
 								title: t('_notification._actions.reply')
 							}
 						],
-					}];
+					} as any];
 
 				case 'renote':
 					return [t('_notification.youRenoted', { name: getUserName(data.body.user) }), {
 						body: data.body.note.text || '',
 						icon: data.body.user.avatarUrl,
 						badge: iconUrl('retweet'),
+						sound: await getSoundUrl('notification', data.userId),
 						data,
 						actions: [
 							{
@@ -99,13 +104,14 @@ async function composeNotification<K extends keyof pushNotificationDataMap>(data
 								title: getUserName(data.body.user)
 							}
 						],
-					}];
+					} as any];
 
 				case 'quote':
 					return [t('_notification.youGotQuote', { name: getUserName(data.body.user) }), {
 						body: data.body.note.text || '',
 						icon: data.body.user.avatarUrl,
 						badge: iconUrl('quote-right'),
+						sound: await getSoundUrl('notification', data.userId),
 						data,
 						actions: [
 							{
@@ -119,7 +125,7 @@ async function composeNotification<K extends keyof pushNotificationDataMap>(data
 							}
 							] : [])
 						],
-					}];
+					} as any];
 
 				case 'reaction':
 					let reaction = data.body.reaction;
@@ -159,6 +165,7 @@ async function composeNotification<K extends keyof pushNotificationDataMap>(data
 						body: data.body.note.text || '',
 						icon: data.body.user.avatarUrl,
 						badge,
+						sound: await getSoundUrl('notification', data.userId),
 						data,
 						actions: [
 							{
@@ -166,21 +173,23 @@ async function composeNotification<K extends keyof pushNotificationDataMap>(data
 								title: getUserName(data.body.user)
 							}
 						],
-					}];
+					} as any];
 
 				case 'pollVote':
 					return [t('_notification.youGotPoll', { name: getUserName(data.body.user) }), {
 						body: data.body.note.text || '',
 						icon: data.body.user.avatarUrl,
 						badge: iconUrl('poll-h'),
+						sound: await getSoundUrl('notification', data.userId),
 						data,
-					}];
+					} as any];
 
 				case 'receiveFollowRequest':
 					return [t('_notification.youReceivedFollowRequest'), {
 						body: getUserName(data.body.user),
 						icon: data.body.user.avatarUrl,
 						badge: iconUrl('clock'),
+						sound: await getSoundUrl('notification', data.userId),
 						data,
 						actions: [
 							{
@@ -192,20 +201,22 @@ async function composeNotification<K extends keyof pushNotificationDataMap>(data
 								title: t('reject')
 							}
 						],
-					}];
+					} as any];
 
 				case 'followRequestAccepted':
 					return [t('_notification.yourFollowRequestAccepted'), {
 						body: getUserName(data.body.user),
 						icon: data.body.user.avatarUrl,
 						badge: iconUrl('check'),
+						sound: await getSoundUrl('notification', data.userId),
 						data,
-					}];
+					} as any];
 
 				case 'groupInvited':
 					return [t('_notification.youWereInvitedToGroup', { userName: getUserName(data.body.user) }), {
 						body: data.body.invitation.group.name,
 						badge: iconUrl('id-card-alt'),
+						sound: await getSoundUrl('notification', data.userId),
 						data,
 						actions: [
 							{
@@ -217,7 +228,7 @@ async function composeNotification<K extends keyof pushNotificationDataMap>(data
 								title: t('reject')
 							}
 						],
-					}];
+					} as any];
 
 				case 'app':
 						return [data.body.header || data.body.body, {
@@ -234,18 +245,20 @@ async function composeNotification<K extends keyof pushNotificationDataMap>(data
 				return [t('_notification.youGotMessagingMessageFromUser', { name: getUserName(data.body.user) }), {
 					icon: data.body.user.avatarUrl,
 					badge: iconUrl('comments'),
+					sound: await getSoundUrl('chatBg', data.userId),
 					tag: `messaging:user:${data.body.userId}`,
 					data,
 					renotify: true,
-				}];
+				} as any];
 			}
 			return [t('_notification.youGotMessagingMessageFromGroup', { name: data.body.group.name }), {
 				icon: data.body.user.avatarUrl,
 				badge: iconUrl('comments'),
+				sound: await getSoundUrl('chatBg', data.userId),
 				tag: `messaging:group:${data.body.groupId}`,
 				data,
 				renotify: true,
-			}];
+			} as any];
 		default:
 			return null;
 	}
