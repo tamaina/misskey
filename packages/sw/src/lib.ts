@@ -74,8 +74,14 @@ self.lib.onpush = (ev: ServiceWorkerGlobalScopeEventMap['push']) => {
 				}
 				break;
 			case 'readAllMessagingMessages':
+				console.log('readAllMessagingMessages');
 				for (const n of await self.registration.getNotifications()) {
-					if (n?.data?.type === 'unreadMessagingMessage') n.close();
+					if (n?.data?.type === 'unreadMessagingMessage') {
+						console.log('close', n);
+						n.close()
+					} else {
+						console.log('keep', n);
+					};
 				}
 				break;
 			case 'readNotifications':
