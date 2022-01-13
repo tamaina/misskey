@@ -136,10 +136,6 @@ export default defineComponent({
 		this.$watch('alwaysMarkNsfw', this.save);
 	},
 
-	mounted() {
-		this.$emit('info', this[symbols.PAGE_INFO]);
-	},
-
 	methods: {
 		changeAvatar(e) {
 			selectFile(e.currentTarget || e.target, this.$ts.avatar).then(file => {

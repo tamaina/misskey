@@ -14,7 +14,7 @@
 			</div>
 			<div class="main">
 				<div class="bkzroven">
-					<component :is="component" :key="page" v-bind="pageProps" @info="onInfo"/>
+					<component :is="component" :ref="el => pageChanged(el)" :key="page" v-bind="pageProps"/>
 				</div>
 			</div>
 		</div>
@@ -262,8 +262,9 @@ export default defineComponent({
 			() => instance.enableEmail && ($i.email == null || !$i.emailVerified)
 		);
 
-		const onInfo = (info) => {
-			childInfo.value = info;
+		const pageChanged = (page) => {
+			if (page == null) return;
+			childInfo.value = page[symbols.PAGE_INFO];
 		};
 
 		return {
@@ -276,7 +277,7 @@ export default defineComponent({
 			pageProps,
 			component,
 			emailNotConfigured,
-			onInfo,
+			pageChanged,
 			childInfo,
 		};
 	},
