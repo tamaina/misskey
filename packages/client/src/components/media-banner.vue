@@ -43,7 +43,7 @@ function volumechange() {
 }
 
 onMounted(() => {
-	if (audioEl) audioTag.volume = soundConfigStore.state.mediaVolume;
+	if (audioEl) audioEl.volume = soundConfigStore.state.mediaVolume;
 });
 </script>
 
