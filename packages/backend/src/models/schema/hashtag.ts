@@ -1,35 +1,34 @@
 export const packedHashtagSchema = {
-	type: 'object' as const,
-	optional: false as const, nullable: false as const,
+	type: 'object',
 	properties: {
 		tag: {
-			type: 'string' as const,
-			optional: false as const, nullable: false as const,
+			type: 'string',
+			optional: false, nullable: false,
 			example: 'misskey',
 		},
 		mentionedUsersCount: {
-			type: 'number' as const,
-			optional: false as const, nullable: false as const,
+			type: 'number',
+			optional: false, nullable: false,
 		},
 		mentionedLocalUsersCount: {
-			type: 'number' as const,
-			optional: false as const, nullable: false as const,
+			type: 'number',
+			optional: false, nullable: false,
 		},
 		mentionedRemoteUsersCount: {
-			type: 'number' as const,
-			optional: false as const, nullable: false as const,
+			type: 'number',
+			optional: false, nullable: false,
 		},
 		attachedUsersCount: {
-			type: 'number' as const,
-			optional: false as const, nullable: false as const,
+			type: 'number',
+			optional: false, nullable: false,
 		},
 		attachedLocalUsersCount: {
-			type: 'number' as const,
-			optional: false as const, nullable: false as const,
+			type: 'number',
+			optional: false, nullable: false,
 		},
 		attachedRemoteUsersCount: {
-			type: 'number' as const,
-			optional: false as const, nullable: false as const,
+			type: 'number',
+			optional: false, nullable: false,
 		},
 	},
-};
+} as const;

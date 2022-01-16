@@ -1,34 +1,33 @@
 export const packedAppSchema = {
-	type: 'object' as const,
-	optional: false as const, nullable: false as const,
+	type: 'object',
 	properties: {
 		id: {
-			type: 'string' as const,
-			optional: false as const, nullable: false as const,
+			type: 'string',
+			optional: false, nullable: false,
 		},
 		name: {
-			type: 'string' as const,
-			optional: false as const, nullable: false as const,
+			type: 'string',
+			optional: false, nullable: false,
 		},
 		callbackUrl: {
-			type: 'string' as const,
-			optional: false as const, nullable: true as const,
+			type: 'string',
+			optional: false, nullable: true,
 		},
 		permission: {
-			type: 'array' as const,
-			optional: false as const, nullable: false as const,
+			type: 'array',
+			optional: false, nullable: false,
 			items: {
-				type: 'string' as const,
-				optional: false as const, nullable: false as const,
+				type: 'string',
+				optional: false, nullable: false,
 			},
 		},
 		secret: {
-			type: 'string' as const,
-			optional: true as const, nullable: false as const,
+			type: 'string',
+			optional: true, nullable: false,
 		},
 		isAuthorized: {
-			type: 'boolean' as const,
-			optional: true as const, nullable: false as const,
+			type: 'boolean',
+			optional: true, nullable: false,
 		},
 	},
-};
+} as const;

@@ -7,7 +7,7 @@ import { UserLists } from '@/models/index';
 export const meta = {
 	tags: ['lists'],
 
-	requireCredential: true as const,
+	requireCredential: true,
 
 	kind: 'write:account',
 
@@ -22,9 +22,9 @@ export const meta = {
 	},
 
 	res: {
-		type: 'object' as const,
-		optional: false as const, nullable: false as const,
-		ref: 'UserList' as const,
+		type: 'object',
+		optional: false, nullable: false,
+		ref: 'UserList',
 	},
 
 	errors: {
@@ -34,7 +34,7 @@ export const meta = {
 			id: '796666fe-3dff-4d39-becb-8a5932c1d5b7',
 		},
 	},
-};
+} as const;
 
 // eslint-disable-next-line import/no-default-export
 export default define(meta, async (ps, user) => {

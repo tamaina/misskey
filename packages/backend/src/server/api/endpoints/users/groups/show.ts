@@ -7,7 +7,7 @@ import { UserGroups, UserGroupJoinings } from '@/models/index';
 export const meta = {
 	tags: ['groups', 'account'],
 
-	requireCredential: true as const,
+	requireCredential: true,
 
 	kind: 'read:user-groups',
 
@@ -18,9 +18,9 @@ export const meta = {
 	},
 
 	res: {
-		type: 'object' as const,
-		optional: false as const, nullable: false as const,
-		ref: 'UserGroup' as const,
+		type: 'object',
+		optional: false, nullable: false,
+		ref: 'UserGroup',
 	},
 
 	errors: {
@@ -30,7 +30,7 @@ export const meta = {
 			id: 'ea04751e-9b7e-487b-a509-330fb6bd6b9b',
 		},
 	},
-};
+} as const;
 
 // eslint-disable-next-line import/no-default-export
 export default define(meta, async (ps, me) => {

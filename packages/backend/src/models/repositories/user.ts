@@ -4,10 +4,18 @@ import { User, ILocalUser, IRemoteUser } from '@/models/entities/user';
 import { Notes, NoteUnreads, FollowRequests, Notifications, MessagingMessages, UserNotePinings, Followings, Blockings, Mutings, UserProfiles, UserSecurityKeys, UserGroupJoinings, Pages, Announcements, AnnouncementReads, Antennas, AntennaNotes, ChannelFollowings, Instances } from '../index';
 import config from '@/config/index';
 import { Packed } from '@/misc/schema';
-import { awaitAll } from '@/prelude/await-all';
+import { awaitAll, Promiseable } from '@/prelude/await-all';
 import { populateEmojis } from '@/misc/populate-emojis';
 import { getAntennas } from '@/misc/antenna-cache';
 import { USER_ACTIVE_THRESHOLD, USER_ONLINE_THRESHOLD } from '@/const';
+
+type IsUserDetailed<Detailed extends boolean> = Detailed extends true ? Packed<'UserDetailed'> : Packed<'UserLite'>;
+type IsMeAndIsUserDetailed<ExpectsMe extends boolean | null, Detailed extends boolean> =
+	Detailed extends true ? 
+		ExpectsMe extends true ? Packed<'MeDetailed'> :
+		ExpectsMe extends false ? Packed<'UserDetailedNotMe'> :
+		Packed<'UserDetailed'> :
+	Packed<'UserLite'>;
 
 @EntityRepository(User)
 export class UserRepository extends Repository<User> {
@@ -144,7 +152,7 @@ export class UserRepository extends Repository<User> {
 		return count > 0;
 	}
 
-	public getOnlineStatus(user: User): string {
+	public getOnlineStatus(user: User): 'unknown' | 'online' | 'active' | 'offline' {
 		if (user.hideOnlineStatus) return 'unknown';
 		if (user.lastActiveDate == null) return 'unknown';
 		const elapsed = Date.now() - user.lastActiveDate.getTime();
@@ -163,14 +171,14 @@ export class UserRepository extends Repository<User> {
 		}
 	}
 
-	public async pack(
+	public async pack<ExpectsMe extends boolean | null = null, D extends boolean = false>(
 		src: User['id'] | User,
 		me?: { id: User['id'] } | null | undefined,
 		options?: {
-			detail?: boolean,
+			detail?: D,
 			includeSecrets?: boolean,
 		}
-	): Promise<Packed<'User'>> {
+	): Promise<IsMeAndIsUserDetailed<ExpectsMe, D>> {
 		const opts = Object.assign({
 			detail: false,
 			includeSecrets: false,
@@ -178,8 +186,9 @@ export class UserRepository extends Repository<User> {
 
 		const user = typeof src === 'object' ? src : await this.findOneOrFail(src);
 		const meId = me ? me.id : null;
+		const isMe = meId === user.id;
 
-		const relation = meId && (meId !== user.id) && opts.detail ? await this.getRelation(meId, user.id) : null;
+		const relation = meId && !isMe && opts.detail ? await this.getRelation(meId, user.id) : null;
 		const pins = opts.detail ? await UserNotePinings.createQueryBuilder('pin')
 			.where('pin.userId = :userId', { userId: user.id })
 			.innerJoinAndSelect('pin.note', 'note')
@@ -188,12 +197,12 @@ export class UserRepository extends Repository<User> {
 		const profile = opts.detail ? await UserProfiles.findOneOrFail(user.id) : null;
 
 		const followingCount = profile == null ? null :
-			(profile.ffVisibility === 'public') || (meId === user.id) ? user.followingCount :
+			(profile.ffVisibility === 'public') || isMe ? user.followingCount :
 			(profile.ffVisibility === 'followers') && (relation && relation.isFollowing) ? user.followingCount :
 			null;
 
 		const followersCount = profile == null ? null :
-			(profile.ffVisibility === 'public') || (meId === user.id) ? user.followersCount :
+			(profile.ffVisibility === 'public') || isMe ? user.followersCount :
 			(profile.ffVisibility === 'followers') && (relation && relation.isFollowing) ? user.followersCount :
 			null;
 
@@ -228,12 +237,11 @@ export class UserRepository extends Repository<User> {
 				uri: user.uri,
 				createdAt: user.createdAt.toISOString(),
 				updatedAt: user.updatedAt ? user.updatedAt.toISOString() : null,
-				lastFetchedAt: user.lastFetchedAt?.toISOString(),
+				lastFetchedAt: user.lastFetchedAt!.toISOString(),
 				bannerUrl: user.bannerUrl,
 				bannerBlurhash: user.bannerBlurhash,
 				bannerColor: null, // 後方互換性のため
 				isLocked: user.isLocked,
-				isModerator: user.isModerator || falsy,
 				isSilenced: user.isSilenced || falsy,
 				isSuspended: user.isSuspended || falsy,
 				description: profile!.description,
@@ -261,7 +269,7 @@ export class UserRepository extends Repository<User> {
 					: false,
 			} : {}),
 
-			...(opts.detail && meId === user.id ? {
+			...(opts.detail && isMe ? {
 				avatarId: user.avatarId,
 				bannerId: user.bannerId,
 				injectFeaturedNote: profile!.injectFeaturedNote,
@@ -316,19 +324,19 @@ export class UserRepository extends Repository<User> {
 				isBlocked: relation.isBlocked,
 				isMuted: relation.isMuted,
 			} : {}),
-		};
+		} as Promiseable<Packed<'User'>> as Promiseable<IsMeAndIsUserDetailed<ExpectsMe, D>>;
 
 		return await awaitAll(packed);
 	}
 
-	public packMany(
+	public packMany<D extends boolean = false>(
 		users: (User['id'] | User)[],
 		me?: { id: User['id'] } | null | undefined,
 		options?: {
-			detail?: boolean,
+			detail?: D,
 			includeSecrets?: boolean,
 		}
-	) {
+	): Promise<IsUserDetailed<D>[]> {
 		return Promise.all(users.map(u => this.pack(u, me, options)));
 	}
 

@@ -7,7 +7,7 @@ import { normalizeForSearch } from '@/misc/normalize-for-search';
 export const meta = {
 	tags: ['hashtags'],
 
-	requireCredential: false as const,
+	requireCredential: false,
 
 	params: {
 		tag: {
@@ -16,9 +16,9 @@ export const meta = {
 	},
 
 	res: {
-		type: 'object' as const,
-		optional: false as const, nullable: false as const,
-		ref: 'Hashtag' as const,
+		type: 'object',
+		optional: false, nullable: false,
+		ref: 'Hashtag',
 	},
 
 	errors: {
@@ -28,7 +28,7 @@ export const meta = {
 			id: '110ee688-193e-4a3a-9ecf-c167b2e6981e',
 		},
 	},
-};
+} as const;
 
 // eslint-disable-next-line import/no-default-export
 export default define(meta, async (ps, user) => {

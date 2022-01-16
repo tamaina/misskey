@@ -1,26 +1,25 @@
 export const packedNoteReactionSchema = {
-	type: 'object' as const,
-	optional: false as const, nullable: false as const,
+	type: 'object',
 	properties: {
 		id: {
-			type: 'string' as const,
-			optional: false as const, nullable: false as const,
+			type: 'string',
+			optional: false, nullable: false,
 			format: 'id',
 			example: 'xxxxxxxxxx',
 		},
 		createdAt: {
-			type: 'string' as const,
-			optional: false as const, nullable: false as const,
+			type: 'string',
+			optional: false, nullable: false,
 			format: 'date-time',
 		},
 		user: {
-			type: 'object' as const,
-			optional: false as const, nullable: false as const,
-			ref: 'User' as const,
+			type: 'object',
+			optional: false, nullable: false,
+			ref: 'UserLite',
 		},
 		type: {
-			type: 'string' as const,
-			optional: false as const, nullable: false as const,
+			type: 'string',
+			optional: false, nullable: false,
 		},
 	},
-};
+} as const;

@@ -1,27 +1,26 @@
 export const packedMutingSchema = {
-	type: 'object' as const,
-	optional: false as const, nullable: false as const,
+	type: 'object',
 	properties: {
 		id: {
-			type: 'string' as const,
-			optional: false as const, nullable: false as const,
+			type: 'string',
+			optional: false, nullable: false,
 			format: 'id',
 			example: 'xxxxxxxxxx',
 		},
 		createdAt: {
-			type: 'string' as const,
-			optional: false as const, nullable: false as const,
+			type: 'string',
+			optional: false, nullable: false,
 			format: 'date-time',
 		},
 		muteeId: {
-			type: 'string' as const,
-			optional: false as const, nullable: false as const,
+			type: 'string',
+			optional: false, nullable: false,
 			format: 'id',
 		},
 		mutee: {
-			type: 'object' as const,
-			optional: false as const, nullable: false as const,
-			ref: 'User' as const,
+			type: 'object',
+			optional: false, nullable: false,
+			ref: 'UserDetailed',
 		},
 	},
-};
+} as const;

@@ -9,7 +9,7 @@ import { genId } from '@/misc/gen-id';
 export const meta = {
 	tags: ['drive'],
 
-	requireCredential: true as const,
+	requireCredential: true,
 
 	kind: 'write:drive',
 
@@ -35,9 +35,9 @@ export const meta = {
 	res: {
 		type: 'object' as const,
 		optional: false as const, nullable: false as const,
-		ref: 'DriveFolder' as const,
+		ref: 'DriveFolder',
 	},
-};
+} as const;
 
 // eslint-disable-next-line import/no-default-export
 export default define(meta, async (ps, user) => {
