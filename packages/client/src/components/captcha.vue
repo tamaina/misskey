@@ -88,7 +88,7 @@ function requestRender() {
 			'error-callback': callback,
 		});
 	} else {
-		setTimeout(requestRender, 1);
+		window.setTimeout(requestRender, 1);
 	}
 }
 
