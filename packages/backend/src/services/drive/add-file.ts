@@ -104,13 +104,14 @@ async function save(file: DriveFile, path: string, name: string, type: string, h
 		file.accessKey = key;
 		file.thumbnailAccessKey = thumbnailKey;
 		file.webpublicAccessKey = webpublicKey;
+		file.webpublicType = alts.webpublic?.type ?? null;
 		file.name = name;
 		file.type = type;
 		file.md5 = hash;
 		file.size = size;
 		file.storedInternal = false;
 
-		return await DriveFiles.save(file);
+		return await DriveFiles.insert(file).then(x => DriveFiles.findOneOrFail(x.identifiers[0]));
 	} else { // use internal storage
 		const accessKey = uuid();
 		const thumbnailAccessKey = 'thumbnail-' + uuid();
@@ -138,12 +139,13 @@ async function save(file: DriveFile, path: string, name: string, type: string, h
 		file.accessKey = accessKey;
 		file.thumbnailAccessKey = thumbnailAccessKey;
 		file.webpublicAccessKey = webpublicAccessKey;
+		file.webpublicType = alts.webpublic?.type ?? null;
 		file.name = name;
 		file.type = type;
 		file.md5 = hash;
 		file.size = size;
 
-		return await DriveFiles.save(file);
+		return await DriveFiles.insert(file).then(x => DriveFiles.findOneOrFail(x.identifiers[0]));
 	}
 }
 
@@ -313,7 +315,7 @@ async function deleteOldFile(user: IRemoteUser) {
  * @param sensitive Mark file as sensitive
  * @return Created drive file
  */
-export default async function(
+export async function addFile(
 	user: { id: User['id']; host: User['host'] } | null,
 	path: string,
 	name: string | null = null,
@@ -439,7 +441,7 @@ export default async function(
 			file.type = info.type.mime;
 			file.storedInternal = false;
 
-			file = await DriveFiles.save(file);
+			file = await DriveFiles.insert(file).then(x => DriveFiles.findOneOrFail(x.identifiers[0]));
 		} catch (e) {
 			// duplicate key error (when already registered)
 			if (isDuplicateKeyValueError(e)) {
