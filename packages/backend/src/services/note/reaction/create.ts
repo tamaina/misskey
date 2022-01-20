@@ -81,19 +81,15 @@ export default async (user: { id: User['id']; host: User['host']; }, note: Note,
 			name: decodedReaction.name,
 			host: decodedReaction.host,
 		},
-		select: ['name', 'host', 'url'],
+		select: ['name', 'host', 'originalUrl', 'publicUrl'],
 	});
-
-	if (emoji) {
-		emoji = {
-			name: emoji.host ? `${emoji.name}@${emoji.host}` : `${emoji.name}@.`,
-			url: emoji.publicUrl,
-		} as any;
-	}
 
 	publishNoteStream(note.id, 'reacted', {
 		reaction: decodedReaction.reaction,
-		emoji: emoji,
+		emoji: emoji != null ? {
+			name: emoji.host ? `${emoji.name}@${emoji.host}` : `${emoji.name}@.`,
+			url: emoji.publicUrl ?? emoji.originalUrl,
+		} : null,
 		userId: user.id,
 	});
 

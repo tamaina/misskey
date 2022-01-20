@@ -116,7 +116,7 @@ export async function prefetchEmojis(emojis: { name: string; host: string | null
 	}
 	const _emojis = emojisQuery.length > 0 ? await Emojis.find({
 		where: emojisQuery,
-		select: ['name', 'host', 'url'],
+		select: ['name', 'host', 'originalUrl', 'publicUrl'],
 	}) : [];
 	for (const emoji of _emojis) {
 		cache.set(`${emoji.name} ${emoji.host}`, emoji);

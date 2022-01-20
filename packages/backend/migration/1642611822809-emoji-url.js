@@ -9,7 +9,7 @@ module.exports = class emojiUrl1642611822809 {
 		}
 
 		async down(queryRunner) {
-			await queryRunner.query(`ALTER TABLE "emoji" DROP COLUMN "originalUrl"`);
+			await queryRunner.query(`ALTER TABLE "emoji" DROP COLUMN "publicUrl"`);
 			await queryRunner.query(`ALTER TABLE "emoji" RENAME COLUMN "originalUrl" TO "url"`);
 		}
 }
