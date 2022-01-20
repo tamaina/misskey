@@ -87,7 +87,7 @@ export default async (user: { id: User['id']; host: User['host']; }, note: Note,
 	if (emoji) {
 		emoji = {
 			name: emoji.host ? `${emoji.name}@${emoji.host}` : `${emoji.name}@.`,
-			url: emoji.url,
+			url: emoji.publicUrl,
 		} as any;
 	}
 
