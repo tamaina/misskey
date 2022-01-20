@@ -88,7 +88,7 @@ export default async (user: { id: User['id']; host: User['host']; }, note: Note,
 		reaction: decodedReaction.reaction,
 		emoji: emoji != null ? {
 			name: emoji.host ? `${emoji.name}@${emoji.host}` : `${emoji.name}@.`,
-			url: emoji.publicUrl ?? emoji.originalUrl,
+			url: emoji.publicUrl || emoji.originalUrl,
 		} : null,
 		userId: user.id,
 	});
