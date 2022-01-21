@@ -118,7 +118,7 @@ export function genOpenapiSpec(lang = 'ja-JP') {
 			description: desc,
 			externalDocs: {
 				description: 'Source code',
-				url: `https://github.com/tamaina/misskey/blob/develop/src/server/api/endpoints/${endpoint.name}.ts`,
+				url: `https://github.com/tamaina/misskey/blob/c2-2/packages/backend/src/server/api/endpoints/${endpoint.name}.ts`,
 			},
 			...(endpoint.meta.tags ? {
 				tags: [endpoint.meta.tags[0]],
