@@ -196,9 +196,9 @@ export async function generateAlts(path: string, type: string, generateWeb: bool
 			};
 		}
 
-		webpublicNeeded = !!metadata.exif || !!metadata.icc || !!metadata.iptc || !!metadata.xmp || !!metadata.tifftagPhotoshop
+		webpublicNeeded = !!metadata.exif || !!metadata.iptc || !!metadata.xmp || !!metadata.tifftagPhotoshop
 			|| !metadata.width || metadata.width > 2048 || !metadata.height || metadata.height > 2048;
-		console.log('WEBPUBLICKNEEDED', metadata.exif, metadata.icc, metadata.iptc, metadata.xmp, metadata.tifftagPhotoshop, metadata.width, metadata.height);
+		console.log('WEBPUBLICKNEEDED', webpublicNeeded, metadata.exif, metadata.icc, metadata.iptc, metadata.xmp, metadata.tifftagPhotoshop, metadata.width, metadata.height);
 	} catch (e) {
 		logger.warn(`sharp failed: ${e}`);
 		return {
