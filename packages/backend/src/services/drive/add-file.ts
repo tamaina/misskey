@@ -21,6 +21,7 @@ import * as S3 from 'aws-sdk/clients/s3';
 import { getS3 } from './s3';
 import * as sharp from 'sharp';
 import { FILE_TYPE_BROWSERSAFE } from '@/const';
+import exifr from 'exifr';
 
 const logger = driveLogger.createSubLogger('register', 'yellow');
 
@@ -199,6 +200,8 @@ export async function generateAlts(path: string, type: string, generateWeb: bool
 		webpublicNeeded = !!metadata.exif || !!metadata.icc || !!metadata.iptc || !!metadata.xmp || !!metadata.tifftagPhotoshop
 			|| !metadata.width || metadata.width > 2048 || !metadata.height || metadata.height > 2048;
 		console.log('WEBPUBLICKNEEDED', metadata.exif, metadata.icc, metadata.iptc, metadata.xmp, metadata.tifftagPhotoshop, metadata.width, metadata.height);
+		const exif = await exifr.parse(path);
+		console.log('EXIF', exif);
 	} catch (e) {
 		logger.warn(`sharp failed: ${e}`);
 		return {
