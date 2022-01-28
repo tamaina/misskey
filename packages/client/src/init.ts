@@ -187,7 +187,7 @@ app.config.globalProperties = {
 	$store: defaultStore,
 	$instance: instance,
 	$t: i18n.t,
-	$ts: i18n.locale,
+	$ts: i18n.ts,
 };
 
 app.use(router);
@@ -304,8 +304,8 @@ stream.on('_disconnected_', async () => {
 		reloadDialogShowing = true;
 		const { canceled } = await confirm({
 			type: 'warning',
-			title: i18n.locale.disconnectedFromServer,
-			text: i18n.locale.reloadConfirm,
+			title: i18n.ts.disconnectedFromServer,
+			text: i18n.ts.reloadConfirm,
 		});
 		reloadDialogShowing = false;
 		if (!canceled) {
@@ -329,7 +329,7 @@ if ($i) {
 	if ($i.isDeleted) {
 		alert({
 			type: 'warning',
-			text: i18n.locale.accountDeletionInProgress,
+			text: i18n.ts.accountDeletionInProgress,
 		});
 	}
 
