@@ -105,8 +105,8 @@ const init = async (): Promise<void> => {
 		limit: props.pagination.noPaging ? (props.pagination.limit || 10) : (props.pagination.limit || 10) + 1,
 	}).then(res => {
 		const newItems = res.map((item, i) => {
-			if (i === 3) return { ...deepcopy(item), _shouldInsertAd_: true };
-			return deepcopy(item);
+			if (i === 3) return { ...item, _shouldInsertAd_: true };
+			return item;
 		});
 
 		if (!props.pagination.noPaging && (res.length > (props.pagination.limit || 10))) {
@@ -147,8 +147,8 @@ const fetchMore = async (): Promise<void> => {
 		}),
 	}).then(res => {
 		const newItems = res.map((item, i) => {
-			if (i === 10) return { ...deepcopy(item), _shouldInsertAd_: true };
-			return deepcopy(item);
+			if (i === 10) return { item, _shouldInsertAd_: true };
+			return item;
 		});
 
 		const reverseConcat = _newItems => {
