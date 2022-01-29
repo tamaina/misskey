@@ -34,6 +34,7 @@
 <script lang="ts">
 import { computed, ComputedRef, isRef, markRaw, nextTick, onActivated, onDeactivated, onMounted, Ref, ref, watch } from 'vue';
 import * as misskey from 'misskey-js';
+import * as deepcopy from 'deepcopy';
 import * as os from '@/os';
 import { onScrollTop, isTopVisible, getBodyScrollHeight, getScrollContainer, onScrollBottom, scrollToBottom, scroll, isBottom } from '@/scripts/scroll';
 import MkButton from '@/components/ui/button.vue';
@@ -103,9 +104,10 @@ const init = async (): Promise<void> => {
 		...params,
 		limit: props.pagination.noPaging ? (props.pagination.limit || 10) : (props.pagination.limit || 10) + 1,
 	}).then(res => {
+		const items: any[] = [];
 		for (let i = 0; i < res.length; i++) {
-			const item = res[i];
-			if (i === 3) item._shouldInsertAd_ = true;
+			items.push(deepcopy(res[i]));
+			if (i === 3) items[i]._shouldInsertAd_ = true;
 		}
 		if (!props.pagination.noPaging && (res.length > (props.pagination.limit || 10))) {
 			res.pop();
