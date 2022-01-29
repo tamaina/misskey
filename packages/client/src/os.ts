@@ -7,9 +7,9 @@ import * as Misskey from 'misskey-js';
 import { apiUrl, url } from '@/config';
 import MkPostFormDialog from '@/components/post-form-dialog.vue';
 import MkWaitingDialog from '@/components/waiting-dialog.vue';
+import { MenuItem } from '@/types/menu';
 import { resolve } from '@/router';
 import { $i } from '@/account';
-import { readAndCompressImage } from 'browser-image-resizer';
 
 export const pendingApiRequestsCount = ref(0);
 
@@ -471,7 +471,7 @@ export async function openEmojiPicker(src?: HTMLElement, opts, initialTextarea: 
 	});
 }
 
-export function popupMenu(items: any[] | Ref<any[]>, src?: HTMLElement, options?: {
+export function popupMenu(items: MenuItem[] | Ref<MenuItem[]>, src?: HTMLElement, options?: {
 	align?: string;
 	width?: number;
 	viaKeyboard?: boolean;
@@ -495,7 +495,7 @@ export function popupMenu(items: any[] | Ref<any[]>, src?: HTMLElement, options?
 	});
 }
 
-export function contextMenu(items: any[], ev: MouseEvent) {
+export function contextMenu(items: MenuItem[] | Ref<MenuItem[]>, ev: MouseEvent) {
 	ev.preventDefault();
 	return new Promise((resolve, reject) => {
 		let dispose;
@@ -533,89 +533,6 @@ export function post(props: Record<string, any> = {}) {
 }
 
 export const deckGlobalEvents = new EventEmitter();
-
-export const uploads = ref<{
-	id: string;
-	name: string;
-	progressMax: number | undefined;
-	progressValue: number | undefined;
-	img: string;
-}[]>([]);
-
-export function upload(file: File, folder?: any, name?: string): Promise<Misskey.entities.DriveFile> {
-	if (folder && typeof folder == 'object') folder = folder.id;
-
-	return new Promise((resolve, reject) => {
-		const id = Math.random().toString();
-
-		const reader = new FileReader();
-		reader.onload = async (e) => {
-			const ctx = reactive({
-				id: id,
-				name: name || file.name || 'untitled',
-				progressMax: undefined,
-				progressValue: undefined,
-				img: window.URL.createObjectURL(file)
-			});
-
-			let resizedImage: any;
-
-			uploads.value.push(ctx);
-
-			if (file.type === 'image/jpeg') {
-				const config = {
-					quality: 0.85,
-					maxWidth: 2048,
-					maxHeight: 2048,
-					autoRotate: true,
-					debug: true
-				};
-				resizedImage = await readAndCompressImage(file, config);
-			}
-
-			const data = new FormData();
-			data.append('i', $i.token);
-			data.append('force', 'true');
-			data.append('file', resizedImage || file);
-
-			if (folder) data.append('folderId', folder);
-			if (name) data.append('name', name);
-
-			const xhr = new XMLHttpRequest();
-			xhr.open('POST', apiUrl + '/drive/files/create', true);
-			xhr.onload = (ev) => {
-				if (xhr.status !== 200 || ev.target == null || ev.target.response == null) {
-					// TODO: 消すのではなくて再送できるようにしたい
-					uploads.value = uploads.value.filter(x => x.id != id);
-
-					alert({
-						type: 'error',
-						text: 'upload failed'
-					});
-
-					reject();
-					return;
-				}
-
-				const driveFile = JSON.parse(ev.target.response);
-
-				resolve(driveFile);
-
-				uploads.value = uploads.value.filter(x => x.id != id);
-			};
-
-			xhr.upload.onprogress = e => {
-				if (e.lengthComputable) {
-					ctx.progressMax = e.total;
-					ctx.progressValue = e.loaded;
-				}
-			};
-
-			xhr.send(data);
-		};
-		reader.readAsArrayBuffer(file);
-	});
-}
 
 /*
 export function checkExistence(fileData: ArrayBuffer): Promise<any> {

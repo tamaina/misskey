@@ -87,6 +87,7 @@ import MkInfo from '@/components/ui/info.vue';
 import { i18n } from '@/i18n';
 import { instance } from '@/instance';
 import { $i, getAccounts, openAccountMenu as openAccountMenu_ } from '@/account';
+import { uploadFile } from '@/scripts/upload';
 
 const modal = inject('modal');
 
@@ -366,7 +367,7 @@ function updateFileName(file, name) {
 }
 
 function upload(file: File, name?: string) {
-	os.upload(file, defaultStore.state.uploadFolder, name).then(res => {
+	uploadFile(file, defaultStore.state.uploadFolder, name).then(res => {
 		files.push(res);
 	});
 }
@@ -540,8 +541,8 @@ async function post() {
 	};
 
 	if (withHashtags && hashtags && hashtags.trim() !== '') {
-		const hashtags = hashtags.trim().split(' ').map(x => x.startsWith('#') ? x : '#' + x).join(' ');
-		data.text = data.text ? `${data.text} ${hashtags}` : hashtags;
+		const hashtags_ = hashtags.trim().split(' ').map(x => x.startsWith('#') ? x : '#' + x).join(' ');
+		data.text = data.text ? `${data.text} ${hashtags_}` : hashtags_;
 	}
 
 	// plugin
@@ -565,9 +566,9 @@ async function post() {
 			deleteDraft();
 			emit('posted');
 			if (data.text && data.text != '') {
-				const hashtags = mfm.parse(data.text).filter(x => x.type === 'hashtag').map(x => x.props.hashtag);
+				const hashtags_ = mfm.parse(data.text).filter(x => x.type === 'hashtag').map(x => x.props.hashtag);
 				const history = JSON.parse(localStorage.getItem('hashtags') || '[]') as string[];
-				localStorage.setItem('hashtags', JSON.stringify(unique(hashtags.concat(history))));
+				localStorage.setItem('hashtags', JSON.stringify(unique(hashtags_.concat(history))));
 			}
 			posting = false;
 			postAccount = null;
