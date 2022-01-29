@@ -104,21 +104,21 @@ const init = async (): Promise<void> => {
 		...params,
 		limit: props.pagination.noPaging ? (props.pagination.limit || 10) : (props.pagination.limit || 10) + 1,
 	}).then(res => {
-		const newItems = res.map((item, i) => {
-			if (i === 3) return { ...item, _shouldInsertAd_: true };
-			return item;
-		});
+		for (let i = 0; i < res.length; i++) {
+			const item = res[i];
+			if (i === 3) item._shouldInsertAd_ = true;
+		}
 
 		if (!props.pagination.noPaging && (res.length > (props.pagination.limit || 10))) {
 			res.pop();
 			if (props.pagination.reversed) moreFetching.value = true;
-			items.value = newItems;
+			items.value = res;
 			more.value = true;
 		} else {
-			items.value = newItems;
+			items.value = res;
 			more.value = false;
 		}
-		offset.value = newItems.length;
+		offset.value = res.length;
 		error.value = false;
 		fetching.value = false;
 	}, e => {
@@ -146,10 +146,10 @@ const fetchMore = async (): Promise<void> => {
 			untilId: items.value[items.value.length - 1].id,
 		}),
 	}).then(res => {
-		const newItems = res.map((item, i) => {
-			if (i === 10) return { item, _shouldInsertAd_: true };
-			return item;
-		});
+		for (let i = 0; i < res.length; i++) {
+			const item = res[i];
+			if (i === 3) item._shouldInsertAd_ = true;
+		}
 
 		const reverseConcat = _newItems => {
 			const oldHeight = scrollableElement ? scrollableElement.scrollHeight : getBodyScrollHeight();
@@ -168,32 +168,32 @@ const fetchMore = async (): Promise<void> => {
 			});
 		};
 
-		if (newItems.length > SECOND_FETCH_LIMIT) {
-			newItems.pop();
+		if (res.length > SECOND_FETCH_LIMIT) {
+			res.pop();
 
 			if (props.pagination.reversed) {
-				reverseConcat(newItems).then(() => {
+				reverseConcat(res).then(() => {
 					more.value = true;
 					moreFetching.value = false;
 				});
 			} else {
-				items.value = items.value.concat(newItems);
+				items.value = items.value.concat(res);
 				more.value = true;
 				moreFetching.value = false;
 			}
 		} else {
 			if (props.pagination.reversed) {
-				reverseConcat(newItems).then(() => {
+				reverseConcat(res).then(() => {
 					more.value = false;
 					moreFetching.value = false;
 				});
 			} else {
-				items.value = items.value.concat(newItems);
+				items.value = items.value.concat(res);
 				more.value = false;
 				moreFetching.value = false;
 			}
 		}
-		offset.value += newItems.length;
+		offset.value += res.length;
 	}, e => {
 		moreFetching.value = false;
 	});
