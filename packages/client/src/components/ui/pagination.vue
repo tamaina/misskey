@@ -104,21 +104,21 @@ const init = async (): Promise<void> => {
 		...params,
 		limit: props.pagination.noPaging ? (props.pagination.limit || 10) : (props.pagination.limit || 10) + 1,
 	}).then(res => {
-		const items: any[] = [];
-		for (let i = 0; i < res.length; i++) {
-			items.push(deepcopy(res[i]));
-			if (i === 3) items[i]._shouldInsertAd_ = true;
-		}
+		const newItems = res.map((item, i) => {
+			if (i === 3) return { ...deepcopy(item), _shouldInsertAd_: true };
+			return deepcopy(item);
+		});
+
 		if (!props.pagination.noPaging && (res.length > (props.pagination.limit || 10))) {
 			res.pop();
 			if (props.pagination.reversed) moreFetching.value = true;
-			items.value = res;
+			items.value = newItems;
 			more.value = true;
 		} else {
-			items.value = res;
+			items.value = newItems;
 			more.value = false;
 		}
-		offset.value = res.length;
+		offset.value = newItems.length;
 		error.value = false;
 		fetching.value = false;
 	}, e => {
@@ -146,16 +146,16 @@ const fetchMore = async (): Promise<void> => {
 			untilId: items.value[items.value.length - 1].id,
 		}),
 	}).then(res => {
-		for (let i = 0; i < res.length; i++) {
-			const item = res[i];
-			if (i === 10) item._shouldInsertAd_ = true;
-		}
+		const newItems = res.map((item, i) => {
+			if (i === 10) return { ...deepcopy(item), _shouldInsertAd_: true };
+			return deepcopy(item);
+		});
 
-		const reverseConcat = _res => {
+		const reverseConcat = _newItems => {
 			const oldHeight = scrollableElement ? scrollableElement.scrollHeight : getBodyScrollHeight();
 			const oldScroll = scrollableElement ? scrollableElement.scrollTop : window.scrollY;
 
-			items.value = items.value.concat(_res);
+			items.value = items.value.concat(_newItems);
 
 			return nextTick(() => {
 				if (scrollableElement) {
@@ -168,32 +168,32 @@ const fetchMore = async (): Promise<void> => {
 			});
 		};
 
-		if (res.length > SECOND_FETCH_LIMIT) {
-			res.pop();
+		if (newItems.length > SECOND_FETCH_LIMIT) {
+			newItems.pop();
 
 			if (props.pagination.reversed) {
-				reverseConcat(res).then(() => {
+				reverseConcat(newItems).then(() => {
 					more.value = true;
 					moreFetching.value = false;
 				});
 			} else {
-				items.value = items.value.concat(res);
+				items.value = items.value.concat(newItems);
 				more.value = true;
 				moreFetching.value = false;
 			}
 		} else {
 			if (props.pagination.reversed) {
-				reverseConcat(res).then(() => {
+				reverseConcat(newItems).then(() => {
 					more.value = false;
 					moreFetching.value = false;
 				});
 			} else {
-				items.value = items.value.concat(res);
+				items.value = items.value.concat(newItems);
 				more.value = false;
 				moreFetching.value = false;
 			}
 		}
-		offset.value += res.length;
+		offset.value += newItems.length;
 	}, e => {
 		moreFetching.value = false;
 	});
