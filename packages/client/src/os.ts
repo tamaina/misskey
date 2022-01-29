@@ -570,9 +570,7 @@ export function upload(file: File, folder?: any, name?: string): Promise<Misskey
 					autoRotate: true,
 					debug: true
 				};
-				console.log('start compress');
-				resizedImage = await readAndCompressImage(file, config)
-				console.log('finish compress');
+				resizedImage = await readAndCompressImage(file, config);
 			}
 
 			const data = new FormData();
