@@ -559,6 +559,9 @@ export function upload(file: File, folder?: any, name?: string): Promise<Misskey
 			});
 
 			let resizedImage: any;
+
+			uploads.value.push(ctx);
+
 			if (file.type === 'image/jpeg') {
 				const config = {
 					quality: 0.85,
@@ -567,10 +570,10 @@ export function upload(file: File, folder?: any, name?: string): Promise<Misskey
 					autoRotate: true,
 					debug: true
 				};
+				console.log('start compress');
 				resizedImage = await readAndCompressImage(file, config)
+				console.log('finish compress');
 			}
-
-			uploads.value.push(ctx);
 
 			const data = new FormData();
 			data.append('i', $i.token);
