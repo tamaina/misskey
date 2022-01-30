@@ -160,7 +160,7 @@ export default defineComponent({
 				active: page.value === 'api',
 			}, {
 				icon: 'fas fa-volume-mute',
-				text: i18n.locale.instanceMute,
+				text: i18n.ts.instanceMute,
 				to: '/settings/instance-mute',
 				active: page.value === 'instance-mute',
 			}, {

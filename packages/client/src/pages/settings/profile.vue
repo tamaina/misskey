@@ -37,8 +37,8 @@
 		<template #caption>{{ i18n.ts._profile.metadataDescription }}</template>
 	</FormSlot>
 
-	<FormSwitch v-model="profile.isCat" class="_formBlock">{{ i18n.locale.flagAsCat }}<template #caption>{{ i18n.ts.flagAsCatDescription }}</template></FormSwitch>
-	<FormSwitch v-model="profile.showTimelineReplies" class="_formBlock">{{ i18n.locale.flagShowTimelineReplies }}<template #caption>{{ i18n.ts.flagShowTimelineRepliesDescription }}</template></FormSwitch>
+	<FormSwitch v-model="profile.isCat" class="_formBlock">{{ i18n.ts.flagAsCat }}<template #caption>{{ i18n.ts.flagAsCatDescription }}</template></FormSwitch>
+	<FormSwitch v-model="profile.showTimelineReplies" class="_formBlock">{{ i18n.ts.flagShowTimelineReplies }}<template #caption>{{ i18n.ts.flagShowTimelineRepliesDescription }}</template></FormSwitch>
 
 	<FormSwitch v-model="profile.isBot" class="_formBlock">{{ i18n.ts.flagAsBot }}<template #caption>{{ i18n.ts.flagAsBotDescription }}</template></FormSwitch>
 

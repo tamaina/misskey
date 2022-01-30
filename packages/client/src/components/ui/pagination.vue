@@ -34,6 +34,7 @@
 <script lang="ts">
 import { computed, ComputedRef, isRef, markRaw, nextTick, onActivated, onDeactivated, onMounted, Ref, ref, watch } from 'vue';
 import * as misskey from 'misskey-js';
+import * as deepcopy from 'deepcopy';
 import * as os from '@/os';
 import { onScrollTop, isTopVisible, getBodyScrollHeight, getScrollContainer, onScrollBottom, scrollToBottom, scroll, isBottom } from '@/scripts/scroll';
 import MkButton from '@/components/ui/button.vue';
@@ -107,6 +108,7 @@ const init = async (): Promise<void> => {
 			const item = res[i];
 			if (i === 3) item._shouldInsertAd_ = true;
 		}
+
 		if (!props.pagination.noPaging && (res.length > (props.pagination.limit || 10))) {
 			res.pop();
 			if (props.pagination.reversed) moreFetching.value = true;
@@ -146,14 +148,14 @@ const fetchMore = async (): Promise<void> => {
 	}).then(res => {
 		for (let i = 0; i < res.length; i++) {
 			const item = res[i];
-			if (i === 10) item._shouldInsertAd_ = true;
+			if (i === 3) item._shouldInsertAd_ = true;
 		}
 
-		const reverseConcat = _res => {
+		const reverseConcat = _newItems => {
 			const oldHeight = scrollableElement ? scrollableElement.scrollHeight : getBodyScrollHeight();
 			const oldScroll = scrollableElement ? scrollableElement.scrollTop : window.scrollY;
 
-			items.value = items.value.concat(_res);
+			items.value = items.value.concat(_newItems);
 
 			return nextTick(() => {
 				if (scrollableElement) {
