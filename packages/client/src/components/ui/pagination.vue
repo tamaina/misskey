@@ -36,7 +36,7 @@ import { computed, ComputedRef, isRef, nextTick, onActivated, onBeforeUnmount, o
 import * as misskey from 'misskey-js';
 import * as deepcopy from 'deepcopy';
 import * as os from '@/os';
-import { onScrollTop, isTopVisible, getBodyScrollHeight, getScrollContainer, onScrollBottom, scrollToBottom, scroll, isBottom } from '@/scripts/scroll';
+import { onScrollTop, isTopVisible, getBodyScrollHeight, getScrollContainer, onScrollBottom, scrollToBottom, scroll, isBottomVisible } from '@/scripts/scroll';
 import MkButton from '@/components/ui/button.vue';
 import { defaultStore } from '@/store';
 import { MisskeyEntity } from '@/types/date-separated-list';
@@ -305,7 +305,7 @@ const prepend = (item: MisskeyEntity, force = false): void => {
 		return;
 	}
 
-	const isTop = isBackTop.value || (props.pagination.reversed ? isBottom : isTopVisible)(contentEl);
+	const isTop = isBackTop.value || (props.pagination.reversed ? isBottomVisible : isTopVisible)(contentEl);
 
 	if (isTop || force) {
 		// Prepend the item
