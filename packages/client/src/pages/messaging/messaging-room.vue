@@ -14,8 +14,16 @@
 					</div>
 				</template>
 
-				<template #default="{ items: messages, fetching }">
-					<XList v-if="messages.length > 0" v-slot="{ item: message }" :class="{ messages: true, 'deny-move-transition': fetching }" :items="messages" direction="up" reversed>
+				<template #default="{ items: messages, fetching, itemsContainerWrapped }">
+					<XList
+						v-if="messages.length > 0"
+						v-slot="{ item: message }"
+						:class="{ messages: true, 'deny-move-transition': fetching }"
+						:items="messages"
+						v-model:itemsContainer="itemsContainerWrapped.v.value"
+						direction="up"
+						reversed
+					>
 						<XMessage :key="message.id" :message="message" :is-group="group != null"/>
 					</XList>
 				</template>
@@ -49,7 +57,7 @@ import XList from '@/components/date-separated-list.vue';
 import MkPagination, { Paging } from '@/components/ui/pagination.vue';
 import XMessage from './messaging-room.message.vue';
 import XForm from './messaging-room.form.vue';
-import { isBottom, onScrollBottom, scroll } from '@/scripts/scroll';
+import { isBottom, onScrollBottom, scrollToBottom } from '@/scripts/scroll';
 import * as os from '@/os';
 import { stream } from '@/stream';
 import * as sound from '@/scripts/sound';
@@ -134,7 +142,7 @@ async function fetch() {
 
 	nextTick(() => {
 		pagingComponent.inited.then(() => {
-			scrollToBottom();
+			thisScrollToBottom();
 		});
 		window.setTimeout(() => {
 			fetching = false
@@ -194,7 +202,7 @@ function onMessage(message) {
 	if (_isBottom) {
 		// Scroll to bottom
 		nextTick(() => {
-			scrollToBottom();
+			thisScrollToBottom();
 		});
 	} else if (message.userId != $i?.id) {
 		// Notify
@@ -234,13 +242,13 @@ function onDeleted(id) {
 	}
 }
 
-function scrollToBottom() {
-	scroll(rootEl, { top: rootEl.scrollHeight || 999999, behavior: "smooth" });
+function thisScrollToBottom() {
+	scrollToBottom($$(rootEl).value, { behavior: "smooth" });
 }
 
 function onIndicatorClick() {
 	showIndicator = false;
-	scrollToBottom();
+	thisScrollToBottom();
 }
 
 function notifyNewMessage() {
