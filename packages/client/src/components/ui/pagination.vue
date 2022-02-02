@@ -227,7 +227,7 @@ const fetchMore = async (): Promise<void> => {
 			const oldHeight = scrollableElement ? scrollableElement.scrollHeight : getBodyScrollHeight();
 			const oldScroll = scrollableElement ? scrollableElement.scrollTop : window.scrollY;
 
-			items.value = items.value.concat(_newItems);
+			items.value = items.value.concat(_res);
 
 			return nextTick(() => {
 				if (scrollableElement) {
