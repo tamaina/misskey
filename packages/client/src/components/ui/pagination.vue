@@ -32,11 +32,11 @@
 </template>
 
 <script lang="ts">
-import { computed, ComputedRef, isRef, markRaw, nextTick, onActivated, onDeactivated, onMounted, Ref, ref, watch } from 'vue';
+import { computed, ComputedRef, isRef, nextTick, onActivated, onDeactivated, onMounted, ref, watch } from 'vue';
 import * as misskey from 'misskey-js';
 import * as deepcopy from 'deepcopy';
 import * as os from '@/os';
-import { onScrollTop, isTopVisible, getBodyScrollHeight, getScrollContainer, onScrollBottom, scrollToBottom, scroll, isBottom } from '@/scripts/scroll';
+import { onScrollTop, isTopVisible, getScrollContainer, onScrollBottom, scrollToBottom, scroll, isBottom } from '@/scripts/scroll';
 import MkButton from '@/components/ui/button.vue';
 import { defaultStore } from '@/store';
 
@@ -151,17 +151,17 @@ const fetchMore = async (): Promise<void> => {
 			if (i === 3) item._shouldInsertAd_ = true;
 		}
 
-		const reverseConcat = _newItems => {
-			const oldHeight = scrollableElement ? scrollableElement.scrollHeight : getBodyScrollHeight();
+		const reverseConcat = _res => {
+			const oldHeight = contentEl.scrollHeight;
 			const oldScroll = scrollableElement ? scrollableElement.scrollTop : window.scrollY;
 
 			items.value = items.value.concat(_newItems);
 
 			return nextTick(() => {
 				if (scrollableElement) {
-					scroll(scrollableElement, { top: oldScroll + (scrollableElement.scrollHeight - oldHeight), behavior: 'instant' });
+					scroll(scrollableElement, { top: oldScroll + (contentEl.scrollHeight - oldHeight), behavior: 'instant' });
 				} else {
-					window.scrollY = oldScroll + (getBodyScrollHeight() - oldHeight);
+					window.scrollY = oldScroll + (contentEl.scrollHeight - oldHeight);
 				}
 
 				return nextTick();
