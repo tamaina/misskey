@@ -32,7 +32,7 @@
 </template>
 
 <script lang="ts">
-import { computed, ComputedRef, isRef, nextTick, onActivated, onBeforeUnmount, onDeactivated, onMounted, ref, watch, watchEffect } from 'vue';
+import { computed, ComputedRef, isRef, nextTick, onActivated, onBeforeUnmount, onDeactivated, onMounted, ref, watch } from 'vue';
 import * as misskey from 'misskey-js';
 import * as deepcopy from 'deepcopy';
 import * as os from '@/os';
@@ -118,8 +118,6 @@ const {
 	enableInfiniteScroll
 } = defaultStore.reactiveState;
 
-let mounted = $ref(false);
-
 const contentEl = $computed(() => props.pagination.pageEl || rootEl);
 const scrollableElement = $computed(() => getScrollContainer(contentEl));
 
@@ -137,7 +135,6 @@ watch(items, observeLatestElement, { deep: true });
 function observeLatestElement() {
 	observer.disconnect();
 	nextTick(() => {
-		if (!mounted) return;
 		const latestEl = (itemsContainer || rootEl)?.children.item(0);
 		if (latestEl) observer.observe(latestEl);
 	});
@@ -350,8 +347,6 @@ function toBottom() {
 }
 
 onMounted(() => {
-	mounted = true;
-
 	inited.then(() => {
 		if (props.pagination.reversed) {
 			nextTick(() => {
