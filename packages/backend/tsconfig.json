@@ -30,7 +30,7 @@
 		"outDir": "./built",
 		"typeRoots": [
 			"./node_modules/@types",
-			"./src/@types"
+			"./@types"
 		],
 		"lib": [
 			"esnext"

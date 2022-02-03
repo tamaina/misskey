@@ -12,7 +12,7 @@ export class AbuseUserReportRepository extends Repository<AbuseUserReport> {
 
 		return await awaitAll({
 			id: report.id,
-			createdAt: report.createdAt.toISOString(),
+			createdAt: report.createdAt,
 			comment: report.comment,
 			resolved: report.resolved,
 			reporterId: report.reporterId,

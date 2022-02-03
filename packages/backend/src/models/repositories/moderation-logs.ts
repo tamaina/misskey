@@ -12,7 +12,7 @@ export class ModerationLogRepository extends Repository<ModerationLog> {
 
 		return await awaitAll({
 			id: log.id,
-			createdAt: log.createdAt.toISOString(),
+			createdAt: log.createdAt,
 			type: log.type,
 			info: log.info,
 			userId: log.userId,
