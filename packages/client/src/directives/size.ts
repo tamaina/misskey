@@ -2,14 +2,6 @@ import { Directive } from 'vue';
 
 type Value = { max?: number[]; min?: number[]; };
 
-const addClass = (el: Element, cls: string) => {
-	el.classList.add(cls);
-};
-
-const removeClass = (el: Element, cls: string) => {
-	el.classList.remove(cls);
-};
-
 //const observers = new Map<Element, ResizeObserver>();
 const mountings = new Map<Element, {
 	value: Value;
@@ -17,6 +9,38 @@ const mountings = new Map<Element, {
 	intersection: IntersectionObserver;
 	previousWidth: number;
 }>();
+
+type ClassOrder = {
+	add: string[];
+	remove: string[];
+};
+
+const cache = new Map<string, ClassOrder>();
+
+function getClassOrder(width: number, queue: Value): ClassOrder {
+	const getMaxClass = (v: number) => `max-width_${v}px`;
+	const getMinClass = (v: number) => `min-width_${v}px`;
+
+	return {
+		add: [
+			...(queue.max ? queue.max.filter(v => width <= v).map(getMaxClass) : []),
+			...(queue.min ? queue.min.filter(v => width >= v).map(getMinClass) : []),
+		],
+		remove: [
+			...(queue.max ? queue.max.filter(v => width  > v).map(getMaxClass) : []),
+			...(queue.min ? queue.min.filter(v => width  < v).map(getMinClass) : []),
+		]
+	};
+}
+
+function applyClassOrder(el: Element, order: ClassOrder) {
+	el.classList.add(...order.add);
+	el.classList.remove(...order.remove);
+}
+
+function getOrderName(width: number, queue: Value): string {
+	return `${width}|${queue.max ? queue.max.join(',') : ''}|${queue.min ? queue.min.join(',') : ''}`;
+}
 
 function calc(el: Element) {
 	const info = mountings.get(el);
@@ -26,23 +50,13 @@ function calc(el: Element) {
 
 	mountings.set(el, Object.assign(info, { previousWidth: width }));
 
-	if (info.value.max) {
-		for (const v of info.value.max) {
-			if (width <= v) {
-				addClass(el, 'max-width_' + v + 'px');
-			} else {
-				removeClass(el, 'max-width_' + v + 'px');
-			}
-		}
-	}
-	if (info.value.min) {
-		for (const v of info.value.min) {
-			if (width >= v) {
-				addClass(el, 'min-width_' + v + 'px');
-			} else {
-				removeClass(el, 'min-width_' + v + 'px');
-			}
-		}
+	const cached = cache.get(getOrderName(width, info.value));
+	if (cached) {
+		applyClassOrder(el, cached);
+	} else {
+		const order = getClassOrder(width, info.value);
+		cache.set(getOrderName(width, info.value), order);
+		applyClassOrder(el, order);
 	}
 }
 
