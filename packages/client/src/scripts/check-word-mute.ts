@@ -7,7 +7,6 @@ export function checkWordMute(note: Record<string, any>, me: Record<string, any>
 
 		const matched = mutedWords.some(filter => {
 			if (Array.isArray(filter)) {
-				console.log('array!', filter);
 				return filter.every(keyword => note.text!.includes(keyword));
 			} else {
 				// represents RegExp
