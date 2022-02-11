@@ -46,6 +46,8 @@ const removeDuplicates = (array: any[]) => Array.from(new Set(array));
 type Schema = Record<string, {
 	uniqueIncrement?: boolean;
 
+	intersection?: string[] | ReadonlyArray<string>;
+
 	range?: 'big' | 'small' | 'medium';
 
 	// previousな値を引き継ぐかどうか
@@ -79,7 +81,15 @@ export default abstract class Chart<T extends Schema> {
 	protected repositoryForHour: Repository<RawRecord<T>>;
 	protected repositoryForDay: Repository<RawRecord<T>>;
 
-	protected abstract queryCurrentState(group: string | null): Promise<Partial<KVs<T>>>;
+	/**
+	 * 1日に一回程度実行されれば良いような計算処理を入れる(主にCASCADE削除などアプリケーション側で感知できない変動によるズレの修正用)
+	 */
+	protected abstract tickMajor(group: string | null): Promise<Partial<KVs<T>>>;
+
+	/**
+	 * 少なくとも最小スパン内に1回は実行されて欲しい計算処理を入れる
+	 */
+	protected abstract tickMinor(group: string | null): Promise<Partial<KVs<T>>>;
 
 	@autobind
 	private static convertSchemaToColumnDefinitions(schema: Schema): Record<string, { type: string; array?: boolean; default?: any; }> {
@@ -384,6 +394,33 @@ export default abstract class Chart<T extends Schema> {
 				}
 			}
 
+			// compute intersection
+			// TODO: intersectionに指定されたカラムがintersectionだった場合の対応
+			for (const [k, v] of Object.entries(this.schema)) {
+				const intersection = v.intersection;
+				if (intersection) {
+					const name = columnPrefix + k.replaceAll('.', columnDot);
+					const firstKey = intersection[0];
+					const firstTempColumnName = uniqueTempColumnPrefix + firstKey.replaceAll('.', columnDot);
+					const currentValuesForHour = new Set([...(finalDiffs[firstKey] ?? []), ...logHour[firstTempColumnName]]);
+					const currentValuesForDay = new Set([...(finalDiffs[firstKey] ?? []), ...logDay[firstTempColumnName]]);
+					for (let i = 1; i < intersection.length; i++) {
+						const targetKey = intersection[i];
+						const targetTempColumnName = uniqueTempColumnPrefix + targetKey.replaceAll('.', columnDot);
+						const targetValuesForHour = new Set([...(finalDiffs[targetKey] ?? []), ...logHour[targetTempColumnName]]);
+						const targetValuesForDay = new Set([...(finalDiffs[targetKey] ?? []), ...logDay[targetTempColumnName]]);
+						currentValuesForHour.forEach(v => {
+							if (!targetValuesForHour.has(v)) currentValuesForHour.delete(v);
+						});
+						currentValuesForDay.forEach(v => {
+							if (!targetValuesForDay.has(v)) currentValuesForDay.delete(v);
+						});
+					}
+					queryForHour[name] = currentValuesForHour.size;
+					queryForDay[name] = currentValuesForDay.size;
+				}
+			}
+
 			// ログ更新
 			await Promise.all([
 				this.repositoryForHour.createQueryBuilder()
@@ -416,13 +453,17 @@ export default abstract class Chart<T extends Schema> {
 	}
 
 	@autobind
-	public async resync(group: string | null = null): Promise<void> {
-		const data = await this.queryCurrentState(group);
+	public async tick(major: boolean, group: string | null = null): Promise<void> {
+		const data = major ? await this.tickMajor(group) : await this.tickMinor(group);
 
 		const columns = {} as Record<string, number>;
 		for (const [k, v] of Object.entries(data)) {
 			const name = k.replaceAll('.', columnDot);
 			columns[columnPrefix + name] = v;
+		}
+
+		if (Object.keys(columns).length === 0) {
+			return;
 		}
 
 		const update = async (logHour: RawRecord<T>, logDay: RawRecord<T>): Promise<void> => {
@@ -448,6 +489,11 @@ export default abstract class Chart<T extends Schema> {
 	}
 
 	@autobind
+	public resync(group: string | null = null): Promise<void> {
+		return this.tick(true, group);
+	}
+
+	@autobind
 	public async clean(): Promise<void> {
 		const current = dateUTC(Chart.getCurrentDate());
 
@@ -461,6 +507,10 @@ export default abstract class Chart<T extends Schema> {
 				const name = k.replaceAll('.', columnDot);
 				columns[uniqueTempColumnPrefix + name] = [];
 			}
+		}
+
+		if (Object.keys(columns).length === 0) {
+			return;
 		}
 
 		await Promise.all([

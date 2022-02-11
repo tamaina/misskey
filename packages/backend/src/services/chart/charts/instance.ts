@@ -16,7 +16,7 @@ export default class InstanceChart extends Chart<typeof schema> {
 	}
 
 	@autobind
-	protected async queryCurrentState(group: string): Promise<Partial<KVs<typeof schema>>> {
+	protected async tickMajor(group: string): Promise<Partial<KVs<typeof schema>>> {
 		const [
 			notesCount,
 			usersCount,
@@ -40,6 +40,11 @@ export default class InstanceChart extends Chart<typeof schema> {
 			'followers.total': followersCount,
 			'drive.totalFiles': driveFiles,
 		};
+	}
+
+	@autobind
+	protected async tickMinor(): Promise<Partial<KVs<typeof schema>>> {
+		return {};
 	}
 
 	@autobind
@@ -67,16 +72,6 @@ export default class InstanceChart extends Chart<typeof schema> {
 
 	@autobind
 	public async updateNote(host: string, note: Note, isAdditional: boolean): Promise<void> {
-		const diffs = {} as Record<string, unknown>;
-
-		if (note.replyId != null) {
-			diffs.reply = isAdditional ? 1 : -1;
-		} else if (note.renoteId != null) {
-			diffs.renote = isAdditional ? 1 : -1;
-		} else {
-			diffs.normal = isAdditional ? 1 : -1;
-		}
-
 		await this.commit({
 			'notes.total': isAdditional ? 1 : -1,
 			'notes.inc': isAdditional ? 1 : 0,
@@ -84,6 +79,7 @@ export default class InstanceChart extends Chart<typeof schema> {
 			'notes.diffs.normal': note.replyId == null && note.renoteId == null ? (isAdditional ? 1 : -1) : 0,
 			'notes.diffs.renote': note.renoteId != null ? (isAdditional ? 1 : -1) : 0,
 			'notes.diffs.reply': note.replyId != null ? (isAdditional ? 1 : -1) : 0,
+			'notes.diffs.withFile': note.fileIds.length > 0 ? (isAdditional ? 1 : -1) : 0,
 		}, toPuny(host));
 	}
 
