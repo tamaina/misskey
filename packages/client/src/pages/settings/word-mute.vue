@@ -137,7 +137,8 @@ export default defineComponent({
 				return;
 			}
 
-			this.$store.set('mutedWords', softMutes);
+			console.log('C2MOD', softMutes);
+			this.$store.set('mutedWords', [['']]);
 			await os.api('i/update', {
 				mutedWords: hardMutes,
 			});
