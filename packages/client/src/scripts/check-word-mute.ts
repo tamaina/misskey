@@ -8,10 +8,10 @@ export function checkWordMute(note: Record<string, any>, me: Record<string, any>
 		const matched = mutedWords.some(filter => {
 			if (Array.isArray(filter)) {
 				// Clean up
-				const filteredFilter = filter.filter(keyword => keyword !== '')
+				const filteredFilter = filter.filter(keyword => keyword !== '');
 				if (filteredFilter.length === 0) return false;
 
-				return filter.every(keyword => note.text!.includes(keyword));
+				return filteredFilter.every(keyword => note.text!.includes(keyword));
 			} else {
 				// represents RegExp
 				const regexp = filter.match(/^\/(.+)\/(.*)$/);
