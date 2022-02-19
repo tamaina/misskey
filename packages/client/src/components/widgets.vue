@@ -127,16 +127,15 @@ export default defineComponent({
 			position: absolute;
 			z-index: 10000;
 			top: 8px;
-			width: 48px;
-			height: 48px;
+			width: 32px;
+			height: 32px;
 			color: #fff;
 			background: rgba(#000, 0.7);
-			border-radius: 8px;
-			font-size: 1.2em;
+			border-radius: 4px;
 		}
 
 		> .config {
-			right: 8px + 8px + 48px;
+			right: 8px + 8px + 32px;
 		}
 
 		> .remove {
