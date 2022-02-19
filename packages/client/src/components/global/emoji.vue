@@ -8,6 +8,7 @@
 <script lang="ts">
 import { computed, defineComponent, ref, watch } from 'vue';
 import { getStaticImageUrl } from '@/scripts/get-static-image-url';
+import { getCompressedImageUrl } from '@/scripts/get-compressed-image-url';
 import { twemojiSvgBase } from '@/scripts/twemoji-base';
 import { defaultStore } from '@/store';
 import { instance } from '@/instance';
@@ -52,7 +53,7 @@ export default defineComponent({
 			} else {
 				return defaultStore.state.disableShowingAnimatedImages
 					? getStaticImageUrl(customEmoji.value.url)
-					: customEmoji.value.url;
+					: getCompressedImageUrl(customEmoji.value.url);
 			}
 		});
 		const alt = computed(() => customEmoji.value ? `:${customEmoji.value.name}:` : char.value);

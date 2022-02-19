@@ -12,7 +12,7 @@
 					@click="chosen(emoji, $event)"
 				>
 					<!--<MkEmoji v-if="emoji.char != null" :emoji="emoji.char"/>-->
-					<img :src="disableShowingAnimatedImages ? getStaticImageUrl(emoji.url) : emoji.url"/>
+					<img :src="disableShowingAnimatedImages ? getStaticImageUrl(emoji.url) : getCompressedImageUrl(emoji.url)"/>
 				</button>
 			</div>
 			<div v-if="searchResultUnicode.length > 0">
@@ -78,6 +78,7 @@ import { ref, computed, watch, onMounted } from 'vue';
 import * as Misskey from 'misskey-js';
 import { emojilist, UnicodeEmojiDef, unicodeEmojiCategories as categories } from '@/scripts/emojilist';
 import { getStaticImageUrl } from '@/scripts/get-static-image-url';
+import { getCompressedImageUrl } from '@/scripts/get-compressed-image-url';
 import Ripple from '@/components/ripple.vue';
 import * as os from '@/os';
 import { isTouchUsing } from '@/scripts/touch';

@@ -13,6 +13,7 @@
 import { onMounted, watch } from 'vue';
 import * as misskey from 'misskey-js';
 import { getStaticImageUrl } from '@/scripts/get-static-image-url';
+import { getCompressedImageUrl } from '@/scripts/get-compressed-image-url';
 import { extractAvgColorFromBlurhash } from '@/scripts/extract-avg-color-from-blurhash';
 import { acct, userPage } from '@/filters/user';
 import MkUserOnlineIndicator from '@/components/user-online-indicator.vue';
@@ -37,7 +38,7 @@ const emit = defineEmits<{
 
 const url = $computed(() => defaultStore.state.disableShowingAnimatedImages
 	? getStaticImageUrl(props.user.avatarUrl)
-	: props.user.avatarUrl);
+	: getCompressedImageUrl(props.user.avatarUrl));
 
 function onClick(ev: MouseEvent) {
 	emit('click', ev);

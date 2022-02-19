@@ -1,10 +1,11 @@
 import * as fs from 'fs';
-import * as Ajv from 'ajv';
+import Ajv, { ValidateFunction } from 'ajv';
 import { ILocalUser } from '@/models/entities/user';
 import { IEndpointMeta } from './endpoints';
 import { ApiError } from './error';
 import { Schema, SchemaType } from '@/misc/schema';
 import { AccessToken } from '@/models/entities/access-token';
+import { JTDDataType } from 'ajv/dist/types/jtd-schema';
 
 type SimpleUserInfo = {
 	id: ILocalUser['id'];
@@ -36,7 +37,17 @@ ajv.addFormat('misskey:id', /^[a-z0-9]+$/);
 export default function <T extends IEndpointMeta, Ps extends Schema>(meta: T, paramDef: Ps, cb: executor<T, Ps>)
 		: (params: any, user: T['requireCredential'] extends true ? SimpleUserInfo : SimpleUserInfo | null, token: AccessToken | null, file?: any) => Promise<any> {
 
-	const validate = ajv.compile(paramDef);
+	let validate: ValidateFunction<JTDDataType<Ps>>;
+
+	try {
+		validate = ajv.compile(paramDef);
+	} catch (e) {
+		const err = new ApiError({
+			message: 'Failed to compile schema.',
+			code: 'FAILED_TO_COMPILE_SCHEMA',
+			id: '3d81ceae-475f-4600-b2a8-2bc116157534',
+		});
+	}
 
 	return (params: any, user: T['requireCredential'] extends true ? SimpleUserInfo : SimpleUserInfo | null, token: AccessToken | null, file?: any) => {
 		function cleanup() {

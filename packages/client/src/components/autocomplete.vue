@@ -17,7 +17,7 @@
 	</ol>
 	<ol v-else-if="emojis.length > 0" ref="suggests" class="emojis">
 		<li v-for="emoji in emojis" tabindex="-1" @click="complete(type, emoji.emoji)" @keydown="onKeydown">
-			<span v-if="emoji.isCustomEmoji" class="emoji"><img :src="defaultStore.state.disableShowingAnimatedImages ? getStaticImageUrl(emoji.url) : emoji.url" :alt="emoji.emoji"/></span>
+			<span v-if="emoji.isCustomEmoji" class="emoji"><img :src="defaultStore.state.disableShowingAnimatedImages ? getStaticImageUrl(emoji.url) : getCompressedImageUrl(emoji.url)" :alt="emoji.emoji"/></span>
 			<span v-else-if="!defaultStore.state.useOsNativeEmojis" class="emoji"><img :src="emoji.url" :alt="emoji.emoji"/></span>
 			<span v-else class="emoji">{{ emoji.emoji }}</span>
 			<span class="name" v-html="emoji.name.replace(q, `<b>${q}</b>`)"></span>
@@ -36,6 +36,7 @@
 import { markRaw, ref, onUpdated, onMounted, onBeforeUnmount, nextTick, watch } from 'vue';
 import contains from '@/scripts/contains';
 import { getStaticImageUrl } from '@/scripts/get-static-image-url';
+import { getCompressedImageUrl } from '@/scripts/get-compressed-image-url';
 import { acct } from '@/filters/user';
 import * as os from '@/os';
 import { MFM_TAGS } from '@/scripts/mfm-tags';

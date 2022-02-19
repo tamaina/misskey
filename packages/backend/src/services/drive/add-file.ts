@@ -179,19 +179,13 @@ export async function generateAlts(path: string, type: string, generateWeb: bool
 
 	let img: sharp.Sharp | null = null;
 	let satisfyWebpublic: boolean;
+	let isAnimated: boolean;
 
 	try {
-		img = sharp(path);
+		img = sharp(path, { pages: 32 });
 		const metadata = await img.metadata();
-		const isAnimated = metadata.pages && metadata.pages > 1;
-
-		// skip animated
-		if (isAnimated) {
-			return {
-				webpublic: null,
-				thumbnail: null,
-			};
-		}
+		isAnimated = !!(metadata.pages && metadata.pages > 1);
+		logger.debug('isAnimated: ' + isAnimated);
 
 		satisfyWebpublic = !!(
 			type !== 'image/svg+xml' && type !== 'image/webp' &&
@@ -210,7 +204,7 @@ export async function generateAlts(path: string, type: string, generateWeb: bool
 	// #region webpublic
 	let webpublic: IImage | null = null;
 
-	if (generateWeb && !satisfyWebpublic) {
+	if (generateWeb && !satisfyWebpublic && !isAnimated) {
 		logger.info(`creating web image`);
 
 		try {

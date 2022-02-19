@@ -28,6 +28,8 @@ export async function proxyMedia(ctx: Koa.Context) {
 
 		if ('static' in ctx.query && ['image/png', 'image/gif', 'image/apng', 'image/vnd.mozilla.apng', 'image/webp', 'image/svg+xml'].includes(mime)) {
 			image = await convertToWebp(path, 498, 280);
+		} else if ('compress' in ctx.query && ['image/jpeg', 'image/png', 'image/gif', 'image/apng', 'image/vnd.mozilla.apng', 'image/webp', 'image/svg+xml'].includes(mime)) {
+			image = await convertToWebp(path, 1024, 256, 90, { pages: 256 });
 		} else if ('preview' in ctx.query && ['image/jpeg', 'image/png', 'image/gif', 'image/apng', 'image/vnd.mozilla.apng', 'image/svg+xml'].includes(mime)) {
 			image = await convertToWebp(path, 200, 200);
 		}	else if (['image/svg+xml'].includes(mime)) {

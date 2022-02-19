@@ -79,6 +79,7 @@ export default async (endpoint: string, user: User | null | undefined, token: Ac
 
 	// Cast non JSON input
 	if (ep.meta.requireFile) {
+		console.log(ep.params);
 		for (const k of Object.keys(ep.params)) {
 			const param = ep.params.properties![k];
 			if (['boolean', 'number', 'integer'].includes(param.type ?? '') && typeof data[k] === 'string') {
