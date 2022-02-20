@@ -6,7 +6,7 @@ import { ApiError } from './error';
 import { Schema, SchemaType } from '@/misc/schema';
 import { AccessToken } from '@/models/entities/access-token';
 import { ValidateFunction } from 'ajv';
-import { JTDDataType } from 'ajv/dist/types/jtd-schema';
+import { JTDDataType } from 'ajv/dist/core';
 import { apiLogger } from './logger';
 
 type SimpleUserInfo = {
@@ -39,13 +39,7 @@ ajv.addFormat('misskey:id', /^[a-z0-9]+$/);
 export default function <T extends IEndpointMeta, Ps extends Schema>(meta: T, paramDef: Ps, cb: executor<T, Ps>)
 		: (params: any, user: T['requireCredential'] extends true ? SimpleUserInfo : SimpleUserInfo | null, token: AccessToken | null, file?: any) => Promise<any> {
 
-	let validate: ValidateFunction<JTDDataType<Ps>>;
-
-	try {
-		validate = ajv.compile(paramDef);
-	} catch (error) {
-		apiLogger.error('FAILED TO COMPILE SCHEMA ' + JSON.stringify({ param: paramDef, error }));
-	}
+	const validate = ajv.compile(paramDef);
 
 	return (params: any, user: T['requireCredential'] extends true ? SimpleUserInfo : SimpleUserInfo | null, token: AccessToken | null, file?: any) => {
 		function cleanup() {
