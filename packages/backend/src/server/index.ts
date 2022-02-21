@@ -23,6 +23,7 @@ import { UserProfiles, Users } from '@/models/index';
 import { genIdenticon } from '@/misc/gen-identicon';
 import { createTemp } from '@/misc/create-temp';
 import { publishMainStream } from '@/services/stream';
+import * as Acct from 'misskey-js/built/acct';
 
 export const serverLogger = new Logger('server', 'gray', false);
 
@@ -55,8 +56,7 @@ if (config.url.startsWith('https') && !config.disableHsts) {
 
 app.use(mount('/api', apiServer));
 app.use(mount('/files', require('./file')));
-app.use(mount('/proxy', require('./proxy/proxy-media')));
-app.use(mount('/avatar.webp', require('./proxy/avatar')));
+app.use(mount('/proxy', require('./proxy')));
 
 // Init router
 const router = new Router();
@@ -65,6 +65,21 @@ const router = new Router();
 router.use(activityPub.routes());
 router.use(nodeinfo.routes());
 router.use(wellKnown.routes());
+
+router.get('/avatar/@:acct', async ctx => {
+	const { username, host } = Acct.parse(ctx.params.acct);
+	const user = await Users.findOne({
+		usernameLower: username.toLowerCase(),
+		host: host === config.host ? null : host,
+		isSuspended: false,
+	});
+
+	if (user) {
+		ctx.redirect(Users.getAvatarUrl(user));
+	} else {
+		ctx.redirect('/static-assets/user-unknown.png');
+	}
+});
 
 router.get('/identicon/:x', async ctx => {
 	const [temp] = await createTemp();
