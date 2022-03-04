@@ -1,6 +1,6 @@
 import * as fs from 'node:fs';
 import Koa from 'koa';
-import * as sharp from 'sharp';
+import sharp from 'sharp';
 import { serverLogger } from '../index.js';
 import { IImage, convertToWebp } from '@/services/drive/image-processor.js';
 import { createTemp } from '@/misc/create-temp.js';
