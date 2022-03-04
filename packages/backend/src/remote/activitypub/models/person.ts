@@ -1,35 +1,35 @@
-import { URL } from 'url';
-import * as promiseLimit from 'promise-limit';
+import { URL } from 'node:url';
+import promiseLimit from 'promise-limit';
 
 import $, { Context } from 'cafy';
-import config from '@/config/index';
-import Resolver from '../resolver';
-import { resolveImage } from './image';
-import { isCollectionOrOrderedCollection, isCollection, IActor, getApId, getOneApHrefNullable, IObject, isPropertyValue, IApPropertyValue, getApType, isActor } from '../type';
-import { fromHtml } from '../../../mfm/from-html';
-import { htmlToMfm } from '../misc/html-to-mfm';
-import { resolveNote, extractEmojis } from './note';
-import { registerOrFetchInstanceDoc } from '@/services/register-or-fetch-instance-doc';
-import { extractApHashtags } from './tag';
-import { apLogger } from '../logger';
-import { Note } from '@/models/entities/note';
-import { updateUsertags } from '@/services/update-hashtag';
-import { Users, Instances, DriveFiles, Followings, UserProfiles, UserPublickeys } from '@/models/index';
-import { User, IRemoteUser } from '@/models/entities/user';
-import { Emoji } from '@/models/entities/emoji';
-import { UserNotePining } from '@/models/entities/user-note-pining';
-import { genId } from '@/misc/gen-id';
-import { instanceChart, usersChart } from '@/services/chart/index';
-import { UserPublickey } from '@/models/entities/user-publickey';
-import { isDuplicateKeyValueError } from '@/misc/is-duplicate-key-value-error';
-import { toPuny } from '@/misc/convert-host';
-import { UserProfile } from '@/models/entities/user-profile';
+import config from '@/config/index.js';
+import Resolver from '../resolver.js';
+import { resolveImage } from './image.js';
+import { isCollectionOrOrderedCollection, isCollection, IActor, getApId, getOneApHrefNullable, IObject, isPropertyValue, IApPropertyValue, getApType, isActor } from '../type.js';
+import { fromHtml } from '../../../mfm/from-html.js';
+import { htmlToMfm } from '../misc/html-to-mfm.js';
+import { resolveNote, extractEmojis } from './note.js';
+import { registerOrFetchInstanceDoc } from '@/services/register-or-fetch-instance-doc.js';
+import { extractApHashtags } from './tag.js';
+import { apLogger } from '../logger.js';
+import { Note } from '@/models/entities/note.js';
+import { updateUsertags } from '@/services/update-hashtag.js';
+import { Users, Instances, DriveFiles, Followings, UserProfiles, UserPublickeys } from '@/models/index.js';
+import { User, IRemoteUser } from '@/models/entities/user.js';
+import { Emoji } from '@/models/entities/emoji.js';
+import { UserNotePining } from '@/models/entities/user-note-pining.js';
+import { genId } from '@/misc/gen-id.js';
+import { instanceChart, usersChart } from '@/services/chart/index.js';
+import { UserPublickey } from '@/models/entities/user-publickey.js';
+import { isDuplicateKeyValueError } from '@/misc/is-duplicate-key-value-error.js';
+import { toPuny } from '@/misc/convert-host.js';
+import { UserProfile } from '@/models/entities/user-profile.js';
 import { getConnection } from 'typeorm';
-import { toArray } from '@/prelude/array';
-import { fetchInstanceMetadata } from '@/services/fetch-instance-metadata';
-import { normalizeForSearch } from '@/misc/normalize-for-search';
-import { truncate } from '@/misc/truncate';
-import { StatusError } from '@/misc/fetch';
+import { toArray } from '@/prelude/array.js';
+import { fetchInstanceMetadata } from '@/services/fetch-instance-metadata.js';
+import { normalizeForSearch } from '@/misc/normalize-for-search.js';
+import { truncate } from '@/misc/truncate.js';
+import { StatusError } from '@/misc/fetch.js';
 
 const logger = apLogger;
 
@@ -57,15 +57,15 @@ function validateActor(x: IObject, uri: string): IActor {
 		if (e) throw new Error(`invalid Actor: ${name} ${e.message}`);
 	};
 
-	validate('id', x.id, $.str.min(1));
-	validate('inbox', x.inbox, $.str.min(1));
-	validate('preferredUsername', x.preferredUsername, $.str.min(1).max(128).match(/^\w([\w-.]*\w)?$/));
+	validate('id', x.id, $.default.str.min(1));
+	validate('inbox', x.inbox, $.default.str.min(1));
+	validate('preferredUsername', x.preferredUsername, $.default.str.min(1).max(128).match(/^\w([\w-.]*\w)?$/));
 
 	// These fields are only informational, and some AP software allows these
 	// fields to be very long. If they are too long, we cut them off. This way
 	// we can at least see these users and their activities.
-	validate('name', truncate(x.name, nameLength), $.optional.nullable.str);
-	validate('summary', truncate(x.summary, summaryLength), $.optional.nullable.str);
+	validate('name', truncate(x.name, nameLength), $.default.optional.nullable.str);
+	validate('summary', truncate(x.summary, summaryLength), $.default.optional.nullable.str);
 
 	const idHost = toPuny(new URL(x.id!).hostname);
 	if (idHost !== expectHost) {
