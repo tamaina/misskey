@@ -15,16 +15,19 @@
 
 <script lang="ts" setup>
 import { computed, watch } from 'vue';
+import * as Misskey from 'misskey-js';
 import XTimeline from '@/components/timeline.vue';
 import { scroll } from '@/scripts/scroll';
 import * as os from '@/os';
 import * as symbols from '@/symbols';
+import { i18n } from '@/i18n';
+import { router } from '@/router';
 
-defineProps<{
+const props = defineProps<{
 	listId: string;
 }>();
 
-let list: null = $ref(null);
+let list: Misskey.entities.UserList | null = $ref(null);
 let queue: number = $ref(0);
 let tlComponent = $ref<InstanceType<typeof XTimeline>>();
 let rootEl = $ref<HTMLElement>();
@@ -34,16 +37,17 @@ const keymap = $computed(() => ({
 }));
 
 watch(() => props.listId, async () => {
-	list = await os.api('antennas/show', {
+	list = await os.api('users/lists/show', {
 		listId: props.listId
 	});
 }, { immediate: true, });
 
 function queueUpdated(q) {
 	queue = q;
-},
+}
 
 function top() {
+	// @ts-ignore
 	tlComponent.tlComponent.pagingComponent?.executeQueue();
 	scroll(rootEl, { top: 0 });
 }

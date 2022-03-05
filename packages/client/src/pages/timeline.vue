@@ -6,7 +6,7 @@
 
 		<div v-if="queue > 0" class="new"><button class="_buttonPrimary" @click="top()">{{ $ts.newNoteRecived }}</button></div>
 		<div class="tl _block">
-			<XTimeline ref="tl" :key="src"
+			<XTimeline ref="tlComponent" :key="src"
 				class="tl"
 				:src="src"
 				:sound="true"
@@ -56,6 +56,7 @@ function queueUpdated(q: number): void {
 }
 
 function top(): void {
+	// @ts-ignore
 	tlComponent.tlComponent.pagingComponent?.executeQueue();
 	scroll(rootEl, { top: 0 });
 }
