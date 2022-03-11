@@ -356,7 +356,6 @@ defineExpose({
 	prepend,
 	append: appendItem,
 	updateItem,
-	executeQueue,
 });
 </script>
 
