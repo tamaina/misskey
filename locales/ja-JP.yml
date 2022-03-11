@@ -1667,6 +1667,7 @@ _notification:
   youReceivedFollowRequest: "フォローリクエストが来ました"
   yourFollowRequestAccepted: "フォローリクエストが承認されました"
   youWereInvitedToGroup: "{userName}があなたをグループに招待しました"
+  pollEnded: "アンケートの結果が出ました"
   emptyPushNotificationMessage: "プッシュ通知の更新をしました"
 
   _types:
@@ -1678,6 +1679,7 @@ _notification:
     quote: "引用"
     reaction: "リアクション"
     pollVote: "アンケートに投票された"
+    pollEnded: "アンケートが終了"
     receiveFollowRequest: "フォロー申請を受け取った"
     followRequestAccepted: "フォローが受理された"
     groupInvited: "グループに招待された"
