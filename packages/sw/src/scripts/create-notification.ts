@@ -184,6 +184,13 @@ async function composeNotification<K extends keyof pushNotificationDataMap>(data
 						data,
 					} as any];
 
+				case 'pollEnded':
+					return [t('_notification.pollEnded'), {
+						body: data.body.note.text || '',
+						badge: iconUrl('clipboard-check-solid'),
+						data,
+					}];
+
 				case 'receiveFollowRequest':
 					return [t('_notification.youReceivedFollowRequest'), {
 						body: getUserName(data.body.user),
