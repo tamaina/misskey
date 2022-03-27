@@ -24,6 +24,14 @@ import { url as local } from '@/config';
 import * as os from '@/os';
 import { useTooltip } from '@/scripts/use-tooltip';
 
+function safeURIDecode(str: string) {
+	try {
+		return decodeURIComponent(str);
+	} catch {
+		return str;
+	}
+}
+
 export default defineComponent({
 	props: {
 		url: {

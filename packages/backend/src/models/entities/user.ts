@@ -240,3 +240,9 @@ export interface ILocalUser extends User {
 export interface IRemoteUser extends User {
 	host: string;
 }
+
+export type CacheableLocalUser = ILocalUser;
+
+export type CacheableRemoteUser = IRemoteUser;
+
+export type CacheableUser = CacheableLocalUser | CacheableRemoteUser;
