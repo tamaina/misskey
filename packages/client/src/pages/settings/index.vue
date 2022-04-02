@@ -149,10 +149,10 @@ const menuDef = computed(() => [{
 		to: '/settings/api',
 		active: page.value === 'api',
 	}, {
-		icon: 'fas fa-volume-mute',
-		text: i18n.ts.instanceMute,
-		to: '/settings/instance-mute',
-		active: page.value === 'instance-mute',
+		icon: 'fas fa-bolt',
+		text: 'Webhook',
+		to: '/settings/webhook',
+		active: page.value === 'webhook',
 	}, {
 		icon: 'fas fa-ellipsis-h',
 		text: i18n.ts.other,
@@ -197,6 +197,9 @@ const component = computed(() => {
 		case 'security': return defineAsyncComponent(() => import('./security.vue'));
 		case '2fa': return defineAsyncComponent(() => import('./2fa.vue'));
 		case 'api': return defineAsyncComponent(() => import('./api.vue'));
+		case 'webhook': return defineAsyncComponent(() => import('./webhook.vue'));
+		case 'webhook/new': return defineAsyncComponent(() => import('./webhook.new.vue'));
+		case 'webhook/edit': return defineAsyncComponent(() => import('./webhook.edit.vue'));
 		case 'apps': return defineAsyncComponent(() => import('./apps.vue'));
 		case 'other': return defineAsyncComponent(() => import('./other.vue'));
 		case 'general': return defineAsyncComponent(() => import('./general.vue'));
