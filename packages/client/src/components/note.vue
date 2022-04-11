@@ -7,52 +7,52 @@
 	v-size="{ max: [500, 450, 350, 300] }"
 	class="tkcbzcuz"
 	:tabindex="!isDeleted ? '-1' : null"
-	:class="{ 'is-renote': isRenote }"
+	:class="{ renote: isRenote }"
 >
 	<MkNoteSub v-if="appearNote.reply" :note="appearNote.reply" class="reply-to"/>
-	<div v-if="pinned" class="root-info"><i class="fas fa-thumbtack root-info-i"></i> {{ i18n.ts.pinnedNote }}</div>
-	<div v-if="appearNote._prId_" class="root-info"><i class="fas fa-bullhorn root-info-i"></i> {{ i18n.ts.promotion }}<button class="_textButton root-info-hide" @click="readPromo()">{{ i18n.ts.hideThisNote }} <i class="fas fa-times"></i></button></div>
-	<div v-if="appearNote._featuredId_" class="root-info"><i class="fas fa-bolt root-info-i"></i> {{ i18n.ts.featured }}</div>
+	<div v-if="pinned" class="info"><i class="fas fa-thumbtack"></i> {{ i18n.ts.pinnedNote }}</div>
+	<div v-if="appearNote._prId_" class="info"><i class="fas fa-bullhorn"></i> {{ i18n.ts.promotion }}<button class="_textButton hide" @click="readPromo()">{{ i18n.ts.hideThisNote }} <i class="fas fa-times"></i></button></div>
+	<div v-if="appearNote._featuredId_" class="info"><i class="fas fa-bolt"></i> {{ i18n.ts.featured }}</div>
 	<div v-if="isRenote" class="renote">
-		<MkAvatar class="renote-avatar" :user="note.user"/>
-		<i class="fas fa-retweet renote-fa-retweet"></i>
-		<I18n :src="i18n.ts.renotedBy" tag="span" class="renote-renotedby">
+		<MkAvatar class="avatar" :user="note.user"/>
+		<i class="fas fa-retweet"></i>
+		<I18n :src="i18n.ts.renotedBy" tag="span">
 			<template #user>
-				<MkA v-user-preview="note.userId" class="renote-renotedby-name" :to="userPage(note.user)">
+				<MkA v-user-preview="note.userId" class="name" :to="userPage(note.user)">
 					<MkUserName :user="note.user"/>
 				</MkA>
 			</template>
 		</I18n>
-		<div class="renote-info">
-			<button ref="renoteTime" class="_button renote-info-time" @click="showRenoteMenu()">
+		<div class="info">
+			<button ref="renoteTime" class="_button time" @click="showRenoteMenu()">
 				<i v-if="isMyRenote" class="fas fa-ellipsis-h dropdownIcon"></i>
 				<MkTime :time="note.createdAt"/>
 			</button>
-			<span v-if="note.visibility !== 'public'" class="renote-info-visibility">
+			<span v-if="note.visibility !== 'public'" class="visibility">
 				<i v-if="note.visibility === 'home'" class="fas fa-home"></i>
 				<i v-else-if="note.visibility === 'followers'" class="fas fa-unlock"></i>
 				<i v-else-if="note.visibility === 'specified'" class="fas fa-envelope"></i>
 			</span>
-			<span v-if="note.localOnly" class="renote-info-localOnly"><i class="fas fa-biohazard"></i></span>
+			<span v-if="note.localOnly" class="localOnly"><i class="fas fa-biohazard"></i></span>
 		</div>
 	</div>
 	<article class="article" @contextmenu.stop="onContextmenu">
-		<MkAvatar class="article-avatar" :user="appearNote.user"/>
-		<div class="article-main">
+		<MkAvatar class="avatar" :user="appearNote.user"/>
+		<div class="main">
 			<XNoteHeader class="header" :note="appearNote" :mini="true"/>
 			<MkInstanceTicker v-if="showTicker" class="ticker" :instance="appearNote.user.instance"/>
-			<div class="article-main-body">
-				<p v-if="appearNote.cw != null" class="article-main-body-cw">
-					<Mfm v-if="appearNote.cw != ''" class="article-main-body-cw-text" :text="appearNote.cw" :author="appearNote.user" :i="$i" :custom-emojis="appearNote.emojis"/>
+			<div class="body">
+				<p v-if="appearNote.cw != null" class="cw">
+					<Mfm v-if="appearNote.cw != ''" class="text" :text="appearNote.cw" :author="appearNote.user" :i="$i" :custom-emojis="appearNote.emojis"/>
 					<XCwButton v-model="showContent" :note="appearNote"/>
 				</p>
-				<div v-show="appearNote.cw == null || showContent" class="main-content" :class="{ collapsed }">
-					<div class="main-content-text">
+				<div v-show="appearNote.cw == null || showContent" class="content" :class="{ collapsed }">
+					<div class="text">
 						<span v-if="appearNote.isHidden" style="opacity: 0.5">({{ i18n.ts.private }})</span>
-						<MkA v-if="appearNote.replyId" class="main-content-text-reply" :to="`/notes/${appearNote.replyId}`"><i class="fas fa-reply"></i></MkA>
+						<MkA v-if="appearNote.replyId" class="reply" :to="`/notes/${appearNote.replyId}`"><i class="fas fa-reply"></i></MkA>
 						<Mfm v-if="appearNote.text" :text="appearNote.text" :author="appearNote.user" :i="$i" :custom-emojis="appearNote.emojis"/>
-						<a v-if="appearNote.renote != null" class="main-content-text-rp">RN:</a>
-						<div v-if="translating || translation" class="main-content-text-translation">
+						<a v-if="appearNote.renote != null" class="rp">RN:</a>
+						<div v-if="translating || translation" class="translation">
 							<MkLoading v-if="translating" mini/>
 							<div v-else class="translated">
 								<b>{{ $t('translatedFrom', { x: translation.sourceLang }) }}: </b>
@@ -60,33 +60,33 @@
 							</div>
 						</div>
 					</div>
-					<div v-if="appearNote.files.length > 0" class="main-content-files">
+					<div v-if="appearNote.files.length > 0" class="files">
 						<XMediaList :media-list="appearNote.files"/>
 					</div>
-					<XPoll v-if="appearNote.poll" ref="pollViewer" :note="appearNote" class="main-content-poll"/>
-					<MkUrlPreview v-for="url in urls" :key="url" :url="url" :compact="true" :detail="false" class="main-content-url-preview"/>
-					<div v-if="appearNote.renote" class="main-content-renote"><XNoteSimple :note="appearNote.renote"/></div>
-					<button v-if="collapsed" class="main-content-fade _button" @click="collapsed = false">
-						<span class="main-content-show-more">{{ i18n.ts.showMore }}</span>
+					<XPoll v-if="appearNote.poll" ref="pollViewer" :note="appearNote" class="poll"/>
+					<MkUrlPreview v-for="url in urls" :key="url" :url="url" :compact="true" :detail="false" class="url-preview"/>
+					<div v-if="appearNote.renote" class="renote"><XNoteSimple :note="appearNote.renote"/></div>
+					<button v-if="collapsed" class="fade _button" @click="collapsed = false">
+						<span>{{ i18n.ts.showMore }}</span>
 					</button>
 				</div>
-				<MkA v-if="appearNote.channel && !inChannel" class="article-main-body-channel" :to="`/channels/${appearNote.channel.id}`"><i class="fas fa-satellite-dish"></i> {{ appearNote.channel.name }}</MkA>
+				<MkA v-if="appearNote.channel && !inChannel" class="channel" :to="`/channels/${appearNote.channel.id}`"><i class="fas fa-satellite-dish"></i> {{ appearNote.channel.name }}</MkA>
 			</div>
-			<footer class="article-main-footer">
+			<footer class="footer">
 				<XReactionsViewer ref="reactionsViewer" :note="appearNote"/>
-				<button class="article-main-footer-button _button" @click="reply()">
+				<button class="button _button" @click="reply()">
 					<template v-if="appearNote.reply"><i class="fas fa-reply-all"></i></template>
 					<template v-else><i class="fas fa-reply"></i></template>
-					<p v-if="appearNote.repliesCount > 0" class="article-main-footer-button-count">{{ appearNote.repliesCount }}</p>
+					<p v-if="appearNote.repliesCount > 0" class="count">{{ appearNote.repliesCount }}</p>
 				</button>
-				<XRenoteButton ref="renoteButton" class="article-main-footer-button" :note="appearNote" :count="appearNote.renoteCount"/>
-				<button v-if="appearNote.myReaction == null" ref="reactButton" class="article-main-footer-button _button" @click="react()">
+				<XRenoteButton ref="renoteButton" class="button" :note="appearNote" :count="appearNote.renoteCount"/>
+				<button v-if="appearNote.myReaction == null" ref="reactButton" class="button _button" @click="react()">
 					<i class="fas fa-plus"></i>
 				</button>
-				<button v-if="appearNote.myReaction != null" ref="reactButton" class="article-main-footer-button _button reacted" @click="undoReact(appearNote)">
+				<button v-if="appearNote.myReaction != null" ref="reactButton" class="button _button reacted" @click="undoReact(appearNote)">
 					<i class="fas fa-minus"></i>
 				</button>
-				<button ref="menuButton" class="article-main-footer-button _button" @click="menu()">
+				<button ref="menuButton" class="button _button" @click="menu()">
 					<i class="fas fa-ellipsis-h"></i>
 				</button>
 			</footer>
@@ -328,39 +328,275 @@ function readPromo() {
 		}
 	}
 
-	&:hover .article-main-footer-button {
+	&:hover > .article > .main > .footer > .button {
 		opacity: 1;
+	}
+
+	> .info {
+		display: flex;
+		align-items: center;
+		padding: 16px 32px 8px 32px;
+		line-height: 24px;
+		font-size: 90%;
+		white-space: pre;
+		color: #d28a3f;
+
+		> i {
+			margin-right: 4px;
+		}
+
+		> .hide {
+			margin-left: auto;
+			color: inherit;
+		}
+	}
+
+	> .info + .article {
+		padding-top: 8px;
+	}
+
+	> .reply-to {
+		opacity: 0.7;
+		padding-bottom: 0;
+	}
+
+	> .renote {
+		display: flex;
+		align-items: center;
+		padding: 16px 32px 8px 32px;
+		line-height: 28px;
+		white-space: pre;
+		color: var(--renote);
+
+		> .avatar {
+			flex-shrink: 0;
+			display: inline-block;
+			width: 28px;
+			height: 28px;
+			margin: 0 8px 0 0;
+			border-radius: 6px;
+		}
+
+		> i {
+			margin-right: 4px;
+		}
+
+		> span {
+			overflow: hidden;
+			flex-shrink: 1;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+
+			> .name {
+				font-weight: bold;
+			}
+		}
+
+		> .info {
+			margin-left: auto;
+			font-size: 0.9em;
+
+			> .time {
+				flex-shrink: 0;
+				color: inherit;
+
+				> .dropdownIcon {
+					margin-right: 4px;
+				}
+			}
+
+			> .visibility {
+				margin-left: 8px;
+			}
+
+			> .localOnly {
+				margin-left: 8px;
+			}
+		}
+	}
+
+	> .renote + .article {
+		padding-top: 8px;
+	}
+
+	> .article {
+		display: flex;
+		padding: 28px 32px 18px;
+
+		> .avatar {
+			flex-shrink: 0;
+			display: block;
+			margin: 0 14px 8px 0;
+			width: 58px;
+			height: 58px;
+			position: sticky;
+			top: calc(22px + var(--stickyTop, 0px));
+			left: 0;
+		}
+
+		> .main {
+			flex: 1;
+			min-width: 0;
+
+			> .body {
+				> .cw {
+					cursor: default;
+					display: block;
+					margin: 0;
+					padding: 0;
+					overflow-wrap: break-word;
+
+					> .text {
+						margin-right: 8px;
+					}
+				}
+
+				> .content {
+					&.collapsed {
+						position: relative;
+						max-height: 9em;
+						overflow: hidden;
+
+						> .fade {
+							display: block;
+							position: absolute;
+							bottom: 0;
+							left: 0;
+							width: 100%;
+							height: 64px;
+							background: linear-gradient(0deg, var(--panel), var(--X15));
+
+							> span {
+								display: inline-block;
+								background: var(--panel);
+								padding: 6px 10px;
+								font-size: 0.8em;
+								border-radius: 999px;
+								box-shadow: 0 2px 6px rgb(0 0 0 / 20%);
+							}
+
+							&:hover {
+								> span {
+									background: var(--panelHighlight);
+								}
+							}
+						}
+					}
+
+					> .text {
+						overflow-wrap: break-word;
+
+						> .reply {
+							color: var(--accent);
+							margin-right: 0.5em;
+						}
+
+						> .rp {
+							margin-left: 4px;
+							font-style: oblique;
+							color: var(--renote);
+						}
+
+						> .translation {
+							border: solid 0.5px var(--divider);
+							border-radius: var(--radius);
+							padding: 12px;
+							margin-top: 8px;
+						}
+					}
+
+					> .url-preview {
+						margin-top: 8px;
+					}
+
+					> .poll {
+						font-size: 80%;
+					}
+
+					> .renote {
+						padding: 8px 0;
+
+						> * {
+							padding: 16px;
+							border: dashed 1px var(--renote);
+							border-radius: 8px;
+						}
+					}
+				}
+
+				> .channel {
+					opacity: 0.7;
+					font-size: 80%;
+				}
+			}
+
+			> .footer {
+				> .button {
+					margin: 0;
+					padding: 8px;
+					opacity: 0.7;
+
+					&:not(:last-child) {
+						margin-right: 28px;
+					}
+
+					&:hover {
+						color: var(--fgHighlighted);
+					}
+
+					> .count {
+						display: inline;
+						margin: 0 0 0 8px;
+						opacity: 0.7;
+					}
+
+					&.reacted {
+						color: var(--accent);
+					}
+				}
+			}
+		}
+	}
+
+	> .reply {
+		border-top: solid 0.5px var(--divider);
 	}
 
 	&.max-width_500px {
 		font-size: 0.9em;
 	}
-	
+
 	&.max-width_450px {
-		.renote {
+		> .renote {
 			padding: 8px 16px 0 16px;
 		}
 
-		.info {
+		> .info {
 			padding: 8px 16px 0 16px;
 		}
 
-		.article {
+		> .article {
 			padding: 14px 16px 9px;
-		}
 
-		.article-avatar {
-			margin: 0 10px 8px 0 !important;
-			width: 50px !important;
-			height: 50px !important;
-			top: calc(14px + var(--stickyTop, 0px)) !important;
+			> .avatar {
+				margin: 0 10px 8px 0;
+				width: 50px;
+				height: 50px;
+				top: calc(14px + var(--stickyTop, 0px));
+			}
 		}
 	}
 
 	&.max-width_350px {
-		.article-main-footer-button {
-			&:not(:last-child) {
-				margin-right: 18px;
+		> .article {
+			> .main {
+				> .footer {
+					> .button {
+						&:not(:last-child) {
+							margin-right: 18px;
+						}
+					}
+				}
 			}
 		}
 	}
@@ -368,246 +604,23 @@ function readPromo() {
 	&.max-width_300px {
 		font-size: 0.825em;
 
-		.article-avatar {
-			width: 44px !important;
-			height: 44px !important;
-		}
-
-		.article-main-footer-button {
-			&:not(:last-child) {
-				margin-right: 12px;
-			}
-		}
-	}
-
-}
-
-.reply-to {
-	opacity: 0.7;
-	padding-bottom: 0;
-}
-
-.root-info {
-	display: flex;
-	align-items: center;
-	padding: 16px 32px 8px 32px;
-	line-height: 24px;
-	font-size: 90%;
-	white-space: pre;
-	color: #d28a3f;
-}
-
-.root-info-i {
-	margin-right: 4px;
-}
-
-.root-info-hide {
-	margin-left: auto;
-	color: inherit;
-}
-
-.root-info + .article {
-	padding-top: 8px;
-}
-
-.renote {
-	display: flex;
-	align-items: center;
-	padding: 16px 32px 8px 32px;
-	line-height: 28px;
-	white-space: pre;
-	color: var(--renote);
-}
-
-.renote-avatar {
-	flex-shrink: 0;
-	display: inline-block;
-	width: 28px;
-	height: 28px;
-	margin: 0 8px 0 0;
-	border-radius: 6px;
-}
-
-.renote-fa-retweet {
-	margin-right: 4px;
-}
-
-.renote-renotedby {
-	overflow: hidden;
-	flex-shrink: 1;
-	text-overflow: ellipsis;
-	white-space: nowrap;
-}
-
-.renote-renotedby-name {
-	font-weight: bold;
-}
-
-.renote-info {
-	margin-left: auto;
-	font-size: 0.9em;
-}
-
-.renote-info-time {
-	flex-shrink: 0;
-	color: inherit;
-}
-
-.dropdownIcon {
-	margin-right: 4px;
-}
-
-.renote-info-visibility {
-	margin-left: 8px;
-}
-
-.renote-info-localOnly {
-	margin-left: 8px;
-}
-
-.renote + .article {
-	padding-top: 8px;
-}
-
-.article {
-	display: flex;
-	padding: 28px 32px 18px;
-}
-
-.article-avatar {
-	flex-shrink: 0 !important;
-	display: block !important;
-	margin: 0 14px 8px 0 !important;
-	width: 58px !important;
-	height: 58px !important;
-	position: sticky !important;
-	top: calc(22px + var(--stickyTop, 0px)) !important;
-	left: 0 !important;
-}
-
-
-.article-main {
-	flex: 1;
-	min-width: 0;
-}
-
-.article-main-body {
-}
-
-.article-main-body-cw {
-	cursor: default;
-	display: block;
-	margin: 0;
-	padding: 0;
-	overflow-wrap: break-word;
-}
-
-.article-main-body-cw-text {
-	margin-right: 8px;
-}
-
-.article-main-body-channel {
-	opacity: 0.7;
-	font-size: 80%;
-}
-
-.main-content {
-	&.collapsed {
-		position: relative;
-		max-height: 9em;
-		overflow: hidden;
-
-		.main-content-fade {
-			display: block;
-			position: absolute;
-			bottom: 0;
-			left: 0;
-			width: 100%;
-			height: 64px;
-			background: linear-gradient(0deg, var(--panel), var(--X15));
-
-			> .main-content-show-more {
-				display: inline-block;
-				background: var(--panel);
-				padding: 6px 10px;
-				font-size: 0.8em;
-				border-radius: 999px;
-				box-shadow: 0 2px 6px rgb(0 0 0 / 20%);
+		> .article {
+			> .avatar {
+				width: 44px;
+				height: 44px;
 			}
 
-			&:hover {
-				> .main-content-show-more {
-					background: var(--panelHighlight);
+			> .main {
+				> .footer {
+					> .button {
+						&:not(:last-child) {
+							margin-right: 12px;
+						}
+					}
 				}
 			}
 		}
 	}
-}
-
-.main-content-text {
-	overflow-wrap: break-word;
-}
-
-.main-content-text-reply {
-	color: var(--accent);
-	margin-right: 0.5em;
-}
-
-.main-content-text-rp {
-	margin-left: 4px;
-	font-style: oblique;
-	color: var(--renote);
-}
-
-.main-content-text-translation {
-	border: solid 0.5px var(--divider);
-	border-radius: var(--radius);
-	padding: 12px;
-	margin-top: 8px;
-}
-
-.main-content-poll {
-	font-size: 80%;
-}
-
-.main-content-url-preview {
-	margin-top: 8px;
-}
-
-.main-content-renote {
-	padding: 8px 0;
-	> * {
-		padding: 16px;
-		border: dashed 1px var(--renote);
-		border-radius: 8px;
-	}
-}
-
-.article-main-footer {
-}
-
-.article-main-footer-button {
-	margin: 0;
-	padding: 8px;
-	opacity: 0.7;
-
-	&:not(:last-child) {
-		margin-right: 28px;
-	}
-
-	&:hover {
-		color: var(--fgHighlighted);
-	}
-
-	&.reacted {
-		color: var(--accent);
-	}
-}
-
-.article-main-footer-button-count {
-	display: inline;
-	margin: 0 0 0 8px;
-	opacity: 0.7;
 }
 
 .muted {
