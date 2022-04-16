@@ -55,7 +55,7 @@
 @font-face{font-family:SourceHanSans-w;font-weight:700;font-display:fallback;src:url("https://cdn.jsdelivr.net/gh/tamaina/The-Japanese-Web-Fonts@v7.2.0/dist/SourceHanSans/SourceHanSans-Bold.unicodeHikanji.woff2") format("woff2");unicode-range:u+3004,u+301a-301b,u+301e,u+3021-302d,u+3030,u+3036-303a,u+32c0-32cb,u+3358-3371,u+33e0-33fe}
 @font-face{font-family:SourceHanSans-w;font-weight:700;font-display:swap;src:url("https://cdn.jsdelivr.net/gh/tamaina/The-Japanese-Web-Fonts@v7.2.0/dist/SourceHanSans/SourceHanSans-Bold.zenkakuLatain.woff2") format("woff2");unicode-range:u+3000,u+ff01-ff5e}
 
-html, body {
+html {
 	font-family: GenEiUniverSans-w, sans-serif !important;
 	background-color: var(--bg);
 	color: var(--fg);
