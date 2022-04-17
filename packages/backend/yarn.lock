@@ -777,6 +777,11 @@
   dependencies:
     htmlparser2 "^6.0.0"
 
+"@types/semver@7.3.9":
+  version "7.3.9"
+  resolved "https://registry.yarnpkg.com/@types/semver/-/semver-7.3.9.tgz#152c6c20a7688c30b967ec1841d31ace569863fc"
+  integrity sha512-L/TMpyURfBkf+o/526Zb6kd/tchUP3iBDEPjqjb+U2MAJhVRxxrmr2fwpe08E7QsV7YLcpq0tUaQ9O9x97ZIxQ==
+
 "@types/serve-static@*":
   version "1.13.3"
   resolved "https://registry.yarnpkg.com/@types/serve-static/-/serve-static-1.13.3.tgz#eb7e1c41c4468272557e897e9171ded5e2ded9d1"
@@ -1585,11 +1590,6 @@ cacheable-request@^7.0.2:
     lowercase-keys "^2.0.0"
     normalize-url "^6.0.1"
     responselike "^2.0.0"
-
-cafy@15.2.1:
-  version "15.2.1"
-  resolved "https://registry.yarnpkg.com/cafy/-/cafy-15.2.1.tgz#5a55eaeb721c604c7dca652f3d555c392e5f995a"
-  integrity sha512-g2zOmFb63p6XcZ/zeMWKYP8YKQYNWnhJmi6K71Ql4EAFTAay31xF0PBPtdBCCfQ0fiETgWTMxKtySAVI/Od6aQ==
 
 call-bind@^1.0.0, call-bind@^1.0.2:
   version "1.0.2"
@@ -7297,10 +7297,10 @@ ws@^8.2.3:
   resolved "https://registry.yarnpkg.com/ws/-/ws-8.4.2.tgz#18e749868d8439f2268368829042894b6907aa0b"
   integrity sha512-Kbk4Nxyq7/ZWqr/tarI9yIt/+iNNFOjBXEWgTb4ydaNHBNGgvf2QHbS9fdfsndfjFlFwEd4Al+mw83YkaD10ZA==
 
-xev@2.0.1:
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/xev/-/xev-2.0.1.tgz#24484173a22115bc8a990ef5d4d5129695b827a7"
-  integrity sha512-icDf9M67bDge0F2qf02WKZq+s7mMO/SbPv67ZQPym6JThLEOdlWWLdB7VTVgRJp3ekgaiVItCAyH6aoKCPvfIA==
+xev@3.0.2:
+  version "3.0.2"
+  resolved "https://registry.yarnpkg.com/xev/-/xev-3.0.2.tgz#3f4080bd8bed0d3479c674050e3696da98d22a4d"
+  integrity sha512-8kxuH95iMXzHZj+fwqfA4UrPcYOy6bGIgfWzo9Ji23JoEc30ge/Z++Ubkiuy8c0+M64nXmmxrmJ7C8wnuBhluw==
 
 xml-js@^1.6.11:
   version "1.6.11"
