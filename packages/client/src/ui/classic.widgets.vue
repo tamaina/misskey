@@ -31,10 +31,6 @@ export default defineComponent({
 		};
 	},
 
-	mounted() {
-		this.$emit('mounted', this.$el);
-	},
-	
 	computed: {
 		filtered() {
 			if (this.place == null) return this.$store.reactiveState.widgets.value;
@@ -44,7 +40,11 @@ export default defineComponent({
 			}
 			return this.$store.reactiveState.widgets.value.filter(w => w.place === this.place);
 		},
-	}
+	},
+
+	mounted() {
+		this.$emit('mounted', this.$el);
+	},
 
 	methods: {
 		addWidget(widget) {
