@@ -4,7 +4,7 @@ import { api } from './os';
 import { get, set } from './scripts/idb-proxy';
 import { defaultStore } from './store';
 import { stream } from './stream';
-import * as deepcopy from 'deepcopy';
+import deepcopy from 'deepcopy';
 // SafariがBroadcastChannel未実装なのでライブラリを使う
 import { BroadcastChannel } from 'broadcast-channel';
 
