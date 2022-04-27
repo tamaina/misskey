@@ -13,9 +13,9 @@ if (localStorage.getItem('accounts') != null) {
 }
 //#endregion
 
-import { computed, createApp, watch, markRaw, version as vueVersion } from 'vue';
+import { computed, createApp, watch, markRaw, version as vueVersion, defineAsyncComponent } from 'vue';
 import compareVersions from 'compare-versions';
-import * as JSON5 from 'json5';
+import JSON5 from 'json5';
 
 import widgets from '@/widgets';
 import directives from '@/directives';
@@ -171,14 +171,14 @@ fetchInstanceMetaPromise.then(() => {
 	initializeSw();
 });
 
-const app = createApp(await (
-	window.location.search === '?zen' ? import('@/ui/zen.vue') :
-	!$i                               ? import('@/ui/visitor.vue') :
-	ui === 'deck'                     ? import('@/ui/deck.vue') :
-	ui === 'desktop'                  ? import('@/ui/desktop.vue') :
-	ui === 'classic'                  ? import('@/ui/classic.vue') :
-	import('@/ui/universal.vue')
-).then(x => x.default));
+const app = createApp(
+	window.location.search === '?zen' ? defineAsyncComponent(() => import('@/ui/zen.vue')) :
+	!$i                               ? defineAsyncComponent(() => import('@/ui/visitor.vue')) :
+	ui === 'deck'                     ? defineAsyncComponent(() => import('@/ui/deck.vue')) :
+	ui === 'desktop'                  ? defineAsyncComponent(() => import('@/ui/desktop.vue')) :
+	ui === 'classic'                  ? defineAsyncComponent(() => import('@/ui/classic.vue')) :
+	defineAsyncComponent(() => import('@/ui/universal.vue'))
+);
 
 if (_DEV_) {
 	app.config.performance = true;
@@ -236,7 +236,7 @@ if (lastVersion !== version) {
 		if (lastVersion != null && compareVersions(version, lastVersion) === 1) {
 			// ログインしてる場合だけ
 			if ($i) {
-				popup(import('@/components/updated.vue'), {}, {}, 'closed');
+				popup(defineAsyncComponent(() => import('@/components/updated.vue')), {}, {}, 'closed');
 			}
 		}
 	} catch (e) {
