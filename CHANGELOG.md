@@ -17,14 +17,9 @@ You should also include the user name that made the change.
 
 ### Improvements
 - Client: Preferences Registry
+
 ### NOTE
 - From this version, Node 18.0.0 or later is required.
-
-### Improvements
-- 
-
-### Bugfixes
-- 
 
 ## 12.110.1 (2022/04/23)
 
