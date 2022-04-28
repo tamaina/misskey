@@ -13,7 +13,6 @@
 
 // ブロックの中に入れないと、定義した変数がブラウザのグローバルスコープに登録されてしまい邪魔なので
 (async () => {
-	console.log('init!!')
 	window.onerror = (e) => {
 		renderError('SOMETHING_HAPPENED', e.toString());
 	};
@@ -59,12 +58,14 @@
 		? `?salt=${localStorage.getItem('salt')}`
 		: '';
 
-	import(`/assets/${CLIENT_ENTRY}${salt}`)
-		.then(({ default: startApp }) => startApp())
-		.catch(async () => {
-			await checkUpdate();
-			renderError('APP_FETCH_FAILED');
-		});
+	const script = document.createElement('script');
+	script.setAttribute('src', `/assets/${CLIENT_ENTRY}${salt}`);
+	script.setAttribute('type', 'module');
+	script.addEventListener('error', async () => {
+		await checkUpdate();
+		renderError('APP_FETCH_FAILED');
+	});
+	document.head.appendChild(script);
 	//#endregion
 
 	//#region Theme

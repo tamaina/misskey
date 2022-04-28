@@ -41,8 +41,6 @@ import { getUrlWithoutLoginId } from '@/scripts/login-id';
 import { getAccountFromId } from '@/scripts/get-account-from-id';
 import { deckStore } from './ui/deck/deck-store';
 
-export default async function() {
-
 console.info(`Misskey v${version}`);
 
 await defaultStore.ready;
@@ -431,6 +429,4 @@ if ($i) {
 	main.on('myTokenRegenerated', () => {
 		signout();
 	});
-}
-
 }
