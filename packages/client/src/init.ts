@@ -206,8 +206,18 @@ if (splash) splash.addEventListener('transitionend', () => {
 	splash.remove();
 });
 
-const rootEl = document.createElement('div');
-document.body.appendChild(rootEl);
+const rootEl = (() => {
+	const MISSKEY_MOUNT_DIV_ID = 'misskey_app';
+
+	const currentEl = document.getElementById(MISSKEY_MOUNT_DIV_ID);
+
+	if (currentEl) return currentEl;
+
+	const rootEl = document.createElement('div');
+	rootEl.id = MISSKEY_MOUNT_DIV_ID;
+	document.body.appendChild(rootEl);
+	return rootEl;
+})();
 
 if (ui === 'deck') await deckStore.ready;
 
