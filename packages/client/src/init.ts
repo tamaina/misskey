@@ -206,6 +206,8 @@ if (splash) splash.addEventListener('transitionend', () => {
 	splash.remove();
 });
 
+if (ui === 'deck') await deckStore.ready;
+
 const rootEl = (() => {
 	const MISSKEY_MOUNT_DIV_ID = 'misskey_app';
 
@@ -218,8 +220,6 @@ const rootEl = (() => {
 	document.body.appendChild(rootEl);
 	return rootEl;
 })();
-
-if (ui === 'deck') await deckStore.ready;
 
 app.mount(rootEl);
 
