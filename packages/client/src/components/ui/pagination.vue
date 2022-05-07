@@ -130,6 +130,8 @@ watch([$$(backed), $$(contentEl)], () => {
 	}
 });
 
+const isTop = () => isBackTop.value || (props.pagination.reversed ? isBottomVisible : isTopVisible)(contentEl, ASOBI);
+
 if (props.pagination.params && isRef(props.pagination.params)) {
 	watch(props.pagination.params, init, { deep: true });
 }
@@ -275,9 +277,7 @@ const prepend = (item: MisskeyEntity): void => {
 		return;
 	}
 
-	const isTop = isBackTop.value || (props.pagination.reversed ? isBottomVisible : isTopVisible)(contentEl, ASOBI);
-
-	if (isTop) unshiftItems([item]);
+	if (isTop() && document.visibilityState === 'visible') unshiftItems([item]);
 	else prependQueue(item);
 };
 
@@ -324,7 +324,15 @@ function toBottom() {
 	scrollToBottom(contentEl);
 }
 
+function onVisibilityChange() {
+	if (document.visibilityState === 'visible' && isTop()) {
+		executeQueue();
+	}
+}
+
 onMounted(() => {
+	document.addEventListener('visibilitychange', onVisibilityChange);
+
 	inited.then(() => {
 		if (props.pagination.reversed) {
 			nextTick(() => {
@@ -341,6 +349,7 @@ onMounted(() => {
 });
 
 onBeforeUnmount(() => {
+	document.removeEventListener('visibilitychange', onVisibilityChange);
 	scrollObserver.disconnect();
 });
 
