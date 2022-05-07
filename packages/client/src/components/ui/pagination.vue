@@ -74,7 +74,7 @@ const props = withDefaults(defineProps<{
 });
 
 const emit = defineEmits<{
-	(e: 'queue', count: number): void;
+	(ev: 'queue', count: number): void;
 }>();
 
 let rootEl = $ref<HTMLElement>();
@@ -164,7 +164,7 @@ async function init(): Promise<void> {
 		offset.value = res.length;
 		error.value = false;
 		fetching.value = false;
-	}, e => {
+	}, ev => {
 		error.value = true;
 		fetching.value = false;
 	});
@@ -236,7 +236,7 @@ const fetchMore = async (): Promise<void> => {
 			}
 		}
 		offset.value += res.length;
-	}, e => {
+	}, ev => {
 		moreFetching.value = false;
 	});
 };
@@ -264,7 +264,7 @@ const fetchMoreAhead = async (): Promise<void> => {
 		}
 		offset.value += res.length;
 		moreFetching.value = false;
-	}, e => {
+	}, ev => {
 		moreFetching.value = false;
 	});
 };
