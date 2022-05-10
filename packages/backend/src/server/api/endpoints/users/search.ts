@@ -60,53 +60,34 @@ export default define(meta, paramDef, async (ps, me) => {
 			.skip(ps.offset)
 			.getMany();
 	} else {
-		const nameQuery = Users.createQueryBuilder('user')
-			.where('user.name ILIKE :query', { query: '%' + ps.query + '%' })
+		const profQuery = UserProfiles.createQueryBuilder('prof')
+			.select('prof.userId')
+			.where('prof.description &@~ :query');
+
+		const query = Users.createQueryBuilder('user')
+			.where(new Brackets(qb => { qb
+				.where('user.name &@~ :query')
+				.orWhere(`user.id IN (${ profQuery.getQuery() })`);
+			}))
 			.andWhere(new Brackets(qb => { qb
 				.where('user.updatedAt IS NULL')
 				.orWhere('user.updatedAt > :activeThreshold', { activeThreshold: activeThreshold });
 			}))
-			.andWhere('user.isSuspended = FALSE');
+			.andWhere('user.isSuspended = FALSE')
+			.setParameters({ query: ps.query });
 
-		if (ps.origin === 'local') {
-			nameQuery.andWhere('user.host IS NULL');
-		} else if (ps.origin === 'remote') {
-			nameQuery.andWhere('user.host IS NOT NULL');
-		}
+			if (ps.origin === 'local') {
+				query.andWhere('user.userHost IS NULL');
+			} else if (ps.origin === 'remote') {
+				query.andWhere('user.userHost IS NOT NULL');
+			}
 
-		users = await nameQuery
+		users = users.concat(await query
 			.orderBy('user.updatedAt', 'DESC', 'NULLS LAST')
 			.take(ps.limit)
 			.skip(ps.offset)
-			.getMany();
-
-		if (users.length < ps.limit) {
-			const profQuery = UserProfiles.createQueryBuilder('prof')
-				.select('prof.userId')
-				.where('prof.description ILIKE :query', { query: '%' + ps.query + '%' });
-
-			if (ps.origin === 'local') {
-				profQuery.andWhere('prof.userHost IS NULL');
-			} else if (ps.origin === 'remote') {
-				profQuery.andWhere('prof.userHost IS NOT NULL');
-			}
-
-			const query = Users.createQueryBuilder('user')
-				.where(`user.id IN (${ profQuery.getQuery() })`)
-				.andWhere(new Brackets(qb => { qb
-					.where('user.updatedAt IS NULL')
-					.orWhere('user.updatedAt > :activeThreshold', { activeThreshold: activeThreshold });
-				}))
-				.andWhere('user.isSuspended = FALSE')
-				.setParameters(profQuery.getParameters());
-
-			users = users.concat(await query
-				.orderBy('user.updatedAt', 'DESC', 'NULLS LAST')
-				.take(ps.limit)
-				.skip(ps.offset)
-				.getMany()
-			);
-		}
+			.getMany()
+		);
 	}
 
 	return await Users.packMany(users, me, { detail: ps.detail });

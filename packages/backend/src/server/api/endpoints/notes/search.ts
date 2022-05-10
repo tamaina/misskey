@@ -7,6 +7,7 @@ import { makePaginationQuery } from '../../common/make-pagination-query.js';
 import { generateVisibilityQuery } from '../../common/generate-visibility-query.js';
 import { generateMutedUserQuery } from '../../common/generate-muted-user-query.js';
 import { generateBlockedUserQuery } from '../../common/generate-block-query.js';
+import { ApiError } from '../../error.js';
 
 export const meta = {
 	tags: ['notes'],
@@ -24,6 +25,11 @@ export const meta = {
 	},
 
 	errors: {
+		noSuchNote: {
+			message: 'Query is empty.',
+			code: 'QUERY_IS_EMPTY',
+			id: 'd0410b51-f409-4667-8118-cfe999e453c3',
+		},
 	},
 } as const;
 
@@ -48,6 +54,8 @@ export const paramDef = {
 
 // eslint-disable-next-line import/no-default-export
 export default define(meta, paramDef, async (ps, me) => {
+	if (ps.query.trim().length === 0) throw new ApiError(meta.errors.noSuchNote);
+
 	if (es == null) {
 		const query = makePaginationQuery(Notes.createQueryBuilder('note'), ps.sinceId, ps.untilId);
 
@@ -58,7 +66,7 @@ export default define(meta, paramDef, async (ps, me) => {
 		}
 
 		query
-			.andWhere('note.text ILIKE :q', { q: `%${ps.query}%` })
+			.andWhere('note.text &@~ :q', { q: ps.query })
 			.innerJoinAndSelect('note.user', 'user')
 			.leftJoinAndSelect('user.avatar', 'avatar')
 			.leftJoinAndSelect('user.banner', 'banner')
