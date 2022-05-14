@@ -62,11 +62,11 @@ export default define(meta, paramDef, async (ps, me) => {
 	} else {
 		const nameQuery = Users.createQueryBuilder('user')
 			.where(new Brackets(qb => { 
-				qb.where('user.name &@~ :query', { query: ps.query });
+				qb.where('user.name &@~ :query', { query: '%' + ps.query + '%' });
 
 				// Also search username if it qualifies as username
 				if (Users.validateLocalUsername(ps.query)) {
-					qb.orWhere('user.usernameLower LIKE :username', { username: ps.query.toLowerCase() + '%' });
+					qb.orWhere('user.usernameLower LIKE :username', { username: '%' + ps.query.toLowerCase() + '%' });
 				}
 			}))
 			.andWhere(new Brackets(qb => { qb
