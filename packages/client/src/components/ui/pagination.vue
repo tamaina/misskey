@@ -306,6 +306,11 @@ const appendItem = (item: MisskeyEntity): void => {
 	items.value.push(item);
 };
 
+const removeItem = (finder: (item: MisskeyEntity) => boolean) => {
+	const i = items.value.findIndex(finder);
+	items.value.splice(i, 1);
+};
+
 const updateItem = (id: MisskeyEntity['id'], replacer: (old: MisskeyEntity) => MisskeyEntity): void => {
 	const i = items.value.findIndex(item => item.id === id);
 	items.value[i] = replacer(items.value[i]);
@@ -355,6 +360,7 @@ defineExpose({
 	fetchMoreAhead,
 	prepend,
 	append: appendItem,
+	removeItem,
 	updateItem,
 });
 </script>
