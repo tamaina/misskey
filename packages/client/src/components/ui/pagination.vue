@@ -357,7 +357,6 @@ defineExpose({
 	more,
 	inited,
 	reload,
-	fetchMoreAhead,
 	prepend,
 	append: appendItem,
 	removeItem,
