@@ -2,7 +2,6 @@
 ## 12.x.x (unreleased)
 
 ### Improvements
-- Client: Preferences Registry
 
 ### Bugfixes
 - 

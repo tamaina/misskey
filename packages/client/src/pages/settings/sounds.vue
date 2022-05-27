@@ -33,13 +33,13 @@ const masterVolume = computed(soundConfigStore.makeGetterSetter('sound_masterVol
 const volumeIcon = computed(() => masterVolume.value === 0 ? 'fas fa-volume-mute' : 'fas fa-volume-up');
 
 const sounds = ref({
-    note: soundConfigStore.state.sound_note,
-    noteMy: soundConfigStore.state.sound_noteMy,
-    notification: soundConfigStore.state.sound_notification,
-    chat: soundConfigStore.state.sound_chat,
-    chatBg: soundConfigStore.state.sound_chatBg,
-    antenna: soundConfigStore.state.sound_antenna,
-    channel: soundConfigStore.state.sound_channel,
+		note: soundConfigStore.reactiveState.sound_note,
+		noteMy: soundConfigStore.reactiveState.sound_noteMy,
+		notification: soundConfigStore.reactiveState.sound_notification,
+		chat: soundConfigStore.reactiveState.sound_chat,
+		chatBg: soundConfigStore.reactiveState.sound_chatBg,
+		antenna: soundConfigStore.reactiveState.sound_antenna,
+		channel: soundConfigStore.reactiveState.sound_channel,
 });
 
 const soundsTypes = [
@@ -105,13 +105,12 @@ async function edit(type) {
 	};
 
 	soundConfigStore.set(`sound_${type}` as keyof typeof soundConfigStore.def, v);
-	sounds.value[type] = v;
 }
 
 function reset() {
 	for (const sound of Object.keys(sounds.value)) {
-		const v = soundConfigStore.reset(`sound_${sound}` as keyof typeof soundConfigStore.def);
-		sounds.value[sound] = v;
+		const v = soundConfigStore.def['sound_' + sound].default;
+		soundConfigStore.reset(`sound_${sound}` as keyof typeof soundConfigStore.def);
 	}
 }
 

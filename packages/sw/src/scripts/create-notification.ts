@@ -51,7 +51,6 @@ async function composeNotification<K extends keyof pushNotificationDataMap>(data
 						body: getUserName(data.body.user),
 						icon: data.body.user.avatarUrl,
 						badge: iconUrl('user-plus'),
-						sound: await getSoundUrl('notification', data.userId),
 						data,
 						actions: userDetail.isFollowing ? [] : [
 							{
@@ -66,7 +65,6 @@ async function composeNotification<K extends keyof pushNotificationDataMap>(data
 						body: data.body.note.text || '',
 						icon: data.body.user.avatarUrl,
 						badge: iconUrl('at'),
-						sound: await getSoundUrl('notification', data.userId),
 						data,
 						actions: [
 							{
@@ -81,7 +79,6 @@ async function composeNotification<K extends keyof pushNotificationDataMap>(data
 						body: data.body.note.text || '',
 						icon: data.body.user.avatarUrl,
 						badge: iconUrl('reply'),
-						sound: await getSoundUrl('notification', data.userId),
 						data,
 						actions: [
 							{
@@ -96,7 +93,6 @@ async function composeNotification<K extends keyof pushNotificationDataMap>(data
 						body: data.body.note.text || '',
 						icon: data.body.user.avatarUrl,
 						badge: iconUrl('retweet'),
-						sound: await getSoundUrl('notification', data.userId),
 						data,
 						actions: [
 							{
@@ -111,7 +107,6 @@ async function composeNotification<K extends keyof pushNotificationDataMap>(data
 						body: data.body.note.text || '',
 						icon: data.body.user.avatarUrl,
 						badge: iconUrl('quote-right'),
-						sound: await getSoundUrl('notification', data.userId),
 						data,
 						actions: [
 							{
@@ -165,7 +160,6 @@ async function composeNotification<K extends keyof pushNotificationDataMap>(data
 						body: data.body.note.text || '',
 						icon: data.body.user.avatarUrl,
 						badge,
-						sound: await getSoundUrl('notification', data.userId),
 						data,
 						actions: [
 							{
@@ -180,7 +174,6 @@ async function composeNotification<K extends keyof pushNotificationDataMap>(data
 						body: data.body.note.text || '',
 						icon: data.body.user.avatarUrl,
 						badge: iconUrl('poll-h'),
-						sound: await getSoundUrl('notification', data.userId),
 						data,
 					} as any];
 
@@ -196,7 +189,6 @@ async function composeNotification<K extends keyof pushNotificationDataMap>(data
 						body: getUserName(data.body.user),
 						icon: data.body.user.avatarUrl,
 						badge: iconUrl('clock'),
-						sound: await getSoundUrl('notification', data.userId),
 						data,
 						actions: [
 							{
@@ -215,7 +207,6 @@ async function composeNotification<K extends keyof pushNotificationDataMap>(data
 						body: getUserName(data.body.user),
 						icon: data.body.user.avatarUrl,
 						badge: iconUrl('check'),
-						sound: await getSoundUrl('notification', data.userId),
 						data,
 					} as any];
 
@@ -223,7 +214,6 @@ async function composeNotification<K extends keyof pushNotificationDataMap>(data
 					return [t('_notification.youWereInvitedToGroup', { userName: getUserName(data.body.user) }), {
 						body: data.body.invitation.group.name,
 						badge: iconUrl('id-card-alt'),
-						sound: await getSoundUrl('notification', data.userId),
 						data,
 						actions: [
 							{
@@ -252,7 +242,6 @@ async function composeNotification<K extends keyof pushNotificationDataMap>(data
 				return [t('_notification.youGotMessagingMessageFromUser', { name: getUserName(data.body.user) }), {
 					icon: data.body.user.avatarUrl,
 					badge: iconUrl('comments'),
-					sound: await getSoundUrl('chatBg', data.userId),
 					tag: `messaging:user:${data.body.userId}`,
 					data,
 					renotify: true,
@@ -261,7 +250,6 @@ async function composeNotification<K extends keyof pushNotificationDataMap>(data
 			return [t('_notification.youGotMessagingMessageFromGroup', { name: data.body.group.name }), {
 				icon: data.body.user.avatarUrl,
 				badge: iconUrl('comments'),
-				sound: await getSoundUrl('chatBg', data.userId),
 				tag: `messaging:group:${data.body.groupId}`,
 				data,
 				renotify: true,
