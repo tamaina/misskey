@@ -164,7 +164,7 @@ async function init(): Promise<void> {
 		offset.value = res.length;
 		error.value = false;
 		fetching.value = false;
-	}, ev => {
+	}, err => {
 		error.value = true;
 		fetching.value = false;
 	});
@@ -236,7 +236,7 @@ const fetchMore = async (): Promise<void> => {
 			}
 		}
 		offset.value += res.length;
-	}, ev => {
+	}, err => {
 		moreFetching.value = false;
 	});
 };
@@ -264,7 +264,7 @@ const fetchMoreAhead = async (): Promise<void> => {
 		}
 		offset.value += res.length;
 		moreFetching.value = false;
-	}, ev => {
+	}, err => {
 		moreFetching.value = false;
 	});
 };

@@ -149,7 +149,7 @@ if ($i && $i.token) {
 		try {
 			document.body.innerHTML = '<div>Please wait...</div>';
 			await login(i);
-		} catch (e) {
+		} catch (err) {
 			// Render the error screen
 			// TODO: ちゃんとしたコンポーネントをレンダリングする(v10とかのトラブルシューティングゲーム付きのやつみたいな)
 			document.body.innerHTML = '<div id="err">Oops!</div>';
@@ -254,7 +254,7 @@ if (lastVersion !== version) {
 				popup(defineAsyncComponent(() => import('@/components/updated.vue')), {}, {}, 'closed');
 			}
 		}
-	} catch (e) {
+	} catch (err) {
 	}
 }
 
@@ -339,7 +339,7 @@ stream.on('_disconnected_', async () => {
 	}
 });
 
-stream.on('emojiAdded', data => {
+stream.on('emojiAdded', emojiData => {
 	// TODO
 	//store.commit('instance/set', );
 });
