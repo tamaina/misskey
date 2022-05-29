@@ -1136,7 +1136,6 @@ _sfx:
   channel: "チャンネル通知"
 
 _ago:
-  unknown: "謎"
   future: "未来"
   justNow: "たった今"
   secondsAgo: "{n}秒前"
