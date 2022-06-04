@@ -29,7 +29,7 @@ export type UriParseResult = {
 	uri: string;
 };
 
-export function parseUri(url: string) : UriParseResult {
+export function parseUri(value: string) : UriParseResult {
 	const uri = getApId(value);
 
 	// the host part of a URL is case insensitive, so use the 'i' flag.
