@@ -14,7 +14,7 @@ export const meta = {
 	requireCredential: true,
 
 	limit: {
-		duration: 600000,
+		duration: 60000,
 		max: 10,
 	},
 
