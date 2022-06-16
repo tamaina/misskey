@@ -51,6 +51,7 @@ You should also include the user name that made the change.
 - Perform port diagnosis at startup only when Listen fails @mei23
 - Rate limiting is now also usable for non-authenticated users. @Johann150 @mei23
   Admins should make sure the reverse proxy sets the `X-Forwarded-For` header to the original address.
+- Migrate to Yarn v3.2.0 @ThatOneCalculator
 
 ### Bugfixes
 - Server: keep file order of note attachement @Johann150
@@ -218,7 +219,7 @@ You should also include the user name that made the change.
 ## 12.104.0 (2022/02/09)
 
 ### Note
-ビルドする前に`npm run clean`を実行してください。
+ビルドする前に`yarn clean`を実行してください。
 
 このリリースはマイグレーションの規模が大きいため、インスタンスによってはマイグレーションに時間がかかる可能性があります。
 マイグレーションが終わらない場合は、チャートの情報はリセットされてしまいますが`__chart__`で始まるテーブルの**レコード**を全て削除(テーブル自体は消さないでください)してから再度試す方法もあります。
