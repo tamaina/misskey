@@ -6,6 +6,10 @@
 		"type": "git",
 		"url": "https://github.com/misskey-dev/misskey.git"
 	},
+	"resolutions": {
+		"chokidar": "^3.3.1",
+		"lodash": "^4.17.21"
+	},
 	"packageManager": "yarn@3.2.1",
 	"workspaces": [
 		"packages/client",
