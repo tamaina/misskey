@@ -1,10 +1,7 @@
 <template>
 <transition :name="$store.state.animation ? 'tooltip' : ''" appear @after-leave="emit('closed')">
 	<div v-show="showing" ref="el" class="buebdbiu _acrylic _shadow" :style="{ zIndex, maxWidth: maxWidth + 'px' }">
-		<slot>
-			<Mfm v-if="asMfm" :text="text"/>
-			<span v-else>{{ text }}</span>
-		</slot>
+		<slot>{{ text }}</slot>
 	</div>
 </transition>
 </template>
@@ -19,7 +16,6 @@ const props = withDefaults(defineProps<{
 	x?: number;
 	y?: number;
 	text?: string;
-	asMfm?: boolean;
 	maxWidth?: number;
 	direction?: 'top' | 'bottom' | 'right' | 'left';
 	innerMargin?: number;
@@ -174,6 +170,8 @@ const setPosition = () => {
 				return { left, top, transformOrigin: 'left center' };
 			}
 		}
+
+		return null as never;
 	};
 
 	const { left, top, transformOrigin } = calc();
