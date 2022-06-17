@@ -13,6 +13,8 @@ You should also include the user name that made the change.
 
 ### Improvements
 - Server: Add rate limit to i/notifications @tamaina
+- Client: Improve files page of control panel @syuilo
+- Add Badge Image to Push Notification #8012 @tamaina
 
 ### Bugfixes
 - Server: Fix GenerateVideoThumbnail failed @mei23
