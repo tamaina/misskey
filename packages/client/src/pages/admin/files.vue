@@ -93,9 +93,7 @@ function clear() {
 }
 
 function show(file) {
-	os.popup(defineAsyncComponent(() => import('./file-dialog.vue')), {
-		fileId: file.id
-	}, {}, 'closed');
+	os.pageWindow(`/admin-file/${file.id}`);
 }
 
 function find() {
