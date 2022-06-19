@@ -53,10 +53,10 @@
 import { computed, watch, onMounted, nextTick, onBeforeUnmount } from 'vue';
 import * as Misskey from 'misskey-js';
 import * as Acct from 'misskey-js/built/acct';
-import XList from '@/components/date-separated-list.vue';
-import MkPagination, { Paging } from '@/components/ui/pagination.vue';
 import XMessage from './messaging-room.message.vue';
 import XForm from './messaging-room.form.vue';
+import XList from '@/components/date-separated-list.vue';
+import MkPagination, { Paging } from '@/components/ui/pagination.vue';
 import { isBottomVisible, onScrollBottom, scrollToBottom } from '@/scripts/scroll';
 import * as os from '@/os';
 import { stream } from '@/stream';
@@ -82,7 +82,7 @@ let typers: Misskey.entities.User[] = $ref([]);
 let connection: Misskey.ChannelConnection<Misskey.Channels['messaging']> | null = $ref(null);
 let showIndicator = $ref(false);
 const {
-	animation
+	animation,
 } = defaultStore.reactiveState;
 
 let pagination: Paging | null = $ref(null);
@@ -130,7 +130,6 @@ async function fetch() {
 		});
 	}
 
-
 	connection.on('message', onMessage);
 	connection.on('read', onRead);
 	connection.on('deleted', onDeleted);
@@ -141,11 +140,9 @@ async function fetch() {
 	document.addEventListener('visibilitychange', onVisibilitychange);
 
 	nextTick(() => {
-		pagingComponent.inited.then(() => {
-			thisScrollToBottom();
-		});
+		thisScrollToBottom();
 		window.setTimeout(() => {
-			fetching = false
+			fetching = false;
 		}, 300);
 	});
 }
@@ -173,7 +170,7 @@ function onDrop(ev: DragEvent): void {
 	} else if (ev.dataTransfer.files.length > 1) {
 		os.alert({
 			type: 'error',
-			text: i18n.ts.onlyOneFileCanBeAttached
+			text: i18n.ts.onlyOneFileCanBeAttached,
 		});
 		return;
 	}
@@ -195,7 +192,7 @@ function onMessage(message) {
 	pagingComponent.prepend(message);
 	if (message.userId !== $i?.id && !document.hidden) {
 		connection?.send('read', {
-			id: message.id
+			id: message.id,
 		});
 	}
 
@@ -228,7 +225,7 @@ function onRead(x) {
 				const exist = pagingComponent.items.map(y => y.id).indexOf(id);
 				pagingComponent.items[exist] = {
 					...pagingComponent.items[exist],
-					reads: [...pagingComponent.items[exist].reads, x.userId]
+					reads: [...pagingComponent.items[exist].reads, x.userId],
 				};
 			}
 		}
@@ -243,7 +240,7 @@ function onDeleted(id) {
 }
 
 function thisScrollToBottom() {
-	scrollToBottom($$(rootEl).value, { behavior: "smooth" });
+	scrollToBottom($$(rootEl).value, { behavior: 'smooth' });
 }
 
 function onIndicatorClick() {
@@ -267,7 +264,7 @@ function onVisibilitychange() {
 	for (const message of pagingComponent.items) {
 		if (message.userId !== $i?.id && !message.isRead) {
 			connection?.send('read', {
-				id: message.id
+				id: message.id,
 			});
 		}
 	}
@@ -285,12 +282,12 @@ onBeforeUnmount(() => {
 
 defineExpose({
 	[symbols.PAGE_INFO]: computed(() => !fetching ? user ? {
-			userName: user,
-			avatar: user,
-		} : {
-			title: group?.name,
-			icon: 'fas fa-users',
-		} : null),
+		userName: user,
+		avatar: user,
+	} : {
+		title: group?.name,
+		icon: 'fas fa-users',
+	} : null),
 });
 </script>
 
@@ -326,7 +323,7 @@ defineExpose({
 		}
 
 		.messages {
-			padding-top: 8px;
+			padding: 8px 0;
 
 			> ::v-deep(*) {
 				margin-bottom: 16px;

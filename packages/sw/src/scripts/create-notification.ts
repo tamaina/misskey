@@ -11,7 +11,6 @@ import { I18n } from '@/scripts/i18n';
 import { getAccountFromId } from '@/scripts/get-account-from-id';
 import { char2fileName } from '@/scripts/twemoji-base';
 import * as url from '@/scripts/url';
-import { getSoundUrl } from '@/scripts/sounds';
 
 const iconUrl = (name: string) => `/static-assets/notification-badges/${name}.png`;
 
