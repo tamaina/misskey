@@ -64,10 +64,10 @@ import * as os from '@/os';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
 
-let q = $ref(null);
 let origin = $ref('local');
 let type = $ref(null);
 let searchHost = $ref('');
+let viewMode = $ref('grid');
 const pagination = {
 	endpoint: 'admin/drive/files' as const,
 	limit: 10,
@@ -93,16 +93,24 @@ function show(file) {
 	os.pageWindow(`/admin/file/${file.id}`);
 }
 
-function find() {
+async function find() {
+	const { canceled, result: q } = await os.inputText({
+		title: i18n.ts.fileIdOrUrl,
+		allowEmpty: false,
+	});
+	if (canceled) return;
+
 	os.api('admin/drive/show-file', q.startsWith('http://') || q.startsWith('https://') ? { url: q.trim() } : { fileId: q.trim() }).then(file => {
 		show(file);
 	}).catch(err => {
 		if (err.code === 'NO_SUCH_FILE') {
 			os.alert({
 				type: 'error',
-				text: i18n.ts.notFound
+				text: i18n.ts.notFound,
 			});
 		}
+	});
+}
 
 const headerActions = $computed(() => [{
 	text: i18n.ts.lookup,
@@ -127,47 +135,53 @@ definePageMetadata(computed(() => ({
 .xrmjdkdw {
 	margin: var(--margin);
 
-	> .lookup {
-		margin-bottom: 16px;
-	}
-
 	.urempief {
 		margin-top: var(--margin);
 
-		> .file {
-			display: flex;
-			width: 100%;
-			box-sizing: border-box;
-			text-align: left;
-			align-items: center;
+		&.list {
+			> .file {
+				display: flex;
+				width: 100%;
+				box-sizing: border-box;
+				text-align: left;
+				align-items: center;
 
-			&:hover {
-				color: var(--accent);
-			}
+				&:hover {
+					color: var(--accent);
+				}
 
-			> .thumbnail {
-				width: 128px;
-				height: 128px;
-			}
+				> .thumbnail {
+					width: 128px;
+					height: 128px;
+				}
 
-			> .body {
-				margin-left: 0.3em;
-				padding: 8px;
-				flex: 1;
+				> .body {
+					margin-left: 0.3em;
+					padding: 8px;
+					flex: 1;
 
-				@media (max-width: 500px) {
-					font-size: 14px;
+					@media (max-width: 500px) {
+						font-size: 14px;
+					}
 				}
 			}
 		}
-	}
-}
 
-.xrmjdkdw-lookup {
-	padding: 16px;
+		&.grid {
+			display: grid;
+			grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+			grid-gap: 12px;
+			margin: var(--margin) 0;
 
-	> .item {
-		margin-bottom: 16px;
+			> .file {
+				aspect-ratio: 1;
+			
+				> .thumbnail {
+					width: 100%;
+					height: 100%;
+				}
+			}
+		}
 	}
 }
 </style>
