@@ -3,8 +3,7 @@
 	<div v-if="queue > 0" class="new"><button class="_buttonPrimary" @click="top()">{{ $ts.newNoteRecived }}</button></div>
 	<div class="tl _block">
 		<XTimeline
-			ref="tlComponent"
-			:key="antennaId"
+			ref="tlEl" :key="antennaId"
 			class="tl"
 			src="antenna"
 			:antenna="antennaId"
