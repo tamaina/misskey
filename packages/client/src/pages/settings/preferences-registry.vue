@@ -7,19 +7,20 @@
 
 	<FormSection>
 		<template #label>{{ ts._preferencesRegistry.list }}</template>
-		<div
-			v-if="registries && Object.keys(registries).length > 0"
-			v-for="(registry, id) in registries"
-			:key="id"
-			class="_formBlock _panel"
-			:class="$style.registry"
-			@click="$event => menu($event, id)"
-			@contextmenu.prevent.stop="$event => menu($event, id)"
-		>
-			<div :class="$style.registryName">{{ registry.name }}</div>
-			<div :class="$style.registryTime">{{ t('_preferencesRegistry.createdAt', { date: (new Date(registry.createdAt)).toLocaleDateString(), time: (new Date(registry.createdAt)).toLocaleTimeString() }) }}</div>
-			<div :class="$style.registryTime" v-if="registry.updatedAt">{{ t('_preferencesRegistry.updatedAt', { date: (new Date(registry.updatedAt)).toLocaleDateString(), time: (new Date(registry.updatedAt)).toLocaleTimeString() }) }}</div>
-		</div>
+		<template v-if="registries && Object.keys(registries).length > 0">
+			<div
+				v-for="(registry, id) in registries"
+				:key="id"
+				class="_formBlock _panel"
+				:class="$style.registry"
+				@click="$event => menu($event, id)"
+				@contextmenu.prevent.stop="$event => menu($event, id)"
+			>
+				<div :class="$style.registryName">{{ registry.name }}</div>
+				<div :class="$style.registryTime">{{ t('_preferencesRegistry.createdAt', { date: (new Date(registry.createdAt)).toLocaleDateString(), time: (new Date(registry.createdAt)).toLocaleTimeString() }) }}</div>
+				<div v-if="registry.updatedAt" :class="$style.registryTime">{{ t('_preferencesRegistry.updatedAt', { date: (new Date(registry.updatedAt)).toLocaleDateString(), time: (new Date(registry.updatedAt)).toLocaleTimeString() }) }}</div>
+			</div>
+		</template>
 		<div v-else-if="registries">
 			<MkInfo>{{ ts._preferencesRegistry.noRegistries }}</MkInfo>
 		</div>
@@ -29,19 +30,19 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, onUnmounted, useCssModule } from 'vue';
+import { computed, onMounted, onUnmounted, useCssModule } from 'vue';
 import FormSection from '@/components/form/section.vue';
 import MkButton from '@/components/ui/button.vue';
 import MkInfo from '@/components/ui/info.vue';
 import * as os from '@/os';
 import { v4 as uuid } from 'uuid';
 import { ColdDeviceStorage, defaultStore } from '@/store';
-import * as symbols from '@/symbols';
 import { unisonReload } from '@/scripts/unison-reload';
 import { stream } from '@/stream';
 import { $i } from '@/account';
 import { i18n } from '@/i18n';
 import { version } from '@/config';
+import { definePageMetadata } from '@/scripts/page-metadata';
 const { t, ts } = i18n;
 
 useCssModule();
@@ -118,7 +119,7 @@ async function saveNew() {
 	});
 
 	if (canceled) return;
-	if (Object.entries(registries).some(e => e[1].name === name)) {
+	if (Object.entries(registries).some(registry => registry[1].name === name)) {
 		return os.alert({
 			title: ts._preferencesRegistry.cannotSave,
 			text: t('_preferencesRegistry.nameAlreadyExists', { name }),
@@ -162,11 +163,11 @@ function loadFile() {
 		try {
 			registry = JSON.parse(await file.text()) as unknown as Registry;
 			validate(registry);
-		} catch (e) {
+		} catch (err) {
 			return os.alert({
 				type: 'error',
 				title: ts._preferencesRegistry.cannotLoad,
-				text: e?.message,
+				text: err?.message,
 			});
 		}
 
@@ -286,7 +287,7 @@ async function rename(id: string) {
 	});
 	if (cancel1 || registries[id].name === name) return;
 
-	if (Object.entries(registries).some(e => e[1].name === name)) {
+	if (Object.entries(registries).some(registry => registry[1].name === name)) {
 		return os.alert({
 			title: ts._preferencesRegistry.cannotSave,
 			text: t('_preferencesRegistry.nameAlreadyExists', { name }),
@@ -348,13 +349,11 @@ onUnmounted(() => {
 	connection?.off('registryUpdated');
 });
 
-defineExpose({
-	[symbols.PAGE_INFO]: {
-		title: ts.preferencesRegistry,
-		icon: 'fas fa-floppy-disk',
-		bg: 'var(--bg)',
-	}
-})
+definePageMetadata(computed(() => ({
+	title: ts.preferencesRegistry,
+	icon: 'fas fa-floppy-disk',
+	bg: 'var(--bg)',
+})));
 </script>
 
 <style lang="scss" module>
