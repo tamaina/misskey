@@ -1,6 +1,6 @@
 <template>
 <MkStickyContainer>
-	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
+	<template #header><MkPageHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :content-max="500" :margin-min="16" :margin-max="32">
 		<FormSuspense :p="init">
 			<div v-if="tab === 'overview'" class="_formRoot">
@@ -76,6 +76,10 @@
 						<MkChart class="chart" :src="chartSrc" span="day" :limit="90" :args="{ user, withoutAll: true }" :detailed="true"></MkChart>
 					</div>
 				</div>
+			</div>
+			<div v-else-if="tab === 'ap'" class="_formRoot">
+				<MkObjectView v-if="ap" tall :value="user">
+				</MkObjectView>
 			</div>
 			<div v-else-if="tab === 'raw'" class="_formRoot">
 				<MkObjectView v-if="info && $i.isAdmin" tall :value="info">
@@ -225,7 +229,7 @@ watch(() => props.userId, () => {
 
 watch(() => user, () => {
 	os.api('ap/get', {
-		uri: user.uri || `${url}/users/${user.id}`,
+		uri: user.uri ?? `${url}/users/${user.id}`,
 	}).then(res => {
 		ap = res;
 	});
@@ -234,20 +238,21 @@ watch(() => user, () => {
 const headerActions = $computed(() => []);
 
 const headerTabs = $computed(() => [{
-	active: tab === 'overview',
+	key: 'overview',
 	title: i18n.ts.overview,
 	icon: 'fas fa-info-circle',
-	onClick: () => { tab = 'overview'; },
 }, {
-	active: tab === 'chart',
+	key: 'chart',
 	title: i18n.ts.charts,
 	icon: 'fas fa-chart-simple',
-	onClick: () => { tab = 'chart'; },
 }, {
-	active: tab === 'raw',
+	key: 'ap',
+	title: 'AP',
+	icon: 'fas fa-share-alt',
+}, {
+	key: 'raw',
 	title: 'Raw data',
 	icon: 'fas fa-code',
-	onClick: () => { tab = 'raw'; },
 }]);
 
 definePageMetadata(computed(() => ({
