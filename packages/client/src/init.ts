@@ -167,8 +167,10 @@ fetchInstanceMetaPromise.then(() => {
 	initializeSw();
 });
 
+const isZen = window.location.pathname.startsWith('/share') || (new URLSearchParams(window.location.search)).has('zen');
+
 const app = createApp(
-	(new URLSearchParams(window.location.search)).has('zen') ? defineAsyncComponent(() => import('@/ui/zen.vue')) :
+	isZen ? defineAsyncComponent(() => import('@/ui/zen.vue')) :
 	!$i ? defineAsyncComponent(() => import('@/ui/visitor.vue')) :
 	ui === 'deck' ? defineAsyncComponent(() => import('@/ui/deck.vue')) :
 	ui === 'classic' ? defineAsyncComponent(() => import('@/ui/classic.vue')) :
