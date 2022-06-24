@@ -29,6 +29,18 @@
 
 				<FormSection v-if="iAmModerator">
 					<template #label>Moderation</template>
+
+					<div style="display: flex;">
+						<FormInput v-if="user.host == null" v-model="driveCapacityOverrideMb" inline type="number">
+							<template #label>{{ i18n.ts.driveCapOverrideLabel }}</template>
+							<template #suffix>MB</template>
+							<template #caption>
+								{{ i18n.ts.driveCapOverrideCaption }}
+								<FormButton v-if="user.host == null" primary @click="applyDriveCapacityOverride"><i class="fas fa-check"></i></FormButton>
+							</template>
+						</FormInput>
+					</div>
+
 					<FormSwitch v-if="user.host == null && $i.isAdmin && (moderator || !user.isAdmin)" v-model="moderator" class="_formBlock" @update:modelValue="toggleModerator">{{ $ts.moderator }}</FormSwitch>
 					<FormSwitch v-model="silenced" class="_formBlock" @update:modelValue="toggleSilence">{{ $ts.silence }}</FormSwitch>
 					<FormSwitch v-model="suspended" class="_formBlock" @update:modelValue="toggleSuspend">{{ $ts.suspend }}</FormSwitch>
@@ -93,7 +105,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, defineAsyncComponent, defineComponent, watch } from 'vue';
+import { computed, defineAsyncComponent, defineComponent, watch, ref } from 'vue';
 import * as misskey from 'misskey-js';
 import MkChart from '@/components/chart.vue';
 import MkObjectView from '@/components/object-view.vue';
@@ -102,6 +114,8 @@ import FormSwitch from '@/components/form/switch.vue';
 import FormLink from '@/components/form/link.vue';
 import FormSection from '@/components/form/section.vue';
 import FormButton from '@/components/ui/button.vue';
+import FormInput from '@/components/form/input.vue';
+import FormSplit from '@/components/form/split.vue';
 import MkKeyValue from '@/components/key-value.vue';
 import MkSelect from '@/components/form/select.vue';
 import FormSuspense from '@/components/form/suspense.vue';
@@ -127,6 +141,7 @@ let ap = $ref(null);
 let moderator = $ref(false);
 let silenced = $ref(false);
 let suspended = $ref(false);
+let driveCapacityOverrideMb: number | null = $ref(0);
 
 function createFetcher() {
 	if (iAmModerator) {
@@ -140,6 +155,7 @@ function createFetcher() {
 			moderator = info.isModerator;
 			silenced = info.isSilenced;
 			suspended = info.isSuspended;
+			driveCapacityOverrideMb = user.driveCapacityOverrideMb;
 		});
 	} else {
 		return () => os.api('users/show', {
@@ -218,6 +234,22 @@ async function deleteAllFiles() {
 		});
 	});
 	await refreshUser();
+}
+
+async function applyDriveCapacityOverride() {
+	let driveCapOrMb = driveCapacityOverrideMb;
+	if (driveCapacityOverrideMb && driveCapacityOverrideMb < 0) {
+		driveCapOrMb = null;
+	}
+	try {
+		await os.apiWithDialog('admin/drive-capacity-override', { userId: user.id, overrideMb: driveCapOrMb });
+		await refreshUser();
+	} catch (e) {
+		os.alert({
+			type: 'error',
+			text: e.toString(),
+		});
+	}
 }
 
 watch(() => props.userId, () => {

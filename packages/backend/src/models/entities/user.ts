@@ -219,11 +219,11 @@ export class User {
 	})
 	public token: string | null;
 
-	@Column('boolean', {
-		default: false,
-		comment: 'Whether to show users replying to other users in the timeline'
+	@Column('integer', {
+		nullable: true,
+		comment: 'Overrides user drive capacity limit',
 	})
-	public showTimelineReplies: boolean;
+	public driveCapacityOverrideMb: number | null;
 
 	constructor(data: Partial<User>) {
 		if (data == null) return;
