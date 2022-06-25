@@ -42,21 +42,22 @@ const emit = defineEmits<{
 }>();
 
 const props = withDefaults(defineProps<{
-	// TODO: これで型に合わないものを弾いてくれるのかどうか要調査
-	includingTypes?: typeof notificationTypes[number][];
+	includingTypes?: typeof notificationTypes[number][] | null;
 	showGlobalToggle?: boolean;
 }>(), {
 	includingTypes: () => [],
 	showGlobalToggle: true,
 });
 
+let includingTypes = $computed(() => props.includingTypes || []);
+
 const dialog = $ref<InstanceType<typeof XModalWindow>>();
 
 let typesMap = $ref<Record<typeof notificationTypes[number], boolean>>({});
-let useGlobalSetting = $ref(props.includingTypes.length === 0 && props.showGlobalToggle);
+let useGlobalSetting = $ref((includingTypes === null || includingTypes.length === 0) && props.showGlobalToggle);
 
 for (const ntype of notificationTypes) {
-	typesMap[ntype] = props.includingTypes.includes(ntype);
+	typesMap[ntype] = includingTypes.includes(ntype);
 }
 
 function ok() {
