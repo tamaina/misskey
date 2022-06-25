@@ -2773,7 +2773,7 @@ __metadata:
     json5: 2.2.1
     json5-loader: 4.0.1
     jsonld: 6.0.0
-    jsrsasign: 10.5.24
+    jsrsasign: 10.5.25
     koa: 2.13.4
     koa-bodyparser: 4.3.0
     koa-favicon: 2.1.0
@@ -8458,10 +8458,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jsrsasign@npm:10.5.24":
-  version: 10.5.24
-  resolution: "jsrsasign@npm:10.5.24"
-  checksum: 745d7945fe72d15ef4310bf77c3537439f53f355febd481d978aa4a2e677206e7eb40df018f756498a3532aeb4232eabb8c9491fe0dd35c8a4de4f5e648313d8
+"jsrsasign@npm:10.5.25":
+  version: 10.5.25
+  resolution: "jsrsasign@npm:10.5.25"
+  checksum: e789cd6d5e6e236edebe91936279cdef886aafaab8d4ebc7d40b8ba0c7b7cd0d6d3c53fba26ea96eb33cc77a05368b369ef31fc9182662bce2344143ad50ea0f
   languageName: node
   linkType: hard
 
