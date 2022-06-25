@@ -88,6 +88,9 @@
 					</div>
 				</div>
 			</div>
+			<div v-else-if="tab === 'files'" class="_formRoot">
+				<MkFileListForAdmin :pagination="filesPagination" view-mode="grid"/>
+			</div>
 			<div v-else-if="tab === 'ap'" class="_formRoot">
 				<MkObjectView v-if="ap" tall :value="user">
 				</MkObjectView>
@@ -119,6 +122,7 @@ import FormSplit from '@/components/form/split.vue';
 import MkKeyValue from '@/components/key-value.vue';
 import MkSelect from '@/components/form/select.vue';
 import FormSuspense from '@/components/form/suspense.vue';
+import MkFileListForAdmin from '@/components/file-list-for-admin.vue';
 import * as os from '@/os';
 import number from '@/filters/number';
 import bytes from '@/filters/bytes';
@@ -142,6 +146,14 @@ let moderator = $ref(false);
 let silenced = $ref(false);
 let suspended = $ref(false);
 let driveCapacityOverrideMb: number | null = $ref(0);
+
+const filesPagination = {
+	endpoint: 'admin/drive/files' as const,
+	limit: 10,
+	params: computed(() => ({
+		userId: props.userId,
+	})),
+};
 
 function createFetcher() {
 	if (iAmModerator) {
@@ -276,7 +288,11 @@ const headerTabs = $computed(() => [{
 	key: 'chart',
 	title: i18n.ts.charts,
 	icon: 'fas fa-chart-simple',
-}, {
+}, iAmModerator ? {
+	key: 'files',
+	title: i18n.ts.files,
+	icon: 'fas fa-cloud',
+} : null, {
 	key: 'ap',
 	title: 'AP',
 	icon: 'fas fa-share-alt',
@@ -284,7 +300,7 @@ const headerTabs = $computed(() => [{
 	key: 'raw',
 	title: 'Raw data',
 	icon: 'fas fa-code',
-}]);
+}].filter(x => x != null));
 
 definePageMetadata(computed(() => ({
 	title: user ? acct(user) : i18n.ts.userInfo,
