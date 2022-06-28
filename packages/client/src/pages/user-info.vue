@@ -12,6 +12,8 @@
 					</div>
 				</div>
 
+				<MkInfo v-if="user.username.includes('.')" class="_formBlock">{{ i18n.ts.isSystemAccount }}</MkInfo>
+
 				<div v-if="user.url" class="_formLinksGrid _formBlock">
 					<FormLink :to="userPage(user)">Profile</FormLink>
 					<FormLink :to="user.url" :external="true">Profile (remote)</FormLink>
@@ -34,7 +36,10 @@
 					<FormSwitch v-model="silenced" class="_formBlock" @update:model-value="toggleSilence">{{ $ts.silence }}</FormSwitch>
 					<FormSwitch v-model="suspended" class="_formBlock" @update:model-value="toggleSuspend">{{ $ts.suspend }}</FormSwitch>
 					{{ $ts.reflectMayTakeTime }}
-					<FormButton v-if="user.host == null && iAmModerator" class="_formBlock" @click="resetPassword"><i class="fas fa-key"></i> {{ $ts.resetPassword }}</FormButton>
+					<div class="_formBlock">
+						<FormButton v-if="user.host == null && iAmModerator" inline style="margin-right: 8px;" @click="resetPassword"><i class="fas fa-key"></i> {{ $ts.resetPassword }}</FormButton>
+						<FormButton v-if="$i.isAdmin" inline danger @click="deleteAccount">{{ $ts.deleteAccount }}</FormButton>
+					</div>
 				</FormSection>
 
 				<FormSection v-if="iAmModerator">
@@ -261,6 +266,30 @@ async function applyDriveCapacityOverride() {
 		os.alert({
 			type: 'error',
 			text: e.toString(),
+		});
+	}
+}
+
+async function deleteAccount() {
+	const confirm = await os.confirm({
+		type: 'warning',
+		text: i18n.ts.deleteAccountConfirm,
+	});
+	if (confirm.canceled) return;
+
+	const typed = await os.inputText({
+		text: i18n.t('typeToConfirm', { x: user?.username }),
+	});
+	if (typed.canceled) return;
+
+	if (typed.result === user?.username) {
+		await os.apiWithDialog('admin/delete-account', {
+			userId: user.id,
+		});
+	} else {
+		os.alert({
+			type: 'error',
+			text: 'input not match',
 		});
 	}
 }

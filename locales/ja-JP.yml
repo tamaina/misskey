@@ -858,6 +858,9 @@ recommended: "推奨"
 check: "チェック"
 driveCapOverrideLabel: "このユーザーのドライブ容量上限を変更:"
 driveCapOverrideCaption: "0以下を指定すると解除されます。"
+isSystemAccount: "システムにより自動で作成・管理されているアカウントです。"
+typeToConfirm: "この操作を行うには {x} と入力してください"
+deleteAccount: "アカウント削除"
 
 _emailUnavailable:
   used: "既に使用されています"
