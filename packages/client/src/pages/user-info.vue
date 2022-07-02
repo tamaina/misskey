@@ -1,7 +1,7 @@
 <template>
 <MkStickyContainer>
 	<template #header><MkPageHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs"/></template>
-	<MkSpacer :content-max="500" :margin-min="16" :margin-max="32">
+	<MkSpacer :content-max="600" :margin-min="16" :margin-max="32">
 		<FormSuspense :p="init">
 			<div v-if="tab === 'overview'" class="_formRoot">
 				<div class="_formBlock aeakzknw">
@@ -26,6 +26,20 @@
 					<MkKeyValue :copy="user.id" oneline style="margin: 1em 0;">
 						<template #key>ID</template>
 						<template #value><span class="_monospace">{{ user.id }}</span></template>
+					</MkKeyValue>
+					<!-- 要る？
+					<MkKeyValue v-if="ips.length > 0" :copy="user.id" oneline style="margin: 1em 0;">
+						<template #key>IP (recent)</template>
+						<template #value><span class="_monospace">{{ ips[0].ip }}</span></template>
+					</MkKeyValue>
+					-->
+					<MkKeyValue oneline style="margin: 1em 0;">
+						<template #key>{{ i18n.ts.createdAt }}</template>
+						<template #value><span class="_monospace"><MkTime :time="user.createdAt" :mode="'detail'"/></span></template>
+					</MkKeyValue>
+					<MkKeyValue v-if="info" oneline style="margin: 1em 0;">
+						<template #key>{{ i18n.ts.lastActiveDate }}</template>
+						<template #value><span class="_monospace"><MkTime :time="info.lastActiveDate" :mode="'detail'"/></span></template>
 					</MkKeyValue>
 				</div>
 
@@ -97,8 +111,18 @@
 			<div v-else-if="tab === 'files'" class="_formRoot">
 				<MkFileListForAdmin :pagination="filesPagination" view-mode="grid"/>
 			</div>
+			<div v-else-if="tab === 'ip'" class="_formRoot">
+				<MkInfo v-if="!iAmAdmin" warn>{{ i18n.ts.requireAdminForView }}</MkInfo>
+				<MkInfo v-else>The date is the IP address was first acknowledged.</MkInfo>
+				<template v-if="iAmAdmin && ips">
+					<div v-for="record in ips" :key="record.ip" class="_monospace" :class="$style.ip" style="margin: 1em 0;">
+						<span class="date">{{ record.createdAt }}</span>
+						<span class="ip">{{ record.ip }}</span>
+					</div>
+				</template>
+			</div>
 			<div v-else-if="tab === 'ap'" class="_formRoot">
-				<MkObjectView v-if="ap" tall :value="user">
+				<MkObjectView v-if="ap" tall :value="ap">
 				</MkObjectView>
 			</div>
 			<div v-else-if="tab === 'raw'" class="_formRoot">
@@ -129,6 +153,7 @@ import MkKeyValue from '@/components/key-value.vue';
 import MkSelect from '@/components/form/select.vue';
 import FormSuspense from '@/components/form/suspense.vue';
 import MkFileListForAdmin from '@/components/file-list-for-admin.vue';
+import MkInfo from '@/components/ui/info.vue';
 import * as os from '@/os';
 import number from '@/filters/number';
 import bytes from '@/filters/bytes';
@@ -136,7 +161,7 @@ import { url } from '@/config';
 import { userPage, acct } from '@/filters/user';
 import { definePageMetadata } from '@/scripts/page-metadata';
 import { i18n } from '@/i18n';
-import { iAmModerator } from '@/account';
+import { iAmAdmin, iAmModerator } from '@/account';
 
 const props = defineProps<{
 	userId: string;
@@ -147,6 +172,7 @@ let chartSrc = $ref('per-user-notes');
 let user = $ref<null | misskey.entities.UserDetailed>();
 let init = $ref<ReturnType<typeof createFetcher>>();
 let info = $ref();
+let ips = $ref(null);
 let ap = $ref(null);
 let moderator = $ref(false);
 let silenced = $ref(false);
@@ -167,9 +193,12 @@ function createFetcher() {
 			userId: props.userId,
 		}), os.api('admin/show-user', {
 			userId: props.userId,
-		})]).then(([_user, _info]) => {
+		}), iAmAdmin ? os.api('admin/get-user-ips', {
+			userId: props.userId,
+		}) : Promise.resolve(null)]).then(([_user, _info, _ips]) => {
 			user = _user;
 			info = _info;
+			ips = _ips;
 			moderator = info.isModerator;
 			silenced = info.isSilenced;
 			suspended = info.isSuspended;
@@ -326,7 +355,11 @@ const headerTabs = $computed(() => [{
 	key: 'ap',
 	title: 'AP',
 	icon: 'fas fa-share-alt',
-}, {
+}, iAmModerator ? {
+	key: 'ip',
+	title: 'IP',
+	icon: 'fas fa-bars-staggered',
+} : null, {
 	key: 'raw',
 	title: 'Raw',
 	icon: 'fas fa-code',
@@ -335,7 +368,6 @@ const headerTabs = $computed(() => [{
 definePageMetadata(computed(() => ({
 	title: user ? acct(user) : i18n.ts.userInfo,
 	icon: 'fas fa-info-circle',
-	bg: 'var(--bg)',
 })));
 </script>
 
@@ -386,6 +418,20 @@ definePageMetadata(computed(() => ({
 			margin-bottom: 12px;
 			font-weight: bold;
 		}
+	}
+}
+</style>
+
+<style lang="scss" module>
+.ip {
+	display: flex;
+
+	> :global(.date) {
+		opacity: 0.7;
+	}
+
+	> :global(.ip) {
+		margin-left: auto;
 	}
 }
 </style>
