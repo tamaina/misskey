@@ -89,7 +89,6 @@ const profile = reactive({
 	isCat: $i.isCat,
 	showTimelineReplies: $i.showTimelineReplies,
 	alwaysMarkNsfw: $i.alwaysMarkNsfw,
-	showTimelineReplies: $i.showTimelineReplies,
 });
 
 watch(() => profile, () => {
@@ -128,7 +127,6 @@ function save() {
 		isCat: !!profile.isCat,
 		showTimelineReplies: !!profile.showTimelineReplies,
 		alwaysMarkNsfw: !!profile.alwaysMarkNsfw,
-		showTimelineReplies: !!profile.showTimelineReplies,
 	});
 }
 
