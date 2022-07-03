@@ -2684,6 +2684,7 @@ __metadata:
     rename: 1.0.4
     require-all: 3.0.0
     rndstr: 1.0.0
+    rss-parser: 3.12.0
     s-age: 1.1.2
     sanitize-html: 2.7.0
     semver: 7.3.7
@@ -3617,7 +3618,6 @@ __metadata:
     vanilla-tilt: 1.7.2
     vite: 3.0.0-beta.5
     vue: 3.2.37
-    vue-marquee-text-component: 2.0.1
     vue-prism-editor: 2.0.0-alpha.2
     vuedraggable: 4.0.1
     websocket: 1.0.34
@@ -4096,13 +4096,6 @@ __metadata:
   version: 2.0.1
   resolution: "copy-to@npm:2.0.1"
   checksum: 05ea12875bdc96ae053a3b30148e9d992026035ff2bfcc0b615e8d49d1cf8fc3d1f40843f9a4b7b1b6d9118eeebcba31e621076d7de525828aa9c07d22a81dab
-  languageName: node
-  linkType: hard
-
-"core-js@npm:^3.18.0":
-  version: 3.23.3
-  resolution: "core-js@npm:3.23.3"
-  checksum: f517546388e468bd3155afbf06f38f8fe0448134fe086c4ed9c4d371d52db71e80585073b59362948777e01f2377ef7064925e1a3d9312a1c56da47eadfaca9a
   languageName: node
   linkType: hard
 
@@ -5036,7 +5029,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"entities@npm:^2.0.0":
+"entities@npm:^2.0.0, entities@npm:^2.0.3":
   version: 2.2.0
   resolution: "entities@npm:2.2.0"
   checksum: 19010dacaf0912c895ea262b4f6128574f9ccf8d4b3b65c7e8334ad0079b3706376360e28d8843ff50a78aabcb8f08f0a32dbfacdc77e47ed77ca08b713669b3
@@ -12071,6 +12064,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"rss-parser@npm:3.12.0":
+  version: 3.12.0
+  resolution: "rss-parser@npm:3.12.0"
+  dependencies:
+    entities: ^2.0.3
+    xml2js: ^0.4.19
+  checksum: aa0f0eb2e3a5c70677a1c7cb6c2e96420f12c8963a8bed922ec2ff1bb9dbbb725fc5783be31ca8140154c3d5589ccd31580ced7d32ebd0dda7572f78ce242a41
+  languageName: node
+  linkType: hard
+
 "run-parallel@npm:^1.1.9":
   version: 1.2.0
   resolution: "run-parallel@npm:1.2.0"
@@ -14202,16 +14205,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vue-marquee-text-component@npm:2.0.1":
-  version: 2.0.1
-  resolution: "vue-marquee-text-component@npm:2.0.1"
-  dependencies:
-    core-js: ^3.18.0
-    vue: ^3.2.19
-  checksum: 73fec52ff79ce7f900f8a85644951d5f7000537db9ec1cf54d3a4cf8dce84c97640d8f61eab0f16c960f32998e9f5b48db7e91ef8817b166d5a7d14864664abd
-  languageName: node
-  linkType: hard
-
 "vue-prism-editor@npm:2.0.0-alpha.2":
   version: 2.0.0-alpha.2
   resolution: "vue-prism-editor@npm:2.0.0-alpha.2"
@@ -14221,7 +14214,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vue@npm:3.2.37, vue@npm:^3.2.19":
+"vue@npm:3.2.37":
   version: 3.2.37
   resolution: "vue@npm:3.2.37"
   dependencies:
@@ -14545,7 +14538,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"xml2js@npm:^0.4.23":
+"xml2js@npm:^0.4.19, xml2js@npm:^0.4.23":
   version: 0.4.23
   resolution: "xml2js@npm:0.4.23"
   dependencies:
