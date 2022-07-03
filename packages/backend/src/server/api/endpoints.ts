@@ -61,6 +61,7 @@ import * as ep___admin_unsuspendUser from './endpoints/admin/unsuspend-user.js';
 import * as ep___admin_updateMeta from './endpoints/admin/update-meta.js';
 import * as ep___admin_vacuum from './endpoints/admin/vacuum.js';
 import * as ep___admin_deleteAccount from './endpoints/admin/delete-account.js';
+import * as ep___admin_updateUserNote from './endpoints/admin/update-user-note.js';
 import * as ep___announcements from './endpoints/announcements.js';
 import * as ep___antennas_create from './endpoints/antennas/create.js';
 import * as ep___antennas_delete from './endpoints/antennas/delete.js';
@@ -313,6 +314,7 @@ import * as ep___users_search from './endpoints/users/search.js';
 import * as ep___users_show from './endpoints/users/show.js';
 import * as ep___users_stats from './endpoints/users/stats.js';
 import * as ep___admin_driveCapOverride from './endpoints/admin/drive-capacity-override.js';
+import * as ep___fetchRss from './endpoints/fetch-rss.js';
 
 const eps = [
 	['admin/meta', ep___admin_meta],
@@ -376,6 +378,7 @@ const eps = [
 	['admin/update-meta', ep___admin_updateMeta],
 	['admin/vacuum', ep___admin_vacuum],
 	['admin/delete-account', ep___admin_deleteAccount],
+	['admin/update-user-note', ep___admin_updateUserNote],
 	['announcements', ep___announcements],
 	['antennas/create', ep___antennas_create],
 	['antennas/delete', ep___antennas_delete],
@@ -628,6 +631,7 @@ const eps = [
 	['users/show', ep___users_show],
 	['users/stats', ep___users_stats],
 	['admin/drive-capacity-override', ep___admin_driveCapOverride],
+	['fetch-rss', ep___fetchRss],
 ];
 
 export interface IEndpointMeta {

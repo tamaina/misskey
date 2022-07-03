@@ -22,9 +22,11 @@ You should also include the user name that made the change.
 - Client: Improve control panel @syuilo
 - Client: Show warning in control panel when there is an unresolved abuse report @syuilo
 - Client: Add instance-cloud widget @syuilo
-- Client: Add rss-marquee widget @syuilo
+- Client: Add rss-ticker widget @syuilo
 - Client: Removing entries from a clip @futchitwo
 - Client: Poll highlights in explore page @syuilo
+- Client: Improve deck UI @syuilo
+- ユーザーにモデレーションメモを残せる機能 @syuilo
 - Make possible to delete an account by admin @syuilo
 - Improve player detection in URL preview @mei23
 - Add Badge Image to Push Notification #8012 @tamaina
