@@ -52,37 +52,6 @@
 					</MkKeyValue>
 				</div>
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-				<FormSection v-if="iAmModerator">
-					<template #label>Moderation</template>
-
-					<FormSwitch v-if="user.host == null && $i.isAdmin && (moderator || !user.isAdmin)" v-model="moderator" class="_formBlock" @update:model-value="toggleModerator">{{ $ts.moderator }}</FormSwitch>
-					<FormSwitch v-model="silenced" class="_formBlock" @update:model-value="toggleSilence">{{ $ts.silence }}</FormSwitch>
-					<FormSwitch v-model="suspended" class="_formBlock" @update:model-value="toggleSuspend">{{ $ts.suspend }}</FormSwitch>
-					{{ $ts.reflectMayTakeTime }}
-					<div class="_formBlock">
-						<FormButton v-if="user.host == null && iAmModerator" inline style="margin-right: 8px;" @click="resetPassword"><i class="fas fa-key"></i> {{ $ts.resetPassword }}</FormButton>
-						<FormButton v-if="$i.isAdmin" inline danger @click="deleteAccount">{{ $ts.deleteAccount }}</FormButton>
-					</div>
-				</FormSection>
-
-				<FormSection v-if="iAmModerator">
-					<template #label>Drive Capacity Override</template>
-
-					<FormInput v-if="user.host == null" v-model="driveCapacityOverrideMb" inline :manual-save="true" type="number" @update:model-value="applyDriveCapacityOverride">
-						<template #label>{{ i18n.ts.driveCapOverrideLabel }}</template>
-						<template #suffix>MB</template>
-						<template #caption>
-							{{ i18n.ts.driveCapOverrideCaption }}
-						</template>
-					</FormInput>
-				</FormSection>
-
-=======
->>>>>>> develop
-=======
->>>>>>> pr/CyberRex0/8867
 				<FormSection>
 					<template #label>ActivityPub</template>
 
@@ -192,18 +161,9 @@ import FormSwitch from '@/components/form/switch.vue';
 import FormLink from '@/components/form/link.vue';
 import FormSection from '@/components/form/section.vue';
 import FormButton from '@/components/ui/button.vue';
-<<<<<<< HEAD
-<<<<<<< HEAD
-import FormInput from '@/components/form/input.vue';
-import FormSplit from '@/components/form/split.vue';
-=======
-import FormFolder from '@/components/form/folder.vue';
->>>>>>> develop
-=======
 import FormInput from '@/components/form/input.vue';
 import FormSplit from '@/components/form/split.vue';
 import FormFolder from '@/components/form/folder.vue';
->>>>>>> pr/CyberRex0/8867
 import MkKeyValue from '@/components/key-value.vue';
 import MkSelect from '@/components/form/select.vue';
 import FormSuspense from '@/components/form/suspense.vue';
@@ -232,17 +192,8 @@ let ap = $ref(null);
 let moderator = $ref(false);
 let silenced = $ref(false);
 let suspended = $ref(false);
-<<<<<<< HEAD
-<<<<<<< HEAD
-let driveCapacityOverrideMb: number | null = $ref(0);
-
-=======
-let moderationNote = $ref('');
->>>>>>> develop
-=======
 let driveCapacityOverrideMb: number | null = $ref(0);
 let moderationNote = $ref('');
->>>>>>> pr/CyberRex0/8867
 const filesPagination = {
 	endpoint: 'admin/drive/files' as const,
 	limit: 10,
@@ -266,23 +217,13 @@ function createFetcher() {
 			moderator = info.isModerator;
 			silenced = info.isSilenced;
 			suspended = info.isSuspended;
-<<<<<<< HEAD
-<<<<<<< HEAD
 			driveCapacityOverrideMb = user.driveCapacityOverrideMb;
-=======
-=======
-			driveCapacityOverrideMb = user.driveCapacityOverrideMb;
->>>>>>> pr/CyberRex0/8867
 			moderationNote = info.moderationNote;
 
 			watch($$(moderationNote), async () => {
 				await os.api('admin/update-user-note', { userId: user.id, text: moderationNote });
 				await refreshUser();
 			});
-<<<<<<< HEAD
->>>>>>> develop
-=======
->>>>>>> pr/CyberRex0/8867
 		});
 	} else {
 		return () => os.api('users/show', {
