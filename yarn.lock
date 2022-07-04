@@ -3616,7 +3616,7 @@ __metadata:
     uuid: 8.3.2
     v-debounce: 0.1.2
     vanilla-tilt: 1.7.2
-    vite: 3.0.0-beta.5
+    vite: 3.0.0-beta.6
     vue: 3.2.37
     vue-prism-editor: 2.0.0-alpha.2
     vuedraggable: 4.0.1
@@ -14149,9 +14149,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vite@npm:3.0.0-beta.5":
-  version: 3.0.0-beta.5
-  resolution: "vite@npm:3.0.0-beta.5"
+"vite@npm:3.0.0-beta.6":
+  version: 3.0.0-beta.6
+  resolution: "vite@npm:3.0.0-beta.6"
   dependencies:
     esbuild: ^0.14.47
     fsevents: ~2.3.2
@@ -14177,7 +14177,7 @@ __metadata:
       optional: true
   bin:
     vite: bin/vite.js
-  checksum: 93a19bae089007236813e2ee95f9fdf342b8abc76a3c39ef2fd08f2bdbe2801bfb3473c7c1812253aad04fd2bda198b5e77bf24b4fb525d72b0003ee15fb4d42
+  checksum: d20b28cf5f5486020368f0d5d87079f095cf3437397f296c8aa4e0d009405992db958c14b4586e1c016e7e7e2de46a56bfe03ae544ce8d0c61560c3f6dd97e93
   languageName: node
   linkType: hard
 
