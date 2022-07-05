@@ -37,6 +37,7 @@ You should also include the user name that made the change.
 - Migrate to Yarn Berry (v3.2.1) @ThatOneCalculator
 	- You may have to `yarn run clean-all` and `yarn set version berry` before running `yarn install` if you're still on yarn classic
 - Server: Add possibility to log IP addresses of users @syuilo
+- Add additional drive capacity change support @CyberRex0
 
 ### Bugfixes
 - Server: Fix GenerateVideoThumbnail failed @mei23

@@ -123,6 +123,17 @@
 
 					<MkFileListForAdmin :pagination="filesPagination" view-mode="grid"/>
 				</FormFolder>
+				<FormSection>
+					<template #label>Drive Capacity Override</template>
+
+					<FormInput v-if="user.host == null" v-model="driveCapacityOverrideMb" inline :manual-save="true" type="number" :placeholder="i18n.t('defaultValueIs', { value: instance.driveCapacityPerLocalUserMb })" @update:model-value="applyDriveCapacityOverride">
+						<template #label>{{ i18n.ts.driveCapOverrideLabel }}</template>
+						<template #suffix>MB</template>
+						<template #caption>
+							{{ i18n.ts.driveCapOverrideCaption }}
+						</template>
+					</FormInput>
+				</FormSection>
 			</div>
 			<div v-else-if="tab === 'chart'" class="_formRoot">
 				<div class="cmhjzshm">
@@ -313,10 +324,10 @@ async function applyDriveCapacityOverride() {
 	try {
 		await os.apiWithDialog('admin/drive-capacity-override', { userId: user.id, overrideMb: driveCapOrMb });
 		await refreshUser();
-	} catch (e) {
+	} catch (err) {
 		os.alert({
 			type: 'error',
-			text: e.toString(),
+			text: err.toString(),
 		});
 	}
 }
