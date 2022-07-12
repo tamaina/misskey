@@ -8,7 +8,7 @@ import * as swos from '@/scripts/operations';
 import { acct as getAcct } from '@/filters/user';
 
 self.addEventListener('install', ev => {
-	ev.waitUntil(self.skipWaiting());
+	// ev.waitUntil(self.skipWaiting());
 });
 
 self.addEventListener('activate', ev => {
