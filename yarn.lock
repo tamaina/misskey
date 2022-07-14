@@ -2804,7 +2804,6 @@ __metadata:
     "@redocly/openapi-core": 1.0.0-beta.100
     "@sinonjs/fake-timers": 9.1.2
     "@syuilo/aiscript": 0.11.1
-    "@tensorflow/tfjs": 3.18.0
     "@tensorflow/tfjs-node": 3.18.0
     "@types/bcryptjs": 2.4.2
     "@types/bull": 3.15.8
@@ -2957,8 +2956,6 @@ __metadata:
     ws: 8.8.0
     xev: 3.0.2
   dependenciesMeta:
-    "@tensorflow/tfjs":
-      optional: true
     "@tensorflow/tfjs-node":
       optional: true
   languageName: unknown
