@@ -7023,11 +7023,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-<<<<<<< HEAD
-"got@npm:11.8.5":
-  version: 11.8.5
-  resolution: "got@npm:11.8.5"
-=======
 "google-protobuf@npm:^3.9.2":
   version: 3.20.1
   resolution: "google-protobuf@npm:3.20.1"
@@ -7035,10 +7030,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"got@npm:11.5.1":
-  version: 11.5.1
-  resolution: "got@npm:11.5.1"
->>>>>>> parent of 47678d7e7... DISABLE NSFW DETECTION
+"got@npm:11.8.5":
+  version: 11.8.5
+  resolution: "got@npm:11.8.5"
   dependencies:
     "@sindresorhus/is": ^4.0.0
     "@szmarczak/http-timer": ^4.0.5
