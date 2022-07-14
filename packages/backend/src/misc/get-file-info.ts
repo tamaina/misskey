@@ -8,10 +8,10 @@ import { fileTypeFromFile } from 'file-type';
 import FFmpeg from 'fluent-ffmpeg';
 import isSvg from 'is-svg';
 import probeImageSize from 'probe-image-size';
-// import { type predictionType } from 'nsfwjs';
+import { type predictionType } from 'nsfwjs';
 import sharp from 'sharp';
 import { encode } from 'blurhash';
-// import { detectSensitive } from '@/services/detect-sensitive.js';
+import { detectSensitive } from '@/services/detect-sensitive.js';
 import { createTempDir } from './create-temp.js';
 
 const pipeline = util.promisify(stream.pipeline);
