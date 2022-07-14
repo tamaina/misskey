@@ -49,19 +49,30 @@
 			localStorage.setItem('localeVersion', v);
 		} else {
 			await checkUpdate();
-			renderError('LOCALE_FETCH_FAILED');
+			renderError('LOCALE_FETCH');
 			return;
 		}
 	}
 	//#endregion
 
 	//#region Script
-	import(`/assets/${CLIENT_ENTRY}`)
-		.catch(async e => {
-			await checkUpdate();
-			console.error(e);
-			renderError('APP_FETCH_FAILED', e);
-		})
+	function importAppScript() {
+		import(`/assets/${CLIENT_ENTRY}`)
+			.catch(async e => {
+				await checkUpdate();
+				console.error(e);
+				renderError('APP_IMPORT', e);
+			});
+	}
+
+	// タイミングによっては、この時点でDOMの構築が済んでいる場合とそうでない場合とがある
+	if (document.readyState !== 'loading') {
+		importAppScript();
+	} else {
+		window.addEventListener('DOMContentLoaded', () => {
+			importAppScript();
+		});
+	}
 	//#endregion
 
 	//#region Theme
@@ -115,7 +126,7 @@
 		let errorsElement = document.getElementById('errors');
 
 		if (!errorsElement) {
-			document.documentElement.innerHTML = `
+			document.body.innerHTML = `
 			<svg class="icon-warning" xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-alert-triangle" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
 				<path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
 				<path d="M12 9v2m0 4v.01"></path>
@@ -286,7 +297,7 @@
 			}
 		} catch (e) {
 			console.error(e);
-			renderError('UPDATE_CHECK_FAILED', e);
+			renderError('UPDATE_CHECK', e);
 			throw e;
 		}
 	}
