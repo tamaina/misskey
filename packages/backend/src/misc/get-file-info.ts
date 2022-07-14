@@ -8,15 +8,13 @@ import { fileTypeFromFile } from 'file-type';
 import FFmpeg from 'fluent-ffmpeg';
 import isSvg from 'is-svg';
 import probeImageSize from 'probe-image-size';
-// import { type predictionType } from 'nsfwjs';
+import { type predictionType } from 'nsfwjs';
 import sharp from 'sharp';
 import { encode } from 'blurhash';
-// import { detectSensitive } from '@/services/detect-sensitive.js';
+import { detectSensitive } from '@/services/detect-sensitive.js';
 import { createTempDir } from './create-temp.js';
 
 const pipeline = util.promisify(stream.pipeline);
-
-const detectSensitive = (arg: any) => false;
 
 export type FileInfo = {
 	size: number;
@@ -130,7 +128,7 @@ async function detectSensitivity(source: string, mime: string, sensitiveThreshol
 	let sensitive = false;
 	let porn = false;
 
-	function judgePrediction(result: readonly any[]): [sensitive: boolean, porn: boolean] {
+	function judgePrediction(result: readonly predictionType[]): [sensitive: boolean, porn: boolean] {
 		let sensitive = false;
 		let porn = false;
 
