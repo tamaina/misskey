@@ -40,8 +40,7 @@ export const soundConfigStore = markRaw(new Storage('sound', {
 	},
 }));
 
-await soundConfigStore.ready;
-
+soundConfigStore.ready.then(() => {
 //#region サウンドのColdDeviceStorage => indexedDBのマイグレーション
 for (const target of Object.keys(soundConfigStore.state) as Array<keyof typeof soundConfigStore.state>) {
 	const value = localStorage.getItem(`miux:${target}`);
@@ -51,11 +50,12 @@ for (const target of Object.keys(soundConfigStore.state) as Array<keyof typeof s
 	}
 }
 //#endregion
+});
 
 const cache = new Map<string, HTMLAudioElement>();
 
-export function getAudio(file: string, useCache = true): HTMLAudioElement {
-	let audio: HTMLAudioElement;
+export function getAudio(file: string, useCache = true): HTMLAudioElement | undefined {
+	let audio: HTMLAudioElement | undefined;
 	if (useCache && cache.has(file)) {
 		audio = cache.get(file);
 	} else {
