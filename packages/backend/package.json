@@ -14,6 +14,7 @@
 		"test": "yarn mocha"
 	},
 	"optionalDependencies": {
+		"@tensorflow/tfjs": "3.18.0",
 		"@tensorflow/tfjs-node": "3.18.0"
 	},
 	"dependencies": {
