@@ -9,13 +9,14 @@
 You should also include the user name that made the change.
 -->
 
-## 12.x.x (unreleased)
+## 12.113.0 (2022/07/13)
 
 ### Improvements
 - Support <plain> syntax for MFM
 
 ### Bugfixes
 - Server: Fix crash at startup if TensorFlow is not supported @mei23
+- Client: URLエンコードされたルーティングを修正
 
 ## 12.112.3 (2022/07/09)
 
