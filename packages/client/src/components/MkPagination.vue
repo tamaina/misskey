@@ -36,7 +36,7 @@ import { computed, ComputedRef, isRef, nextTick, onActivated, onBeforeUnmount, o
 import * as misskey from 'misskey-js';
 import * as os from '@/os';
 import { onScrollTop, isTopVisible, getBodyScrollHeight, getScrollContainer, onScrollBottom, scrollToBottom, scroll, isBottomVisible } from '@/scripts/scroll';
-import MkButton from '@/components/ui/button.vue';
+import MkButton from '@/components/MkButton.vue';
 import { defaultStore } from '@/store';
 import { MisskeyEntity } from '@/types/date-separated-list';
 import { i18n } from '@/i18n';
