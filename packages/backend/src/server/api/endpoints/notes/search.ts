@@ -6,6 +6,7 @@ import { QueryService } from '@/core/QueryService.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import type { Config } from '@/config.js';
 import { DI } from '@/di-symbols.js';
+import { ApiError } from '../../error';
 
 export const meta = {
 	tags: ['notes'],
@@ -66,6 +67,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private queryService: QueryService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
+			if (ps.query.trim().length === 0) throw new ApiError(meta.errors.noSuchNote);
+
 			const query = this.queryService.makePaginationQuery(this.notesRepository.createQueryBuilder('note'), ps.sinceId, ps.untilId);
 
 			if (ps.userId) {
@@ -75,7 +78,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			}
 
 			query
-				.andWhere('note.text ILIKE :q', { q: `%${ps.query}%` })
+				.andWhere('note.text &@~ :q', { q: ps.query })
 				.innerJoinAndSelect('note.user', 'user')
 				.leftJoinAndSelect('user.avatar', 'avatar')
 				.leftJoinAndSelect('user.banner', 'banner')
