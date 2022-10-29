@@ -6,7 +6,7 @@ import { QueryService } from '@/core/QueryService.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import type { Config } from '@/config.js';
 import { DI } from '@/di-symbols.js';
-import { ApiError } from '../../error';
+import { ApiError } from '../../error.js';
 
 export const meta = {
 	tags: ['notes'],
