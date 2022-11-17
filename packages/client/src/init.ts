@@ -74,6 +74,8 @@ import { deckStore } from './ui/deck/deck-store';
 		});
 	}
 
+	await defaultStore.ready;
+
 	// タッチデバイスでCSSの:hoverを機能させる
 	document.addEventListener('touchend', () => {}, { passive: true });
 
@@ -198,6 +200,8 @@ import { deckStore } from './ui/deck/deck-store';
 	if (splash) splash.addEventListener('transitionend', () => {
 		splash.remove();
 	});
+
+	await deckStore.ready;
 
 	// https://github.com/misskey-dev/misskey/pull/8575#issuecomment-1114239210
 	// なぜかinit.tsの内容が2回実行されることがあるため、mountするdivを1つに制限する
