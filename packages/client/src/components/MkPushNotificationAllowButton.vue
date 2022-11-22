@@ -1,0 +1,169 @@
+<template>
+<MkButton
+	v-if="supported && !alreadySubscribed"
+	type="button"
+	primary
+	:gradate="gradate"
+	:rounded="rounded"
+	:inline="inline"
+	:autofocus="autofocus"
+	:wait="wait"
+	:full="full"
+	@click="subscribe"
+>
+	{{ i18n.ts.subscribePushNotification }}
+</MkButton>
+<MkButton
+	v-else-if="registration && ($i ? alreadySubscribed : pushSubscription)"
+	type="button"
+	:primary="false"
+	:gradate="gradate"
+	:rounded="rounded"
+	:inline="inline"
+	:autofocus="autofocus"
+	:wait="wait"
+	:full="full"
+	@click="unsubscribe"
+>
+	{{ i18n.ts.unsubscribePushNotification }}
+</MkButton>
+</template>
+
+<script setup lang="ts">
+import { $i, getAccounts } from '@/account';
+import MkButton from '@/components/MkButton.vue';
+import { instance } from '@/instance';
+import { api, apiWithDialog } from '@/os';
+import { i18n } from '@/i18n';
+
+defineProps<{
+	primary?: boolean;
+	gradate?: boolean;
+	rounded?: boolean;
+	inline?: boolean;
+	link?: boolean;
+	to?: string;
+	autofocus?: boolean;
+	wait?: boolean;
+	danger?: boolean;
+	full?: boolean;
+	showOnlyIfNotRegistered?: boolean;
+}>();
+
+// ServiceWorker registration
+let registration = $ref<ServiceWorkerRegistration | undefined>();
+// If this browser supports push notification
+let supported = $ref(false);
+// If this browser has already subscribed to push notification
+let pushSubscription = $ref<PushSubscription | null>(null);
+let alreadySubscribed = $ref(false);
+
+function subscribe() {
+	if (!registration || !supported || !instance.swPublickey) return;
+
+	// SEE: https://developer.mozilla.org/en-US/docs/Web/API/PushManager/subscribe#Parameters
+	return registration.pushManager.subscribe({
+		userVisibleOnly: true,
+		applicationServerKey: urlBase64ToUint8Array(instance.swPublickey)
+	})
+	.then(async subscription => {
+		pushSubscription = subscription;
+
+		// Register
+		await apiWithDialog('sw/register', {
+			endpoint: subscription.endpoint,
+			auth: encode(subscription.getKey('auth')),
+			publickey: encode(subscription.getKey('p256dh'))
+		});
+
+		alreadySubscribed = true;
+		console.log('pushSubscription = ', subscription);
+		console.log('alreadySubscribed = true');
+	}, async err => { // When subscribe failed
+		// 通知が許可されていなかったとき
+		if (err?.name === 'NotAllowedError') {
+			console.info('User denied the notification permission request.');
+			return;
+		}
+
+		// 違うapplicationServerKey (または gcm_sender_id)のサブスクリプションが
+		// 既に存在していることが原因でエラーになった可能性があるので、
+		// そのサブスクリプションを解除しておく
+		// （これは実行されなさそうだけど、おまじない的に古い実装から残してある）
+		unsubscribe();
+	});
+}
+
+async function unsubscribe() {
+	if (!pushSubscription) return;
+
+	const endpoint = pushSubscription.endpoint;
+	const accounts = await getAccounts();
+
+	alreadySubscribed = false;
+	console.log('pushSubscription = false');
+
+	if ($i && accounts.length >= 2) {
+		apiWithDialog('sw/unregister', {
+			i: $i.token,
+			endpoint,
+		});
+		console.log('pushSubscriptionは削除されない');
+	} else {
+		pushSubscription.unsubscribe();
+		apiWithDialog('sw/unregister', {
+			endpoint,
+		});
+		pushSubscription = null;
+		console.log('pushSubscription = null');
+	}
+}
+
+function encode(buffer: ArrayBuffer | null) {
+	return btoa(String.fromCharCode.apply(null, new Uint8Array(buffer)));
+}
+
+/**
+ * Convert the URL safe base64 string to a Uint8Array
+ * @param base64String base64 string
+ */
+ function urlBase64ToUint8Array(base64String: string): Uint8Array {
+	const padding = '='.repeat((4 - base64String.length % 4) % 4);
+	const base64 = (base64String + padding)
+		.replace(/-/g, '+')
+		.replace(/_/g, '/');
+
+	const rawData = window.atob(base64);
+	const outputArray = new Uint8Array(rawData.length);
+
+	for (let i = 0; i < rawData.length; ++i) {
+		outputArray[i] = rawData.charCodeAt(i);
+	}
+	return outputArray;
+}
+
+navigator.serviceWorker.ready.then(async swr => {
+	registration = swr;
+
+	console.log('registration = ', $$(registration).value);
+
+	pushSubscription = await registration.pushManager.getSubscription();
+	console.log('pushSubscription = ', $$(pushSubscription).value);
+
+	if (instance.swPublickey && ('PushManager' in window) && $i && $i.token) {
+		supported = true;
+		console.log('supported = true');
+
+		if (pushSubscription) {
+			const res = await api('sw/check-exists', {
+				endpoint: pushSubscription.endpoint,
+			});
+
+			if (res) {
+				alreadySubscribed = true;
+			}
+			console.log('alreadySubscribed = ', alreadySubscribed);
+		}
+	} else { console.log('supported = false'); }
+});
+</script>
