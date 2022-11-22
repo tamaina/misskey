@@ -63,7 +63,7 @@ function subscribe() {
 
 	// SEE: https://developer.mozilla.org/en-US/docs/Web/API/PushManager/subscribe#Parameters
 	return promiseDialog(registration.pushManager.subscribe({
-		userVisibleOnly: false,
+		userVisibleOnly: true,
 		applicationServerKey: urlBase64ToUint8Array(instance.swPublickey)
 	})
 	.then(async subscription => {
@@ -122,7 +122,7 @@ function encode(buffer: ArrayBuffer | null) {
  * Convert the URL safe base64 string to a Uint8Array
  * @param base64String base64 string
  */
-function urlBase64ToUint8Array(base64String: string): Uint8Array {
+ function urlBase64ToUint8Array(base64String: string): Uint8Array {
 	const padding = '='.repeat((4 - base64String.length % 4) % 4);
 	const base64 = (base64String + padding)
 		.replace(/-/g, '+')
