@@ -170,6 +170,8 @@ same as 12.112.0
   IPv4/IPv6 is used by default. You can tune this behavior via `redis.family`.
 - Server: Add possibility to log IP addresses of users @syuilo
 - Add additional drive capacity change support @CyberRex0
+- Migrate to Yarn Berry (v3.2.1) @ThatOneCalculator
+	- You may have to `yarn run clean-all` and `yarn set version berry` before running `yarn install` if you're still on yarn classic
 
 ### Bugfixes
 - Server: Fix GenerateVideoThumbnail failed @mei23
