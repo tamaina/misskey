@@ -262,8 +262,15 @@ if (props.channel) {
 
 // 公開以外へのリプライ時は元の公開範囲を引き継ぐ
 if (props.reply && ['home', 'followers', 'specified'].includes(props.reply.visibility)) {
-	visibility = props.reply.visibility;
-	if (props.reply.visibility === 'specified') {
+	if (props.reply.visibility === 'home' && visibility === 'followers') {
+		visibility = 'followers';
+	} else if (['home', 'followers'].includes(props.reply.visibility) && visibility === 'specified') {
+		visibility = 'specified';
+	} else {
+		visibility = props.reply.visibility;
+	}
+
+	if (visibility === 'specified') {
 		os.api('users/show', {
 			userIds: props.reply.visibleUserIds.filter(uid => uid !== $i.id && uid !== props.reply.userId),
 		}).then(users => {
