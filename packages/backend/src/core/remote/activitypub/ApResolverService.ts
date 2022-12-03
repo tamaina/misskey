@@ -79,7 +79,6 @@ export class Resolver {
 		private recursionLimit = 100
 	) {
 		this.history = new Set();
-		this.recursionLimit = recursionLimit;
 	}
 
 	public getHistory(): string[] {
