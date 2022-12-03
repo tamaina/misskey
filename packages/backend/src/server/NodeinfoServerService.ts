@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { FastifyInstance, FastifyPluginOptions, FastifyReply, FastifyRequest } from 'fastify';
+import Router from '@koa/router';
 import { IsNull, MoreThan } from 'typeorm';
 import { DI } from '@/di-symbols.js';
 import type { NotesRepository, UsersRepository } from '@/models/index.js';
@@ -27,7 +27,6 @@ export class NodeinfoServerService {
 		private userEntityService: UserEntityService,
 		private metaService: MetaService,
 	) {
-		this.createServer = this.createServer.bind(this);
 	}
 
 	public getLinks() {
@@ -40,7 +39,9 @@ export class NodeinfoServerService {
 			}];
 	}
 
-	public createServer(fastify: FastifyInstance, options: FastifyPluginOptions, done: (err?: Error) => void) {
+	public createRouter() {
+		const router = new Router();
+
 		const nodeinfo2 = async () => {
 			const now = Date.now();
 			const [
@@ -107,22 +108,22 @@ export class NodeinfoServerService {
 
 		const cache = new Cache<Awaited<ReturnType<typeof nodeinfo2>>>(1000 * 60 * 10);
 
-		fastify.get(nodeinfo2_1path, async (request, reply) => {
+		router.get(nodeinfo2_1path, async ctx => {
 			const base = await cache.fetch(null, () => nodeinfo2());
 
-			reply.header('Cache-Control', 'public, max-age=600');
-			return { version: '2.1', ...base };
+			ctx.body = { version: '2.1', ...base };
+			ctx.set('Cache-Control', 'public, max-age=600');
 		});
 
-		fastify.get(nodeinfo2_0path, async (request, reply) => {
+		router.get(nodeinfo2_0path, async ctx => {
 			const base = await cache.fetch(null, () => nodeinfo2());
 
 			delete (base as any).software.repository;
 
-			reply.header('Cache-Control', 'public, max-age=600');
-			return { version: '2.0', ...base };
+			ctx.body = { version: '2.0', ...base };
+			ctx.set('Cache-Control', 'public, max-age=600');
 		});
 
-		done();
+		return router;
 	}
 }

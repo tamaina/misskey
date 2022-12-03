@@ -3,7 +3,6 @@ import { Inject, Injectable } from '@nestjs/common';
 import bcrypt from 'bcryptjs';
 import * as speakeasy from 'speakeasy';
 import { IsNull } from 'typeorm';
-import { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
 import { DI } from '@/di-symbols.js';
 import type { UserSecurityKeysRepository, SigninsRepository, UserProfilesRepository, AttestationChallengesRepository, UsersRepository } from '@/models/index.js';
 import type { Config } from '@/config.js';
@@ -13,6 +12,7 @@ import { IdService } from '@/core/IdService.js';
 import { TwoFactorAuthenticationService } from '@/core/TwoFactorAuthenticationService.js';
 import { RateLimiterService } from './RateLimiterService.js';
 import { SigninService } from './SigninService.js';
+import type Koa from 'koa';
 
 @Injectable()
 export class SigninApiService {
@@ -42,60 +42,47 @@ export class SigninApiService {
 	) {
 	}
 
-	public async signin(
-		request: FastifyRequest<{
-			Body: {
-				username: string;
-				password: string;
-				token?: string;
-				signature?: string;
-				authenticatorData?: string;
-				clientDataJSON?: string;
-				credentialId?: string;
-				challengeId?: string;
-			};
-		}>,
-		reply: FastifyReply,
-	) {
-		reply.header('Access-Control-Allow-Origin', this.config.url);
-		reply.header('Access-Control-Allow-Credentials', 'true');
+	public async signin(ctx: Koa.Context) {
+		ctx.set('Access-Control-Allow-Origin', this.config.url);
+		ctx.set('Access-Control-Allow-Credentials', 'true');
 
-		const body = request.body;
+		const body = ctx.request.body as any;
 		const username = body['username'];
 		const password = body['password'];
 		const token = body['token'];
 
 		function error(status: number, error: { id: string }) {
-			reply.code(status);
-			return { error };
+			ctx.status = status;
+			ctx.body = { error };
 		}
 
 		try {
 		// not more than 1 attempt per second and not more than 10 attempts per hour
-			await this.rateLimiterService.limit({ key: 'signin', duration: 60 * 60 * 1000, max: 10, minInterval: 1000 }, getIpHash(request.ip));
+			await this.rateLimiterService.limit({ key: 'signin', duration: 60 * 60 * 1000, max: 10, minInterval: 1000 }, getIpHash(ctx.ip));
 		} catch (err) {
-			reply.code(429);
-			return {
+			ctx.status = 429;
+			ctx.body = {
 				error: {
 					message: 'Too many failed attempts to sign in. Try again later.',
 					code: 'TOO_MANY_AUTHENTICATION_FAILURES',
 					id: '22d05606-fbcf-421a-a2db-b32610dcfd1b',
 				},
 			};
+			return;
 		}
 
 		if (typeof username !== 'string') {
-			reply.code(400);
+			ctx.status = 400;
 			return;
 		}
 
 		if (typeof password !== 'string') {
-			reply.code(400);
+			ctx.status = 400;
 			return;
 		}
 
 		if (token != null && typeof token !== 'string') {
-			reply.code(400);
+			ctx.status = 400;
 			return;
 		}
 
@@ -106,15 +93,17 @@ export class SigninApiService {
 		}) as ILocalUser;
 
 		if (user == null) {
-			return error(404, {
+			error(404, {
 				id: '6cc579cc-885d-43d8-95c2-b8c7fc963280',
 			});
+			return;
 		}
 
 		if (user.isSuspended) {
-			return error(403, {
+			error(403, {
 				id: 'e03a5f46-d309-4865-9b69-56282d94e1eb',
 			});
+			return;
 		}
 
 		const profile = await this.userProfilesRepository.findOneByOrFail({ userId: user.id });
@@ -128,29 +117,32 @@ export class SigninApiService {
 				id: this.idService.genId(),
 				createdAt: new Date(),
 				userId: user.id,
-				ip: request.ip,
-				headers: request.headers,
+				ip: ctx.ip,
+				headers: ctx.headers,
 				success: false,
 			});
 
-			return error(status ?? 500, failure ?? { id: '4e30e80c-e338-45a0-8c8f-44455efa3b76' });
+			error(status ?? 500, failure ?? { id: '4e30e80c-e338-45a0-8c8f-44455efa3b76' });
 		};
 
 		if (!profile.twoFactorEnabled) {
 			if (same) {
-				return this.signinService.signin(request, reply, user);
+				this.signinService.signin(ctx, user);
+				return;
 			} else {
-				return await fail(403, {
+				await fail(403, {
 					id: '932c904e-9460-45b7-9ce6-7ed33be7eb2c',
 				});
+				return;
 			}
 		}
 
 		if (token) {
 			if (!same) {
-				return await fail(403, {
+				await fail(403, {
 					id: '932c904e-9460-45b7-9ce6-7ed33be7eb2c',
 				});
+				return;
 			}
 
 			const verified = (speakeasy as any).totp.verify({
@@ -161,17 +153,20 @@ export class SigninApiService {
 			});
 
 			if (verified) {
-				return this.signinService.signin(request, reply, user);
+				this.signinService.signin(ctx, user);
+				return;
 			} else {
-				return await fail(403, {
+				await fail(403, {
 					id: 'cdf1235b-ac71-46d4-a3a6-84ccce48df6f',
 				});
+				return;
 			}
-		} else if (body.credentialId && body.clientDataJSON && body.authenticatorData && body.signature) {
+		} else if (body.credentialId) {
 			if (!same && !profile.usePasswordLessLogin) {
-				return await fail(403, {
+				await fail(403, {
 					id: '932c904e-9460-45b7-9ce6-7ed33be7eb2c',
 				});
+				return;
 			}
 
 			const clientDataJSON = Buffer.from(body.clientDataJSON, 'hex');
@@ -184,9 +179,10 @@ export class SigninApiService {
 			});
 
 			if (!challenge) {
-				return await fail(403, {
+				await fail(403, {
 					id: '2715a88a-2125-4013-932f-aa6fe72792da',
 				});
+				return;
 			}
 
 			await this.attestationChallengesRepository.delete({
@@ -195,9 +191,10 @@ export class SigninApiService {
 			});
 
 			if (new Date().getTime() - challenge.createdAt.getTime() >= 5 * 60 * 1000) {
-				return await fail(403, {
+				await fail(403, {
 					id: '2715a88a-2125-4013-932f-aa6fe72792da',
 				});
+				return;
 			}
 
 			const securityKey = await this.userSecurityKeysRepository.findOneBy({
@@ -210,9 +207,10 @@ export class SigninApiService {
 			});
 
 			if (!securityKey) {
-				return await fail(403, {
+				await fail(403, {
 					id: '66269679-aeaf-4474-862b-eb761197e046',
 				});
+				return;
 			}
 
 			const isValid = this.twoFactorAuthenticationService.verifySignin({
@@ -225,17 +223,20 @@ export class SigninApiService {
 			});
 
 			if (isValid) {
-				return this.signinService.signin(request, reply, user);
+				this.signinService.signin(ctx, user);
+				return;
 			} else {
-				return await fail(403, {
+				await fail(403, {
 					id: '93b86c4b-72f9-40eb-9815-798928603d1e',
 				});
+				return;
 			}
 		} else {
 			if (!same && !profile.usePasswordLessLogin) {
-				return await fail(403, {
+				await fail(403, {
 					id: '932c904e-9460-45b7-9ce6-7ed33be7eb2c',
 				});
+				return;
 			}
 
 			const keys = await this.userSecurityKeysRepository.findBy({
@@ -243,9 +244,10 @@ export class SigninApiService {
 			});
 
 			if (keys.length === 0) {
-				return await fail(403, {
+				await fail(403, {
 					id: 'f27fd449-9af4-4841-9249-1f989b9fa4a4',
 				});
+				return;
 			}
 
 			// 32 byte challenge
@@ -264,14 +266,15 @@ export class SigninApiService {
 				registrationChallenge: false,
 			});
 
-			reply.code(200);
-			return {
+			ctx.body = {
 				challenge,
 				challengeId,
 				securityKeys: keys.map(key => ({
 					id: key.id,
 				})),
 			};
+			ctx.status = 200;
+			return;
 		}
 	// never get here
 	}

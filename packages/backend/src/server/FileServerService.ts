@@ -2,8 +2,10 @@ import * as fs from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname } from 'node:path';
 import { Inject, Injectable } from '@nestjs/common';
-import { FastifyInstance, FastifyRequest, FastifyReply, FastifyPluginOptions } from 'fastify';
-import fastifyStatic from '@fastify/static';
+import Koa from 'koa';
+import cors from '@koa/cors';
+import Router from '@koa/router';
+import send from 'koa-send';
 import rename from 'rename';
 import type { Config } from '@/config.js';
 import type { DriveFilesRepository } from '@/models/index.js';
@@ -44,44 +46,45 @@ export class FileServerService {
 		private loggerService: LoggerService,
 	) {
 		this.logger = this.loggerService.getLogger('server', 'gray', false);
-
-		this.createServer = this.createServer.bind(this);
 	}
 
-	public commonReadableHandlerGenerator(reply: FastifyReply) {
-		return (err: Error): void => {
-			this.logger.error(err);
-			reply.code(500);
-			reply.header('Cache-Control', 'max-age=300');
+	public commonReadableHandlerGenerator(ctx: Koa.Context) {
+		return (e: Error): void => {
+			this.logger.error(e);
+			ctx.status = 500;
+			ctx.set('Cache-Control', 'max-age=300');
 		};
 	}
 	
-	public createServer(fastify: FastifyInstance, options: FastifyPluginOptions, done: (err?: Error) => void) {
-		fastify.addHook('onRequest', (request, reply, done) => {
-			reply.header('Content-Security-Policy', 'default-src \'none\'; img-src \'self\'; media-src \'self\'; style-src \'unsafe-inline\'');
-			done();
+	public createServer() {
+		const app = new Koa();
+		app.use(cors());
+		app.use(async (ctx, next) => {
+			ctx.set('Content-Security-Policy', 'default-src \'none\'; img-src \'self\'; media-src \'self\'; style-src \'unsafe-inline\'');
+			await next();
 		});
 
-		fastify.register(fastifyStatic, {
-			root: _dirname,
-			serve: false,
-		});
+		// Init router
+		const router = new Router();
 
-		fastify.get('/app-default.jpg', (request, reply) => {
+		router.get('/app-default.jpg', ctx => {
 			const file = fs.createReadStream(`${_dirname}/assets/dummy.png`);
-			reply.header('Content-Type', 'image/jpeg');
-			reply.header('Cache-Control', 'max-age=31536000, immutable');
-			return reply.send(file);
+			ctx.body = file;
+			ctx.set('Content-Type', 'image/jpeg');
+			ctx.set('Cache-Control', 'max-age=31536000, immutable');
 		});
 
-		fastify.get<{ Params: { key: string; } }>('/:key', async (request, reply) => await this.sendDriveFile(request, reply));
-		fastify.get<{ Params: { key: string; } }>('/:key/*', async (request, reply) => await this.sendDriveFile(request, reply));
+		router.get('/:key', ctx => this.sendDriveFile(ctx));
+		router.get('/:key/(.*)', ctx => this.sendDriveFile(ctx));
 
-		done();
+		// Register router
+		app.use(router.routes());
+
+		return app;
 	}
 
-	private async sendDriveFile(request: FastifyRequest<{ Params: { key: string; } }>, reply: FastifyReply) {
-		const key = request.params.key;
+	private async sendDriveFile(ctx: Koa.Context) {
+		const key = ctx.params.key;
 
 		// Fetch drive file
 		const file = await this.driveFilesRepository.createQueryBuilder('file')
@@ -91,9 +94,10 @@ export class FileServerService {
 			.getOne();
 
 		if (file == null) {
-			reply.code(404);
-			reply.header('Cache-Control', 'max-age=86400');
-			return reply.sendFile('/dummy.png', assets);
+			ctx.status = 404;
+			ctx.set('Cache-Control', 'max-age=86400');
+			await send(ctx as any, '/dummy.png', { root: assets });
+			return;
 		}
 
 		const isThumbnail = file.thumbnailAccessKey === key;
@@ -131,18 +135,18 @@ export class FileServerService {
 					};
 
 					const image = await convertFile();
-					reply.header('Content-Type', FILE_TYPE_BROWSERSAFE.includes(image.type) ? image.type : 'application/octet-stream');
-					reply.header('Cache-Control', 'max-age=31536000, immutable');
-					return image.data;
+					ctx.body = image.data;
+					ctx.set('Content-Type', FILE_TYPE_BROWSERSAFE.includes(image.type) ? image.type : 'application/octet-stream');
+					ctx.set('Cache-Control', 'max-age=31536000, immutable');
 				} catch (err) {
 					this.logger.error(`${err}`);
 
 					if (err instanceof StatusError && err.isClientError) {
-						reply.code(err.statusCode);
-						reply.header('Cache-Control', 'max-age=86400');
+						ctx.status = err.statusCode;
+						ctx.set('Cache-Control', 'max-age=86400');
 					} else {
-						reply.code(500);
-						reply.header('Cache-Control', 'max-age=300');
+						ctx.status = 500;
+						ctx.set('Cache-Control', 'max-age=300');
 					}
 				} finally {
 					cleanup();
@@ -150,8 +154,8 @@ export class FileServerService {
 				return;
 			}
 
-			reply.code(204);
-			reply.header('Cache-Control', 'max-age=86400');
+			ctx.status = 204;
+			ctx.set('Cache-Control', 'max-age=86400');
 			return;
 		}
 
@@ -162,17 +166,18 @@ export class FileServerService {
 				extname: ext ? `.${ext}` : undefined,
 			}).toString();
 
-			reply.header('Content-Type', FILE_TYPE_BROWSERSAFE.includes(mime) ? mime : 'application/octet-stream');
-			reply.header('Cache-Control', 'max-age=31536000, immutable');
-			reply.header('Content-Disposition', contentDisposition('inline', filename));
-			return this.internalStorageService.read(key);
+			ctx.body = this.internalStorageService.read(key);
+			ctx.set('Content-Type', FILE_TYPE_BROWSERSAFE.includes(mime) ? mime : 'application/octet-stream');
+			ctx.set('Cache-Control', 'max-age=31536000, immutable');
+			ctx.set('Content-Disposition', contentDisposition('inline', filename));
 		} else {
 			const readable = this.internalStorageService.read(file.accessKey!);
-			readable.on('error', this.commonReadableHandlerGenerator(reply));
-			reply.header('Content-Type', FILE_TYPE_BROWSERSAFE.includes(file.type) ? file.type : 'application/octet-stream');
-			reply.header('Cache-Control', 'max-age=31536000, immutable');
-			reply.header('Content-Disposition', contentDisposition('inline', file.name));
-			return readable;
+			readable.on('error', this.commonReadableHandlerGenerator(ctx));
+			ctx.body = readable;
+			ctx.set('Content-Type', FILE_TYPE_BROWSERSAFE.includes(file.type) ? file.type : 'application/octet-stream');
+			ctx.set('Cache-Control', 'max-age=31536000, immutable');
+			ctx.set('Content-Disposition', contentDisposition('inline', file.name));
 		}
 	}
 }
+

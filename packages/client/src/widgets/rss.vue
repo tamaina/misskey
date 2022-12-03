@@ -51,7 +51,7 @@ const items = ref([]);
 const fetching = ref(true);
 
 const tick = () => {
-	window.fetch(`/api/fetch-rss?url=${widgetProps.url}`, {}).then(res => {
+	fetch(`/api/fetch-rss?url=${widgetProps.url}`, {}).then(res => {
 		res.json().then(feed => {
 			items.value = feed.items;
 			fetching.value = false;

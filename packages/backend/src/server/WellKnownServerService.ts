@@ -1,7 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { FastifyInstance, FastifyPluginOptions, FastifyReply, FastifyRequest } from 'fastify';
+import Router from '@koa/router';
 import { IsNull, MoreThan } from 'typeorm';
-import vary from 'vary';
 import { DI } from '@/di-symbols.js';
 import type { UsersRepository } from '@/models/index.js';
 import type { Config } from '@/config.js';
@@ -22,10 +21,11 @@ export class WellKnownServerService {
 
 		private nodeinfoServerService: NodeinfoServerService,
 	) {
-		this.createServer = this.createServer.bind(this);
 	}
 
-	public createServer(fastify: FastifyInstance, options: FastifyPluginOptions, done: (err?: Error) => void) {
+	public createRouter() {
+		const router = new Router();
+
 		const XRD = (...x: { element: string, value?: string, attributes?: Record<string, string> }[]) =>
 			`<?xml version="1.0" encoding="UTF-8"?><XRD xmlns="http://docs.oasis-open.org/ns/xri/xrd-1.0">${x.map(({ element, value, attributes }) =>
 				`<${
@@ -34,35 +34,37 @@ export class WellKnownServerService {
 					typeof value === 'string' ? `>${escapeValue(value)}</${element}` : '/'
 				}>`).reduce((a, c) => a + c, '')}</XRD>`;
 
-		const allPath = '/.well-known/*';
+		const allPath = '/.well-known/(.*)';
 		const webFingerPath = '/.well-known/webfinger';
 		const jrd = 'application/jrd+json';
 		const xrd = 'application/xrd+xml';
 
-		fastify.addHook('onRequest', (request, reply, done) => {
-			reply.header('Access-Control-Allow-Headers', 'Accept');
-			reply.header('Access-Control-Allow-Methods', 'GET, OPTIONS');
-			reply.header('Access-Control-Allow-Origin', '*');
-			reply.header('Access-Control-Expose-Headers', 'Vary');
-			done();
+		router.use(allPath, async (ctx, next) => {
+			ctx.set({
+				'Access-Control-Allow-Headers': 'Accept',
+				'Access-Control-Allow-Methods': 'GET, OPTIONS',
+				'Access-Control-Allow-Origin': '*',
+				'Access-Control-Expose-Headers': 'Vary',
+			});
+			await next();
 		});
 
-		fastify.options(allPath, async (request, reply) => {
-			reply.code(204);
+		router.options(allPath, async ctx => {
+			ctx.status = 204;
 		});
 
-		fastify.get('/.well-known/host-meta', async (request, reply) => {
-			reply.header('Content-Type', xrd);
-			return XRD({ element: 'Link', attributes: {
+		router.get('/.well-known/host-meta', async ctx => {
+			ctx.set('Content-Type', xrd);
+			ctx.body = XRD({ element: 'Link', attributes: {
 				rel: 'lrdd',
 				type: xrd,
 				template: `${this.config.url}${webFingerPath}?resource={uri}`,
 			} });
 		});
 
-		fastify.get('/.well-known/host-meta.json', async (request, reply) => {
-			reply.header('Content-Type', jrd);
-			return {
+		router.get('/.well-known/host-meta.json', async ctx => {
+			ctx.set('Content-Type', jrd);
+			ctx.body = {
 				links: [{
 					rel: 'lrdd',
 					type: jrd,
@@ -71,16 +73,16 @@ export class WellKnownServerService {
 			};
 		});
 
-		fastify.get('/.well-known/nodeinfo', async (request, reply) => {
-			return { links: this.nodeinfoServerService.getLinks() };
+		router.get('/.well-known/nodeinfo', async ctx => {
+			ctx.body = { links: this.nodeinfoServerService.getLinks() };
 		});
 
 		/* TODO
-fastify.get('/.well-known/change-password', async (request, reply) => {
+router.get('/.well-known/change-password', async ctx => {
 });
 */
 
-		fastify.get<{ Querystring: { resource: string } }>(webFingerPath, async (request, reply) => {
+		router.get(webFingerPath, async ctx => {
 			const fromId = (id: User['id']): FindOptionsWhere<User> => ({
 				id,
 				host: IsNull(),
@@ -102,22 +104,22 @@ fastify.get('/.well-known/change-password', async (request, reply) => {
 					isSuspended: false,
 				} : 422;
 
-			if (typeof request.query.resource !== 'string') {
-				reply.code(400);
+			if (typeof ctx.query.resource !== 'string') {
+				ctx.status = 400;
 				return;
 			}
 
-			const query = generateQuery(request.query.resource.toLowerCase());
+			const query = generateQuery(ctx.query.resource.toLowerCase());
 
 			if (typeof query === 'number') {
-				reply.code(query);
+				ctx.status = query;
 				return;
 			}
 
 			const user = await this.usersRepository.findOneBy(query);
 
 			if (user == null) {
-				reply.code(404);
+				ctx.status = 404;
 				return;
 			}
 
@@ -137,25 +139,30 @@ fastify.get('/.well-known/change-password', async (request, reply) => {
 				template: `${this.config.url}/authorize-follow?acct={uri}`,
 			};
 
-			vary(reply.raw, 'Accept');
-			reply.header('Cache-Control', 'public, max-age=180');
-
-			if (request.accepts().type([jrd, xrd]) === xrd) {
-				reply.type(xrd);
-				return XRD(
+			if (ctx.accepts(jrd, xrd) === xrd) {
+				ctx.body = XRD(
 					{ element: 'Subject', value: subject },
 					{ element: 'Link', attributes: self },
 					{ element: 'Link', attributes: profilePage },
 					{ element: 'Link', attributes: subscribe });
+				ctx.type = xrd;
 			} else {
-				reply.type(jrd);
-				return {
+				ctx.body = {
 					subject,
 					links: [self, profilePage, subscribe],
 				};
+				ctx.type = jrd;
 			}
+
+			ctx.vary('Accept');
+			ctx.set('Cache-Control', 'public, max-age=180');
 		});
 
-		done();
+		// Return 404 for other .well-known
+		router.all(allPath, async ctx => {
+			ctx.status = 404;
+		});
+
+		return router;
 	}
 }

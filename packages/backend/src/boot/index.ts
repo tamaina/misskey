@@ -52,7 +52,6 @@ if (!envOption.quiet) {
 process.on('uncaughtException', err => {
 	try {
 		logger.error(err);
-		console.trace(err);
 	} catch { }
 });
 

@@ -1,13 +1,15 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { FastifyInstance, FastifyPluginOptions } from 'fastify';
-import cors from '@fastify/cors';
-import multipart from '@fastify/multipart';
-import { ModuleRef, repl } from '@nestjs/core';
+import Koa from 'koa';
+import Router from '@koa/router';
+import multer from '@koa/multer';
+import bodyParser from 'koa-bodyparser';
+import cors from '@koa/cors';
+import { ModuleRef } from '@nestjs/core';
 import type { Config } from '@/config.js';
 import type { UsersRepository, InstancesRepository, AccessTokensRepository } from '@/models/index.js';
 import { DI } from '@/di-symbols.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
-import endpoints, { IEndpoint } from './endpoints.js';
+import endpoints from './endpoints.js';
 import { ApiCallService } from './ApiCallService.js';
 import { SignupApiService } from './SignupApiService.js';
 import { SigninApiService } from './SigninApiService.js';
@@ -40,107 +42,92 @@ export class ApiServerService {
 		private discordServerService: DiscordServerService,
 		private twitterServerService: TwitterServerService,
 	) {
-		this.createServer = this.createServer.bind(this);
 	}
 
-	public createServer(fastify: FastifyInstance, options: FastifyPluginOptions, done: (err?: Error) => void) {
-		fastify.register(cors, {
+	public createApiServer() {
+		const handlers: Record<string, any> = {};
+
+		for (const endpoint of endpoints) {
+			handlers[endpoint.name] = this.moduleRef.get('ep:' + endpoint.name, { strict: false }).exec;
+		}
+
+		// Init app
+		const apiServer = new Koa();
+
+		apiServer.use(cors({
 			origin: '*',
+		}));
+
+		// No caching
+		apiServer.use(async (ctx, next) => {
+			ctx.set('Cache-Control', 'private, max-age=0, must-revalidate');
+			await next();
 		});
 
-		fastify.register(multipart, {
+		apiServer.use(bodyParser({
+			// リクエストが multipart/form-data でない限りはJSONだと見なす
+			detectJSON: ctx => !ctx.is('multipart/form-data'),
+		}));
+
+		// Init multer instance
+		const upload = multer({
+			storage: multer.diskStorage({}),
 			limits: {
 				fileSize: this.config.maxFileSize ?? 262144000,
 				files: 1,
 			},
 		});
 
-		// Prevent cache
-		fastify.addHook('onRequest', (request, reply, done) => {
-			reply.header('Cache-Control', 'private, max-age=0, must-revalidate');
-			done();
-		});
+		// Init router
+		const router = new Router();
 
+		/**
+		 * Register endpoint handlers
+		 */
 		for (const endpoint of endpoints) {
-			const ep = {
-				name: endpoint.name,
-				meta: endpoint.meta,
-				params: endpoint.params,
-				exec: this.moduleRef.get('ep:' + endpoint.name, { strict: false }).exec,
-			};
-
 			if (endpoint.meta.requireFile) {
-				fastify.all<{
-					Params: { endpoint: string; },
-					Body: Record<string, unknown>,
-					Querystring: Record<string, unknown>,
-				}>('/' + endpoint.name, (request, reply) => {
-					if (request.method === 'GET' && !endpoint.meta.allowGet) {
-						reply.code(405);
-						return;
-					}
-		
-					this.apiCallService.handleMultipartRequest(ep, request, reply);
-				});
+				router.post(`/${endpoint.name}`, upload.single('file'), this.apiCallService.handleRequest.bind(this.apiCallService, endpoint, handlers[endpoint.name]));
 			} else {
-				fastify.all<{
-					Params: { endpoint: string; },
-					Body: Record<string, unknown>,
-					Querystring: Record<string, unknown>,
-				}>('/' + endpoint.name, (request, reply) => {
-					if (request.method === 'GET' && !endpoint.meta.allowGet) {
-						reply.code(405);
-						return;
+				// 後方互換性のため
+				if (endpoint.name.includes('-')) {
+					router.post(`/${endpoint.name.replace(/-/g, '_')}`, this.apiCallService.handleRequest.bind(this.apiCallService, endpoint, handlers[endpoint.name]));
+
+					if (endpoint.meta.allowGet) {
+						router.get(`/${endpoint.name.replace(/-/g, '_')}`, this.apiCallService.handleRequest.bind(this.apiCallService, endpoint, handlers[endpoint.name]));
+					} else {
+						router.get(`/${endpoint.name.replace(/-/g, '_')}`, async ctx => { ctx.status = 405; });
 					}
-		
-					this.apiCallService.handleRequest(ep, request, reply);
-				});
+				}
+
+				router.post(`/${endpoint.name}`, this.apiCallService.handleRequest.bind(this.apiCallService, endpoint, handlers[endpoint.name]));
+
+				if (endpoint.meta.allowGet) {
+					router.get(`/${endpoint.name}`, this.apiCallService.handleRequest.bind(this.apiCallService, endpoint, handlers[endpoint.name]));
+				} else {
+					router.get(`/${endpoint.name}`, async ctx => { ctx.status = 405; });
+				}
 			}
 		}
 
-		fastify.post<{
-			Body: {
-				username: string;
-				password: string;
-				host?: string;
-				invitationCode?: string;
-				emailAddress?: string;
-				'hcaptcha-response'?: string;
-				'g-recaptcha-response'?: string;
-				'turnstile-response'?: string;
-			}
-		}>('/signup', (request, reply) => this.signupApiServiceService.signup(request, reply));
+		router.post('/signup', ctx => this.signupApiServiceService.signup(ctx));
+		router.post('/signin', ctx => this.signinApiServiceService.signin(ctx));
+		router.post('/signup-pending', ctx => this.signupApiServiceService.signupPending(ctx));
 
-		fastify.post<{
-			Body: {
-				username: string;
-				password: string;
-				token?: string;
-				signature?: string;
-				authenticatorData?: string;
-				clientDataJSON?: string;
-				credentialId?: string;
-				challengeId?: string;
-			};
-		}>('/signin', (request, reply) => this.signinApiServiceService.signin(request, reply));
+		router.use(this.discordServerService.create().routes());
+		router.use(this.githubServerService.create().routes());
+		router.use(this.twitterServerService.create().routes());
 
-		fastify.post<{ Body: { code: string; } }>('/signup-pending', (request, reply) => this.signupApiServiceService.signupPending(request, reply));
-
-		fastify.register(this.discordServerService.create);
-		fastify.register(this.githubServerService.create);
-		fastify.register(this.twitterServerService.create);
-
-		fastify.get('/v1/instance/peers', async (request, reply) => {
+		router.get('/v1/instance/peers', async ctx => {
 			const instances = await this.instancesRepository.find({
 				select: ['host'],
 			});
 
-			return instances.map(instance => instance.host);
+			ctx.body = instances.map(instance => instance.host);
 		});
 
-		fastify.post<{ Params: { session: string; } }>('/miauth/:session/check', async (request, reply) => {
+		router.post('/miauth/:session/check', async ctx => {
 			const token = await this.accessTokensRepository.findOneBy({
-				session: request.params.session,
+				session: ctx.params.session,
 			});
 
 			if (token && token.session != null && !token.fetched) {
@@ -148,18 +135,26 @@ export class ApiServerService {
 					fetched: true,
 				});
 
-				return {
+				ctx.body = {
 					ok: true,
 					token: token.token,
 					user: await this.userEntityService.pack(token.userId, null, { detail: true }),
 				};
 			} else {
-				return {
+				ctx.body = {
 					ok: false,
 				};
 			}
 		});
 
-		done();
+		// Return 404 for unknown API
+		router.all('(.*)', async ctx => {
+			ctx.status = 404;
+		});
+
+		// Register router
+		apiServer.use(router.routes());
+
+		return apiServer;
 	}
 }

@@ -66,7 +66,7 @@ const ok = async () => {
 				formData.append('folderId', defaultStore.state.uploadFolder);
 			}
 
-			window.fetch(apiUrl + '/drive/files/create', {
+			fetch(apiUrl + '/drive/files/create', {
 				method: 'POST',
 				body: formData,
 			})
