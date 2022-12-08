@@ -30,6 +30,7 @@ export class UtilityService {
 		return blockedHosts.some(x => x.endsWith(host));
 	}
 
+	@bindThis
 	public extractDbHost(uri: string): string {
 		const url = new URL(uri);
 		return this.toPuny(url.hostname);
