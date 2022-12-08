@@ -3,6 +3,7 @@ import { toASCII } from 'punycode';
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
+import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class UtilityService {
@@ -12,15 +13,18 @@ export class UtilityService {
 	) {
 	}
 
+	@bindThis
 	public getFullApAccount(username: string, host: string | null): string {
 		return host ? `${username}@${this.toPuny(host)}` : `${username}@${this.toPuny(this.config.host)}`;
 	}
 
+	@bindThis
 	public isSelfHost(host: string | null): boolean {
 		if (host == null) return true;
 		return this.toPuny(this.config.host) === this.toPuny(host);
 	}
 
+	@bindThis
 	public isBlockedHost(blockedHosts: string[], host: string): boolean {
 		if (host == null) return false;
 		return blockedHosts.some(x => x.endsWith(host));
@@ -31,10 +35,12 @@ export class UtilityService {
 		return this.toPuny(url.hostname);
 	}
 
+	@bindThis
 	public toPuny(host: string): string {
 		return toASCII(host.toLowerCase());
 	}
 
+	@bindThis
 	public toPunyNullable(host: string | null | undefined): string | null {
 		if (host == null) return null;
 		return toASCII(host.toLowerCase());

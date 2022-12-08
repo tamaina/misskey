@@ -28,9 +28,10 @@ import InstanceChart from '@/core/chart/charts/instance.js';
 import { DownloadService } from '@/core/DownloadService.js';
 import { S3Service } from '@/core/S3Service.js';
 import { InternalStorageService } from '@/core/InternalStorageService.js';
-import { DriveFileEntityService } from './entities/DriveFileEntityService.js';
-import { UserEntityService } from './entities/UserEntityService.js';
-import { FileInfoService } from './FileInfoService.js';
+import { DriveFileEntityService } from '@/core/entities/DriveFileEntityService.js';
+import { UserEntityService } from '@/core/entities/UserEntityService.js';
+import { FileInfoService } from '@/core/FileInfoService.js';
+import { bindThis } from '@/decorators.js';
 import type S3 from 'aws-sdk/clients/s3.js';
 
 type AddFileArgs = {
@@ -122,6 +123,7 @@ export class DriveService {
 	 * @param hash Hash for original
 	 * @param size Size for original
 	 */
+	@bindThis
 	private async save(file: DriveFile, path: string, name: string, type: string, hash: string, size: number): Promise<DriveFile> {
 	// thunbnail, webpublic を必要なら生成
 		const alts = await this.generateAlts(path, type, !file.uri);
@@ -243,6 +245,7 @@ export class DriveService {
 	 * @param type Content-Type for original
 	 * @param generateWeb Generate webpublic or not
 	 */
+	@bindThis
 	public async generateAlts(path: string, type: string, generateWeb: boolean) {
 		if (type.startsWith('video/')) {
 			try {
@@ -346,6 +349,7 @@ export class DriveService {
 	/**
 	 * Upload to ObjectStorage
 	 */
+	@bindThis
 	private async upload(key: string, stream: fs.ReadStream | Buffer, type: string, filename?: string) {
 		if (type === 'image/apng') type = 'image/png';
 		if (!FILE_TYPE_BROWSERSAFE.includes(type)) type = 'application/octet-stream';
@@ -373,6 +377,7 @@ export class DriveService {
 		if (result) this.registerLogger.debug(`Uploaded: ${result.Bucket}/${result.Key} => ${result.Location}`);
 	}
 
+	@bindThis
 	private async deleteOldFile(user: IRemoteUser) {
 		const q = this.driveFilesRepository.createQueryBuilder('file')
 			.where('file.userId = :userId', { userId: user.id })
@@ -399,6 +404,7 @@ export class DriveService {
 	 * Add file to drive
 	 *
 	 */
+	@bindThis
 	public async addFile({
 		user,
 		path,
@@ -602,6 +608,7 @@ export class DriveService {
 		return file;
 	}
 
+	@bindThis
 	public async deleteFile(file: DriveFile, isExpired = false) {
 		if (file.storedInternal) {
 			this.internalStorageService.del(file.accessKey!);
@@ -628,6 +635,7 @@ export class DriveService {
 		this.deletePostProcess(file, isExpired);
 	}
 
+	@bindThis
 	public async deleteFileSync(file: DriveFile, isExpired = false) {
 		if (file.storedInternal) {
 			this.internalStorageService.del(file.accessKey!);
@@ -658,6 +666,7 @@ export class DriveService {
 		this.deletePostProcess(file, isExpired);
 	}
 
+	@bindThis
 	private async deletePostProcess(file: DriveFile, isExpired = false) {
 	// リモートファイル期限切れ削除後は直リンクにする
 		if (isExpired && file.userHost !== null && file.uri != null) {
@@ -684,6 +693,7 @@ export class DriveService {
 		}
 	}
 
+	@bindThis
 	public async deleteObjectStorageFile(key: string) {
 		const meta = await this.metaService.fetch();
 
@@ -695,6 +705,7 @@ export class DriveService {
 		}).promise();
 	}
 
+	@bindThis
 	public async uploadFromUrl({
 		url,
 		user,
