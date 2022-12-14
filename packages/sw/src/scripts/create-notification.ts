@@ -1,8 +1,6 @@
 /*
  * Notification manager for SW
  */
-declare var self: ServiceWorkerGlobalScope;
-
 import { swLang } from '@/scripts/lang';
 import { cli } from '@/scripts/operations';
 import { pushNotificationDataMap } from '@/types';
@@ -15,9 +13,8 @@ import * as url from '@/scripts/url';
 const iconUrl = (name: string) => `/static-assets/notification-badges/${name}.png`;
 
 export async function createNotification<K extends keyof pushNotificationDataMap>(data: pushNotificationDataMap[K]) {
-	console.log('createNotification 1');
 	const n = await composeNotification(data);
-	console.log('createNotification 2', n);
+
 	if (n) {
 		return self.registration.showNotification(...n);
 	} else {
@@ -41,7 +38,7 @@ async function composeNotification<K extends keyof pushNotificationDataMap>(data
 		*/
 		case 'notification':
 			switch (data.body.type) {
-				case 'follow':
+				case 'follow': {
 					// users/showの型定義をswos.apiへ当てはめるのが困難なのでapiFetch.requestを直接使用
 					const account = await getAccountFromId(data.userId);
 					if (!account) return null;
@@ -57,7 +54,8 @@ async function composeNotification<K extends keyof pushNotificationDataMap>(data
 								title: t('_notification._actions.followBack')
 							}
 						],
-					} as any];
+					}];
+				}
 
 				case 'mention':
 					return [t('_notification.youGotMention', { name: getUserName(data.body.user) }), {
@@ -71,7 +69,7 @@ async function composeNotification<K extends keyof pushNotificationDataMap>(data
 								title: t('_notification._actions.reply')
 							}
 						],
-					} as any];
+					}];
 
 				case 'reply':
 					return [t('_notification.youGotReply', { name: getUserName(data.body.user) }), {
@@ -85,7 +83,7 @@ async function composeNotification<K extends keyof pushNotificationDataMap>(data
 								title: t('_notification._actions.reply')
 							}
 						],
-					} as any];
+					}];
 
 				case 'renote':
 					return [t('_notification.youRenoted', { name: getUserName(data.body.user) }), {
@@ -99,7 +97,7 @@ async function composeNotification<K extends keyof pushNotificationDataMap>(data
 								title: getUserName(data.body.user)
 							}
 						],
-					} as any];
+					}];
 
 				case 'quote':
 					return [t('_notification.youGotQuote', { name: getUserName(data.body.user) }), {
@@ -119,9 +117,9 @@ async function composeNotification<K extends keyof pushNotificationDataMap>(data
 							}
 							] : [])
 						],
-					} as any];
+					}];
 
-				case 'reaction':
+				case 'reaction': {
 					let reaction = data.body.reaction;
 					let badge: string | undefined;
 
@@ -151,7 +149,6 @@ async function composeNotification<K extends keyof pushNotificationDataMap>(data
 						badge = `/twemoji-badge/${char2fileName(reaction)}.png`;
 					}
 
-
 					if (badge ? await fetch(badge).then(res => res.status !== 200).catch(() => true) : true) {
 						badge = iconUrl('plus');
 					}
@@ -167,7 +164,8 @@ async function composeNotification<K extends keyof pushNotificationDataMap>(data
 								title: getUserName(data.body.user)
 							}
 						],
-					} as any];
+					}];
+				}
 
 				case 'pollVote':
 					return [t('_notification.youGotPoll', { name: getUserName(data.body.user) }), {
@@ -175,7 +173,7 @@ async function composeNotification<K extends keyof pushNotificationDataMap>(data
 						icon: data.body.user.avatarUrl,
 						badge: iconUrl('poll-h'),
 						data,
-					} as any];
+					}];
 
 				case 'pollEnded':
 					return [t('_notification.pollEnded'), {
@@ -200,7 +198,7 @@ async function composeNotification<K extends keyof pushNotificationDataMap>(data
 								title: t('reject')
 							}
 						],
-					} as any];
+					}];
 
 				case 'followRequestAccepted':
 					return [t('_notification.yourFollowRequestAccepted'), {
@@ -208,7 +206,7 @@ async function composeNotification<K extends keyof pushNotificationDataMap>(data
 						icon: data.body.user.avatarUrl,
 						badge: iconUrl('check'),
 						data,
-					} as any];
+					}];
 
 				case 'groupInvited':
 					return [t('_notification.youWereInvitedToGroup', { userName: getUserName(data.body.user) }), {
@@ -225,7 +223,7 @@ async function composeNotification<K extends keyof pushNotificationDataMap>(data
 								title: t('reject')
 							}
 						],
-					} as any];
+					}];
 
 				case 'app':
 						return [data.body.header || data.body.body, {
@@ -245,7 +243,7 @@ async function composeNotification<K extends keyof pushNotificationDataMap>(data
 					tag: `messaging:user:${data.body.userId}`,
 					data,
 					renotify: true,
-				} as any];
+				}];
 			}
 			return [t('_notification.youGotMessagingMessageFromGroup', { name: data.body.group.name }), {
 				icon: data.body.user.avatarUrl,
@@ -253,7 +251,7 @@ async function composeNotification<K extends keyof pushNotificationDataMap>(data
 				tag: `messaging:group:${data.body.groupId}`,
 				data,
 				renotify: true,
-			} as any];
+			}];
 		default:
 			return null;
 	}
