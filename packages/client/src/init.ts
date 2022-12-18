@@ -1,6 +1,9 @@
 /**
  * Client entry point
  */
+// https://vitejs.dev/config/build-options.html#build-modulepreload
+import 'vite/modulepreload-polyfill';
+
 import '@/style.scss';
 
 //#region account indexedDB migration
