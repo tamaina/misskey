@@ -17,8 +17,6 @@ import type { MutingsRepository, BlockingsRepository, NotesRepository, AntennaNo
 import { UtilityService } from '@/core/UtilityService.js';
 import type { OnApplicationShutdown } from '@nestjs/common';
 import { bindThis } from '@/decorators.js';
-import { NoteEntityService } from '@/core/entities/NoteEntityService';
-import { AntennaEntityService } from '@/core/entities/AntennaEntityService';
 
 @Injectable()
 export class AntennaService implements OnApplicationShutdown {
