@@ -14,13 +14,13 @@ import XWidgets from '@/components/MkWidgets.vue';
 
 export default defineComponent({
 	components: {
-		XWidgets
+		XWidgets,
 	},
 
 	props: {
 		place: {
 			type: String,
-		}
+		},
 	},
 
 	emits: ['mounted'],
@@ -79,10 +79,10 @@ export default defineComponent({
 			}
 			this.$store.set('widgets', [
 				...this.$store.state.widgets.filter(w => w.place !== this.place),
-				...widgets
+				...widgets,
 			]);
-		}
-	}
+		},
+	},
 });
 </script>
 
