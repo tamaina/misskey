@@ -131,7 +131,7 @@ import { deckStore } from './ui/deck/deck-store';
 		}
 
 		// 連携ログインの場合用にCookieを参照する
-		const i = (document.cookie.match(/igi=(\w+)/) || [null, null])[1];
+		const i = (document.cookie.match(/igi=(\w+)/) ?? [null, null])[1];
 
 		if (i != null && i !== 'null') {
 			if (_DEV_) {
