@@ -54,6 +54,7 @@ export class Note {
 	public threadId: string | null;
 
 	@Index() // USING pgroonga
+	// TODO: varcharにしたい
 	@Column('text', {
 		nullable: true,
 	})
