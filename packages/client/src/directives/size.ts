@@ -16,6 +16,8 @@ type ClassOrder = {
 	remove: string[];
 };
 
+const isContainerQueriesSupported = ('container' in document.documentElement.style);
+
 const cache = new Map<string, ClassOrder>();
 
 function getClassOrder(width: number, queue: Value): ClassOrder {
@@ -85,6 +87,8 @@ function calc(el: Element) {
 
 export default {
 	mounted(src, binding, vn) {
+		if (isContainerQueriesSupported) return;
+
 		const resize = new ResizeObserver((entries, observer) => {
 			calc(src);
 		});
@@ -101,11 +105,15 @@ export default {
 	},
 
 	updated(src, binding, vn) {
+		if (isContainerQueriesSupported) return;
+
 		mountings.set(src, Object.assign({}, mountings.get(src), { value: binding.value }));
 		calc(src);
 	},
 
 	unmounted(src, binding, vn) {
+		if (isContainerQueriesSupported) return;
+
 		const info = mountings.get(src);
 		if (!info) return;
 		info.resize.disconnect();
