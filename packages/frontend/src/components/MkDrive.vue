@@ -660,7 +660,7 @@ onBeforeUnmount(() => {
 });
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .yfudmmck {
 	display: flex;
 	flex-direction: column;
