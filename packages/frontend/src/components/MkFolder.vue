@@ -1,5 +1,5 @@
 <template>
-<div v-size="{ max: [500] }" class="ssazuxis">
+<div class="ssazuxis">
 	<header class="_button" :style="{ background: bg }" @click="showBody = !showBody">
 		<div class="title"><slot name="header"></slot></div>
 		<div class="divider"></div>
@@ -147,17 +147,9 @@ export default defineComponent({
 			padding: 12px 0 12px 16px;
 		}
 	}
-
-	&.max-width_500px {
-		> header {
-			> .title {
-				padding: 8px 10px 8px 0;
-			}
-		}
-	}
 }
 
-@container (max-width: 580px) {
+@container (max-width: 500px) {
 	.ssazuxis {
 		> header {
 			> .title {

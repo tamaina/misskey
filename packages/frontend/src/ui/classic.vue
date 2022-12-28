@@ -11,7 +11,7 @@
 		</div>
 
 		<main class="main" :style="{ background: pageMetadata?.value?.bg }" @contextmenu.stop="onContextmenu">
-			<div class="content">
+			<div class="content" style="container-type: inline-size;">
 				<RouterView/>
 			</div>
 		</main>
@@ -235,7 +235,6 @@ onMounted(() => {
 			min-width: 0;
 			width: 750px;
 			margin: 0 16px 0 0;
-			background: var(--panel);
 			border-left: solid 1px var(--divider);
 			border-right: solid 1px var(--divider);
 			border-radius: 0;
