@@ -244,7 +244,7 @@ export class ClientServerService {
 
 			reply.header('Content-Security-Policy', 'default-src \'none\'; style-src \'unsafe-inline\'');
 
-			console.log(`EMOJI REDIRECT! ${name}@${host}(${emoji.id}) → ${emoji.publicUrl ?? emoji.originalUrl} ${typeof (emoji.publicUrl ?? emoji.originalUrl)}`)
+			console.log(`EMOJI REDIRECT! ${name}@${host}(${emoji.id}) → ${emoji.publicUrl} ?? ${emoji.originalUrl}`)
 
 			const url = new URL("/proxy/emoji.webp", this.config.url);
 			url.searchParams.set('url', emoji.publicUrl ?? emoji.originalUrl); // ?? emoji.originalUrl してるのは後方互換性のため
