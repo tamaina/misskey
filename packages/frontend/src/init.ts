@@ -171,9 +171,9 @@ import { deckStore } from './ui/deck/deck-store';
 		defineAsyncComponent(() => import('@/ui/universal.vue')),
 	);
 
-	if (_DEV_) {
+	// if (_DEV_) {
 		app.config.performance = true;
-	}
+	// }
 
 	app.config.globalProperties = {
 		$i,
