@@ -9,17 +9,15 @@ import type { Config } from '@/config.js';
 import { isMimeImage } from '@/misc/is-mime-image.js';
 import { createTemp } from '@/misc/create-temp.js';
 import { DownloadService } from '@/core/DownloadService.js';
-import { IImageStreamable, ImageProcessingService, webpDefault } from '@/core/ImageProcessingService.js';
+import { ImageProcessingService, webpDefault } from '@/core/ImageProcessingService.js';
 import type { IImage } from '@/core/ImageProcessingService.js';
 import { FILE_TYPE_BROWSERSAFE } from '@/const.js';
 import { StatusError } from '@/misc/status-error.js';
 import type Logger from '@/logger.js';
-import { FileInfoService, TYPE_SVG } from '@/core/FileInfoService.js';
+import { FileInfoService } from '@/core/FileInfoService.js';
 import { LoggerService } from '@/core/LoggerService.js';
 import { bindThis } from '@/decorators.js';
 import type { FastifyInstance, FastifyPluginOptions, FastifyReply, FastifyRequest } from 'fastify';
-import { PassThrough, pipeline } from 'node:stream';
-import { Request } from 'got';
 
 const _filename = fileURLToPath(import.meta.url);
 const _dirname = dirname(_filename);
@@ -75,33 +73,22 @@ export class MediaProxyServerService {
 	
 		// Create temp file
 		const [path, cleanup] = await createTemp();
-		const got = this.downloadService.gotUrl(url);
 	
 		try {
-			const fileSaving = this.downloadService.pipeRequestToFile(got, path);
-			const streamCopy = got.pipe(new PassThrough());
-
-			let { mime, ext } = await this.fileInfoService.detectRequestType(got);
-			if (mime === 'application/octet-stream' || mime === 'application/xml') {
-				await fileSaving;
-				if (await this.fileInfoService.checkSvg(path)) {
-					mime = TYPE_SVG.mime;
-					ext = TYPE_SVG.ext;
-				}
-			}
+			await this.downloadService.downloadUrl(url, path);
+	
+			const { mime, ext } = await this.fileInfoService.detectType(path);
 			const isConvertibleImage = isMimeImage(mime, 'sharp-convertible-image');
 	
-			let image: IImageStreamable;
+			let image: IImage;
 			if ('emoji' in request.query && isConvertibleImage) {
-				const data = pipeline(
-					streamCopy,
-					sharp({ animated: !('static' in request.query) })
-						.resize({
-							height: 128,
-							withoutEnlargement: true,
-						})
-						.webp(webpDefault),
-				);
+				const data = await sharp(path, { animated: !('static' in request.query) })
+					.resize({
+						height: 128,
+						withoutEnlargement: true,
+					})
+					.webp(webpDefault)
+					.toBuffer();
 
 				image = {
 					data,
@@ -109,16 +96,14 @@ export class MediaProxyServerService {
 					type: 'image/webp',
 				};
 			} else if ('static' in request.query && isConvertibleImage) {
-				image = this.imageProcessingService.convertSharpToWebpStreamObj(streamCopy.pipe(sharp()), 498, 280);
+				image = await this.imageProcessingService.convertToWebp(path, 498, 280);
 			} else if ('preview' in request.query && isConvertibleImage) {
-				image = this.imageProcessingService.convertSharpToWebpStreamObj(streamCopy.pipe(sharp()), 200, 200);
+				image = await this.imageProcessingService.convertToWebp(path, 200, 200);
 			} else if ('badge' in request.query) {
 				if (!isConvertibleImage) {
 					// 画像でないなら404でお茶を濁す
 					throw new StatusError('Unexpected mime', 404);
 				}
-
-				await fileSaving;
 
 				const mask = sharp(path)
 					.resize(96, 96, {
@@ -150,12 +135,12 @@ export class MediaProxyServerService {
 					type: 'image/png',
 				};
 			} else if (mime === 'image/svg+xml') {
-				image = this.imageProcessingService.convertSharpToWebpStreamObj(streamCopy.pipe(sharp()), 2048, 2048);
+				image = await this.imageProcessingService.convertToWebp(path, 2048, 2048, webpDefault);
 			} else if (!mime.startsWith('image/') || !FILE_TYPE_BROWSERSAFE.includes(mime)) {
 				throw new StatusError('Rejected type', 403, 'Rejected type');
 			} else {
 				image = {
-					data: streamCopy,
+					data: fs.readFileSync(path),
 					ext,
 					type: mime,
 				};
@@ -166,8 +151,6 @@ export class MediaProxyServerService {
 			return image.data;
 		} catch (err) {
 			this.logger.error(`${err}`);
-
-			if (!got.closed) got.destroy();
 
 			if ('fallback' in request.query) {
 				return reply.sendFile('/dummy.png', assets);
