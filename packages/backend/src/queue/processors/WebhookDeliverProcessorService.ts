@@ -33,7 +33,7 @@ export class WebhookDeliverProcessorService {
 		try {
 			this.logger.debug(`delivering ${job.data.webhookId}`);
 	
-			const res = await this.httpRequestService.fetch({
+			const res = await this.httpRequestService.getResponse({
 				url: job.data.to,
 				method: 'POST',
 				headers: {

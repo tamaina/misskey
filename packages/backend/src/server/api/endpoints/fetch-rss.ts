@@ -33,7 +33,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private httpRequestService: HttpRequestService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const res = await this.httpRequestService.fetch({
+			const res = await this.httpRequestService.getResponse({
 				url: ps.url,
 				method: 'GET',
 				headers: Object.assign({

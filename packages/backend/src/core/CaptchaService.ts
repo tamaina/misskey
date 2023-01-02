@@ -4,7 +4,6 @@ import type { UsersRepository } from '@/models/index.js';
 import type { Config } from '@/config.js';
 import { HttpRequestService } from '@/core/HttpRequestService.js';
 import { bindThis } from '@/decorators.js';
-import { fetch } from 'undici';
 
 type CaptchaResponse = {
 	success: boolean;
@@ -36,7 +35,7 @@ export class CaptchaService {
 			},
 			// TODO
 			//timeout: 10 * 1000,
-			dispatcher: this.httpRequestService.getAgentByUrl(new URL(url)),
+			agent: (url, bypassProxy) => this.httpRequestService.getAgentByUrl(url, bypassProxy),
 		}).catch(err => {
 			throw `${err.message ?? err}`;
 		});

@@ -1,5 +1,6 @@
 import * as crypto from 'node:crypto';
 import { Inject, Injectable } from '@nestjs/common';
+import fetch from 'node-fetch';
 import { HttpRequestService } from '@/core/HttpRequestService.js';
 import { bindThis } from '@/decorators.js';
 import { CONTEXTS } from './misc/contexts.js';
@@ -115,14 +116,13 @@ class LdSignature {
 
 	@bindThis
 	private async fetchDocument(url: string) {
-		const json = await this.httpRequestService.fetch({
-			url,
+		const json = await fetch(url, {
 			headers: {
 				Accept: 'application/ld+json, application/json',
 			},
-			noOkError: true,
 			// TODO
 			//timeout: this.loderTimeout,
+			agent: u => u.protocol === 'http:' ? this.httpRequestService.httpAgent : this.httpRequestService.httpsAgent,
 		}).then(res => {
 			if (!res.ok) {
 				throw `${res.status} ${res.statusText}`;
