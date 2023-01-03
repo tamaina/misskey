@@ -31,8 +31,8 @@
 </Transition>
 </template>
 
-<script lang="ts">
-import { computed, ComputedRef, isRef, nextTick, onActivated, onBeforeUnmount, onDeactivated, onMounted, ref, watch } from 'vue';
+<script lang="ts" setup>
+import { computed, ComputedRef, isRef, markRaw, onActivated, onDeactivated, Ref, ref, shallowRef, watch } from 'vue';
 import * as misskey from 'misskey-js';
 import * as os from '@/os';
 import { onScrollTop, isTopVisible, getBodyScrollHeight, getScrollContainer, onScrollBottom, scrollToBottom, scroll, isBottomVisible } from '@/scripts/scroll';
@@ -71,7 +71,7 @@ const props = withDefaults(defineProps<{
 	disableAutoLoad?: boolean;
 	displayLimit?: number;
 }>(), {
-	displayLimit: 30,
+	displayLimit: 20,
 });
 
 const emit = defineEmits<{
