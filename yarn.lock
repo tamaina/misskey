@@ -4232,6 +4232,7 @@ __metadata:
     typeorm: 0.3.11
     typescript: 4.9.4
     ulid: 2.3.0
+    undici: ^5.14.0
     unzipper: 0.10.11
     uuid: 9.0.0
     vary: 1.1.2
@@ -16550,7 +16551,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"undici@npm:^5.2.0, undici@npm:^5.5.1":
+"undici@npm:^5.14.0, undici@npm:^5.2.0, undici@npm:^5.5.1":
   version: 5.14.0
   resolution: "undici@npm:5.14.0"
   dependencies:
