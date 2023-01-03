@@ -152,7 +152,7 @@ export class ApRequestService {
 			},
 		});
 
-		await this.httpRequestService.getResponse({
+		await this.httpRequestService.fetch({
 			url,
 			method: req.request.method,
 			headers: req.request.headers,
@@ -180,11 +180,13 @@ export class ApRequestService {
 			},
 		});
 
-		const res = await this.httpRequestService.getResponse({
+		const res = await this.httpRequestService.fetch(
 			url,
-			method: req.request.method,
-			headers: req.request.headers,
-		});
+			{
+				method: req.request.method,
+				headers: req.request.headers,
+			}
+		);
 
 		return await res.json();
 	}
