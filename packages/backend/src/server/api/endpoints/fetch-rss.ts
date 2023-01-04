@@ -32,19 +32,20 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 		private httpRequestService: HttpRequestService,
 	) {
-		super(meta, paramDef, async (ps, me) => 
-			this.httpRequestService.fetch(
-				ps.url,
-				{
-					method: 'GET',
-					headers: {
-						'User-Agent': config.userAgent,
-						Accept: 'application/rss+xml, */*',
-					},
-				}
-			)
-			.then(res => res.text())
-			.then(text => rssParser.parseString(text))
-		);
+		super(meta, paramDef, async (ps, me) => {
+			const res = await this.httpRequestService.getResponse({
+				url: ps.url,
+				method: 'GET',
+				headers: Object.assign({
+					'User-Agent': config.userAgent,
+					Accept: 'application/rss+xml, */*',
+				}),
+				timeout: 5000,
+			});
+
+			const text = await res.text();
+
+			return rssParser.parseString(text);
+		});
 	}
 }
