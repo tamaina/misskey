@@ -14,15 +14,21 @@
 	</div>
 
 	<div v-else ref="rootEl">
-		<div v-show="pagination.reversed && more" key="_more_" class="cxiknjgy _margin">
+		<div v-show="pagination.reversed && more" key="_more_" class="cxiknjgy _gap">
 			<MkButton v-if="!moreFetching" v-appear="(enableInfiniteScroll && !props.disableAutoLoad) ? fetchMore : null" class="button" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }" primary @click="fetchMore">
 				{{ i18n.ts.loadMore }}
 			</MkButton>
 			<MkLoading v-else class="loading"/>
 		</div>
 		<slot :items="items" :fetching="fetching || moreFetching"></slot>
-		<div v-show="!pagination.reversed && more" key="_more_" class="cxiknjgy _margin">
+		<div v-show="!pagination.reversed && more" key="_more_" class="cxiknjgy _gap">
 			<MkButton v-if="!moreFetching" v-appear="(enableInfiniteScroll && !props.disableAutoLoad) ? fetchMore : null" class="button" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }" primary @click="fetchMore">
+				{{ i18n.ts.loadMore }}
+			</MkButton>
+			<MkLoading v-else class="loading"/>
+		</div>
+	</div>
+</Transition>
 </template>
 
 <script lang="ts">
