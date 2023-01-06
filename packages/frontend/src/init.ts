@@ -175,6 +175,7 @@ import { deckStore } from './ui/deck/deck-store';
 		app.config.performance = true;
 	// }
 
+	// TODO: 廃止
 	app.config.globalProperties = {
 		$i,
 		$store: defaultStore,
