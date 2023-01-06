@@ -23,7 +23,7 @@
 					reversed
 				>
 					<XMessage :key="message.id" :message="message" :is-group="group != null"/>
-				</XList>F
+				</XList>
 			</template>
 		</MkPagination>
 	</div>
