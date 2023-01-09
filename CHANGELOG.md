@@ -12,7 +12,7 @@ You should also include the user name that made the change.
 ## 13.0.0 (unreleased)
 
 ### TL;DR
-- New features (Play, new widgets, new charts, etc)
+- New features (Play, new widgets, new charts, 🍪👈, etc)
 - Rewriten backend
 - Better performance (backend and frontend)
 - Various usability improvements
@@ -40,6 +40,8 @@ You should also include the user name that made the change.
 - Firefox109以下はサポートされなくなりました
 
 #### For app developers
+- API: metaのレスポンスに`emojis`プロパティが含まれなくなりました
+	- カスタム絵文字一覧情報を取得するには、`emojis`エンドポイントにリクエストします
 - API: カスタム絵文字エンティティに`url`プロパティが含まれなくなりました
 	- 絵文字画像を表示するには、`<instance host>/emoji/<emoji name>.webp`にリクエストすると画像が返ります。
 	- e.g. `https://p1.a9z.dev/emoji/misskey.webp`
@@ -88,6 +90,7 @@ You should also include the user name that made the change.
 - Client: show bot warning on screen when logged in as bot account @syuilo
 - Client: improve overall performance of client @syuilo
 - Client: ui tweaks @syuilo
+- Client: clicker game @syuilo
 
 ### Bugfixes
 - Server: 引用内の文章がnyaizeされてしまう問題を修正 @kabo2468
@@ -98,6 +101,11 @@ You should also include the user name that made the change.
 - Server: アンテナの作成数上限を追加 @syuilo
 - Server: pages/likeのエラーIDが重複しているのを修正 @syuilo
 - Server: pages/updateのパラメータによってはsummaryの値が更新されないのを修正 @syuilo
+- Server: Escape SQL LIKE @mei23
+- Server: 特定のPNG画像のアップロードに失敗する問題を修正 @usbharu
+- Server: 非公開のクリップのURLでOGPレンダリングされる問題を修正 @syuilo
+- Server: アンテナタイムライン（ストリーミング）が、フォローしていないユーザーの鍵投稿も拾ってしまう @syuilo
+- Client: 日付形式の文字列などがカスタム絵文字として表示されるのを修正 @syuilo
 - Client: case insensitive emoji search @saschanaz
 - Client: InAppウィンドウが操作できなくなることがあるのを修正 @tamaina
 - Client: use proxied image for instance icon @syuilo

@@ -5,6 +5,7 @@ import type { User } from '@/models/entities/User.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { DI } from '@/di-symbols.js';
+import { sqlLikeEscape } from '@/misc/sql-like-escape.js';
 
 export const meta = {
 	tags: ['users'],
@@ -57,7 +58,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			if (isUsername) {
 				const usernameQuery = this.usersRepository.createQueryBuilder('user')
-					.where('user.usernameLower LIKE :username', { username: ps.query.replace('@', '').toLowerCase() + '%' })
+					.where('user.usernameLower LIKE :username', { username: sqlLikeEscape(ps.query.replace('@', '').toLowerCase()) + '%' })
 					.andWhere(new Brackets(qb => { qb
 						.where('user.updatedAt IS NULL')
 						.orWhere('user.updatedAt > :activeThreshold', { activeThreshold: activeThreshold });
@@ -82,7 +83,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 						// Also search username if it qualifies as username
 						if (this.userEntityService.validateLocalUsername(ps.query)) {
-							qb.orWhere('user.usernameLower LIKE :username', { username: '%' + ps.query.toLowerCase() + '%' });
+							qb.orWhere('user.usernameLower LIKE :username', { username: '%' + sqlLikeEscape(ps.query.toLowerCase()) + '%' });
 						}
 					}))
 					.andWhere(new Brackets(qb => { qb
