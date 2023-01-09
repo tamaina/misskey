@@ -7,13 +7,6 @@ import * as Misskey from 'misskey-js';
 import { apiUrl, url } from '@/config';
 import MkPostFormDialog from '@/components/MkPostFormDialog.vue';
 import MkWaitingDialog from '@/components/MkWaitingDialog.vue';
-import MkPageWindow from '@/components/MkPageWindow.vue'
-import MkToast from '@/components/MkToast.vue';
-import MkDialog from '@/components/MkDialog.vue';
-import MkEmojiPickerDialog from '@/components/MkEmojiPickerDialog.vue';
-import MkEmojiPickerWindow from '@/components/MkEmojiPickerWindow.vue';
-import MkPopupMenu from '@/components/MkPopupMenu.vue';
-import MkContextMenu from '@/components/MkContextMenu.vue';
 import { MenuItem } from '@/types/menu';
 import { $i } from '@/account';
 
@@ -198,7 +191,7 @@ export async function popup(component: Component, props: Record<string, any>, ev
 }
 
 export function pageWindow(path: string) {
-	popup(MkPageWindow, {
+	popup(defineAsyncComponent(() => import('@/components/MkPageWindow.vue')), {
 		initialPath: path,
 	}, {}, 'closed');
 }
@@ -210,7 +203,7 @@ export function modalPageWindow(path: string) {
 }
 
 export function toast(message: string) {
-	popup(MkToast, {
+	popup(defineAsyncComponent(() => import('@/components/MkToast.vue')), {
 		message,
 	}, {}, 'closed');
 }
@@ -221,7 +214,7 @@ export function alert(props: {
 	text?: string | null;
 }): Promise<void> {
 	return new Promise((resolve, reject) => {
-		popup(MkDialog, props, {
+		popup(defineAsyncComponent(() => import('@/components/MkDialog.vue')), props, {
 			done: result => {
 				resolve();
 			},
@@ -235,7 +228,7 @@ export function confirm(props: {
 	text?: string | null;
 }): Promise<{ canceled: boolean }> {
 	return new Promise((resolve, reject) => {
-		popup(MkDialog, {
+		popup(defineAsyncComponent(() => import('@/components/MkDialog.vue')), {
 			...props,
 			showCancelButton: true,
 		}, {
@@ -256,7 +249,7 @@ export function inputText(props: {
 	canceled: false; result: string;
 }> {
 	return new Promise((resolve, reject) => {
-		popup(MkDialog, {
+		popup(defineAsyncComponent(() => import('@/components/MkDialog.vue')), {
 			title: props.title,
 			text: props.text,
 			input: {
@@ -281,7 +274,7 @@ export function inputNumber(props: {
 	canceled: false; result: number;
 }> {
 	return new Promise((resolve, reject) => {
-		popup(MkDialog, {
+		popup(defineAsyncComponent(() => import('@/components/MkDialog.vue')), {
 			title: props.title,
 			text: props.text,
 			input: {
@@ -306,7 +299,7 @@ export function inputDate(props: {
 	canceled: false; result: Date;
 }> {
 	return new Promise((resolve, reject) => {
-		popup(MkDialog, {
+		popup(defineAsyncComponent(() => import('@/components/MkDialog.vue')), {
 			title: props.title,
 			text: props.text,
 			input: {
@@ -343,7 +336,7 @@ export function select<C = any>(props: {
 	canceled: false; result: C;
 }> {
 	return new Promise((resolve, reject) => {
-		popup(MkDialog, {
+		popup(defineAsyncComponent(() => import('@/components/MkDialog.vue')), {
 			title: props.title,
 			text: props.text,
 			select: {
@@ -365,7 +358,7 @@ export function success() {
 		window.setTimeout(() => {
 			showing.value = false;
 		}, 1000);
-		popup(MkWaitingDialog, {
+		popup(defineAsyncComponent(() => import('@/components/MkWaitingDialog.vue')), {
 			success: true,
 			showing: showing,
 		}, {
@@ -377,7 +370,7 @@ export function success() {
 export function waiting() {
 	return new Promise((resolve, reject) => {
 		const showing = ref(true);
-		popup(MkWaitingDialog, {
+		popup(defineAsyncComponent(() => import('@/components/MkWaitingDialog.vue')), {
 			success: false,
 			showing: showing,
 		}, {
@@ -438,7 +431,7 @@ export async function selectDriveFolder(multiple: boolean) {
 
 export async function pickEmoji(src: HTMLElement | null, opts) {
 	return new Promise((resolve, reject) => {
-		popup(MkEmojiPickerDialog, {
+		popup(defineAsyncComponent(() => import('@/components/MkEmojiPickerDialog.vue')), {
 			src,
 			...opts,
 		}, {
@@ -503,7 +496,7 @@ export async function openEmojiPicker(src?: HTMLElement, opts, initialTextarea: 
 		characterData: false,
 	});
 
-	openingEmojiPicker = await popup(MkEmojiPickerWindow, {
+	openingEmojiPicker = await popup(defineAsyncComponent(() => import('@/components/MkEmojiPickerWindow.vue')), {
 		src,
 		...opts,
 	}, {
@@ -526,7 +519,7 @@ export function popupMenu(items: MenuItem[] | Ref<MenuItem[]>, src?: HTMLElement
 }) {
 	return new Promise((resolve, reject) => {
 		let dispose;
-		popup(MkPopupMenu, {
+		popup(defineAsyncComponent(() => import('@/components/MkPopupMenu.vue')), {
 			items,
 			src,
 			width: options?.width,
@@ -550,7 +543,7 @@ export function contextMenu(items: MenuItem[] | Ref<MenuItem[]>, ev: MouseEvent)
 	ev.preventDefault();
 	return new Promise((resolve, reject) => {
 		let dispose;
-		popup(MkContextMenu, {
+		popup(defineAsyncComponent(() => import('@/components/MkContextMenu.vue')), {
 			items,
 			ev,
 		}, {
