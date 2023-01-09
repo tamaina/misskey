@@ -1,18 +1,21 @@
-import { Endpoints } from 'misskey-js/built/api.types';
+import * as Misskey from 'misskey-js';
 import { ref } from 'vue';
-import { apiUrl } from '@/config';
+import { apiUrl, url } from '@/config';
 import { $i } from '@/account';
 export const pendingApiRequestsCount = ref(0);
 
-// Implements Misskey.api.ApiClient.request
-export function api<E extends keyof Endpoints, P extends Endpoints[E]['req']>(endpoint: E, data: P = {} as any, token?: string | null | undefined): Promise<Endpoints[E]['res']> {
+const apiClient = new Misskey.api.APIClient({
+	origin: url,
+});
+
+export const api = ((endpoint: string, data: Record<string, any> = {}, token?: string | null | undefined) => {
 	pendingApiRequestsCount.value++;
 
 	const onFinally = () => {
 		pendingApiRequestsCount.value--;
 	};
 
-	const promise = new Promise<Endpoints[E]['res'] | void>((resolve, reject) => {
+	const promise = new Promise<any>((resolve, reject) => {
 		// Append a credential
 		if ($i) (data as any).i = $i.token;
 		if (token !== undefined) (data as any).i = token;
@@ -42,19 +45,18 @@ export function api<E extends keyof Endpoints, P extends Endpoints[E]['req']>(en
 	promise.then(onFinally, onFinally);
 
 	return promise;
-};
+}) as typeof apiClient.request;
 
-// Implements Misskey.api.ApiClient.request
-export function apiGet<E extends keyof Endpoints, P extends Endpoints[E]['req']>(endpoint: E, data: P = {} as any): Promise<Endpoints[E]['res']> {
+export const apiGet = ((endpoint: string, data: Record<string, any> = {}) => {
 	pendingApiRequestsCount.value++;
 
 	const onFinally = () => {
 		pendingApiRequestsCount.value--;
 	};
 
-	const query = new URLSearchParams(data as any);
+	const query = new URLSearchParams(data);
 
-	const promise = new Promise<Endpoints[E]['res'] | void>((resolve, reject) => {
+	const promise = new Promise((resolve, reject) => {
 		// Send request
 		window.fetch(`${apiUrl}/${endpoint}?${query}`, {
 			method: 'GET',
@@ -76,4 +78,4 @@ export function apiGet<E extends keyof Endpoints, P extends Endpoints[E]['req']>
 	promise.then(onFinally, onFinally);
 
 	return promise;
-};
+}) as typeof apiClient.request;
