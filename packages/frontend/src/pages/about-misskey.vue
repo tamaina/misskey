@@ -6,7 +6,7 @@
 			<div class="_gaps_m znqjceqz">
 				<div ref="containerEl" v-panel class="about" :class="{ playing: easterEggEngine != null }">
 					<img src="/client-assets/about-icon.png" alt="" class="icon" draggable="false" @load="iconLoaded" @click="gravity"/>
-					<div class="misskey">Misskey</div>
+					<div class="misskey">Misskey with KaTeX</div>
 					<div class="version">v{{ version }}</div>
 					<span v-for="emoji in easterEggEmojis" :key="emoji.id" class="emoji" :data-physics-x="emoji.left" :data-physics-y="emoji.top" :class="{ _physics_circle_: !emoji.emoji.startsWith(':') }"><MkEmoji class="emoji" :emoji="emoji.emoji" :is-reaction="false" :normal="true" :no-style="true"/></span>
 				</div>
@@ -18,7 +18,7 @@
 				</div>
 				<FormSection>
 					<div class="_formLinks">
-						<FormLink to="https://github.com/misskey-dev/misskey" external>
+						<FormLink to="https://github.com/tamaina/misskey" external>
 							<template #icon><i class="ti ti-code"></i></template>
 							{{ i18n.ts._aboutMisskey.source }}
 							<template #suffix>GitHub</template>
@@ -43,7 +43,7 @@
 						<FormLink to="https://github.com/acid-chicken" external>@acid-chicken</FormLink>
 						<FormLink to="https://github.com/rinsuki" external>@rinsuki</FormLink>
 					</div>
-					<template #caption><MkLink url="https://github.com/misskey-dev/misskey/graphs/contributors">{{ i18n.ts._aboutMisskey.allContributors }}</MkLink></template>
+					<template #caption><MkLink url="https://github.com/tamaina/misskey/graphs/contributors">{{ i18n.ts._aboutMisskey.allContributors }}</MkLink></template>
 				</FormSection>
 				<FormSection>
 					<template #label><Mfm text="$[jelly ❤]"/> {{ i18n.ts._aboutMisskey.patrons }}</template>
