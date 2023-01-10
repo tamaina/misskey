@@ -1,5 +1,5 @@
 import { performance } from 'perf_hooks';
-import { pipeline } from 'node:stream';
+import { Transform, pipeline } from 'node:stream';
 import * as fs from 'node:fs';
 import { promisify } from 'node:util';
 import { Inject, Injectable } from '@nestjs/common';
@@ -105,7 +105,18 @@ export class ApiCallService implements OnApplicationShutdown {
 		}
 
 		const [path] = await createTemp();
-		await pump(multipartData.file, fs.createWriteStream(path));
+		const logger = this.logger;
+		await pump(
+			multipartData.file,
+			new Transform({
+				transform(chunk, encoding, callback) {
+					logger.info(chunk ? chunk.length : chunk);
+					this.push(chunk);
+					callback();
+				}
+			}),
+			fs.createWriteStream(path)
+		);
 
 		const fields = {} as Record<string, string | undefined>;
 		for (const [k, v] of Object.entries(multipartData.fields)) {
