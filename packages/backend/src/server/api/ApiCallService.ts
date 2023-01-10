@@ -1,5 +1,5 @@
 import { performance } from 'perf_hooks';
-import { Transform, pipeline } from 'node:stream';
+import { Transform, pipeline, PassThrough } from 'node:stream';
 import * as fs from 'node:fs';
 import { promisify } from 'node:util';
 import { Inject, Injectable } from '@nestjs/common';
@@ -117,6 +117,7 @@ export class ApiCallService implements OnApplicationShutdown {
 				}
 			}),
 			*/
+			new PassThrough(),
 			fs.createWriteStream(path)
 		);
 
