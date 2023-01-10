@@ -108,6 +108,7 @@ export class ApiCallService implements OnApplicationShutdown {
 		const logger = this.logger;
 		await pump(
 			multipartData.file,
+			/*
 			new Transform({
 				transform(chunk, encoding, callback) {
 					logger.info(chunk ? chunk.length : chunk);
@@ -115,6 +116,7 @@ export class ApiCallService implements OnApplicationShutdown {
 					callback();
 				}
 			}),
+			*/
 			fs.createWriteStream(path)
 		);
 
