@@ -1,10 +1,10 @@
 {
-	"name": "misskey",
-	"version": "13.0.0-beta.39-p1.2",
+	"name": "misskey_with_katex",
+	"version": "13.0.0-beta.39-wkatex-p1.1",
 	"codename": "indigo",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/misskey-dev/misskey.git"
+		"url": "https://github.com/tamaina/misskey.git"
 	},
 	"packageManager": "yarn@3.3.0",
 	"workspaces": [
