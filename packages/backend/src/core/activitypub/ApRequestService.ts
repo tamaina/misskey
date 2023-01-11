@@ -29,7 +29,7 @@ type PrivateKey = {
 
 @Injectable()
 export class ApRequestService {
-	public undiciFetcher: UndiciFetcher;
+	private undiciFetcher: UndiciFetcher;
 
 	constructor(
 		@Inject(DI.config)
@@ -41,7 +41,7 @@ export class ApRequestService {
 	) {
 		this.undiciFetcher = new UndiciFetcher(this.httpRequestService.getStandardUndiciFetcherOption({
 			maxRedirections: 0,
-		}), this.loggerService.getLogger('ap-request'));
+		}), this.loggerService.getLogger('ap-request') );
 	}
 
 	@bindThis
