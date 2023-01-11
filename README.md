@@ -1,4 +1,7 @@
 <div align="center">
+
+**[REVERT "remove katex"](https://github.com/tamaina/misskey/commit/7be037ed64e9e2f1a78eedddbd2987d4ec30c73e)**
+
 <a href="https://misskey-hub.net">
 	<img src="./assets/title_float.svg" alt="Misskey logo" style="border-radius:50%" width="400"/>
 </a>
