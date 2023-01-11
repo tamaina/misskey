@@ -11806,9 +11806,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"misskey@workspace:.":
+"misskey_with_katex@workspace:.":
   version: 0.0.0-use.local
-  resolution: "misskey@workspace:."
+  resolution: "misskey_with_katex@workspace:."
   dependencies:
     "@types/gulp": 4.0.10
     "@types/gulp-rename": 2.0.1
