@@ -99,7 +99,7 @@ export class ApiCallService implements OnApplicationShutdown {
 		reply: FastifyReply,
 	) {
 		const logger = this.logger;
-		logger.info(`handling ${endpoint}`);
+		logger.info(`handling ${endpoint.name}`);
 		const multipartData = await request.file();
 		if (multipartData == null) {
 			logger.info('no data')
@@ -134,7 +134,7 @@ export class ApiCallService implements OnApplicationShutdown {
 			return;
 		}
 		this.authenticateService.authenticate(token).then(([user, app]) => {
-			logger.info(`calling ${endpoint}`);
+			logger.info(`calling ${endpoint.name}`);
 			this.call(endpoint, user, app, fields, {
 				name: multipartData.filename,
 				path: path,
