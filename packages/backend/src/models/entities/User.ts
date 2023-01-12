@@ -115,12 +115,6 @@ export class User {
 
 	@Column('boolean', {
 		default: false,
-		comment: 'Whether the User is silenced.',
-	})
-	public isSilenced: boolean;
-
-	@Column('boolean', {
-		default: false,
 		comment: 'Whether the User is locked.',
 	})
 	public isLocked: boolean;
@@ -139,15 +133,9 @@ export class User {
 
 	@Column('boolean', {
 		default: false,
-		comment: 'Whether the User is the admin.',
+		comment: 'Whether the User is the root.',
 	})
-	public isAdmin: boolean;
-
-	@Column('boolean', {
-		default: false,
-		comment: 'Whether the User is a moderator.',
-	})
-	public isModerator: boolean;
+	public isRoot: boolean;
 
 	@Index()
 	@Column('boolean', {
@@ -218,12 +206,6 @@ export class User {
 		comment: 'The native access token of the User. It will be null if the origin of the user is local.',
 	})
 	public token: string | null;
-
-	@Column('integer', {
-		nullable: true,
-		comment: 'Overrides user drive capacity limit',
-	})
-	public driveCapacityOverrideMb: number | null;
 
 	constructor(data: Partial<User>) {
 		if (data == null) return;
