@@ -98,17 +98,20 @@ export class ApiCallService implements OnApplicationShutdown {
 		request: FastifyRequest<{ Body: Record<string, unknown>, Querystring: Record<string, unknown> }>,
 		reply: FastifyReply,
 	) {
+		const logger = this.logger;
+		logger.info(`handling ${endpoint}`);
 		const multipartData = await request.file();
 		if (multipartData == null) {
+			logger.info('no data')
 			reply.code(400);
 			return;
 		}
+		logger.info(`data = ${Object.keys(multipartData)}`);
 
 		const [path] = await createTemp();
-		const logger = this.logger;
+		logger.info(`pump to ${path}`);
 		await pump(
 			multipartData.file,
-			/*
 			new Transform({
 				transform(chunk, encoding, callback) {
 					logger.info(chunk ? chunk.length : chunk);
@@ -116,8 +119,7 @@ export class ApiCallService implements OnApplicationShutdown {
 					callback();
 				}
 			}),
-			*/
-			new PassThrough(),
+			//new PassThrough(),
 			fs.createWriteStream(path)
 		);
 
@@ -132,10 +134,12 @@ export class ApiCallService implements OnApplicationShutdown {
 			return;
 		}
 		this.authenticateService.authenticate(token).then(([user, app]) => {
+			logger.info(`calling ${endpoint}`);
 			this.call(endpoint, user, app, fields, {
 				name: multipartData.filename,
 				path: path,
 			}, request).then((res) => {
+				logger.info(`replying ${endpoint}`);
 				this.send(reply, res);
 			}).catch((err: ApiError) => {
 				this.send(reply, err.httpStatusCode ? err.httpStatusCode : err.kind === 'client' ? 400 : 500, err);
