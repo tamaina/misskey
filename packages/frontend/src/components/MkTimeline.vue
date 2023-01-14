@@ -134,23 +134,10 @@ onUnmounted(() => {
 	if (connection2) connection2.dispose();
 });
 
-function timetravel(date?: Date) {
-	/* TODO
+/* TODO
+const timetravel = (date?: Date) => {
 	this.date = date;
 	this.$refs.tl.reload();
-	*/
-}
-
-function focus() {
-	/* TODO
-	this.date = date;
-	this.$refs.tl.reload();
-	*/
-}
-
-defineExpose({
-	tlComponent: $$(tlComponent),
-	timetravel,
-	focus,
-});
+};
+*/
 </script>
