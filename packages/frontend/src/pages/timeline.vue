@@ -11,7 +11,6 @@
 				<XTimeline
 					ref="tlComponent"
 					:key="src"
-					class="tl"
 					:src="src"
 					:sound="true"
 					@queue="queueUpdated"
