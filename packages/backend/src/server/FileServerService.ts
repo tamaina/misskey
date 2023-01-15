@@ -16,7 +16,7 @@ import { ImageProcessingService, webpDefault } from '@/core/ImageProcessingServi
 import { VideoProcessingService } from '@/core/VideoProcessingService.js';
 import { InternalStorageService } from '@/core/InternalStorageService.js';
 import { contentDisposition } from '@/misc/content-disposition.js';
-import { FileInfoService } from '@/core/FileInfoService.js';
+import { FileInfoService, TYPE_SVG } from '@/core/FileInfoService.js';
 import { LoggerService } from '@/core/LoggerService.js';
 import { bindThis } from '@/decorators.js';
 import type { FastifyInstance, FastifyRequest, FastifyReply, FastifyPluginOptions } from 'fastify';
@@ -132,6 +132,7 @@ export class FileServerService {
 									280
 								);
 							} else if (mime.startsWith('video/')) {
+								await fileSaving;
 								return await this.videoProcessingService.generateVideoThumbnail(path);
 							}
 						}
