@@ -5,7 +5,7 @@ import * as stream from 'node:stream';
 import * as util from 'node:util';
 import { Inject, Injectable } from '@nestjs/common';
 import { FSWatcher } from 'chokidar';
-import { fileTypeFromFile } from 'file-type';
+import { fileTypeFromFile, fileTypeFromStream } from 'file-type';
 import FFmpeg from 'fluent-ffmpeg';
 import isSvg from 'is-svg';
 import probeImageSize from 'probe-image-size';
@@ -41,7 +41,7 @@ const TYPE_OCTET_STREAM = {
 	ext: null,
 };
 
-const TYPE_SVG = {
+export const TYPE_SVG = {
 	mime: 'image/svg+xml',
 	ext: 'svg',
 };
@@ -308,9 +308,9 @@ export class FileInfoService {
 	 */
 	@bindThis
 	public async detectType(path: string): Promise<{
-	mime: string;
-	ext: string | null;
-}> {
+		mime: string;
+		ext: string | null;
+	}> {
 	// Check 0 byte
 		const fileSize = await this.getFileSize(path);
 		if (fileSize === 0) {
