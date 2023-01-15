@@ -1,21 +1,12 @@
 <template>
-	<component
-		:is="self ? 'MkA' : 'a'" ref="el" :class="$style.root" class="_link" :[attr]="self ? props.url.substring(local.length) : props.url" :rel="rel" :target="target"
-		@contextmenu.stop="() => {}"
-	>
-		<template v-if="!self">
-			<span :class="$style.schema">{{ schema }}//</span>
-			<span :class="$style.hostname">{{ hostname }}</span>
-			<span v-if="port != ''" :class="$style.port">:{{ port }}</span>
-		</template>
-		<template v-if="pathname === '/' && self">
-			<span :class="$style.self">{{ hostname }}</span>
-		</template>
-		<span v-if="pathname != ''" :class="$style.pathname">{{ self ? pathname.substring(1) : pathname }}</span>
-		<span :class="$style.query">{{ query }}</span>
-		<span :class="$style.hash">{{ hash }}</span>
-		<i v-if="target === '_blank'" class="ti ti-external-link icon"></i>
-	</component>
+<component
+	:is="self ? 'MkA' : 'a'" ref="el" :class="$style.root" class="_link" :[attr]="self ? props.url.substring(local.length) : props.url" :rel="rel" :target="target"
+	@contextmenu.stop="() => {}"
+>
+	<template v-if="!self">
+		<span :class="$style.schema">{{ schema }}//</span>
+		<span :class="$style.hostname">{{ hostname }}</span>
+		<span v-if="port != ''" :class="$style.port">:{{ port }}</span>
 	</template>
 	<template v-if="pathname === '/' && self">
 		<span :class="$style.self">{{ hostname }}</span>
