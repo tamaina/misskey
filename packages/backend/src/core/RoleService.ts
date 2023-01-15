@@ -8,7 +8,7 @@ import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
 import { MetaService } from '@/core/MetaService.js';
 import { UserCacheService } from '@/core/UserCacheService.js';
-import { RoleCondFormulaValue } from '@/models/entities/Role.js';
+import type { RoleCondFormulaValue } from '@/models/entities/Role.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { StreamMessages } from '@/server/api/stream/types.js';
 import type { OnApplicationShutdown } from '@nestjs/common';
@@ -20,9 +20,15 @@ export type RoleOptions = {
 	canInvite: boolean;
 	canManageCustomEmojis: boolean;
 	driveCapacityMb: number;
+	pinLimit: number;
 	antennaLimit: number;
 	wordMuteLimit: number;
 	webhookLimit: number;
+	clipLimit: number;
+	noteEachClipsLimit: number;
+	userListLimit: number;
+	userEachUserListsLimit: number;
+	rateLimitFactor: number;
 };
 
 export const DEFAULT_ROLE: RoleOptions = {
@@ -32,9 +38,15 @@ export const DEFAULT_ROLE: RoleOptions = {
 	canInvite: false,
 	canManageCustomEmojis: false,
 	driveCapacityMb: 100,
+	pinLimit: 5,
 	antennaLimit: 5,
 	wordMuteLimit: 200,
 	webhookLimit: 3,
+	clipLimit: 10,
+	noteEachClipsLimit: 200,
+	userListLimit: 10,
+	userEachUserListsLimit: 50,
+	rateLimitFactor: 1,
 };
 
 @Injectable()
@@ -203,9 +215,15 @@ export class RoleService implements OnApplicationShutdown {
 			canInvite: getOptionValues('canInvite').some(x => x === true),
 			canManageCustomEmojis: getOptionValues('canManageCustomEmojis').some(x => x === true),
 			driveCapacityMb: Math.max(...getOptionValues('driveCapacityMb')),
+			pinLimit: Math.max(...getOptionValues('pinLimit')),
 			antennaLimit: Math.max(...getOptionValues('antennaLimit')),
 			wordMuteLimit: Math.max(...getOptionValues('wordMuteLimit')),
 			webhookLimit: Math.max(...getOptionValues('webhookLimit')),
+			clipLimit: Math.max(...getOptionValues('clipLimit')),
+			noteEachClipsLimit: Math.max(...getOptionValues('noteEachClipsLimit')),
+			userListLimit: Math.max(...getOptionValues('userListLimit')),
+			userEachUserListsLimit: Math.max(...getOptionValues('userEachUserListsLimit')),
+			rateLimitFactor: Math.max(...getOptionValues('rateLimitFactor')),
 		};
 	}
 
