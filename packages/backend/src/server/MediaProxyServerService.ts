@@ -14,7 +14,7 @@ import type { IImage } from '@/core/ImageProcessingService.js';
 import { FILE_TYPE_BROWSERSAFE } from '@/const.js';
 import { StatusError } from '@/misc/status-error.js';
 import type Logger from '@/logger.js';
-import { FileInfoService } from '@/core/FileInfoService.js';
+import { FileInfoService, TYPE_SVG } from '@/core/FileInfoService.js';
 import { LoggerService } from '@/core/LoggerService.js';
 import { bindThis } from '@/decorators.js';
 import type { FastifyInstance, FastifyPluginOptions, FastifyReply, FastifyRequest } from 'fastify';
@@ -131,6 +131,8 @@ export class MediaProxyServerService {
 					// 画像でないなら404でお茶を濁す
 					throw new StatusError('Unexpected mime', 404);
 				}
+
+				await fileSaving;
 
 				const mask = sharp(path)
 					.resize(96, 96, {
