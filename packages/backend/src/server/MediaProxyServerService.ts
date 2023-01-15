@@ -1,4 +1,3 @@
-import * as fs from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname } from 'node:path';
 import { Inject, Injectable } from '@nestjs/common';
@@ -75,18 +74,10 @@ export class MediaProxyServerService {
 		// Create temp file
 		const [path, cleanup] = await createTemp();
 		try {
-			const _response = await this.downloadService.fetchUrl(url);	
-			const response = _response.clone() as NonNullBodyResponse;
+			const response = await this.downloadService.fetchUrl(url);
 			const fileSaving = this.downloadService.pipeRequestToFile(response, path);
 
-			let { mime, ext } = await this.fileInfoService.detectRequestType(response);
-			if (mime === 'application/octet-stream' || mime === 'application/xml') {
-				await fileSaving;
-				if (await this.fileInfoService.checkSvg(path)) {
-					mime = TYPE_SVG.mime;
-					ext = TYPE_SVG.ext;
-				}
-			}
+			const { mime, ext } = await this.fileInfoService.detectRequestType(response, path, fileSaving);
 			const isConvertibleImage = isMimeImage(mime, 'sharp-convertible-image');
 			const isAnimationConvertibleImage = isMimeImage(mime, 'sharp-animation-convertible-image');
 
