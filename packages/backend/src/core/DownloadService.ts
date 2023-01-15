@@ -14,9 +14,15 @@ import { StatusError } from '@/misc/status-error.js';
 import { LoggerService } from '@/core/LoggerService.js';
 import type Logger from '@/logger.js';
 import { buildConnector } from 'undici';
+import type { Response } from 'undici';
 
 const pipeline = util.promisify(stream.pipeline);
 import { bindThis } from '@/decorators.js';
+
+export type NonNullBodyResponse = Response & {
+	body: ReadableStream;
+	clone: () => NonNullBodyResponse;
+};
 
 @Injectable()
 export class DownloadService {
@@ -52,9 +58,9 @@ export class DownloadService {
 	}
 
 	@bindThis
-	public async downloadUrl(url: string, path: string): Promise<void> {
-		this.logger.info(`Downloading ${chalk.cyan(url)} to ${chalk.cyanBright(path)} ...`);
-
+	public async fetchUrl(url: string): Promise<NonNullBodyResponse> {
+		this.logger.info(`Downloading ${chalk.cyan(url)} ...`);
+	
 		const timeout = 30 * 1000;
 		const operationTimeout = 60 * 1000;
 		const maxSize = this.config.maxFileSize ?? 262144000;
@@ -64,9 +70,34 @@ export class DownloadService {
 		if (response.body === null) {
 			throw new StatusError('No body', 400, 'No body');
 		}
+	
+		this.logger.succ(`Download finished: ${chalk.cyan(url)}`);
 
-		await pipeline(stream.Readable.fromWeb(response.body), fs.createWriteStream(path));
+		return response as NonNullBodyResponse;
+	}
 
+	@bindThis
+	public async pipeRequestToFile(_response: Response, path: string): Promise<void> {
+		const response = _response.clone();
+		if (response.body === null) {
+			throw new StatusError('No body', 400, 'No body');
+		}
+
+		try {
+			this.logger.info(`Saving File to ${chalk.cyanBright(path)} from downloading ...`);
+			await pipeline(stream.Readable.fromWeb(response.body), fs.createWriteStream(path));
+		} catch (e) {
+			if (e instanceof Got.HTTPError) {
+				throw new StatusError(`${e.response.statusCode} ${e.response.statusMessage}`, e.response.statusCode, e.response.statusMessage);
+			} else {
+				throw e;
+			}
+		}
+	}
+
+	@bindThis
+	public async downloadUrl(url: string, path: string): Promise<void> {
+		await this.pipeRequestToFile(await this.fetchUrl(url), path);
 		this.logger.succ(`Download finished: ${chalk.cyan(url)}`);
 	}
 

@@ -8,8 +8,8 @@ import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
 import { isMimeImage } from '@/misc/is-mime-image.js';
 import { createTemp } from '@/misc/create-temp.js';
-import { DownloadService } from '@/core/DownloadService.js';
-import { ImageProcessingService, webpDefault } from '@/core/ImageProcessingService.js';
+import { DownloadService, NonNullBodyResponse } from '@/core/DownloadService.js';
+import { IImageStreamable, ImageProcessingService, webpDefault } from '@/core/ImageProcessingService.js';
 import type { IImage } from '@/core/ImageProcessingService.js';
 import { FILE_TYPE_BROWSERSAFE } from '@/const.js';
 import { StatusError } from '@/misc/status-error.js';
@@ -18,6 +18,8 @@ import { FileInfoService } from '@/core/FileInfoService.js';
 import { LoggerService } from '@/core/LoggerService.js';
 import { bindThis } from '@/decorators.js';
 import type { FastifyInstance, FastifyPluginOptions, FastifyReply, FastifyRequest } from 'fastify';
+import { PassThrough, Readable, pipeline } from 'node:stream';
+import { Request } from 'got';
 
 const _filename = fileURLToPath(import.meta.url);
 const _dirname = dirname(_filename);
@@ -65,38 +67,54 @@ export class MediaProxyServerService {
 	@bindThis
 	private async handler(request: FastifyRequest<{ Params: { url: string; }; Querystring: { url?: string; }; }>, reply: FastifyReply) {
 		const url = 'url' in request.query ? request.query.url : 'https://' + request.params.url;
-	
+
 		if (typeof url !== 'string') {
 			reply.code(400);
 			return;
 		}
-	
+
 		// Create temp file
 		const [path, cleanup] = await createTemp();
-	
 		try {
-			await this.downloadService.downloadUrl(url, path);
-	
-			const { mime, ext } = await this.fileInfoService.detectType(path);
+			const _response = await this.downloadService.fetchUrl(url);	
+			const response = _response.clone() as NonNullBodyResponse;
+			const fileSaving = this.downloadService.pipeRequestToFile(response, path);
+
+			let { mime, ext } = await this.fileInfoService.detectRequestType(response);
+			if (mime === 'application/octet-stream' || mime === 'application/xml') {
+				await fileSaving;
+				if (await this.fileInfoService.checkSvg(path)) {
+					mime = TYPE_SVG.mime;
+					ext = TYPE_SVG.ext;
+				}
+			}
 			const isConvertibleImage = isMimeImage(mime, 'sharp-convertible-image');
 			const isAnimationConvertibleImage = isMimeImage(mime, 'sharp-animation-convertible-image');
-	
-			let image: IImage;
+
+			let image: IImageStreamable | null = null;
 			if ('emoji' in request.query && isConvertibleImage) {
 				if (!isAnimationConvertibleImage && !('static' in request.query)) {
 					image = {
-						data: fs.readFileSync(path),
+						data: Readable.fromWeb(response.body),
 						ext,
 						type: mime,
 					};
 				} else {
-					const data = await sharp(path, { animated: !('static' in request.query) })
-					.resize({
-						height: 128,
-						withoutEnlargement: true,
-					})
-					.webp(webpDefault)
-					.toBuffer();
+					const data = pipeline(
+						Readable.fromWeb(response.body),
+						sharp({ animated: !('static' in request.query) })
+							.resize({
+								height: 128,
+								withoutEnlargement: true,
+							})
+							.webp(webpDefault),
+						err => {
+							if (err) {
+								this.logger.error('Sharp pipeline error (emoji)', err);
+								throw new StatusError('Internal Error occured (in emoji pipeline, MediaProxy)', 500, 'Internal Error occured');
+							}
+						}
+					);
 
 					image = {
 						data,
@@ -105,9 +123,9 @@ export class MediaProxyServerService {
 					};
 				}
 			} else if ('static' in request.query && isConvertibleImage) {
-				image = await this.imageProcessingService.convertToWebp(path, 498, 280);
+				image = this.imageProcessingService.convertSharpToWebpStreamObj(Readable.fromWeb(response.body).pipe(sharp()), 498, 280);
 			} else if ('preview' in request.query && isConvertibleImage) {
-				image = await this.imageProcessingService.convertToWebp(path, 200, 200);
+				image = this.imageProcessingService.convertSharpToWebpStreamObj(Readable.fromWeb(response.body).pipe(sharp()), 200, 200);
 			} else if ('badge' in request.query) {
 				if (!isConvertibleImage) {
 					// 画像でないなら404でお茶を濁す
@@ -144,17 +162,19 @@ export class MediaProxyServerService {
 					type: 'image/png',
 				};
 			} else if (mime === 'image/svg+xml') {
-				image = await this.imageProcessingService.convertToWebp(path, 2048, 2048, webpDefault);
+				image = this.imageProcessingService.convertSharpToWebpStreamObj(Readable.fromWeb(response.body).pipe(sharp()), 2048, 2048);
 			} else if (!mime.startsWith('image/') || !FILE_TYPE_BROWSERSAFE.includes(mime)) {
 				throw new StatusError('Rejected type', 403, 'Rejected type');
-			} else {
+			}
+
+			if (!image) {
 				image = {
-					data: fs.readFileSync(path),
+					data: Readable.fromWeb(response.body),
 					ext,
 					type: mime,
 				};
 			}
-	
+
 			reply.header('Content-Type', image.type);
 			reply.header('Cache-Control', 'max-age=31536000, immutable');
 			return image.data;
@@ -173,5 +193,6 @@ export class MediaProxyServerService {
 		} finally {
 			cleanup();
 		}
+		return; // Not all code paths return a value. 対策
 	}
 }

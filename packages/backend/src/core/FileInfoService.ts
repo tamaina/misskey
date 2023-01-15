@@ -15,6 +15,8 @@ import { encode } from 'blurhash';
 import { createTempDir } from '@/misc/create-temp.js';
 import { AiService } from '@/core/AiService.js';
 import { bindThis } from '@/decorators.js';
+import { Response } from 'undici';
+import { StatusError } from '@/misc/status-error.js';
 
 const pipeline = util.promisify(stream.pipeline);
 
@@ -339,6 +341,34 @@ export class FileInfoService {
 	}
 
 	/**
+	 * Detect MIME Type and extension by stream for performance (this cannot detect SVG)
+	 */
+	@bindThis
+	public async detectRequestType(_response: Response): Promise<{
+		mime: string;
+		ext: string | null;
+	}> {
+		const response = _response.clone();
+
+		// Check 0 byte
+		if (!response.body) {
+			throw new StatusError('No Body', 400, 'No Body');
+		}
+
+		const type = await fileTypeFromStream(stream.Readable.fromWeb(response.body));
+
+		if (type) {
+			return {
+				mime: type.mime,
+				ext: type.ext,
+			};
+		}
+
+		// 種類が不明なら application/octet-stream にする
+		return TYPE_OCTET_STREAM;
+	}
+
+	/**
 	 * Check the file is SVG or not
 	 */
 	@bindThis
@@ -346,7 +376,7 @@ export class FileInfoService {
 		try {
 			const size = await this.getFileSize(path);
 			if (size > 1 * 1024 * 1024) return false;
-			return isSvg(fs.readFileSync(path));
+			return isSvg(await fs.promises.readFile(path));
 		} catch {
 			return false;
 		}

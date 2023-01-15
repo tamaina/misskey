@@ -11,8 +11,8 @@ import { createTemp } from '@/misc/create-temp.js';
 import { FILE_TYPE_BROWSERSAFE } from '@/const.js';
 import { StatusError } from '@/misc/status-error.js';
 import type Logger from '@/logger.js';
-import { DownloadService } from '@/core/DownloadService.js';
-import { ImageProcessingService } from '@/core/ImageProcessingService.js';
+import { DownloadService, NonNullBodyResponse } from '@/core/DownloadService.js';
+import { ImageProcessingService, webpDefault } from '@/core/ImageProcessingService.js';
 import { VideoProcessingService } from '@/core/VideoProcessingService.js';
 import { InternalStorageService } from '@/core/InternalStorageService.js';
 import { contentDisposition } from '@/misc/content-disposition.js';
@@ -20,6 +20,9 @@ import { FileInfoService } from '@/core/FileInfoService.js';
 import { LoggerService } from '@/core/LoggerService.js';
 import { bindThis } from '@/decorators.js';
 import type { FastifyInstance, FastifyRequest, FastifyReply, FastifyPluginOptions } from 'fastify';
+import { PassThrough, Readable } from 'node:stream';
+import sharp from 'sharp';
+import { Request } from 'got';
 
 const _filename = fileURLToPath(import.meta.url);
 const _dirname = dirname(_filename);
@@ -106,16 +109,28 @@ export class FileServerService {
 		if (!file.storedInternal) {
 			if (file.isLink && file.uri) {	// 期限切れリモートファイル
 				const [path, cleanup] = await createTemp();
-
 				try {
-					await this.downloadService.downloadUrl(file.uri, path);
+					const _response = await this.downloadService.fetchUrl(file.uri);;
+					const response = _response.clone() as NonNullBodyResponse;
+					const fileSaving = this.downloadService.pipeRequestToFile(response, path);
 
-					const { mime, ext } = await this.fileInfoService.detectType(path);
+					let { mime, ext } = await this.fileInfoService.detectRequestType(response);
+					if (mime === 'application/octet-stream' || mime === 'application/xml') {
+						await fileSaving;
+						if (await this.fileInfoService.checkSvg(path)) {
+							mime = TYPE_SVG.mime;
+							ext = TYPE_SVG.ext;
+						}
+					}
 
 					const convertFile = async () => {
 						if (isThumbnail) {
 							if (['image/jpeg', 'image/webp', 'image/avif', 'image/png', 'image/svg+xml'].includes(mime)) {
-								return await this.imageProcessingService.convertToWebp(path, 498, 280);
+								return this.imageProcessingService.convertSharpToWebpStreamObj(
+									Readable.fromWeb(response.body).pipe(sharp()),
+									498,
+									280
+								);
 							} else if (mime.startsWith('video/')) {
 								return await this.videoProcessingService.generateVideoThumbnail(path);
 							}
@@ -123,12 +138,21 @@ export class FileServerService {
 
 						if (isWebpublic) {
 							if (['image/svg+xml'].includes(mime)) {
-								return await this.imageProcessingService.convertToPng(path, 2048, 2048);
+								return {
+									data: this.imageProcessingService.convertSharpToWebpStream(
+											Readable.fromWeb(response.body).pipe(sharp()),
+											2048,
+											2048,
+											{ ...webpDefault, lossless: true }
+										),
+									ext: 'webp',
+									type: 'image/webp',
+								};
 							}
 						}
 
 						return {
-							data: fs.readFileSync(path),
+							data: Readable.fromWeb(response.body),
 							ext,
 							type: mime,
 						};
