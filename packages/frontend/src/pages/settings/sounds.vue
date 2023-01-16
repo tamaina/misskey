@@ -25,17 +25,13 @@ import { computed, ref } from 'vue';
 import XSound from './sounds.sound.vue';
 import MkRange from '@/components/MkRange.vue';
 import MkButton from '@/components/MkButton.vue';
-import FormLink from '@/components/form/link.vue';
 import FormSection from '@/components/form/section.vue';
 import MkFolder from '@/components/MkFolder.vue';
-import * as os from '@/os';
-import { soundConfigStore, playFile } from '@/scripts/sound';
+import { soundConfigStore } from '@/scripts/sound';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
 
 const masterVolume = computed(soundConfigStore.makeGetterSetter('sound_masterVolume'));
-
-const volumeIcon = computed(() => masterVolume.value === 0 ? 'fas fa-volume-mute' : 'fas fa-volume-up');
 
 const sounds = ref({
 	note: soundConfigStore.reactiveState.sound_note,
@@ -47,19 +43,21 @@ const sounds = ref({
 	channel: soundConfigStore.reactiveState.sound_channel,
 });
 
-async function updated(type, sound) {
+async function updated(type: keyof typeof sounds.value, sound) {
 	const v = {
 		type: sound.type,
 		volume: sound.volume,
 	};
 
-	soundConfigStore.set(`sound_${type}` as keyof typeof soundConfigStore.def, v);
+	soundConfigStore.set(`sound_${type}`, v);
+	sounds.value[type] = v;
 }
 
 function reset() {
-	for (const sound of Object.keys(sounds.value)) {
-		const v = soundConfigStore.def['sound_' + sound].default;
-		soundConfigStore.reset(`sound_${sound}` as keyof typeof soundConfigStore.def);
+	for (const sound of Object.keys(sounds.value) as Array<keyof typeof sounds.value>) {
+		const v = soundConfigStore.def[`sound_${sound}`].default;
+		soundConfigStore.set(`sound_${sound}`, v);
+		sounds.value[sound] = v;
 	}
 }
 
