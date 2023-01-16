@@ -490,8 +490,6 @@ export class DriveService {
 			this.registerLogger.debug('drive capacity override applied');
 			this.registerLogger.debug(`overrideCap: ${driveCapacity}bytes, usage: ${usage}bytes, u+s: ${usage + info.size}bytes`);
 
-			this.registerLogger.debug(`drive usage is ${usage} (max: ${driveCapacity})`);
-
 			// If usage limit exceeded
 			if (driveCapacity < usage + info.size) {
 				if (isLocalUser) {
