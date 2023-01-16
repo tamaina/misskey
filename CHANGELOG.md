@@ -9,7 +9,7 @@
 You should also include the user name that made the change.
 -->
 
-## 13.0.0 (unreleased)
+## 13.0.0 (2023/01/16)
 
 ### TL;DR
 - New features (Role system, Misskey Play, New widgets, New charts, 🍪👈, etc)
@@ -20,7 +20,7 @@ You should also include the user name that made the change.
 
 ### Notable features
 - ロール機能
-	- 従来より柔軟にユーザーの権限を管理できます。例えば、「インスタンスのパトロンはアンテナを30個まで作れる」「基本的にLTLは見れないが、許可した人だけ見れる」「招待制インスタンスだけどユーザーなら誰でも他者を招待できる」のような運用はもちろん、「ローカルユーザーかつアカウント作成から1日未満のユーザーはパブリックな投稿を行えない」のように複数条件を組み合わせて、自動でロールを付与する設定も可能です。
+	- 従来より柔軟にユーザーのポリシーを管理できます。例えば、「インスタンスのパトロンはアンテナを30個まで作れる」「基本的にLTLは見れないが、許可した人だけ見れる」「招待制インスタンスだけどユーザーなら誰でも他者を招待できる」のような運用はもちろん、「ローカルユーザーかつアカウント作成から1日未満のユーザーはパブリックな投稿を行えない」のように複数条件を組み合わせて、自動でロールを付与する設定も可能です。
 - Misskey Play
 	- 従来の動的なPagesに代わる、新しいプラットフォームです。動的なコンテンツ(アプリケーション)に特化していて、Pagesに比べてはるかに柔軟なアプリケーションを作成可能です。
 
@@ -31,8 +31,7 @@ You should also include the user name that made the change.
 	- Misskey not using 15 specific features at 13.0.0, but may do so in the future.
 - Elasticsearchのサポートが削除されました
 	- 代わりに今後任意の検索プロバイダを設定できる仕組みを構想しています。その仕組みを使えば今まで通りElasticsearchも利用できます
-- Migrate to Yarn Berry (v3.2.1) @ThatOneCalculator
-	- You may have to `yarn run clean-all`, `sudo corepack enable` and `yarn set version berry` before running `yarn install` if you're still on yarn classic
+- Yarnからpnpmに移行されました
 - インスタンスブロックはサブドメインにも適用されるようになります
 - ロールの導入に伴い、いくつかの機能がロールと統合されました
 	- モデレーターはロールに統合されました。今までのモデレーター情報は失われるため、予めモデレーター一覧を記録しておき、アップデート後にモデレーターロールを作りアサインし直してください。
@@ -64,6 +63,7 @@ You should also include the user name that made the change.
 - API: `user`および`note`エンティティに`emojis`プロパティが含まれなくなりました
 - API: `user`エンティティに`avatarColor`および`bannerColor`プロパティが含まれなくなりました
 - API: `instance`エンティティに`latestStatus`、`lastCommunicatedAt`、`latestRequestSentAt`プロパティが含まれなくなりました
+- API: `instance`エンティティの`caughtAt`は`firstRetrievedAt`に名前が変わりました
 
 ### Improvements
 - Role system @syuilo
@@ -88,6 +88,7 @@ You should also include the user name that made the change.
 - Server: Judge instance block by endsWith @tamaina
 - Server: improve note scoring for featured notes @CyberRex0
 - Server: アンケート選択肢の文字数制限を緩和 @syuilo
+- Server: プロフィールの文字数制限を緩和 @syuilo
 - Server: add rate limits for some endpoints @syuilo
 - Server: improve stats api performance @syuilo
 - Server: improve nodeinfo performance @syuilo
@@ -122,6 +123,7 @@ You should also include the user name that made the change.
 - Client: add new mfm function (position, fg, bg) @syuilo
 - Client: show fireworks when visit user who today is birthday @syuilo
 - Client: show bot warning on screen when logged in as bot account @syuilo
+- Client: AiScriptからカスタム絵文字一覧を参照できるように @syuilo
 - Client: improve overall performance of client @syuilo
 - Client: ui tweaks @syuilo
 - Client: clicker game @syuilo

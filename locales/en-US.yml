@@ -933,6 +933,10 @@ unassign: "Unassign"
 color: "Color"
 manageCustomEmojis: "Manage Custom Emojis"
 youCannotCreateAnymore: "You've hit the creation limit."
+cannotPerformTemporary: "Temporarily unavailable"
+cannotPerformTemporaryDescription: "This action cannot be performed temporarily due to exceeding the execution limit. Please wait for a while and then try again."
+preset: "Presets"
+selectFromPresets: "Choose from presets"
 _role:
   new: "New role"
   edit: "Edit role"
@@ -949,11 +953,17 @@ _role:
   isPublic: "Public role"
   descriptionOfIsPublic: "Anyone will be able to view a list of users assigned to this role. In addition, this role will be displayed in the profiles of assigned users."
   options: "Role options"
+  policies: "Policies"
   baseRole: "Base role"
   useBaseValue: "Use base role value"
   chooseRoleToAssign: "Select the role to assign"
   canEditMembersByModerator: "Allow moderators to edit the list members of this role"
   descriptionOfCanEditMembersByModerator: "When turned on, moderators as well as administrators will be able to assign and unassign users to this role. When turned off, only administrators will be able to assign users."
+  priority: "Priority"
+  _priority:
+    low: "Low"
+    middle: "Medium"
+    high: "High"
   _options:
     gtlAvailable: "Viewing the global timeline"
     ltlAvailable: "Viewing the local timeline"
@@ -969,6 +979,9 @@ _role:
     noteEachClipsMax: "Maximum number of notes within a clip"
     userListMax: "Maximum number of user lists"
     userEachUserListsMax: "Maximum number of users within a user list"
+    rateLimitFactor: "Rate limit"
+    descriptionOfRateLimitFactor: "Lower rate limits are less restrictive, higher ones more restrictive. "
+    canHideAds: "Remove ads"
   _condition:
     isLocal: "Local user"
     isRemote: "Remote user"
@@ -1013,6 +1026,7 @@ _accountDelete:
 _ad:
   back: "Back"
   reduceFrequencyOfThisAd: "Show this ad less"
+  hide: "Never show"
 _forgotPassword:
   enterEmail: "Enter the email address you used to register. A link with which you can reset your password will then be sent to it."
   ifNoEmail: "If you did not use an email during registration, please contact the instance administrator instead."
