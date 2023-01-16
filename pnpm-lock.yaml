@@ -55,6 +55,7 @@ importers:
       '@fastify/accepts': 4.1.0
       '@fastify/cookie': ^8.3.0
       '@fastify/cors': 8.2.0
+      '@fastify/formbody': ^7.4.0
       '@fastify/http-proxy': ^8.4.0
       '@fastify/multipart': 7.4.0
       '@fastify/static': 6.6.1
@@ -217,6 +218,7 @@ importers:
       '@fastify/accepts': 4.1.0
       '@fastify/cookie': 8.3.0
       '@fastify/cors': 8.2.0
+      '@fastify/formbody': 7.4.0
       '@fastify/http-proxy': 8.4.0
       '@fastify/multipart': 7.4.0
       '@fastify/static': 6.6.1
@@ -1366,6 +1368,13 @@ packages:
     resolution: {integrity: sha512-ypZynRvXA3dibfPykQN3RB5wBdEUgSGgny8Qc6k163wYPLD4mEGEDkACp+00YmqkGvIm8D/xYoHajwyEdWD/eg==}
     dependencies:
       fast-json-stringify: 5.5.0
+    dev: false
+
+  /@fastify/formbody/7.4.0:
+    resolution: {integrity: sha512-H3C6h1GN56/SMrZS8N2vCT2cZr7mIHzBHzOBa5OPpjfB/D6FzP9mMpE02ZzrFX0ANeh0BAJdoXKOF2e7IbV+Og==}
+    dependencies:
+      fast-querystring: 1.1.0
+      fastify-plugin: 4.5.0
     dev: false
 
   /@fastify/http-proxy/8.4.0:
