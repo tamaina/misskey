@@ -13,8 +13,11 @@ You should also include the user name that made the change.
 
 ### Improvements
 - Playのプリセットを追加
+- Playのscriptの文字数制限を緩和
 - AiScript GUIの強化
+- リアクション一覧詳細ダイアログを表示できるように
 - 存在しないカスタム絵文字をテキストで表示するように
+- Alt text in image viewer
 
 ### Bugfixes
 - playを削除する手段がなかったのを修正
