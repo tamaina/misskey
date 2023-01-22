@@ -1,7 +1,8 @@
 import { apiGet } from './os';
 import { miLocalStorage } from './local-storage';
-import { shallowRef, computed, markRaw } from 'vue';
+import { shallowRef, computed, markRaw, watch } from 'vue';
 import * as Misskey from 'misskey-js';
+import { stream } from '@/stream';
 
 const storageCache = miLocalStorage.getItem('emojis');
 export const customEmojis = shallowRef<Misskey.entities.CustomEmoji[]>(storageCache ? JSON.parse(storageCache) : []);
@@ -13,8 +14,21 @@ export const customEmojiCategories = computed<string[]>(() => {
 	return markRaw(Array.from(categories));
 });
 
-fetchCustomEmojis();
-window.setInterval(fetchCustomEmojis, 1000 * 60 * 10);
+watch(customEmojis, (newVal) => {
+	console.log('new', newVal)
+});
+
+stream.on('emojiAdded', emojiData => {
+	customEmojis.value = [ emojiData.emoji, ...customEmojis.value ];
+});
+
+stream.on('emojiUpdated', emojiData => {
+	customEmojis.value = customEmojis.value.map(item => emojiData.emojis.find(search => search.name === item.name) as Misskey.entities.CustomEmoji ?? item);
+});
+
+stream.on('emojiDeleted', emojiData => {
+	customEmojis.value = customEmojis.value.filter(item => !emojiData.emojis.some(search => search.name === item.name));
+});
 
 export async function fetchCustomEmojis() {
 	const now = Date.now();
