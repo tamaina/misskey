@@ -26,10 +26,10 @@ import JSON5 from 'json5';
 import widgets from '@/widgets';
 import directives from '@/directives';
 import components from '@/components';
-import { version, ui, lang, host } from '@/config';
+import { version, ui, lang, host, updateLocale } from '@/config';
 import { applyTheme } from '@/scripts/theme';
 import { isDeviceDarkmode } from '@/scripts/is-device-darkmode';
-import { i18n } from '@/i18n';
+import { i18n, updateI18n } from '@/i18n';
 import { confirm, alert, post, popup, toast } from '@/os';
 import { stream } from '@/stream';
 import * as sound from '@/scripts/sound';
@@ -47,6 +47,7 @@ import { getAccountFromId } from '@/scripts/get-account-from-id';
 import { deckStore } from './ui/deck/deck-store';
 import { miLocalStorage } from './local-storage';
 import { claimAchievement, claimedAchievements } from './scripts/achievements';
+import { fetchCustomEmojis } from './custom-emojis';
 
 (async () => {
 	console.info(`Misskey v${version}`);
@@ -83,6 +84,22 @@ import { claimAchievement, claimedAchievements } from './scripts/achievements';
 	}
 
 	await defaultStore.ready;
+
+	//#region Detect language & fetch translations
+	const localeVersion = miLocalStorage.getItem('localeVersion');
+	const localeOutdated = (localeVersion == null || localeVersion !== version);
+	if (localeOutdated) {
+		const res = await window.fetch(`/assets/locales/${lang}.${version}.json`);
+		if (res.status === 200) {
+			const newLocale = await res.text();
+			const parsedNewLocale = JSON.parse(newLocale);
+			miLocalStorage.setItem('locale', newLocale);
+			miLocalStorage.setItem('localeVersion', version);
+			updateLocale(parsedNewLocale);
+			updateI18n(parsedNewLocale);
+		}
+	}
+	//#endregion
 
 	// タッチデバイスでCSSの:hoverを機能させる
 	document.addEventListener('touchend', () => {}, { passive: true });
@@ -168,6 +185,10 @@ import { claimAchievement, claimedAchievements } from './scripts/achievements';
 		// Init service worker
 		initializeSw();
 	});
+
+	try {
+		await fetchCustomEmojis();
+	} catch (err) {}
 
 	const app = createApp(
 		window.location.search === '?zen' ? defineAsyncComponent(() => import('@/ui/zen.vue')) :
