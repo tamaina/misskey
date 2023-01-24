@@ -240,10 +240,10 @@ export class HttpRequestService {
 			maxHeaderSize: 16364, // default
 			maxResponseSize: 10 * 1024 * 1024,
 			maxRedirections: 3,
-			pipelining: 0,
+			pipelining: 1,
 			connect: {
 				timeout: 10 * 1000, // コネクションが確立するまでのタイムアウト
-				maxCachedSessions: 100, // TLSセッションのキャッシュ数 https://github.com/nodejs/undici/blob/v5.14.0/lib/core/connect.js#L80
+				maxCachedSessions: 300, // TLSセッションのキャッシュ数 https://github.com/nodejs/undici/blob/v5.14.0/lib/core/connect.js#L80
 				lookup: this.dnsCache.lookup as LookupFunction, // https://github.com/nodejs/undici/blob/v5.14.0/lib/core/connect.js#L98
 			},
 		};
