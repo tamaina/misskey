@@ -165,6 +165,7 @@ export class ApRequestService {
 			},
 		});
 
+		this.logger.info(`[AP] ${req.request.method} ${url} Start`);
 		const response = await this.undiciFetcher.request(
 			url,
 			{
@@ -173,6 +174,7 @@ export class ApRequestService {
 				body,
 			},
 		);
+		this.logger.info(`[AP] ${req.request.method} ${url} Finish`);
 		response.body.pipe(devNull());
 	}
 
