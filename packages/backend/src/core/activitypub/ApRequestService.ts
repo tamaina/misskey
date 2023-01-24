@@ -10,7 +10,7 @@ import { LoggerService } from '@/core/LoggerService.js';
 import { bindThis } from '@/decorators.js';
 import type Logger from '@/logger.js';
 import type { Dispatcher } from 'undici';
-import devNull from 'dev-null';
+import { DevNull } from '@/misc/dev-null';
 
 type Request = {
 	url: string;
@@ -174,8 +174,7 @@ export class ApRequestService {
 				body,
 			},
 		);
-		this.logger.info(`[AP] ${req.request.method} ${url} Finish`);
-		response.body.pipe(devNull());
+		response.body.pipe(new DevNull());
 	}
 
 	/**
