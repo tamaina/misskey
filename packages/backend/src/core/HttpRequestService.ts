@@ -234,7 +234,7 @@ export class HttpRequestService {
 			keepAliveTimeout: 60 * 1000,
 			keepAliveMaxTimeout: 10 * 60 * 1000,
 			keepAliveTimeoutThreshold: 1 * 1000,
-			strictContentLength: false,
+			strictContentLength: true,
 			headersTimeout: 3 * 1000,
 			bodyTimeout: 8 * 1000,
 			maxHeaderSize: 16364, // default
@@ -242,7 +242,7 @@ export class HttpRequestService {
 			maxRedirections: 3,
 			pipelining: 1,
 			connect: {
-				timeout: 3 * 1000, // コネクションが確立するまでのタイムアウト
+				timeout: 1 * 1000, // コネクションが確立するまでのタイムアウト
 				maxCachedSessions: 300, // TLSセッションのキャッシュ数 https://github.com/nodejs/undici/blob/v5.14.0/lib/core/connect.js#L80
 				lookup: this.dnsCache.lookup as LookupFunction, // https://github.com/nodejs/undici/blob/v5.14.0/lib/core/connect.js#L98
 			},
