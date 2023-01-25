@@ -126,7 +126,8 @@
 		"web-push": "3.5.0",
 		"websocket": "1.0.34",
 		"ws": "8.12.0",
-		"xev": "3.0.2"
+		"xev": "3.0.2",
+		"node-fetch": "3.3.0"
 	},
 	"devDependencies": {
 		"@redocly/openapi-core": "1.0.0-beta.120",
@@ -183,7 +184,6 @@
 		"execa": "6.1.0",
 		"got": "12.5.3",
 		"jest": "29.3.1",
-		"jest-mock": "^29.3.1",
-		"node-fetch": "3.3.0"
+		"jest-mock": "^29.3.1"
 	}
 }
