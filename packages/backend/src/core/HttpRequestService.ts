@@ -371,4 +371,39 @@ export class HttpRequestService {
 			});
 		};
 	}
+
+	@bindThis
+	public async send(url: string, args: {
+		method?: string,
+		body?: string,
+		headers?: Record<string, string>,
+		timeout?: number,
+		size?: number,
+	} = {}, extra: {
+		throwErrorWhenResponseNotOk: boolean;
+	} = {
+		throwErrorWhenResponseNotOk: true,
+	}): Promise<Response> {
+		const timeout = args.timeout ?? 5000;
+
+		const controller = new AbortController();
+		setTimeout(() => {
+			controller.abort();
+		}, timeout);
+
+		const res = await fetch(url, {
+			method: args.method ?? 'GET',
+			headers: args.headers,
+			body: args.body,
+			size: args.size ?? 10 * 1024 * 1024,
+			agent: (url) => this.getHttpAgentByUrl(url),
+			signal: controller.signal,
+		});
+
+		if (!res.ok && extra.throwErrorWhenResponseNotOk) {
+			throw new StatusError(`${res.status} ${res.statusText}`, res.status, res.statusText);
+		}
+
+		return res;
+	}
 }
