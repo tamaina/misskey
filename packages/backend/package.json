@@ -78,6 +78,7 @@
 		"misskey-js": "0.0.14",
 		"ms": "3.0.0-canary.1",
 		"nested-property": "4.0.0",
+		"node-fetch": "3.3.0",
 		"nodemailer": "6.9.0",
 		"nsfwjs": "2.4.2",
 		"oauth": "^0.10.0",
@@ -109,6 +110,7 @@
 		"strict-event-emitter-types": "2.0.0",
 		"stringz": "2.1.0",
 		"summaly": "2.7.0",
+		"swc": "^1.0.11",
 		"syslog-pro": "git+https://github.com/misskey-dev/SyslogPro#0.2.9-misskey.2",
 		"systeminformation": "5.17.3",
 		"tinycolor2": "1.5.2",
@@ -126,8 +128,7 @@
 		"web-push": "3.5.0",
 		"websocket": "1.0.34",
 		"ws": "8.12.0",
-		"xev": "3.0.2",
-		"node-fetch": "3.3.0"
+		"xev": "3.0.2"
 	},
 	"devDependencies": {
 		"@redocly/openapi-core": "1.0.0-beta.120",
