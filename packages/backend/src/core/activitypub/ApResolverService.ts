@@ -40,9 +40,6 @@ export class Resolver {
 		this.history = new Set();
 		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 		this.logger = this.loggerService?.getLogger('ap-resolve'); // なぜか TypeError: Cannot read properties of undefined (reading 'getLogger') と言われる
-		this.undiciFetcher = this.httpRequestService.createFetcher({
-			maxRedirections: 0,
-		}, {}, this.logger);
 	}
 
 	@bindThis

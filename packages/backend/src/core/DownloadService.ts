@@ -17,11 +17,6 @@ import type Logger from '@/logger.js';
 const pipeline = util.promisify(stream.pipeline);
 import { bindThis } from '@/decorators.js';
 
-export type NonNullBodyResponse = Response & {
-	body: ReadableStream;
-	clone: () => NonNullBodyResponse;
-};
-
 @Injectable()
 export class DownloadService {
 	private logger: Logger;
@@ -37,8 +32,8 @@ export class DownloadService {
 	}
 
 	@bindThis
-	public async fetchUrl(url: string): Promise<NonNullBodyResponse> {
-		this.logger.info(`Downloading ${chalk.cyan(url)} ...`);
+	public async downloadUrl(url: string, path: string): Promise<void> {
+		this.logger.info(`Downloading ${chalk.cyan(url)} to ${chalk.cyanBright(path)} ...`);
 
 		const timeout = 30 * 1000;
 		const operationTimeout = 60 * 1000;
