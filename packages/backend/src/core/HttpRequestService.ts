@@ -11,7 +11,6 @@ import { StatusError } from '@/misc/status-error.js';
 import { bindThis } from '@/decorators.js';
 import { LoggerService } from '@/core/LoggerService.js';
 import type Logger from '@/logger.js';
-import { default as nodeFetch, Response as NFResponse } from 'node-fetch'
 
 // true to allow, false to deny
 export type IpChecker = (ip: string) => boolean;
@@ -384,7 +383,7 @@ export class HttpRequestService {
 		throwErrorWhenResponseNotOk: boolean;
 	} = {
 		throwErrorWhenResponseNotOk: true,
-	}): Promise<NFResponse> {
+	}): Promise<Response> {
 		const timeout = args.timeout ?? 5000;
 
 		const controller = new AbortController();
@@ -392,7 +391,7 @@ export class HttpRequestService {
 			controller.abort();
 		}, timeout);
 
-		const res = await nodeFetch(url, {
+		const res = await fetch(url, {
 			method: args.method ?? 'GET',
 			headers: args.headers,
 			body: args.body,
