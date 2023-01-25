@@ -5,14 +5,16 @@ import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
 import type { User } from '@/models/entities/User.js';
 import { UserKeypairStoreService } from '@/core/UserKeypairStoreService.js';
-import { HttpRequestService } from '@/core/HttpRequestService.js';
+import { HttpRequestService, UndiciFetcher } from '@/core/HttpRequestService.js';
 import { LoggerService } from '@/core/LoggerService.js';
 import { bindThis } from '@/decorators.js';
 import type Logger from '@/logger.js';
+import type { Dispatcher } from 'undici';
+import { DevNull } from '@/misc/dev-null.js';
 
 type Request = {
 	url: string;
-	method: string;
+	method: Dispatcher.HttpMethod;
 	headers: Record<string, string>;
 };
 
@@ -30,6 +32,7 @@ type PrivateKey = {
 
 @Injectable()
 export class ApRequestService {
+	private undiciFetcher: UndiciFetcher;
 	private logger: Logger;
 
 	constructor(
@@ -41,6 +44,9 @@ export class ApRequestService {
 		private loggerService: LoggerService,
 	) {
 		this.logger = this.loggerService.getLogger('ap-request'); // なぜか TypeError: Cannot read properties of undefined (reading 'getLogger') と言われる
+		this.undiciFetcher = this.httpRequestService.createFetcher({
+			maxRedirections: 0,
+		}, {}, this.logger);
 	}
 
 	@bindThis
@@ -159,11 +165,15 @@ export class ApRequestService {
 			},
 		});
 
-		await this.httpRequestService.send(url, {
-			method: req.request.method,
-			headers: req.request.headers,
-			body,
-		});
+		const response = await this.undiciFetcher.request(
+			url,
+			{
+				method: req.request.method,
+				headers: req.request.headers,
+				body,
+			},
+		);
+		response.body.pipe(new DevNull());
 	}
 
 	/**
@@ -185,10 +195,13 @@ export class ApRequestService {
 			},
 		});
 
-		const res = await this.httpRequestService.send(url, {
-			method: req.request.method,
-			headers: req.request.headers,
-		});
+		const res = await this.httpRequestService.fetch(
+			url,
+			{
+				method: req.request.method,
+				headers: req.request.headers,
+			},
+		);
 
 		return await res.json();
 	}

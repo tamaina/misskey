@@ -21,13 +21,18 @@ export class CaptchaService {
 			response,
 		});
 	
-		const res = await this.httpRequestService.send(url, {
-			method: 'POST',
-			body: JSON.stringify(params),
-			headers: {
-				'Content-Type': 'application/json',
+		const res = await this.httpRequestService.fetch(
+			url,
+			{
+				method: 'POST',
+				body: params,
 			},
-		}, { throwErrorWhenResponseNotOk: false });
+			{
+				noOkError: true,
+			}
+		).catch(err => {
+			throw `${err.message ?? err}`;
+		});
 	
 		if (!res.ok) {
 			throw `${res.status}`;
