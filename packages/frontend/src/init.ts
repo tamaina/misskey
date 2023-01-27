@@ -83,8 +83,6 @@ import { fetchCustomEmojis } from './custom-emojis';
 		});
 	}
 
-	await defaultStore.ready;
-
 	//#region Detect language & fetch translations
 	const localeVersion = miLocalStorage.getItem('localeVersion');
 	const localeOutdated = (localeVersion == null || localeVersion !== version);
@@ -272,6 +270,8 @@ import { fetchCustomEmojis } from './custom-emojis';
 		} catch (err) {
 		}
 	}
+
+	await defaultStore.loaded;
 
 	// NOTE: この処理は必ず↑のクライアント更新時処理より後に来ること(テーマ再構築のため)
 	watch(defaultStore.reactiveState.darkMode, (darkMode) => {
