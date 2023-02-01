@@ -195,9 +195,9 @@ const app = createApp(
 					defineAsyncComponent(() => import('@/ui/universal.vue')),
 );
 
-if (_DEV_) {
+//if (_DEV_) {
 	app.config.performance = true;
-}
+//}
 
 // TODO: 廃止
 app.config.globalProperties = {
