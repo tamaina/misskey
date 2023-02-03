@@ -3,7 +3,6 @@ import cors from '@fastify/cors';
 import multipart from '@fastify/multipart';
 import fastifyCookie from '@fastify/cookie';
 import { ModuleRef, repl } from '@nestjs/core';
-import fastifyFormBody from '@fastify/formbody';
 import type { Config } from '@/config.js';
 import type { UsersRepository, InstancesRepository, AccessTokensRepository } from '@/models/index.js';
 import { DI } from '@/di-symbols.js';
@@ -52,8 +51,6 @@ export class ApiServerService {
 				files: 1,
 			},
 		});
-
-		fastify.register(fastifyFormBody);
 
 		fastify.register(fastifyCookie, {});
 
