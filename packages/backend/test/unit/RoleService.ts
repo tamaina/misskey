@@ -50,6 +50,15 @@ describe('RoleService', () => {
 			.then(x => rolesRepository.findOneByOrFail(x.identifiers[0]));
 	}
 
+	async function assign(roleId: Role['id'], userId: User['id']) {
+		await roleAssignmentsRepository.insert({
+			id: genAid(new Date()),
+			createdAt: new Date(),
+			roleId,
+			userId,
+		});
+	}
+
 	beforeEach(async () => {
 		app = await Test.createTestingModule({
 			imports: [
@@ -93,7 +102,7 @@ describe('RoleService', () => {
 	});
 
 	describe('getUserPolicies', () => {
-		it('instance default policies', async () => {	
+		test('instance default policies', async () => {	
 			const user = await createUser();
 			metaService.fetch.mockResolvedValue({
 				policies: {
@@ -106,7 +115,7 @@ describe('RoleService', () => {
 			expect(result.canManageCustomEmojis).toBe(false);
 		});
 	
-		it('instance default policies 2', async () => {	
+		test('instance default policies 2', async () => {	
 			const user = await createUser();
 			metaService.fetch.mockResolvedValue({
 				policies: {
@@ -119,7 +128,7 @@ describe('RoleService', () => {
 			expect(result.canManageCustomEmojis).toBe(true);
 		});
 	
-		it('with role', async () => {	
+		test('with role', async () => {	
 			const user = await createUser();
 			const role = await createRole({
 				name: 'a',
@@ -131,12 +140,7 @@ describe('RoleService', () => {
 					},
 				},
 			});
-			await roleAssignmentsRepository.insert({
-				id: 'a',
-				createdAt: new Date(),
-				roleId: role.id,
-				userId: user.id,
-			});
+			await assign(role.id, user.id);
 			metaService.fetch.mockResolvedValue({
 				policies: {
 					canManageCustomEmojis: false,
@@ -148,7 +152,42 @@ describe('RoleService', () => {
 			expect(result.canManageCustomEmojis).toBe(true);
 		});
 
-		it('conditional role', async () => {	
+		test('priority', async () => {	
+			const user = await createUser();
+			const role1 = await createRole({
+				name: 'role1',
+				policies: {
+					driveCapacityMb: {
+						useDefault: false,
+						priority: 0,
+						value: 200,
+					},
+				},
+			});
+			const role2 = await createRole({
+				name: 'role2',
+				policies: {
+					driveCapacityMb: {
+						useDefault: false,
+						priority: 1,
+						value: 100,
+					},
+				},
+			});
+			await assign(role1.id, user.id);
+			await assign(role2.id, user.id);
+			metaService.fetch.mockResolvedValue({
+				policies: {
+					driveCapacityMb: 50,
+				},
+			} as any);
+	
+			const result = await roleService.getUserPolicies(user.id);
+	
+			expect(result.driveCapacityMb).toBe(100);
+		});
+
+		test('conditional role', async () => {	
 			const user1 = await createUser({
 				createdAt: new Date(Date.now() - (1000 * 60 * 60 * 24 * 365)),
 			});
