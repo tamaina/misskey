@@ -9,16 +9,17 @@
 You should also include the user name that made the change.
 -->
 
-## 13.x.x (unreleased)
+## 13.3.0 (2023/02/03)
 ### Changes
 - twitter/github/discord連携機能が削除されました
 - ハッシュタグごとのチャートが削除されました
 - syslogのサポートが削除されました
 
 ### Improvements
+- 外部メディアプロキシへの対応を強化しました  
+  外部メディアプロキシのFastify実装を作りました  
+  https://github.com/misskey-dev/media-proxy
 - ロールで広告の非表示が有効になっている場合は最初から広告を非表示にするように
-
-### Bugfixes
 
 ## 13.2.6 (2023/02/01)
 ### Changes
