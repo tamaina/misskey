@@ -16,6 +16,7 @@ You should also include the user name that made the change.
   * MFMでx3/x4もしくはscale.x/yが2.5以上に指定されていた場合にはオリジナル品質の絵文字を使用するように
 
 ### Improvements
+- ロールにアイコンを設定してユーザー名の横に表示できるように
 
 ### Bugfixes
 -
