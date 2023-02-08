@@ -8,7 +8,10 @@
 
 You should also include the user name that made the change.
 -->
-## 13.x.x (unreleased)
+## 13.5.0 (2023/02/08)
+
+### Changes
+- perf(client): do not render custom emojis in user names
 
 ### Changes
 - カスタム絵文字関連の変更
@@ -17,9 +20,12 @@ You should also include the user name that made the change.
 
 ### Improvements
 - Client: disableShowingAnimatedImagesのデフォルト値をprefers-reduced-motionにする
+- enhance(client): tweak medialist style
 
 ### Bugfixes
+- fix docker health check
 - Client: MkEmojiPickerでもChromeで検索ダイアログで変換確定するとそのまま検索されてしまうのを修正
+- fix(mfm): default degree not used in rotate
 - fix(server): validate urls from ap to improve security
 
 ## 13.4.0 (2023/02/05)
