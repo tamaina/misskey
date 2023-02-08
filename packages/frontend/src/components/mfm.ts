@@ -204,7 +204,7 @@ export default defineComponent({
 							return h(MkSparkle, {}, genEl(token.children, large));
 						}
 						case 'rotate': {
-							const degrees = parseFloat(token.props.args.deg) ?? '90';
+							const degrees = parseFloat(token.props.args.deg ?? '90');
 							style = `transform: rotate(${degrees}deg); transform-origin: center center;`;
 							break;
 						}
