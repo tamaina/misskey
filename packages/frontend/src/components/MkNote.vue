@@ -674,7 +674,7 @@ function showReactions(): void {
 	padding: 0 6px;
 	border: solid 1px var(--divider);
 	border-radius: 4px;
-	background: rgba(0, 0, 0, 0.05);
+	background: transparent;
 	opacity: .8;
 
 	&:hover {
