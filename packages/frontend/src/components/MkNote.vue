@@ -5,7 +5,7 @@
 	ref="el"
 	v-hotkey="keymap"
 	:class="$style.root"
-	:tabindex="!isDeleted ? '-1' : null"
+	:tabindex="!isDeleted ? '-1' : undefined"
 >
 	<MkNoteSub v-if="appearNote.reply" :note="appearNote.reply" :class="$style.replyTo"/>
 	<div v-if="pinned" :class="$style.tip"><i class="ti ti-pin"></i> {{ i18n.ts.pinnedNote }}</div>
@@ -73,7 +73,16 @@
 				<MkA v-if="appearNote.channel && !inChannel" :class="$style.channel" :to="`/channels/${appearNote.channel.id}`"><i class="ti ti-device-tv"></i> {{ appearNote.channel.name }}</MkA>
 			</div>
 			<footer :class="$style.footer">
-				<MkReactionsViewer ref="reactionsViewer" :note="appearNote" :max-number="16" />
+				<MkReactionsViewer ref="reactionsViewer" :note="appearNote" :max-number="16">
+					<template v-slot:extras>
+						<button v-if="Object.keys(appearNote.reactions).length > 2" class="_button" :class="$style.reactionDetailsButton" @click="showReactions">
+							{{ number(Object.entries(appearNote.reactions).reduce((a, b) => a + b[1], 0)) }}
+							<template v-if="Object.keys(appearNote.reactions).length > 11">
+								/{{ Object.keys(appearNote.reactions).length }}
+							</template>
+						</button>
+					</template>
+				</MkReactionsViewer>
 				<button :class="$style.footerButton" class="_button" @click="reply()">
 					<i class="ti ti-arrow-back-up"></i>
 					<p v-if="appearNote.repliesCount > 0" :class="$style.footerButtonCount">{{ appearNote.repliesCount }}</p>
@@ -94,8 +103,8 @@
 				<button v-if="appearNote.myReaction == null" ref="reactButton" :class="$style.footerButton" class="_button" @mousedown="react()">
 					<i class="ti ti-plus"></i>
 				</button>
-				<button v-else ref="reactButton" :class="$style.footerButton" class="_button" @click="showReactions">
-					<i class="ti ti-plus"></i>
+				<button v-if="appearNote.myReaction != null" ref="reactButton" :class="$style.footerButton" class="_button" @click="undoReact(appearNote)">
+					<i class="ti ti-minus"></i>
 				</button>
 				<button ref="menuButton" :class="$style.footerButton" class="_button" @mousedown="menu()">
 					<i class="ti ti-dots"></i>
@@ -144,6 +153,7 @@ import { useNoteCapture } from '@/scripts/use-note-capture';
 import { deepClone } from '@/scripts/clone';
 import { useTooltip } from '@/scripts/use-tooltip';
 import { claimAchievement } from '@/scripts/achievements';
+import number from '@/filters/number';
 
 const props = defineProps<{
 	note: misskey.entities.Note;
@@ -187,7 +197,7 @@ const isLong = (appearNote.cw == null && appearNote.text != null && (
 const collapsed = ref(appearNote.cw == null && isLong);
 const isDeleted = ref(false);
 const muted = ref(checkWordMute(appearNote, $i, defaultStore.state.mutedWords));
-const translation = ref(null);
+const translation = ref<any>(null);
 const translating = ref(false);
 const urls = appearNote.text ? extractUrlFromMfm(mfm.parse(appearNote.text)) : null;
 const showTicker = (defaultStore.state.instanceTicker === 'always') || (defaultStore.state.instanceTicker === 'remote' && appearNote.user.instance);
@@ -274,6 +284,14 @@ function react(viaKeyboard = false): void {
 		}
 	}, () => {
 		focus();
+	});
+}
+
+function undoReact(note): void {
+	const oldReaction = note.myReaction;
+	if (!oldReaction) return;
+	os.api('notes/reactions/delete', {
+		noteId: note.id,
 	});
 }
 
