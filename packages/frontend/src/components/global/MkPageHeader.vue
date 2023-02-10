@@ -1,37 +1,48 @@
 <template>
-<div v-if="show" ref="el" :class="[$style.root, { [$style.slim]: narrow, [$style.thin]: thin_ }]" :style="{ background: bg }" @click="onClick">
-	<div v-if="narrow" :class="$style.buttonsLeft">
-		<MkAvatar v-if="props.displayMyAvatar && $i" :class="$style.avatar" :user="$i"/>
-	</div>
-	<template v-if="metadata">
-		<div v-if="!hideTitle" :class="$style.titleContainer" @click="showTabsPopup">
-			<MkAvatar v-if="metadata.avatar" :class="$style.titleAvatar" :user="metadata.avatar" indicator/>
-			<i v-else-if="metadata.icon" :class="[$style.titleIcon, metadata.icon]"></i>
+<div v-if="show" ref="el" :class="[$style.root]" :style="{ background: bg }">
+	<div :class="[$style.upper, { [$style.slim]: narrow, [$style.thin]: thin_ }]" @click="onClick">
+		<div v-if="narrow" :class="$style.buttonsLeft">
+			<MkAvatar v-if="props.displayMyAvatar && $i" :class="$style.avatar" :user="$i" :link="true"/>
+		</div>
+		<template v-if="metadata">
+			<div v-if="!hideTitle" :class="$style.titleContainer">
+				<MkAvatar v-if="metadata.avatar" :class="$style.titleAvatar" :user="metadata.avatar" indicator/>
+				<i v-else-if="metadata.icon" :class="[$style.titleIcon, metadata.icon]"></i>
 
-			<div :class="$style.title">
-				<MkUserName v-if="metadata.userName" :user="metadata.userName" :nowrap="true"/>
-				<div v-else-if="metadata.title">{{ metadata.title }}</div>
-				<div v-if="!narrow && metadata.subtitle" :class="$style.subtitle">
-					{{ metadata.subtitle }}
-				</div>
-				<div v-if="narrow && hasTabs" :class="[$style.subtitle, $style.activeTab]">
-					{{ tabs.find(tab => tab.key === props.tab)?.title }}
-					<i class="ti ti-chevron-down" :class="$style.chevron"></i>
+				<div :class="$style.title">
+					<MkUserName v-if="metadata.userName" :user="metadata.userName" :nowrap="true"/>
+					<div v-else-if="metadata.title">{{ metadata.title }}</div>
+					<div v-if="metadata.subtitle" :class="$style.subtitle">
+						{{ metadata.subtitle }}
+					</div>
 				</div>
 			</div>
+			<div v-if="!narrow || hideTitle" :class="$style.tabs">
+				<div :class="$style.tabsInner">
+					<button v-for="tab in tabs" :ref="(el) => tabRefs[tab.key] = (el as HTMLElement)" v-tooltip.noDelay="tab.title" class="_button" :class="[$style.tab, { [$style.active]: tab.key != null && tab.key === props.tab }]" @mousedown="(ev) => onTabMousedown(tab, ev)" @click="(ev) => onTabClick(tab, ev)">
+						<i v-if="tab.icon" :class="[$style.tabIcon, tab.icon]"></i>
+						<span v-if="!tab.iconOnly" :class="$style.tabTitle">{{ tab.title }}</span>
+					</button>
+				</div>
+				<div ref="tabHighlightEl" :class="$style.tabHighlight"></div>
+			</div>
+		</template>
+		<div v-if="narrow || (actions && actions.length > 0)" :class="$style.buttonsRight">
+			<template v-for="action in actions">
+				<button v-tooltip.noDelay="action.text" class="_button" :class="[$style.button, { [$style.highlighted]: action.highlighted }]" @click.stop="action.handler" @touchstart="preventDrag"><i :class="action.icon"></i></button>
+			</template>
 		</div>
-		<div v-if="!narrow || hideTitle" :class="$style.tabs">
-			<button v-for="tab in tabs" :ref="(el) => tabRefs[tab.key] = (el as HTMLElement)" v-tooltip.noDelay="tab.title" class="_button" :class="[$style.tab, { [$style.active]: tab.key != null && tab.key === props.tab }]" @mousedown="(ev) => onTabMousedown(tab, ev)" @click="(ev) => onTabClick(tab, ev)">
-				<i v-if="tab.icon" :class="[$style.tabIcon, tab.icon]"></i>
-				<span v-if="!tab.iconOnly" :class="$style.tabTitle">{{ tab.title }}</span>
-			</button>
+	</div>
+	<div v-if="narrow && hasTabs" :class="[$style.lower, { [$style.slim]: narrow, [$style.thin]: thin_ }]">
+		<div :class="$style.tabs">
+			<div :class="$style.tabsInner">
+				<button v-for="tab in tabs" :ref="(el) => tabRefs[tab.key] = (el as HTMLElement)" v-tooltip.noDelay="tab.title" class="_button" :class="[$style.tab, { [$style.active]: tab.key != null && tab.key === props.tab }]" @mousedown="(ev) => onTabMousedown(tab, ev)" @click="(ev) => onTabClick(tab, ev)">
+					<i v-if="tab.icon" :class="[$style.tabIcon, tab.icon]"></i>
+					<span v-if="!tab.iconOnly" :class="$style.tabTitle">{{ tab.title }}</span>
+				</button>
+			</div>
 			<div ref="tabHighlightEl" :class="$style.tabHighlight"></div>
 		</div>
-	</template>
-	<div :class="$style.buttonsRight">
-		<template v-for="action in actions">
-			<button v-tooltip.noDelay="action.text" class="_button" :class="[$style.button, { [$style.highlighted]: action.highlighted }]" @click.stop="action.handler" @touchstart="preventDrag"><i :class="action.icon"></i></button>
-		</template>
 	</div>
 </div>
 </template>
@@ -39,7 +50,6 @@
 <script lang="ts" setup>
 import { onMounted, onUnmounted, ref, inject, watch, nextTick } from 'vue';
 import tinycolor from 'tinycolor2';
-import { popupMenu } from '@/os';
 import { scrollToTop } from '@/scripts/scroll';
 import { globalEvents } from '@/events';
 import { injectPageMetadata } from '@/scripts/page-metadata';
@@ -88,22 +98,6 @@ const show = $computed(() => {
 	return !hideTitle || hasTabs || hasActions;
 });
 
-const showTabsPopup = (ev: MouseEvent) => {
-	if (!hasTabs) return;
-	if (!narrow) return;
-	ev.preventDefault();
-	ev.stopPropagation();
-	const menu = props.tabs.map(tab => ({
-		text: tab.title,
-		icon: tab.icon,
-		active: tab.key != null && tab.key === props.tab,
-		action: (ev) => {
-			onTabClick(tab, ev);
-		},
-	}));
-	popupMenu(menu, (ev.currentTarget ?? ev.target) as HTMLElement);
-};
-
 const preventDrag = (ev: TouchEvent) => {
 	ev.stopPropagation();
 };
@@ -145,16 +139,16 @@ onMounted(() => {
 	calcBg();
 	globalEvents.on('themeChanged', calcBg);
 
-	watch(() => [props.tab, props.tabs], () => {
+	watch([() => props.tab, () => props.tabs], () => {
 		nextTick(() => {
 			const tabEl = props.tab ? tabRefs[props.tab] : undefined;
-			if (tabEl && tabHighlightEl && tabEl.parentElement) {
+			if (tabEl && tabHighlightEl && tabHighlightEl.parentElement) {
 				// offsetWidth や offsetLeft は少数を丸めてしまうため getBoundingClientRect を使う必要がある
 				// https://developer.mozilla.org/ja/docs/Web/API/HTMLElement/offsetWidth#%E5%80%A4
-				const parentRect = tabEl.parentElement.getBoundingClientRect();
+				const parentRect = tabHighlightEl.parentElement.getBoundingClientRect();
 				const rect = tabEl.getBoundingClientRect();
 				tabHighlightEl.style.width = rect.width + 'px';
-				tabHighlightEl.style.left = (rect.left - parentRect.left) + 'px';
+				tabHighlightEl.style.left = (rect.left - parentRect.left + tabHighlightEl.parentElement.scrollLeft) + 'px';
 			}
 		});
 	}, {
@@ -180,14 +174,26 @@ onUnmounted(() => {
 
 <style lang="scss" module>
 .root {
-	--height: 50px;
-	display: flex;
-	width: 100%;
 	-webkit-backdrop-filter: var(--blur, blur(15px));
 	backdrop-filter: var(--blur, blur(15px));
 	border-bottom: solid 0.5px var(--divider);
-	contain: strict;
+	width: 100%;
+}
+
+.upper,
+.lower {
+	width: 100%;
+	background: transparent;
+}
+
+.upper {
+	--height: 50px;
+	display: flex;
 	height: var(--height);
+
+	.tabs {
+		margin-left: 16px;
+	}
 
 	&.thin {
 		--height: 42px;
@@ -205,6 +211,7 @@ onUnmounted(() => {
 		> .titleContainer {
 			flex: 1;
 			margin: 0 auto;
+			max-width: 100%;
 
 			> *:first-child {
 				margin-left: auto;
@@ -213,6 +220,17 @@ onUnmounted(() => {
 			> *:last-child {
 				margin-right: auto;
 			}
+		}
+	}
+}
+
+.lower {
+	--height: 48px;
+	height: var(--height);
+
+	&.slim {
+		.tabsInner {
+			margin: 0 auto;
 		}
 	}
 }
@@ -278,7 +296,7 @@ onUnmounted(() => {
 .titleContainer {
 	display: flex;
 	align-items: center;
-	max-width: 400px;
+	max-width: min(30vw, 400px);
 	overflow: auto;
 	white-space: nowrap;
 	text-align: left;
@@ -330,10 +348,19 @@ onUnmounted(() => {
 }
 
 .tabs {
+	display: flex;
 	position: relative;
-	margin-left: 16px;
+	margin: 0;
+	height: var(--height);
 	font-size: 0.8em;
-	overflow: auto;
+	overflow-x: auto;
+	overflow-y: hidden;
+	scrollbar-width: thin;
+}
+
+.tabsInner {
+	display: block;
+	height: var(--height);
 	white-space: nowrap;
 }
 
