@@ -17,7 +17,7 @@
 					</div>
 				</div>
 			</div>
-			<div v-if="(!narrow || hideTitle)" :class="$style.tabs">
+			<div v-if="(!narrow || hideTitle)" :class="$style.tabs" @wheel="ev => onTabWheel(ev)">
 				<div :class="$style.tabsInner">
 					<button v-for="tab in tabs" :ref="(el) => tabRefs[tab.key] = (el as HTMLElement)" v-tooltip.noDelay="tab.title" class="_button" :class="[$style.tab, { [$style.active]: tab.key != null && tab.key === props.tab }]" @mousedown="(ev) => onTabMousedown(tab, ev)" @click="(ev) => onTabClick(tab, ev)">
 						<i v-if="tab.icon" :class="[$style.tabIcon, tab.icon]"></i>
@@ -34,7 +34,7 @@
 		</div>
 	</div>
 	<div v-if="(narrow && !hideTitle) && hasTabs" :class="[$style.lower, { [$style.slim]: narrow, [$style.thin]: thin_ }]">
-		<div :class="$style.tabs">
+		<div :class="$style.tabs" @wheel="ev => onTabWheel(ev)">
 			<div :class="$style.tabsInner">
 				<button v-for="tab in tabs" :ref="(el) => tabRefs[tab.key] = (el as HTMLElement)" v-tooltip.noDelay="tab.title" class="_button" :class="[$style.tab, { [$style.active]: tab.key != null && tab.key === props.tab }]" @mousedown="(ev) => onTabMousedown(tab, ev)" @click="(ev) => onTabClick(tab, ev)">
 					<i v-if="tab.icon" :class="[$style.tabIcon, tab.icon]"></i>
@@ -87,9 +87,9 @@ const metadata = injectPageMetadata();
 const hideTitle = inject('shouldOmitHeaderTitle', false);
 const thin_ = props.thin || inject('shouldHeaderThin', false);
 
-const el = $shallowRef<HTMLElement | undefined>(undefined);
+let el = $shallowRef<HTMLElement | undefined>(undefined);
 const tabRefs: Record<string, HTMLElement | null> = {};
-const tabHighlightEl = $shallowRef<HTMLElement | null>(null);
+let tabHighlightEl = $shallowRef<HTMLElement | null>(null);
 const bg = ref<string | undefined>(undefined);
 let narrow = $ref(false);
 const hasTabs = $computed(() => props.tabs.length > 0);
@@ -148,6 +148,19 @@ function renderTab() {
 	}
 }
 
+function onTabWheel(ev: WheelEvent) {
+	console.log(ev, 'wheel')
+	if (ev.deltaY !== 0) {
+		ev.preventDefault();
+		ev.stopPropagation();
+		(ev.currentTarget as HTMLElement).scrollBy({
+			left: ev.deltaY,
+			behavior: 'smooth',
+		});
+	}
+	return false;
+}
+
 onMounted(() => {
 	calcBg();
 	globalEvents.on('themeChanged', calcBg);
@@ -161,7 +174,7 @@ onMounted(() => {
 	if (el && el.parentElement) {
 		narrow = el.parentElement.offsetWidth < 500;
 		ro1 = new ResizeObserver((entries, observer) => {
-			if (el.parentElement && document.body.contains(el as HTMLElement)) {
+			if (el && el.parentElement && document.body.contains(el as HTMLElement)) {
 				narrow = el.parentElement.offsetWidth < 500;
 			}
 		});
@@ -370,14 +383,18 @@ onUnmounted(() => {
 }
 
 .tabs {
-	display: flex;
+	display: block;
 	position: relative;
 	margin: 0;
 	height: var(--height);
 	font-size: 0.8em;
 	overflow-x: auto;
 	overflow-y: hidden;
-	scrollbar-width: thin;
+	scrollbar-width: none;
+
+	&::-webkit-scrollbar {
+		display: none;
+	}
 }
 
 .tabsInner {
