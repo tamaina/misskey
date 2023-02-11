@@ -74,10 +74,9 @@
 			</div>
 			<footer :class="$style.footer">
 				<MkReactionsViewer ref="reactionsViewer" :note="appearNote" :max-number="16">
-					<template v-slot:extras>
-						<button v-if="Object.keys(appearNote.reactions).length > 7" class="_button" :class="$style.reactionDetailsButton" @click="showReactions">
-							<i class="ti ti-info-circle"></i>
-							{{ number(Object.entries(appearNote.reactions).reduce((a, b) => a + b[1], 0)) }}/{{ number(Object.keys(appearNote.reactions).length) }}
+					<template v-slot:more>
+						<button class="_button" :class="$style.reactionDetailsButton" @click="showReactions">
+							{{ i18n.ts.more }}
 						</button>
 					</template>
 				</MkReactionsViewer>
