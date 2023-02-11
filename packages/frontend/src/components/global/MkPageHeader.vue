@@ -102,53 +102,7 @@ const calcBg = () => {
 	bg.value = tinyBg.toRgbString();
 };
 
-let ro1: ResizeObserver | null;
-let ro2: ResizeObserver | null;
-
-function renderTab() {
-	const tabEl = props.tab ? tabRefs[props.tab] : undefined;
-	if (tabEl && tabHighlightEl && tabHighlightEl.parentElement) {
-		// offsetWidth や offsetLeft は少数を丸めてしまうため getBoundingClientRect を使う必要がある
-		// https://developer.mozilla.org/ja/docs/Web/API/HTMLElement/offsetWidth#%E5%80%A4
-		const parentRect = tabHighlightEl.parentElement.getBoundingClientRect();
-		const rect = tabEl.getBoundingClientRect();
-		tabHighlightEl.style.width = rect.width + 'px';
-		tabHighlightEl.style.left = (rect.left - parentRect.left + tabHighlightEl.parentElement.scrollLeft) + 'px';
-	}
-}
-
-function onTabWheel(ev: WheelEvent) {
-	if (ev.deltaY !== 0 && ev.deltaX === 0) {
-		ev.preventDefault();
-		ev.stopPropagation();
-		(ev.currentTarget as HTMLElement).scrollBy({
-			left: ev.deltaY,
-			behavior: 'smooth',
-		});
-	}
-	return false;
-}
-
-function enter(el: HTMLElement) {
-	const elementWidth = el.getBoundingClientRect().width;
-	el.style.width = '0';
-	el.offsetWidth; // reflow
-	el.style.width = elementWidth + 'px';
-	setTimeout(renderTab, 70);
-}
-function afterEnter(el: HTMLElement) {
-	el.style.width = '';
-	nextTick(renderTab);
-}
-function leave(el: HTMLElement) {
-	const elementWidth = el.getBoundingClientRect().width;
-	el.style.width = elementWidth + 'px';
-	el.offsetWidth; // reflow
-	el.style.width = '0';
-}
-function afterLeave(el: HTMLElement) {
-	el.style.width = '';
-}
+let ro: ResizeObserver | null;
 
 onMounted(() => {
 	calcBg();
@@ -161,23 +115,13 @@ onMounted(() => {
 				narrow = el.parentElement.offsetWidth < 500;
 			}
 		});
-		ro1.observe(el.parentElement as HTMLElement);
-	}
-
-	if (el) {
-		ro2 = new ResizeObserver((entries, observer) => {
-			if (document.body.contains(el as HTMLElement)) {
-				nextTick(() => renderTab());
-			}
-		});
-		ro2.observe(el);
+		ro.observe(el.parentElement as HTMLElement);
 	}
 });
 
 onUnmounted(() => {
 	globalEvents.off('themeChanged', calcBg);
-	if (ro1) ro1.disconnect();
-	if (ro2) ro2.disconnect();
+	if (ro) ro.disconnect();
 });
 </script>
 
