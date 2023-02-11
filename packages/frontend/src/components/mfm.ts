@@ -69,6 +69,8 @@ export default defineComponent({
 			return t.match(/^[0-9.]+s$/) ? t : null;
 		};
 
+		const useAnim = defaultStore.state.advancedMfm && defaultStore.state.animatedMfm;
+
 		/**
 		 * Gen Vue Elements from MFM AST
 		 * @param ast MFM AST
@@ -163,17 +165,17 @@ export default defineComponent({
 						}
 						case 'x2': {
 							return h('span', {
-								class: 'mfm-x2',
+								class: defaultStore.state.advancedMfm ? 'mfm-x2' : '',
 							}, genEl(token.children, large));
 						}
 						case 'x3': {
 							return h('span', {
-								class: 'mfm-x3',
+								class: defaultStore.state.advancedMfm ? 'mfm-x3' : '',
 							}, genEl(token.children, true));
 						}
 						case 'x4': {
 							return h('span', {
-								class: 'mfm-x4',
+								class: defaultStore.state.advancedMfm ? 'mfm-x4' : '',
 							}, genEl(token.children, true));
 						}
 						case 'font': {
@@ -199,7 +201,7 @@ export default defineComponent({
 							break;
 						}
 						case 'sparkle': {
-							if (!this.$store.state.animatedMfm) {
+							if (!useAnim) {
 								return genEl(token.children, large);
 							}
 							return h(MkSparkle, {}, genEl(token.children, large));
