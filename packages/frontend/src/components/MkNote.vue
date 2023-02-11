@@ -77,7 +77,7 @@
 				<MkA v-if="appearNote.channel && !inChannel" :class="$style.channel" :to="`/channels/${appearNote.channel.id}`"><i class="ti ti-device-tv"></i> {{ appearNote.channel.name }}</MkA>
 			</div>
 			<footer :class="$style.footer">
-				<MkReactionsViewer ref="reactionsViewer" :note="appearNote" :max-number="16">
+				<MkReactionsViewer :note="appearNote" :max-number="16">
 					<template v-slot:more>
 						<button class="_button" :class="$style.reactionDetailsButton" @click="showReactions">
 							{{ i18n.ts.more }}
@@ -154,7 +154,8 @@ import { useNoteCapture } from '@/scripts/use-note-capture';
 import { deepClone } from '@/scripts/clone';
 import { useTooltip } from '@/scripts/use-tooltip';
 import { claimAchievement } from '@/scripts/achievements';
-import number from '@/filters/number';
+import { getNoteSummary } from '@/scripts/get-note-summary';
+import { shownNoteIds } from '@/os';
 
 const props = defineProps<{
 	note: misskey.entities.Note;
