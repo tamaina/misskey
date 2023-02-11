@@ -8,8 +8,15 @@
 
 You should also include the user name that made the change.
 -->
-
 ## 13.x.x (unreleased)
+
+### Improvements
+- アニメーションを少なくする設定の時、MkPageHeaderのタブアニメーションを無効化
+
+### Bugfixes
+- Client: ユーザーページでタブがほとんど見れないことがないように
+
+## 13.6.0 (2023/02/11)
 
 ### Improvements
 - MkPageHeaderをごっそり変えた
@@ -19,7 +26,10 @@ You should also include the user name that made the change.
   * メインタイムラインかつモバイルで表示される左上のアバターを選択するとアカウントメニューが開くように
 - ユーザーページのノート一覧をタブとして分離
 - コンディショナルロールもバッジとして表示可能に
+- enhance(client): ロールをより簡単に付与できるように
 - enhance(client): 一度見たノートのRenoteは省略して表示するように
+- enhance(client): 迷惑になる可能性のある投稿を行う前に警告を表示
+- リアクションの数が多い場合の表示を改善
 - 一部のMFM構文をopt-outに
 
 ### Bugfixes
