@@ -36,8 +36,6 @@ import type { Tab } from '@/components/global/MkPageHeader.tabs.vue';
 
 provide('shouldOmitHeaderTitle', true);
 
-provide('shouldOmitHeaderTitle', true);
-
 const XTutorial = defineAsyncComponent(() => import('./timeline.tutorial.vue'));
 
 const isLocalTimelineAvailable = ($i == null && instance.policies.ltlAvailable) || ($i != null && $i.policies.ltlAvailable);
