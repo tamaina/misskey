@@ -34,7 +34,7 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, onUnmounted, ref, inject, nextTick } from 'vue';
+import { onMounted, onUnmounted, ref, inject } from 'vue';
 import tinycolor from 'tinycolor2';
 import { scrollToTop } from '@/scripts/scroll';
 import { globalEvents } from '@/events';
@@ -53,7 +53,6 @@ const props = withDefaults(defineProps<{
 	}[];
 	thin?: boolean;
 	displayMyAvatar?: boolean;
-	scrollToTop?: (x?: ScrollOptions) => void;
 }>(), {
 	tabs: () => ([] as Tab[]),
 });
@@ -81,13 +80,9 @@ const preventDrag = (ev: TouchEvent) => {
 };
 
 const top = () => {
-	nextTick(() => {
-		if (props.scrollToTop) {
-			props.scrollToTop();
-		} else if (el) {
-			scrollToTop(el as HTMLElement, { behavior: 'smooth' });
-		}
-	});
+	if (el) {
+		scrollToTop(el as HTMLElement, { behavior: 'smooth' });
+	}
 };
 
 function openAccountMenu(ev: MouseEvent) {
@@ -145,7 +140,7 @@ onUnmounted(() => {
 }
 
 .upper {
-	--height: var(--headerHeight, 50px);
+	--height: 50px;
 	display: flex;
 	gap: var(--margin);
 	height: var(--height);

@@ -16,7 +16,6 @@ const CURRENT_STICKY_TOP = 'CURRENT_STICKY_TOP';
 </script>
 
 <script lang="ts" setup>
-import { scroll } from '@/scripts/scroll';
 import { onMounted, onUnmounted, provide, inject, Ref, ref, watch } from 'vue';
 
 const rootEl = $shallowRef<HTMLElement>();
@@ -29,19 +28,9 @@ const parentStickyTop = inject<Ref<number>>(CURRENT_STICKY_TOP, ref(0));
 provide(CURRENT_STICKY_TOP, $$(childStickyTop));
 
 const calc = () => {
-	if (!headerEl) return;
 	childStickyTop = parentStickyTop.value + headerEl.offsetHeight;
 	headerHeight = headerEl.offsetHeight.toString();
 };
-
-const scrollToTop = (options: ScrollToOptions = {}) => {
-	if (!bodyEl || !rootEl) return;
-	scroll($$(bodyEl).value, {
-		top: 0 + rootEl.offsetTop - parentStickyTop.value,
-		behavior: 'smooth',
-		...options,
-	});
-}
 
 const observer = new ResizeObserver(() => {
 	window.setTimeout(() => {
@@ -55,28 +44,20 @@ onMounted(() => {
 	watch(parentStickyTop, calc);
 
 	watch($$(childStickyTop), () => {
-		if (!bodyEl) return;
 		bodyEl.style.setProperty('--stickyTop', `${childStickyTop}px`);
 	}, {
 		immediate: true,
 	});
 
-	if (headerEl) {
-		headerEl.style.position = 'sticky';
-		headerEl.style.top = 'var(--stickyTop, 0)';
-		headerEl.style.zIndex = '1000';
+	headerEl.style.position = 'sticky';
+	headerEl.style.top = 'var(--stickyTop, 0)';
+	headerEl.style.zIndex = '1000';
 
-		observer.observe(headerEl);
-	}
+	observer.observe(headerEl);
 });
 
 onUnmounted(() => {
 	observer.disconnect();
-});
-
-defineExpose({
-	scrollToTop,
-	stickyTop: $$(childStickyTop),
 });
 </script>
 
