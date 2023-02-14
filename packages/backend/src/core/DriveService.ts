@@ -7,7 +7,7 @@ import { DI } from '@/di-symbols.js';
 import type { DriveFilesRepository, UsersRepository, DriveFoldersRepository, UserProfilesRepository } from '@/models/index.js';
 import type { Config } from '@/config.js';
 import Logger from '@/logger.js';
-import type { IRemoteUser, User } from '@/models/entities/User.js';
+import type { RemoteUser, User } from '@/models/entities/User.js';
 import { MetaService } from '@/core/MetaService.js';
 import { DriveFile } from '@/models/entities/DriveFile.js';
 import { IdService } from '@/core/IdService.js';
@@ -255,7 +255,7 @@ export class DriveService {
 				return {
 					webpublic: null,
 					thumbnail: null,
-				}
+				};
 			}
 
 			try {
@@ -400,7 +400,7 @@ export class DriveService {
 
 	// Expire oldest file (without avatar or banner) of remote user
 	@bindThis
-	private async expireOldFile(user: IRemoteUser, driveCapacity: number) {
+	private async expireOldFile(user: RemoteUser, driveCapacity: number) {
 		const q = this.driveFilesRepository.createQueryBuilder('file')
 			.where('file.userId = :userId', { userId: user.id })
 			.andWhere('file.isLink = FALSE');
@@ -503,7 +503,7 @@ export class DriveService {
 				if (isLocalUser) {
 					throw new IdentifiableError('c6244ed2-a39a-4e1c-bf93-f0fbd7764fa6', 'No free space.');
 				}
-				await this.expireOldFile(await this.usersRepository.findOneByOrFail({ id: user.id }) as IRemoteUser, driveCapacity - info.size);
+				await this.expireOldFile(await this.usersRepository.findOneByOrFail({ id: user.id }) as RemoteUser, driveCapacity - info.size);
 			}
 		}
 		//#endregion
