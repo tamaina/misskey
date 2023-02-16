@@ -1,5 +1,4 @@
-import { performance } from 'perf_hooks';
-import { Transform, pipeline, PassThrough } from 'node:stream';
+import { pipeline } from 'node:stream';
 import * as fs from 'node:fs';
 import { promisify } from 'node:util';
 import { Inject, Injectable } from '@nestjs/common';
@@ -115,14 +114,6 @@ export class ApiCallService implements OnApplicationShutdown {
 		logger.info(`pump to ${path}`);
 		await pump(
 			multipartData.file,
-			new Transform({
-				transform(chunk, encoding, callback) {
-					logger.info(chunk ? chunk.length : chunk);
-					this.push(chunk);
-					callback();
-				}
-			}),
-			//new PassThrough(),
 			fs.createWriteStream(path)
 		).catch(err => {
 			logger.error('File stream handling error', err);
