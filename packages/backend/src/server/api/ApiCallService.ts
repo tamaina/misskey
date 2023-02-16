@@ -19,7 +19,6 @@ import { AuthenticateService, AuthenticationError } from './AuthenticateService.
 import type { FastifyRequest, FastifyReply } from 'fastify';
 import type { OnApplicationShutdown } from '@nestjs/common';
 import type { IEndpointMeta, IEndpoint } from './endpoints.js';
-import { StatusError } from '@/misc/status-error.js';
 
 const pump = promisify(pipeline);
 
@@ -100,25 +99,14 @@ export class ApiCallService implements OnApplicationShutdown {
 		request: FastifyRequest<{ Body: Record<string, unknown>, Querystring: Record<string, unknown> }>,
 		reply: FastifyReply,
 	) {
-		const logger = this.logger;
-		logger.info(`handling ${endpoint.name}`);
 		const multipartData = await request.file();
 		if (multipartData == null) {
-			logger.info('no data')
 			reply.code(400);
 			return;
 		}
-		logger.info(`data = ${Object.keys(multipartData)}`);
 
 		const [path] = await createTemp();
-		logger.info(`pump to ${path}`);
-		await pump(
-			multipartData.file,
-			fs.createWriteStream(path)
-		).catch(err => {
-			logger.error('File stream handling error', err);
-			throw new StatusError('Internal Server Error (File stream handling failed)', 500, 'Internal Server Error');
-		});
+		await pump(multipartData.file, fs.createWriteStream(path));
 
 		const fields = {} as Record<string, string | undefined>;
 		for (const [k, v] of Object.entries(multipartData.fields)) {
@@ -131,12 +119,10 @@ export class ApiCallService implements OnApplicationShutdown {
 			return;
 		}
 		this.authenticateService.authenticate(token).then(([user, app]) => {
-			logger.info(`calling ${endpoint.name}`);
 			this.call(endpoint, user, app, fields, {
 				name: multipartData.filename,
 				path: path,
 			}, request).then((res) => {
-				logger.info(`replying ${endpoint}`);
 				this.send(reply, res);
 			}).catch((err: ApiError) => {
 				this.send(reply, err.httpStatusCode ? err.httpStatusCode : err.kind === 'client' ? 400 : 500, err);
