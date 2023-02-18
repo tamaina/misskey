@@ -14,7 +14,7 @@ const closeNotificationsByTags = async (tags: string[]) => {
 	for (const n of (await Promise.all(tags.map(tag => globalThis.registration.getNotifications({ tag })))).flat()) {
 		n.close();
 	}
-}
+};
 
 const iconUrl = (name: badgeNames) => `/static-assets/tabler-badges/${name}.png`;
 /* How to add a new badge:
