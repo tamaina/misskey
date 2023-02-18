@@ -11,7 +11,7 @@ import { char2fileName } from '@/scripts/twemoji-base';
 import * as url from '@/scripts/url';
 
 const closeNotificationsByTags = async (tags: string[]) => {
-	console.log('closeNotificationsByTags', tags)
+	console.log('closeNotificationsByTags', tags, await globalThis.registration.getNotifications())
 	// Chromeはtagを指定すると以前の通知を上書きするが、Safariは上書きしないので閉じてあげる
 	for (const n of (await Promise.all(tags.map(tag => globalThis.registration.getNotifications({ tag })))).flat()) {
 		console.log(n);
