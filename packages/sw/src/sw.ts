@@ -83,6 +83,7 @@ globalThis.addEventListener('push', ev => {
 				break;
 		}
 
+		console.log('createEmptyNotification', data);
 		return createEmptyNotification();
 	}));
 });
