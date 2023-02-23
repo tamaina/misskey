@@ -8,6 +8,25 @@
 
 You should also include the user name that made the change.
 -->
+## 13.x.x (unreleased)
+
+### Improvements
+
+### Bugfixes
+- Client: 「キャッシュを削除」した後、ローカルのカスタム絵文字が表示されなくなるされなくなる問題を修正
+
+## 13.7.2 (2023/02/23)
+
+### Note
+13.7.0以前からアップデートする場合は全ての通知が削除されます。
+
+### Improvements
+- enhance: make pwa icon maskable
+- chore(client): tweak custom emoji size
+
+### Bugfixes
+- マイグレーションが失敗することがあるのを修正
+
 ## 13.7.1 (2023/02/23)
 
 ### Improvements
