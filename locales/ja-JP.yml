@@ -1497,6 +1497,7 @@ _ago:
   weeksAgo: "{n}週間前"
   monthsAgo: "{n}ヶ月前"
   yearsAgo: "{n}年前"
+  invalid: "ありません"
 
 _time:
   second: "秒"
