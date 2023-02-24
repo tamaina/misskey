@@ -29,7 +29,7 @@ export function incNotesCount() {
 const refreshing = ref(false);
 
 // 保存されているアカウント情報全てに対して、最新の情報を取得
-export async function refreshAccounts(force?: true) {
+export async function refreshAccounts(force = false) {
 	if (force !== true && refreshing.value) return;
 	refreshing.value = true;
 	const storedAccounts = await getAccounts();
@@ -51,8 +51,8 @@ export async function refreshAccounts(force?: true) {
 				if (text.includes('UserProfile')) {
 					await alert({
 						type: 'error',
-						title: i18n.ts.accountRemoved,
-						text: i18n.ts.accountRemovedDescription,
+						title: i18n.ts.accountDeleted,
+						text: i18n.ts.accountDeletedDescription,
 					});
 					return;
 				}
@@ -181,8 +181,8 @@ function fetchAccount(token: string, id?: string, forceShowDialog?: boolean): Pr
 					if (forceShowDialog || $i && (token === $i.token || id === $i.id)) {
 						await alert({
 							type: 'error',
-							title: i18n.ts.tokenRemoved,
-							text: i18n.ts.tokenRemovedDescription,
+							title: i18n.ts.tokenRevoked,
+							text: i18n.ts.tokenRevokedDescription,
 						});
 					}
 				} else {
