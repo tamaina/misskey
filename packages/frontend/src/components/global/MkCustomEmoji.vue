@@ -26,7 +26,7 @@ const rawUrl = computed(() => {
 		return props.url;
 	}
 	if (isLocal.value) {
-		return customEmojis.value.find(x => x.name === customEmojiName.value)?.url || null;
+		return customEmojis.value.find(x => x.name === customEmojiName.value)?.url ?? null;
 	}
 	return props.host ? `/emoji/${customEmojiName.value}@${props.host}.webp` : `/emoji/${customEmojiName.value}.webp`;
 });
@@ -40,6 +40,7 @@ const url = computed(() => {
 			: getProxiedImageUrl(
 				rawUrl.value,
 				props.useOriginalSize ? undefined : 'emoji',
+				false,
 				true,
 			);
 	return defaultStore.reactiveState.disableShowingAnimatedImages.value
