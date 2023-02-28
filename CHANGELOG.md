@@ -18,6 +18,7 @@ You should also include the user name that made the change.
   * MFMでx3/x4もしくはscale.x/yが2.5以上に指定されていた場合にはオリジナル品質の絵文字を使用するように
 
 ### Improvements
+- 時限ロール
 - プッシュ通知でカスタム絵文字リアクションを表示できるように
 - アンテナでCWも検索対象にするように
 - ノートの操作部をホバー時のみ表示するオプションを追加
