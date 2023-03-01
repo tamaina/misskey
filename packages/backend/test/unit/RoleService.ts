@@ -12,6 +12,9 @@ import { DI } from '@/di-symbols.js';
 import { MetaService } from '@/core/MetaService.js';
 import { genAid } from '@/misc/id/aid.js';
 import { UserCacheService } from '@/core/UserCacheService.js';
+import { IdService } from '@/core/IdService.js';
+import { GlobalEventService } from '@/core/GlobalEventService.js';
+import { sleep } from '../utils.js';
 import type { TestingModule } from '@nestjs/testing';
 import type { MockFunctionMetadata } from 'jest-mock';
 
@@ -50,16 +53,6 @@ describe('RoleService', () => {
 			.then(x => rolesRepository.findOneByOrFail(x.identifiers[0]));
 	}
 
-	async function assign(roleId: Role['id'], userId: User['id'], expiresAt: Date | null = null) {
-		await roleAssignmentsRepository.insert({
-			id: genAid(new Date()),
-			createdAt: new Date(),
-			roleId,
-			userId,
-			expiresAt,
-		});
-	}
-
 	beforeEach(async () => {
 		clock = lolex.install({
 			now: new Date(),
@@ -73,6 +66,8 @@ describe('RoleService', () => {
 			providers: [
 				RoleService,
 				UserCacheService,
+				IdService,
+				GlobalEventService,
 			],
 		})
 			.useMocker((token) => {
@@ -124,7 +119,7 @@ describe('RoleService', () => {
 			expect(result.canManageCustomEmojis).toBe(false);
 		});
 	
-		test('instance default policies 2', async () => {	
+		test('instance default policies 2', async () => {
 			const user = await createUser();
 			metaService.fetch.mockResolvedValue({
 				policies: {
@@ -137,7 +132,7 @@ describe('RoleService', () => {
 			expect(result.canManageCustomEmojis).toBe(true);
 		});
 	
-		test('with role', async () => {	
+		test('with role', async () => {
 			const user = await createUser();
 			const role = await createRole({
 				name: 'a',
@@ -149,7 +144,7 @@ describe('RoleService', () => {
 					},
 				},
 			});
-			await assign(role.id, user.id);
+			await roleService.assign(user.id, role.id);
 			metaService.fetch.mockResolvedValue({
 				policies: {
 					canManageCustomEmojis: false,
@@ -161,7 +156,7 @@ describe('RoleService', () => {
 			expect(result.canManageCustomEmojis).toBe(true);
 		});
 
-		test('priority', async () => {	
+		test('priority', async () => {
 			const user = await createUser();
 			const role1 = await createRole({
 				name: 'role1',
@@ -183,8 +178,8 @@ describe('RoleService', () => {
 					},
 				},
 			});
-			await assign(role1.id, user.id);
-			await assign(role2.id, user.id);
+			await roleService.assign(user.id, role1.id);
+			await roleService.assign(user.id, role2.id);
 			metaService.fetch.mockResolvedValue({
 				policies: {
 					driveCapacityMb: 50,
@@ -196,7 +191,7 @@ describe('RoleService', () => {
 			expect(result.driveCapacityMb).toBe(100);
 		});
 
-		test('conditional role', async () => {	
+		test('conditional role', async () => {
 			const user1 = await createUser({
 				createdAt: new Date(Date.now() - (1000 * 60 * 60 * 24 * 365)),
 			});
@@ -238,7 +233,7 @@ describe('RoleService', () => {
 			expect(user2Policies.canManageCustomEmojis).toBe(true);
 		});
 
-		test('expired role', async () => {	
+		test('expired role', async () => {
 			const user = await createUser();
 			const role = await createRole({
 				name: 'a',
@@ -250,7 +245,7 @@ describe('RoleService', () => {
 					},
 				},
 			});
-			await assign(role.id, user.id, new Date(Date.now() + (1000 * 60 * 60 * 24)));
+			await roleService.assign(user.id, role.id, new Date(Date.now() + (1000 * 60 * 60 * 24)));
 			metaService.fetch.mockResolvedValue({
 				policies: {
 					canManageCustomEmojis: false,
@@ -264,6 +259,15 @@ describe('RoleService', () => {
 
 			const resultAfter25h = await roleService.getUserPolicies(user.id);
 			expect(resultAfter25h.canManageCustomEmojis).toBe(false);
+
+			await roleService.assign(user.id, role.id);
+
+			// ストリーミング経由で反映されるまでちょっと待つ
+			clock.uninstall();
+			await sleep(100);
+
+			const resultAfter25hAgain = await roleService.getUserPolicies(user.id);
+			expect(resultAfter25hAgain.canManageCustomEmojis).toBe(true);
 		});
 	});
 });

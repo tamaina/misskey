@@ -28,6 +28,15 @@ export function incNotesCount() {
 // 複数のダイアログが表示されるのを防止するため、refreshAccountsの同時実行を避ける
 const refreshing = ref(false);
 
+export async function refreshAccount() {
+	if (!$i) return;
+	return fetchAccount($i.token, $i.id)
+		.then(updateAccount, async reason => {
+			const removed = await accountIsRemoved(reason);
+			if (removed) return signout();
+		});
+}
+
 // 保存されているアカウント情報全てに対して、最新の情報を取得
 export async function refreshAccounts(force = false) {
 	if (force !== true && refreshing.value) return;
@@ -39,26 +48,8 @@ export async function refreshAccounts(force = false) {
 		await fetchAccount(storedAccount.token, storedAccount.id)
 		.then(res => newAccounts.push(res))
 		.catch(async reason => {
-			// サーバーがビジーなどでapi/iが500番台を返した場合にもログアウトされてしまうのは微妙
-			// しかしアカウント削除は壊れているので、500が返ってくる
-			// 本当はシンプルに次のようにしたい
-			// if (reason !== true) newAccounts.push(storedAccount);
-			if (reason === true) return;
-			if (reason.text && typeof reason.text === 'function') {
-				const text = await reason.text();
-				// `Could not find any entity of type \"UserProfile\" matching`
-				// と返ってくる場合はアカウントが削除されている
-				if (text.includes('UserProfile')) {
-					await alert({
-						type: 'error',
-						title: i18n.ts.accountDeleted,
-						text: i18n.ts.accountDeletedDescription,
-					});
-					return;
-				}
-			}
-
-			newAccounts.push(storedAccount);
+			const removed = await accountIsRemoved(reason);
+			if (!removed) newAccounts.push(storedAccount);
 		});
 	}
 
@@ -199,8 +190,33 @@ function fetchAccount(token: string, id?: string, forceShowDialog?: boolean): Pr
 				(res as Account).token = token;
 				done(res as Account);
 			}
-		}, fail);
+		})
+		.catch(fail);
 	});
+}
+
+async function accountIsRemoved(reason: Record<string, any> | true): Promise<boolean> {
+	console.error('error while fetching account', reason);
+	// サーバーがビジーなどでapi/iが500番台を返した場合にもログアウトされてしまうのは微妙
+	// しかしアカウント削除は壊れているので、500が返ってくる
+	// 本当はシンプルに次のようにしたい
+	// if (reason !== true) newAccounts.push(storedAccount);
+	if (reason === true) return true;
+	if (reason.text && typeof reason.text === 'function') {
+		const text = await reason.text();
+		// `Could not find any entity of type \"UserProfile\" matching`
+		// と返ってくる場合はアカウントが削除されている
+		if (text.includes('UserProfile')) {
+			await alert({
+				type: 'error',
+				title: i18n.ts.accountDeleted,
+				text: i18n.ts.accountDeletedDescription,
+			});
+			return true;
+		}
+	}
+
+	return false;
 }
 
 export function updateAccount(accountData: Partial<Account>) {

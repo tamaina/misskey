@@ -32,6 +32,7 @@
 				<i v-else-if="note.visibility === 'specified'" ref="specified" class="ti ti-mail"></i>
 			</span>
 			<span v-if="note.localOnly" style="margin-left: 0.5em;" :title="i18n.ts._visibility['disableFederation']"><i class="ti ti-world-off"></i></span>
+			<span v-if="note.channel" style="margin-left: 0.5em;" :title="note.channel.name"><i class="ti ti-device-tv"></i></span>
 		</div>
 	</div>
 	<div v-if="renoteCollapsed" :class="$style.collapsedRenoteTarget">
@@ -472,16 +473,17 @@ function showReactions(): void {
 			top: 12px;
 			right: 12px;
 			padding: 0 4px;
+			margin-bottom: 0 !important;
 			background: var(--popup);
-			border-radius: 6px;
+			border-radius: 8px;
 			box-shadow: 0px 4px 32px var(--shadow);
 		}
 
 		.footerButton {
-			font-size: 80%;
+			font-size: 90%;
 
 			&:not(:last-child) {
-				margin-right: 6px;
+				margin-right: 0;
 			}
 		}
 	}
@@ -589,14 +591,15 @@ function showReactions(): void {
 }
 
 .article {
+	position: relative;
 	display: flex;
-	padding: 28px 32px 18px;
+	padding: 28px 32px;
 }
 
 .avatar {
 	flex-shrink: 0;
 	display: block !important;
-	margin: 0 14px 8px 0;
+	margin: 0 14px 0 0;
 	width: 58px;
 	height: 58px;
 	position: sticky !important;
@@ -701,6 +704,10 @@ function showReactions(): void {
 	font-size: 80%;
 }
 
+.footer {
+	margin-bottom: -14px;
+}
+
 .footerButton {
 	margin: 0;
 	padding: 8px;
@@ -731,7 +738,7 @@ function showReactions(): void {
 	}
 
 	.article {
-		padding: 24px 26px 14px;
+		padding: 24px 26px;
 	}
 
 	.avatar {
@@ -750,7 +757,11 @@ function showReactions(): void {
 	}
 
 	.article {
-		padding: 20px 22px 12px;
+		padding: 20px 22px;
+	}
+
+	.footer {
+		margin-bottom: -8px;
 	}
 }
 
@@ -769,13 +780,13 @@ function showReactions(): void {
 	}
 
 	.article {
-		padding: 14px 16px 9px;
+		padding: 14px 16px;
 	}
 }
 
 @container (max-width: 450px) {
 	.avatar {
-		margin: 0 10px 8px 0;
+		margin: 0 10px 0 0;
 		width: 46px;
 		height: 46px;
 		top: calc(14px + var(--stickyTop, 0px));
@@ -783,17 +794,21 @@ function showReactions(): void {
 }
 
 @container (max-width: 400px) {
-	.footerButton {
-		&:not(:last-child) {
-			margin-right: 18px;
+	.root:not(.showActionsOnlyHover) {
+		.footerButton {
+			&:not(:last-child) {
+				margin-right: 18px;
+			}
 		}
 	}
 }
 
 @container (max-width: 350px) {
-	.footerButton {
-		&:not(:last-child) {
-			margin-right: 12px;
+	.root:not(.showActionsOnlyHover) {
+		.footerButton {
+			&:not(:last-child) {
+				margin-right: 12px;
+			}
 		}
 	}
 }
@@ -804,9 +819,11 @@ function showReactions(): void {
 		height: 44px;
 	}
 
-	.footerButton {
-		&:not(:last-child) {
-			margin-right: 8px;
+	.root:not(.showActionsOnlyHover) {
+		.footerButton {
+			&:not(:last-child) {
+				margin-right: 8px;
+			}
 		}
 	}
 }
