@@ -10,7 +10,7 @@
 You should also include the user name that made the change.
 -->
 
-## 13.x.x (unreleased)
+## 13.9.0 (2023/03/03)
 
 ### Changes
 - カスタム絵文字関連の変更
@@ -23,10 +23,12 @@ You should also include the user name that made the change.
 - アンテナでCWも検索対象にするように
 - ノートの操作部をホバー時のみ表示するオプションを追加
 - サウンドを追加
+- サーバーのパフォーマンスを改善
 
 ### Bugfixes
 - 外部メディアプロキシ使用時にアバタークロップができない問題を修正
 - fix(server): メールアドレス更新時にバリデーションが正しく行われていないのを修正
+- fix(server): チャンネルでミュートが正しく機能していないのを修正
 
 ## 13.8.1 (2023/02/26)
 

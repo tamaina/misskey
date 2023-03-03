@@ -12,15 +12,15 @@ export const soundConfigStore = markRaw(new Storage('sound', {
 	},
 	sound_note: {
 		where: 'account',
-		default: { type: 'syuilo/down', volume: 1 }
+		default: { type: 'syuilo/n-aec', volume: 1 }
 	},
 	sound_noteMy: {
 		where: 'account',
-		default: { type: 'syuilo/up', volume: 1 }
+		default: { type: 'syuilo/n-cea', volume: 1 }
 	},
 	sound_notification: {
 		where: 'account',
-		default: { type: 'syuilo/pope2', volume: 1 }
+		default: { type: 'syuilo/n-ea', volume: 1 }
 	},
 	sound_chat: {
 		where: 'account',
@@ -56,12 +56,27 @@ const cache = new Map<string, HTMLAudioElement>();
 
 export const soundsTypes = [
 	null,
-	'syuilo/new-eca',
-	'syuilo/new-cea',
-	'syuilo/new-aec',
-	'syuilo/new-eca-oct',
-	'syuilo/new-cea-oct',
-	'syuilo/new-aec-oct',
+	'syuilo/n-aec',
+	'syuilo/n-aec-4va',
+	'syuilo/n-aec-4vb',
+	'syuilo/n-aec-8va',
+	'syuilo/n-aec-8vb',
+	'syuilo/n-cea',
+	'syuilo/n-cea-4va',
+	'syuilo/n-cea-4vb',
+	'syuilo/n-cea-8va',
+	'syuilo/n-cea-8vb',
+	'syuilo/n-eca',
+	'syuilo/n-eca-4va',
+	'syuilo/n-eca-4vb',
+	'syuilo/n-eca-8va',
+	'syuilo/n-eca-8vb',
+	'syuilo/n-ea',
+	'syuilo/n-ea-4va',
+	'syuilo/n-ea-4vb',
+	'syuilo/n-ea-8va',
+	'syuilo/n-ea-8vb',
+	'syuilo/n-ea-harmony',
 	'syuilo/up',
 	'syuilo/down',
 	'syuilo/pope1',
