@@ -67,6 +67,9 @@ html
 			var VERSION = "#{version}";
 			var CLIENT_ENTRY = "#{clientEntry.file}";
 
+		script
+			include ../boot.js
+
 	body
 		noscript: p
 			| JavaScriptを有効にしてください
@@ -86,7 +89,3 @@ html
 					</g>
 				</svg>
 		block content
-
-		script
-			include ../boot.js
-
