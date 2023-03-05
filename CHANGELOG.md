@@ -5,21 +5,23 @@
 - 
 
 ### Bugfixes
--
+x
 
 You should also include the user name that made the change.
 -->
 
-## 13.x.x (unreleased)
+## 13.9.2 (2023/03/05)
 
 ### Improvements
 - クリップ、チャンネルページに共有ボタンを追加
 - ドライブの「URLからアップロード」で、content-dispositionのfilenameがあればそれをファイル名に
 - Identiconがローカルとリモートで同じになるように
+  - これまでのIdenticonは異なる画像になります
 - サーバーのパフォーマンスを改善
 
 ### Bugfixes
 - ロールの権限で「一般ユーザー」のロールがいきなり設定できない問題を修正
+- ユーザーページのバッジ表示を適切に折り返すように @arrow2nd
 
 ## 13.9.1 (2023/03/03)
 
