@@ -34,9 +34,9 @@ import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { FileInfoService } from '@/core/FileInfoService.js';
 import { bindThis } from '@/decorators.js';
 import { RoleService } from '@/core/RoleService.js';
-import type S3 from 'aws-sdk/clients/s3.js';
 import { correctFilename } from '@/misc/correct-filename.js';
 import { isMimeImage } from '@/misc/is-mime-image.js';
+import type S3 from 'aws-sdk/clients/s3.js';
 
 type AddFileArgs = {
 	/** User who wish to add file */
@@ -295,7 +295,7 @@ export class DriveService {
 
 			satisfyWebpublic = !!(
 				type !== 'image/svg+xml' && // security reason
-				type !== 'image/avif' && // not supported by Mastodon
+				type !== 'image/avif' && // not supported by Mastodon and MS Edge
 			!(metadata.exif ?? metadata.iptc ?? metadata.xmp ?? metadata.tifftagPhotoshop) &&
 			metadata.width && metadata.width <= 2048 &&
 			metadata.height && metadata.height <= 2048
@@ -336,11 +336,7 @@ export class DriveService {
 		let thumbnail: IImage | null = null;
 
 		try {
-			if (isAnimated) {
-				thumbnail = await this.imageProcessingService.convertSharpToWebp(sharp(path, { animated: true }), 374, 317, { alphaQuality: 70 });
-			} else {
-				thumbnail = await this.imageProcessingService.convertSharpToAvif(img, 498, 422);
-			}
+			thumbnail = await this.imageProcessingService.convertSharpToWebp(img, 498, 422);
 		} catch (err) {
 			this.registerLogger.warn('thumbnail not created (an error occured)', err as Error);
 		}
@@ -476,7 +472,7 @@ export class DriveService {
 			// DriveFile.nameは256文字, validateFileNameは200文字制限であるため、
 			// extを付加してデータベースの文字数制限に当たることはまずない
 			(name && this.driveFileEntityService.validateFileName(name)) ? name : 'untitled',
-			info.type.ext
+			info.type.ext,
 		);
 
 		if (user && !force) {
@@ -725,10 +721,20 @@ export class DriveService {
 
 		const s3 = this.s3Service.getS3(meta);
 
-		await s3.deleteObject({
-			Bucket: meta.objectStorageBucket!,
-			Key: key,
-		}).promise();
+		try {
+			await s3.deleteObject({
+				Bucket: meta.objectStorageBucket!,
+				Key: key,
+			}).promise();
+		} catch (err: any) {
+			if (err.code === 'NoSuchKey') {
+				console.warn(`The object storage had no such key to delete: ${key}. Skipping this.`, err);
+				return;
+			}
+			throw new Error(`Failed to delete the file from the object storage with the given key: ${key}`, {
+				cause: err,
+			});
+		}
 	}
 
 	@bindThis
