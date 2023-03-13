@@ -5,6 +5,8 @@ import { QueryService } from '@/core/QueryService.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import type { Config } from '@/config.js';
 import { DI } from '@/di-symbols.js';
+import { sqlLikeEscape } from '@/misc/sql-like-escape.js';
+import { RoleService } from '@/core/RoleService.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -23,10 +25,10 @@ export const meta = {
 	},
 
 	errors: {
-		noSuchNote: {
-			message: 'Query is empty.',
-			code: 'QUERY_IS_EMPTY',
-			id: 'd0410b51-f409-4667-8118-cfe999e453c3',
+		unavailable: {
+			message: 'Search of notes unavailable.',
+			code: 'UNAVAILABLE',
+			id: '0b44998d-77aa-4427-80d0-d2c9b8523011',
 		},
 	},
 } as const;
@@ -64,10 +66,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 		private noteEntityService: NoteEntityService,
 		private queryService: QueryService,
+		private roleService: RoleService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			if (ps.query.trim().length === 0) throw new ApiError(meta.errors.noSuchNote);
-
+			const policies = await this.roleService.getUserPolicies(me ? me.id : null);
+			if (!policies.canSearchNotes) {
+				throw new ApiError(meta.errors.unavailable);
+			}
+	
 			const query = this.queryService.makePaginationQuery(this.notesRepository.createQueryBuilder('note'), ps.sinceId, ps.untilId);
 
 			if (ps.userId) {
