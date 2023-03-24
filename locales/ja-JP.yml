@@ -983,6 +983,7 @@ drivecleaner: "ドライブクリーナー"
 retryAllQueuesNow: "すべてのキューを今すぐ再試行"
 retryAllQueuesConfirmTitle: "今すぐ再試行しますか？"
 retryAllQueuesConfirmText: "一時的にサーバーの負荷が増大することがあります。"
+enableChartsForRemoteUser: "リモートユーザーのチャートを生成"
 
 _achievements:
   earnedAt: "獲得日時"
@@ -1281,6 +1282,8 @@ _role:
     followersMoreThanOrEq: "フォロワー数が～以上"
     followingLessThanOrEq: "フォロー数が～以下"
     followingMoreThanOrEq: "フォロー数が～以上"
+    notesLessThanOrEq: "投稿数が～以下"
+    notesMoreThanOrEq: "投稿数が～以上"
     and: "～かつ～"
     or: "～または～"
     not: "～ではない"
@@ -1932,3 +1935,19 @@ _disabledTimeline:
 _drivecleaner:
   orderBySizeDesc: "サイズが大きい順"
   orderByCreatedAtAsc: "追加日が古い順"
+
+_webhookSettings:
+  createWebhook: "Webhookを作成"
+  name: "名前"
+  secret: "シークレット"
+  events: "Webhookを実行するタイミング"
+  active: "有効"
+  _events:
+    follow: "フォローしたとき"
+    followed: "フォローされたとき"
+    note: "ノートを投稿したとき"
+    reply: "返信されたとき"
+    renote: "Renoteされたとき"
+    reaction: "リアクションがあったとき"
+    mention: "メンションされたとき"
+
