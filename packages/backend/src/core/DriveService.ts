@@ -615,17 +615,20 @@ export class DriveService {
 
 		if (user) {
 			this.driveFileEntityService.pack(file, { self: true }).then(packedFile => {
-			// Publish driveFileCreated event
+				// Publish driveFileCreated event
 				this.globalEventService.publishMainStream(user.id, 'driveFileCreated', packedFile);
 				this.globalEventService.publishDriveStream(user.id, 'fileCreated', packedFile);
 			});
 		}
 
-		// 統計を更新
 		this.driveChart.update(file, true);
-		this.perUserDriveChart.update(file, true);
-		if (file.userHost !== null) {
-			this.instanceChart.updateDrive(file, true);
+		if (file.userHost == null) {
+			// ローカルユーザーのみ
+			this.perUserDriveChart.update(file, true);
+		} else {
+			if ((await this.metaService.fetch()).enableChartsForFederatedInstances) {
+				this.instanceChart.updateDrive(file, true);
+			}
 		}
 
 		return file;
@@ -691,7 +694,7 @@ export class DriveService {
 
 	@bindThis
 	private async deletePostProcess(file: DriveFile, isExpired = false) {
-	// リモートファイル期限切れ削除後は直リンクにする
+		// リモートファイル期限切れ削除後は直リンクにする
 		if (isExpired && file.userHost !== null && file.uri != null) {
 			this.driveFilesRepository.update(file.id, {
 				isLink: true,
@@ -708,11 +711,14 @@ export class DriveService {
 			this.driveFilesRepository.delete(file.id);
 		}
 
-		// 統計を更新
 		this.driveChart.update(file, false);
-		this.perUserDriveChart.update(file, false);
-		if (file.userHost !== null) {
-			this.instanceChart.updateDrive(file, false);
+		if (file.userHost == null) {
+			// ローカルユーザーのみ
+			this.perUserDriveChart.update(file, false);
+		} else {
+			if ((await this.metaService.fetch()).enableChartsForFederatedInstances) {
+				this.instanceChart.updateDrive(file, false);
+			}
 		}
 	}
 

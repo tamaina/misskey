@@ -17,7 +17,6 @@ export const paramDef = {
 	type: 'object',
 	properties: {
 		disableRegistration: { type: 'boolean', nullable: true },
-		useStarForReactionFallback: { type: 'boolean', nullable: true },
 		pinnedUsers: { type: 'array', nullable: true, items: {
 			type: 'string',
 		} },
@@ -94,6 +93,7 @@ export const paramDef = {
 		enableIpLogging: { type: 'boolean' },
 		enableActiveEmailValidation: { type: 'boolean' },
 		enableChartsForRemoteUser: { type: 'boolean' },
+		enableChartsForFederatedInstances: { type: 'boolean' },
 	},
 	required: [],
 } as const;
@@ -113,10 +113,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			if (typeof ps.disableRegistration === 'boolean') {
 				set.disableRegistration = ps.disableRegistration;
-			}
-
-			if (typeof ps.useStarForReactionFallback === 'boolean') {
-				set.useStarForReactionFallback = ps.useStarForReactionFallback;
 			}
 
 			if (Array.isArray(ps.pinnedUsers)) {
@@ -385,6 +381,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			if (ps.enableChartsForRemoteUser !== undefined) {
 				set.enableChartsForRemoteUser = ps.enableChartsForRemoteUser;
+			}
+
+			if (ps.enableChartsForFederatedInstances !== undefined) {
+				set.enableChartsForFederatedInstances = ps.enableChartsForFederatedInstances;
 			}
 
 			await this.metaService.update(set);

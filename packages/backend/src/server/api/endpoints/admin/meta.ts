@@ -243,6 +243,10 @@ export const meta = {
 				type: 'boolean',
 				optional: false, nullable: false,
 			},
+			enableChartsForFederatedInstances: {
+				type: 'boolean',
+				optional: false, nullable: false,
+			},
 			policies: {
 				type: 'object',
 				optional: false, nullable: false,
@@ -303,7 +307,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				enableServiceWorker: instance.enableServiceWorker,
 				translatorAvailable: instance.deeplAuthKey != null,
 				cacheRemoteFiles: instance.cacheRemoteFiles,
-				useStarForReactionFallback: instance.useStarForReactionFallback,
 				pinnedUsers: instance.pinnedUsers,
 				hiddenTags: instance.hiddenTags,
 				blockedHosts: instance.blockedHosts,
@@ -342,6 +345,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				enableIpLogging: instance.enableIpLogging,
 				enableActiveEmailValidation: instance.enableActiveEmailValidation,
 				enableChartsForRemoteUser: instance.enableChartsForRemoteUser,
+				enableChartsForFederatedInstances: instance.enableChartsForFederatedInstances,
 				policies: { ...DEFAULT_POLICIES, ...instance.policies },
 			};
 		});
