@@ -1,32 +1,26 @@
 {
 	"$schema": "http://json.schemastore.org/tsconfig",
 	"compilerOptions": {
-		"allowJs": true,
-		"noEmitOnError": false,
-		"noImplicitAny": false,
-		"noImplicitReturns": true,
-		"noUnusedParameters": false,
-		"noUnusedLocals": true,
-		"noFallthroughCasesInSwitch": true,
-		"declaration": true,
-		"declarationMap": true,
 		"target": "es2022",
 		"module": "ES2020",
 		"moduleResolution": "node",
+		"declaration": true,
+		"declarationMap": true,
 		"sourceMap": true,
 		"outDir": "./built/",
-		"rootDir": "./src",
 		"removeComments": true,
 		"strict": true,
 		"strictFunctionTypes": true,
 		"strictNullChecks": true,
 		"experimentalDecorators": true,
+		"noImplicitReturns": true,
 		"esModuleInterop": true,
 		"typeRoots": [
-			"node_modules/@types"
+			"node_modules/@types",
+			"@types"
 		],
 		"lib": [
-			"es2022",
+			"esnext",
 			"dom"
 		]
 	},
@@ -35,7 +29,6 @@
 	],
 	"exclude": [
 		"node_modules",
-		"../../node_modules",
 		"test/**/*"
 	]
 }
