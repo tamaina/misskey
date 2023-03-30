@@ -169,7 +169,7 @@ importers:
       jsrsasign: 10.7.0
       mfm-js: 0.23.3
       mime-types: 2.1.35
-      misskey-js: ../misskey-js
+      misskey-js: workspace:*
       ms: 3.0.0-canary.1
       nested-property: 4.0.0
       node-fetch: 3.3.1
@@ -455,7 +455,7 @@ importers:
       json5: 2.2.3
       matter-js: 0.19.0
       mfm-js: 0.23.3
-      misskey-js: ../misskey-js
+      misskey-js: workspace:*
       photoswipe: 5.3.7
       prismjs: 1.29.0
       punycode: 2.3.0
@@ -630,7 +630,7 @@ importers:
       eslint: 8.37.0
       eslint-plugin-import: 2.27.5
       idb-keyval: 6.2.0
-      misskey-js: ../misskey-js
+      misskey-js: workspace:*
       typescript: 5.0.2
     dependencies:
       esbuild: 0.14.42
