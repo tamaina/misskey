@@ -8,6 +8,7 @@
 		"noUnusedParameters": false,
 		"noUnusedLocals": true,
 		"noFallthroughCasesInSwitch": true,
+		"declaration": true,
 		"declarationMap": true,
 		"target": "es2022",
 		"module": "ES2020",
