@@ -8,7 +8,7 @@
 		"noUnusedParameters": false,
 		"noUnusedLocals": true,
 		"noFallthroughCasesInSwitch": true,
-		"declaration": false,
+		"declarationMap": true,
 		"target": "es2022",
 		"module": "ES2020",
 		"moduleResolution": "node",
