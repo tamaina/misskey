@@ -9,7 +9,7 @@ import type { Packed } from '@/misc/json-schema.js';
 import type { Promiseable } from '@/misc/prelude/await-all.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';
 import { USER_ACTIVE_THRESHOLD, USER_ONLINE_THRESHOLD } from '@/const.js';
-import { KVCache } from '@/misc/cache.js';
+import { MemoryKVCache } from '@/misc/cache.js';
 import type { Instance } from '@/models/entities/Instance.js';
 import type { LocalUser, RemoteUser, User } from '@/models/entities/User.js';
 import { birthdaySchema, descriptionSchema, localUsernameSchema, locationSchema, nameSchema, passwordSchema } from '@/models/entities/User.js';
@@ -53,7 +53,7 @@ export class UserEntityService implements OnModuleInit {
 	private customEmojiService: CustomEmojiService;
 	private antennaService: AntennaService;
 	private roleService: RoleService;
-	private userInstanceCache: KVCache<Instance | null>;
+	private userInstanceCache: MemoryKVCache<Instance | null>;
 
 	constructor(
 		private moduleRef: ModuleRef,
@@ -119,7 +119,7 @@ export class UserEntityService implements OnModuleInit {
 		//private antennaService: AntennaService,
 		//private roleService: RoleService,
 	) {
-		this.userInstanceCache = new KVCache<Instance | null>(1000 * 60 * 60 * 3);
+		this.userInstanceCache = new MemoryKVCache<Instance | null>(1000 * 60 * 60 * 3);
 	}
 
 	onModuleInit() {
@@ -235,18 +235,6 @@ export class UserEntityService implements OnModuleInit {
 	}
 
 	@bindThis
-	public async getHasUnreadChannel(userId: User['id']): Promise<boolean> {
-		const channels = await this.channelFollowingsRepository.findBy({ followerId: userId });
-
-		const unread = channels.length > 0 ? await this.noteUnreadsRepository.findOneBy({
-			userId: userId,
-			noteChannelId: In(channels.map(x => x.followeeId)),
-		}) : null;
-
-		return unread != null;
-	}
-
-	@bindThis
 	public async getHasUnreadNotification(userId: User['id']): Promise<boolean> {
 		const latestReadNotificationId = await this.redisClient.get(`latestReadNotification:${userId}`);
 		
@@ -255,7 +243,6 @@ export class UserEntityService implements OnModuleInit {
 			'+',
 			'-',
 			'COUNT', 1);
-		console.log('latestNotificationIdsRes', latestNotificationIdsRes);
 		const latestNotificationId = latestNotificationIdsRes[0]?.[0];
 
 		return latestNotificationId != null && (latestReadNotificationId == null || latestReadNotificationId < latestNotificationId);
@@ -464,7 +451,7 @@ export class UserEntityService implements OnModuleInit {
 				}).then(count => count > 0),
 				hasUnreadAnnouncement: this.getHasUnreadAnnouncement(user.id),
 				hasUnreadAntenna: this.getHasUnreadAntenna(user.id),
-				hasUnreadChannel: this.getHasUnreadChannel(user.id),
+				hasUnreadChannel: false, // 後方互換性のため
 				hasUnreadNotification: this.getHasUnreadNotification(user.id),
 				hasPendingReceivedFollowRequest: this.getHasPendingReceivedFollowRequest(user.id),
 				mutedWords: profile!.mutedWords,

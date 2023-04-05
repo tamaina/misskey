@@ -652,7 +652,8 @@ async function post(ev?: MouseEvent) {
 		text.includes('$[x4') ||
 		text.includes('$[scale') ||
 		text.includes('$[position');
-	if (annoying) {
+
+	if (annoying && visibility === 'public') {
 		const { canceled, result } = await os.actions({
 			type: 'warning',
 			text: i18n.ts.thisPostMayBeAnnoying,
@@ -970,20 +971,18 @@ defineExpose({
 .headerRightItem {
 	margin: 0;
 	padding: 8px;
-
-	&.danger {
-		color: #ff2a2a;
-	}
-}
-
-button.headerRightItem {
 	border-radius: 6px;
 
 	&:hover {
 		background: var(--X5);
 	}
+
 	&:disabled {
 		background: none;
+	}
+
+	&.danger {
+		color: #ff2a2a;
 	}
 }
 
@@ -1104,7 +1103,7 @@ button.headerRightItem {
 	color: var(--warn);
 	border-radius: 6px;
 	min-width: 1.6em;
-    text-align: center;
+	text-align: center;
 
 	&.textOver {
 		color: #ff2a2a;
