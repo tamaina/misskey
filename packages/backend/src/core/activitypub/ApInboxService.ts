@@ -140,7 +140,7 @@ export class ApInboxService {
 		} else if (isFlag(activity)) {
 			await this.flag(actor, activity);
 		} else if (isMove(activity)) {
-			await this.move(actor, activity);
+			//await this.move(actor, activity);
 		} else {
 			this.logger.warn(`unrecognized activity type: ${activity.type}`);
 		}
@@ -771,17 +771,17 @@ export class ApInboxService {
 			where: {
 				followeeId: old_acc.id,
 				followerHost: IsNull(), // follower is local
-			}
+			},
 		});
-		followings.forEach(async (following) => {
-			if (!following.follower) return;
+		for (const following of followings) {
+			if (!following.follower) continue;
 			try {
 				await this.userFollowingService.follow(following.follower, new_acc);
 				await this.userFollowingService.unfollow(following.follower, old_acc);
 			} catch {
 				/* empty */
 			}
-		});
+		}
 
 		return 'ok';
 	}
