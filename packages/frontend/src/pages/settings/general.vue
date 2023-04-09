@@ -83,6 +83,12 @@
 				<option value="2"><span style="font-size: 16px;">Aa</span></option>
 				<option value="3"><span style="font-size: 17px;">Aa</span></option>
 			</MkRadios>
+
+			<MkRadios v-model="mediaListWithOneImageAppearance">
+				<template #label>{{ i18n.ts.mediaListWithOneImageAppearance }}</template>
+				<option value="expand">{{ i18n.ts.expandAsImage }}</option>
+				<option value="16_9">{{ i18n.t('fixTo', { x: '16:9' }) }}</option>
+			</MkRadios>
 		</div>
 	</FormSection>
 
@@ -173,6 +179,7 @@ const enterSendsMessage = computed(defaultStore.makeGetterSetter('enterSendsMess
 const useReactionPickerForContextMenu = computed(defaultStore.makeGetterSetter('useReactionPickerForContextMenu'));
 const squareAvatars = computed(defaultStore.makeGetterSetter('squareAvatars'));
 const aiChanMode = computed(defaultStore.makeGetterSetter('aiChanMode'));
+const mediaListWithOneImageAppearance = computed(defaultStore.makeGetterSetter('mediaListWithOneImageAppearance'));
 
 watch(lang, () => {
 	miLocalStorage.setItem('lang', lang.value as string);
