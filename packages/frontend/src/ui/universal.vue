@@ -298,7 +298,7 @@ $widgets-hide-threshold: 1090px;
 }
 
 .widgets {
-	padding: 0 var(--margin);
+	padding: 0 var(--margin) calc(var(--margin) + env(safe-area-inset-bottom, 0px));
 	border-left: solid 0.5px var(--divider);
 	background: var(--bg);
 
@@ -333,7 +333,7 @@ $widgets-hide-threshold: 1090px;
 	height: 100vh;
 	height: calc(var(--1dvh, 1vh) * 100);
 	height: 100dvh;
-	padding: var(--margin) !important;
+	padding: var(--margin) var(--margin) calc(var(--margin) + env(safe-area-inset-bottom, 0px)) !important;
 	box-sizing: border-box;
 	overflow: auto;
 	overscroll-behavior: contain;
