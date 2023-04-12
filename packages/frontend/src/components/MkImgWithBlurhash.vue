@@ -2,7 +2,7 @@
 <div :class="[$style.root, { [$style.cover]: cover }]" :title="title ?? ''">
 	<img v-if="!loaded && src" :class="$style.loader" :src="src" @load="onLoad"/>
 	<Transition
-		mode="out-in"
+		mode="in-out"
 		:enter-active-class="props.animation && defaultStore.state.animation ? $style.transition_toggle_enterActive : ''"
 		:leave-active-class="props.animation && defaultStore.state.animation ? $style.transition_toggle_leaveActive : ''"
 		:enter-from-class="props.animation && defaultStore.state.animation ? $style.transition_toggle_enterFrom : ''"
