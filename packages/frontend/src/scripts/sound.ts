@@ -40,7 +40,8 @@ export const soundConfigStore = markRaw(new Storage('sound', {
 	},
 }));
 
-soundConfigStore.ready.then(() => {
+await soundConfigStore.ready;
+
 //#region サウンドのColdDeviceStorage => indexedDBのマイグレーション
 for (const target of Object.keys(soundConfigStore.state) as Array<keyof typeof soundConfigStore.state>) {
 	const value = localStorage.getItem(`miux:${target}`);
@@ -50,7 +51,6 @@ for (const target of Object.keys(soundConfigStore.state) as Array<keyof typeof s
 	}
 }
 //#endregion
-});
 
 const cache = new Map<string, HTMLAudioElement>();
 
