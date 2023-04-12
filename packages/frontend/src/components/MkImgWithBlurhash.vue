@@ -69,6 +69,7 @@ onMounted(() => {
 
 .transition_toggle_enterFrom,
 .transition_toggle_leaveTo {
+	position: absolute;
 	opacity: 0;
 }
 
