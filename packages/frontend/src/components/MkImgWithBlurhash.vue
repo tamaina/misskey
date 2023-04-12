@@ -1,6 +1,5 @@
 <template>
 <div :class="[$style.root, { [$style.cover]: cover }]" :title="title ?? ''">
-	<img v-if="!loaded && src" :class="$style.loader" :src="src" @load="onLoad"/>
 	<Transition
 		mode="in-out"
 		:enter-active-class="props.animation && defaultStore.state.animation ? $style.transition_toggle_enterActive : ''"
@@ -9,7 +8,7 @@
 		:leave-to-class="props.animation && defaultStore.state.animation ? $style.transition_toggle_leaveTo : ''"
 	>
 		<canvas v-if="!loaded || forceBlurhash" ref="canvas" :class="$style.canvas" :width="width" :height="height" :title="title ?? ''"/>
-		<img v-else :class="$style.img" :src="src" :title="title ?? ''" :alt="alt ?? ''"/>
+		<img v-if="src && !forceBlurhash" v-show="loaded" :class="$style.img" :src="src" :title="title ?? ''" :alt="alt ?? ''" @load="onLoad"/>
 	</Transition>
 </div>
 </template>
