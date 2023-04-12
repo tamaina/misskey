@@ -1,9 +1,10 @@
 <template>
 <div v-if="hide" :class="$style.hidden" @click="hide = false">
-	<ImgWithBlurhash style="filter: brightness(0.5);" :hash="image.blurhash" :title="image.comment" :alt="image.comment" :width="width" :height="height"/>
+	<ImgWithBlurhash style="filter: brightness(0.5);" :hash="image.blurhash" :title="image.comment" :alt="image.comment" :width="width" :height="height" :force-blurhash="dataSaverMode"/>
 	<div :class="$style.hiddenText">
 		<div :class="$style.hiddenTextWrapper">
-			<b style="display: block;"><i class="ti ti-alert-triangle"></i> {{ i18n.ts.sensitive }}</b>
+			<b v-if="image.isSensitive" style="display: block;"><i class="ti ti-alert-triangle"></i> {{ i18n.ts.sensitive }}{{ dataSaverMode ? ` (${i18n.ts.image} ${bytes(image.size)})` : '' }}</b>
+			<b v-else style="display: block;"><i class="ti ti-photo"></i> {{ dataSaverMode ? bytes(image.size) : i18n.ts.image }}</b>
 			<span style="display: block;">{{ i18n.ts.clickToShow }}</span>
 		</div>
 	</div>
@@ -28,6 +29,7 @@
 import { watch } from 'vue';
 import * as misskey from 'misskey-js';
 import { getStaticImageUrl } from '@/scripts/media-proxy';
+import bytes from '@/filters/bytes';
 import ImgWithBlurhash from '@/components/MkImgWithBlurhash.vue';
 import { defaultStore } from '@/store';
 import { i18n } from '@/i18n';
@@ -41,6 +43,7 @@ let hide = $ref(true);
 let darkMode = $ref(defaultStore.state.darkMode);
 let width = $ref(64);
 let height = $ref(64);
+let dataSaverMode: boolean = $ref(defaultStore.state.enableDataSaverMode);
 
 const url = $computed(() => (props.raw || defaultStore.state.loadRawImages)
 	? props.image.url
@@ -51,7 +54,7 @@ const url = $computed(() => (props.raw || defaultStore.state.loadRawImages)
 
 // Plugin:register_note_view_interruptor を使って書き換えられる可能性があるためwatchする
 watch(() => props.image, () => {
-	hide = (defaultStore.state.nsfw === 'force') ? true : props.image.isSensitive && (defaultStore.state.nsfw !== 'ignore');
+	hide = (defaultStore.state.nsfw === 'force' || dataSaverMode) ? true : props.image.isSensitive && (defaultStore.state.nsfw !== 'ignore');
 
 	if (props.image.properties.width && props.image.properties.height) {
 		const ratio = props.image.properties.width / props.image.properties.height;

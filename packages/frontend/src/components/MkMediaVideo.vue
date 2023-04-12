@@ -1,7 +1,9 @@
 <template>
 <div v-if="hide" class="icozogqfvdetwohsdglrbswgrejoxbdj" @click="hide = false">
+	<!-- 【注意】dataSaverMode が有効になっている際には、hide が false になるまでサムネイルや動画を読み込まないようにすること -->
 	<div>
-		<b><i class="ti ti-alert-triangle"></i> {{ i18n.ts.sensitive }}</b>
+		<b v-if="video.isSensitive"><i class="ti ti-alert-triangle"></i> {{ i18n.ts.sensitive }}{{ dataSaverMode ? ` (${i18n.ts.video} ${bytes(video.size)})` : '' }}</b>
+		<b v-else><i class="ti ti-movie"></i> {{ dataSaverMode ? bytes(video.size) : i18n.ts.video }}</b>
 		<span>{{ i18n.ts.clickToShow }}</span>
 	</div>
 </div>
@@ -25,6 +27,7 @@
 <script lang="ts" setup>
 import { ref } from 'vue';
 import * as misskey from 'misskey-js';
+import bytes from '@/filters/bytes';
 import VuePlyr from 'vue-plyr';
 import { defaultStore } from '@/store';
 import 'vue-plyr/dist/vue-plyr.css';
@@ -33,8 +36,9 @@ import { i18n } from '@/i18n';
 const props = defineProps<{
 	video: misskey.entities.DriveFile;
 }>();
+const dataSaverMode = ref(defaultStore.state.enableDataSaverMode);
 
-const hide = ref((defaultStore.state.nsfw === 'force') ? true : props.video.isSensitive && (defaultStore.state.nsfw !== 'ignore'));
+const hide = ref((defaultStore.state.nsfw === 'force' || dataSaverMode.value) ? true : props.video.isSensitive && (defaultStore.state.nsfw !== 'ignore'));
 </script>
 
 <style lang="scss" scoped>
