@@ -227,11 +227,6 @@
 
 ## 13.9.0 (2023/03/03)
 
-### Changes
-- カスタム絵文字関連の変更
-  * ノートなどに含まれるemojis（populateEmojiの結果）は（プロキシされたURLではなく）オリジナルのURLを指すように
-  * MFMでx3/x4もしくはscale.x/yが2.5以上に指定されていた場合にはオリジナル品質の絵文字を使用するように
-
 ### Improvements
 - 時限ロール
 - アンテナでCWも検索対象にするように
@@ -407,11 +402,6 @@
 
 ### Changes
 - perf(client): do not render custom emojis in user names
-
-### Changes
-- カスタム絵文字関連の変更
-  * ノートなどに含まれるemojis（populateEmojiの結果）は（プロキシされたURLではなく）オリジナルのURLを指すように
-  * MFMでx3/x4もしくはscale.x/yが2.5以上に指定されていた場合にはオリジナル品質の絵文字を使用するように
 
 ### Improvements
 - Client: disableShowingAnimatedImagesのデフォルト値をprefers-reduced-motionにする
