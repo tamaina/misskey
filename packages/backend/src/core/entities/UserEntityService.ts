@@ -340,11 +340,6 @@ export class UserEntityService implements OnModuleInit {
 
 		const falsy = opts.detail ? false : undefined;
 
-		const memo = meId == null ? null : await this.userMemoRepository.findOneBy({
-			userId: meId,
-			targetUserId: user.id,
-		}).then(row => row?.memo ?? null);
-
 		const packed = {
 			id: user.id,
 			name: user.name,
@@ -487,10 +482,6 @@ export class UserEntityService implements OnModuleInit {
 				isBlocked: relation.isBlocked,
 				isMuted: relation.isMuted,
 				isRenoteMuted: relation.isRenoteMuted,
-			} : {}),
-
-			...(memo ? {
-				memo,
 			} : {}),
 		} as Promiseable<Packed<'User'>> as Promiseable<IsMeAndIsUserDetailed<ExpectsMe, D>>;
 
