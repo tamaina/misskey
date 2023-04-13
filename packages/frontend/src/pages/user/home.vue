@@ -59,17 +59,6 @@
 							{{ role.name }}
 						</span>
 					</div>
-					<div v-if="isEditingMemo || memoDraft" class="memo" :class="{'no-memo': !memoDraft}">
-						<div class="heading" v-text="i18n.ts.memo"/>
-						<textarea
-							ref="memoTextareaEl"
-							v-model="memoDraft"
-							rows="1"
-							@focus="isEditingMemo = true"
-							@blur="updateMemo"
-							@input="adjustMemoTextarea"
-						/>
-					</div>
 					<div class="description">
 						<MkOmit>
 							<Mfm v-if="user.description" :text="user.description" :is-note="false" :author="user" :i="$i"/>
@@ -476,31 +465,6 @@ onUnmounted(() => {
 					> .empty {
 						margin: 0;
 						opacity: 0.5;
-					}
-
-					> .memo {
-						background: var(--infoBg);
-						color: var(--infoFg);
-						margin-bottom: 8px;
-						padding: 8px;
-						border-radius: 8px;
-						line-height: 1;
-
-						textarea {
-							font-family: inherit;
-							line-height: 1.5;
-							margin: 0;
-							padding: 0;
-							outline: none;
-							width: 100%;
-							height: auto;
-							min-height: 0;
-							color: var(--fg);
-							background: transparent;
-							border: none;
-							resize: none;
-							overflow: hidden;
-						}
 					}
 				}
 
