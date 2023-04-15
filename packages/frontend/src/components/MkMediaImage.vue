@@ -40,7 +40,7 @@ const props = defineProps<{
 }>();
 
 let hide = $ref(true);
-let darkMode = $ref(defaultStore.state.darkMode);
+let darkMode: boolean = $ref(defaultStore.state.darkMode);
 
 const url = $computed(() => (props.raw || defaultStore.state.loadRawImages)
 	? props.image.url
