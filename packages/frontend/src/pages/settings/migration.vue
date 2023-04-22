@@ -1,42 +1,65 @@
 <template>
 <div class="_gaps_m">
-	<FormSection first>
-		<template #label>{{ i18n.ts._accountMigration.moveTo }}</template>
-		<MkInput v-model="moveToAccount" manual-save>
-			<template #prefix><i class="ti ti-plane-departure"></i></template>
-			<template #label>{{ i18n.ts._accountMigration.moveToLabel }}</template>
-		</MkInput>
-	</FormSection>
-	<FormInfo warn>{{ i18n.ts._accountMigration.moveAccountDescription }}</FormInfo>
-
-	<FormSection>
+	<MkFolder :default-open="true">
+		<template #icon><i class="ti ti-plane-arrival"></i></template>
 		<template #label>{{ i18n.ts._accountMigration.moveFrom }}</template>
-		<MkInput v-model="accountAlias" manual-save>
-			<template #prefix><i class="ti ti-plane-arrival"></i></template>
-			<template #label>{{ i18n.ts._accountMigration.moveFromLabel }}</template>
-		</MkInput>
-	</FormSection>
-	<FormInfo warn>{{ i18n.ts._accountMigration.moveFromDescription }}</FormInfo>
+		<template #caption>{{ i18n.ts._accountMigration.moveFromSub }}</template>
+
+		<div class="_gaps_m">
+			<FormInfo warn>
+				{{ i18n.ts._accountMigration.moveFromDescription }}
+			</FormInfo>
+			<div>
+				<MkButton :disabled="accountAliases.length >= 10" inline style="margin-right: 8px;" @click="add"><i class="ti ti-plus"></i> {{ i18n.ts.add }}</MkButton>
+				<MkButton inline primary @click="save"><i class="ti ti-check"></i> {{ i18n.ts.save }}</MkButton>
+			</div>
+			<div class="_gaps">
+				<MkInput v-for="(_, i) in accountAliases" v-model="accountAliases[i]">
+					<template #prefix><i class="ti ti-plane-arrival"></i></template>
+					<template #label>{{ i18n.t('_accountMigration.moveFromLabel', { n: i + 1 }) }}</template>
+				</MkInput>
+			</div>
+		</div>
+	</MkFolder>
+
+	<MkFolder :default-open="false">
+		<template #icon><i class="ti ti-plane-departure"></i></template>
+		<template #label>{{ i18n.ts._accountMigration.moveTo }}</template>
+
+		<div class="_gaps_m">
+			<FormInfo warn>{{ i18n.ts._accountMigration.moveAccountDescription }}</FormInfo>
+			<div>
+				<MkInput v-model="moveToAccount">
+					<template #prefix><i class="ti ti-plane-departure"></i></template>
+					<template #label>{{ i18n.ts._accountMigration.moveToLabel }}</template>
+				</MkInput>
+			</div>
+			<div>
+				<MkButton inline primary :disabled="!moveToAccount" @click="move"><i class="ti ti-check"></i> {{ i18n.ts.ok }}</MkButton>
+			</div>
+		</div>
+	</MkFolder>
 </div>
 </template>
 
 <script lang="ts" setup>
-import { ref, watch } from 'vue';
-import FormSection from '@/components/form/section.vue';
+import { ref } from 'vue';
 import FormInfo from '@/components/MkInfo.vue';
 import MkInput from '@/components/MkInput.vue';
+import MkButton from '@/components/MkButton.vue';
+import MkFolder from '@/components/MkFolder.vue';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
 
 const moveToAccount = ref('');
-const accountAlias = ref('');
+const accountAliases = ref(['']);
 
 async function move(): Promise<void> {
 	const account = moveToAccount.value;
 	const confirm = await os.confirm({
 		type: 'warning',
-		text: i18n.t('migrationConfirm', { account: account.toString() }),
+		text: i18n.t('_accountMigration.migrationConfirm', { account: account.toString() }),
 	});
 	if (confirm.canceled) return;
 	os.apiWithDialog('i/move', {
@@ -44,20 +67,17 @@ async function move(): Promise<void> {
 	});
 }
 
-async function save(): Promise<void> {
-	const account = accountAlias.value;
-	os.apiWithDialog('i/known-as', {
-		alsoKnownAs: account,
-	});
+function add(): void {
+	accountAliases.value.push('');
 }
 
-watch(accountAlias, async () => {
-	await save();
-});
-
-watch(moveToAccount, async () => {
-	await move();
-});
+async function save(): Promise<void> {
+	const alsoKnownAs = accountAliases.value.map(alias => alias.trim()).filter(alias => alias !== '');
+	os.apiWithDialog('i/update', {
+		alsoKnownAs,
+	});
+	accountAliases.value = alsoKnownAs.length === 0 ? [''] : alsoKnownAs;
+}
 
 definePageMetadata({
 	title: i18n.ts.accountMigration,

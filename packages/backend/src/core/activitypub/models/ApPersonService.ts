@@ -3,7 +3,7 @@ import promiseLimit from 'promise-limit';
 import { DataSource } from 'typeorm';
 import { ModuleRef } from '@nestjs/core';
 import { DI } from '@/di-symbols.js';
-import type { FollowingsRepository, InstancesRepository, UserProfilesRepository, UserPublickeysRepository, UsersRepository } from '@/models/index.js';
+import type { BlockingsRepository, MutingsRepository, FollowingsRepository, InstancesRepository, UserProfilesRepository, UserPublickeysRepository, UsersRepository } from '@/models/index.js';
 import type { Config } from '@/config.js';
 import type { RemoteUser } from '@/models/entities/User.js';
 import { User } from '@/models/entities/User.js';
@@ -42,6 +42,7 @@ import type { ApLoggerService } from '../ApLoggerService.js';
 // eslint-disable-next-line @typescript-eslint/consistent-type-imports
 import type { ApImageService } from './ApImageService.js';
 import type { IActor, IObject } from '../type.js';
+import type { AccountMoveService } from '@/core/AccountMoveService.js';
 
 const nameLength = 128;
 const summaryLength = 2048;
@@ -66,6 +67,7 @@ export class ApPersonService implements OnModuleInit {
 	private usersChart: UsersChart;
 	private instanceChart: InstanceChart;
 	private apLoggerService: ApLoggerService;
+	private accountMoveService: AccountMoveService;
 	private logger: Logger;
 
 	constructor(
@@ -131,6 +133,7 @@ export class ApPersonService implements OnModuleInit {
 		this.usersChart = this.moduleRef.get('UsersChart');
 		this.instanceChart = this.moduleRef.get('InstanceChart');
 		this.apLoggerService = this.moduleRef.get('ApLoggerService');
+		this.accountMoveService = this.moduleRef.get('AccountMoveService');
 		this.logger = this.apLoggerService.logger;
 	}
 
@@ -202,19 +205,19 @@ export class ApPersonService implements OnModuleInit {
 	}
 
 	/**
-	 * Personをフェッチします。
+	 * uriからUser(Person)をフェッチします。
 	 *
-	 * Misskeyに対象のPersonが登録されていればそれを返します。
+	 * Misskeyに対象のPersonが登録されていればそれを返し、登録がなければnullを返します。
 	 */
 	@bindThis
-	public async fetchPerson(uri: string, resolver?: Resolver): Promise<User | null> {
+	public async fetchPerson(uri: string): Promise<User | null> {
 		if (typeof uri !== 'string') throw new Error('uri is not string');
 
 		const cached = this.cacheService.uriPersonCache.get(uri);
 		if (cached) return cached;
 
 		// URIがこのサーバーを指しているならデータベースからフェッチ
-		if (uri.startsWith(this.config.url + '/')) {
+		if (uri.startsWith(`${this.config.url}/`)) {
 			const id = uri.split('/').pop();
 			const u = await this.usersRepository.findOneBy({ id });
 			if (u) this.cacheService.uriPersonCache.set(uri, u);
@@ -413,14 +416,14 @@ export class ApPersonService implements OnModuleInit {
 		if (typeof uri !== 'string') throw new Error('uri is not string');
 
 		// URIがこのサーバーを指しているならスキップ
-		if (uri.startsWith(this.config.url + '/')) {
+		if (uri.startsWith(`${this.config.url}/`)) {
 			return;
 		}
 
 		//#region このサーバーに既に登録されているか
-		const exist = await this.usersRepository.findOneBy({ uri }) as RemoteUser;
+		const exist = await this.usersRepository.findOneBy({ uri }) as RemoteUser | null;
 
-		if (exist == null) {
+		if (exist === null) {
 			return;
 		}
 		//#endregion
@@ -460,7 +463,7 @@ export class ApPersonService implements OnModuleInit {
 		const url = getOneApHrefNullable(person.url);
 
 		if (url && !url.startsWith('https://')) {
-			throw new Error('unexpected shcema of person url: ' + url);
+			throw new Error(`unexpected shcema of person url: ${url}`);
 		}
 
 		const updates = {
@@ -523,6 +526,24 @@ export class ApPersonService implements OnModuleInit {
 		});
 
 		await this.updateFeatured(exist.id, resolver).catch(err => this.logger.error(err));
+
+		this.cacheService.uriPersonCache.set(uri, { ...exist, ...updates });
+
+		// Copy blocking and muting if we know its moving for the first time.
+		if (!exist.movedToUri && updates.movedToUri) {
+			try {
+				const newAccount = await this.resolvePerson(updates.movedToUri);
+				// Aggressively block and/or mute the new account:
+				// This does NOT check alsoKnownAs, assuming that other implmenetations properly check alsoKnownAs when firing account migration
+				await Promise.all([
+					this.accountMoveService.copyBlocking(exist, newAccount),
+					this.accountMoveService.copyMutings(exist, newAccount),
+					this.accountMoveService.updateLists(exist, newAccount),
+				]);
+			} catch {
+				/* skip if any error happens */
+			}
+		}
 	}
 
 	/**

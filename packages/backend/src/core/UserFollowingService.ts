@@ -22,6 +22,8 @@ import { MetaService } from '@/core/MetaService.js';
 import { CacheService } from '@/core/CacheService.js';
 import type { Config } from '@/config.js';
 import Logger from '../logger.js';
+import { ApPersonService } from '@/core/activitypub/models/ApPersonService.js';
+import { IsNull } from 'typeorm';
 
 const logger = new Logger('following/create');
 
@@ -73,6 +75,7 @@ export class UserFollowingService implements OnModuleInit {
 		private federatedInstanceService: FederatedInstanceService,
 		private webhookService: WebhookService,
 		private apRendererService: ApRendererService,
+		private apPersonService: ApPersonService,
 		private perUserFollowingChart: PerUserFollowingChart,
 		private instanceChart: InstanceChart,
 	) {
@@ -135,6 +138,47 @@ export class UserFollowingService implements OnModuleInit {
 				});
 
 				if (followed) autoAccept = true;
+			}
+
+			// Automatically accept if the follower is an account who has moved and the locked followee had accepted the old account.
+			if (followee.isLocked && !autoAccept) {
+				let movedFollower = follower;
+
+				if (this.userEntityService.isRemoteUser(movedFollower)) {
+					if ((new Date()).getTime() - (movedFollower.lastFetchedAt?.getTime() ?? 0) > 10 * 1000) {
+						await this.apPersonService.updatePerson(movedFollower.uri);
+					}
+					movedFollower = await this.apPersonService.fetchPerson(movedFollower.uri) ?? follower;
+				}
+
+				if (movedFollower.alsoKnownAs) {
+					const newUri = this.userEntityService.isRemoteUser(movedFollower) ? movedFollower.uri : `${this.config.url}/users/${movedFollower.id}`;
+
+					for (const oldUri of movedFollower.alsoKnownAs) {
+						try {
+							let oldAccount = await this.apPersonService.fetchPerson(oldUri);
+							if (!oldAccount) continue; // oldAccountを探してもこのサーバーに存在しない場合はフォロー関係もないということなのでスルー
+
+							if (this.userEntityService.isRemoteUser(movedFollower)) {
+								if ((new Date()).getTime() - (oldAccount.lastFetchedAt?.getTime() ?? 0) > 10 * 1000) {
+									await this.apPersonService.updatePerson(oldUri);
+								}
+
+								oldAccount = await this.apPersonService.fetchPerson(oldUri) ?? oldAccount;
+							}
+
+							autoAccept = oldAccount.movedToUri === newUri && await this.followingsRepository.exist({
+								where: {
+									followeeId: followee.id,
+									followerId: oldAccount.id,
+								},
+							});
+							if (autoAccept) break;
+						} catch {
+							/* skip if any error happens */
+						}
+					}
+				}
 			}
 
 			if (!autoAccept) {
@@ -210,32 +254,40 @@ export class UserFollowingService implements OnModuleInit {
 
 		this.globalEventService.publishInternalEvent('follow', { followerId: follower.id, followeeId: followee.id });
 
-		//#region Increment counts
-		await Promise.all([
-			this.usersRepository.increment({ id: follower.id }, 'followingCount', 1),
-			this.usersRepository.increment({ id: followee.id }, 'followersCount', 1),
+		const [followeeUser, followerUser] = await Promise.all([
+			this.usersRepository.findOneByOrFail({ id: followee.id }),
+			this.usersRepository.findOneByOrFail({ id: follower.id }),
 		]);
-		//#endregion
 
-		//#region Update instance stats
-		if (this.userEntityService.isRemoteUser(follower) && this.userEntityService.isLocalUser(followee)) {
-			this.federatedInstanceService.fetch(follower.host).then(async i => {
-				this.instancesRepository.increment({ id: i.id }, 'followingCount', 1);
-				if ((await this.metaService.fetch()).enableChartsForFederatedInstances) {
-					this.instanceChart.updateFollowing(i.host, true);
-				}
-			});
-		} else if (this.userEntityService.isLocalUser(follower) && this.userEntityService.isRemoteUser(followee)) {
-			this.federatedInstanceService.fetch(followee.host).then(async i => {
-				this.instancesRepository.increment({ id: i.id }, 'followersCount', 1);
-				if ((await this.metaService.fetch()).enableChartsForFederatedInstances) {
-					this.instanceChart.updateFollowers(i.host, true);
-				}
-			});
+		// Neither followee nor follower has moved.
+		if (!followeeUser.movedToUri && !followerUser.movedToUri) {
+			//#region Increment counts
+			await Promise.all([
+				this.usersRepository.increment({ id: follower.id }, 'followingCount', 1),
+				this.usersRepository.increment({ id: followee.id }, 'followersCount', 1),
+			]);
+			//#endregion
+
+			//#region Update instance stats
+			if (this.userEntityService.isRemoteUser(follower) && this.userEntityService.isLocalUser(followee)) {
+				this.federatedInstanceService.fetch(follower.host).then(async i => {
+					this.instancesRepository.increment({ id: i.id }, 'followingCount', 1);
+					if ((await this.metaService.fetch()).enableChartsForFederatedInstances) {
+						this.instanceChart.updateFollowing(i.host, true);
+					}
+				});
+			} else if (this.userEntityService.isLocalUser(follower) && this.userEntityService.isRemoteUser(followee)) {
+				this.federatedInstanceService.fetch(followee.host).then(async i => {
+					this.instancesRepository.increment({ id: i.id }, 'followersCount', 1);
+					if ((await this.metaService.fetch()).enableChartsForFederatedInstances) {
+						this.instanceChart.updateFollowers(i.host, true);
+					}
+				});
+			}
+			//#endregion
+
+			this.perUserFollowingChart.update(follower, followee, true);
 		}
-		//#endregion
-
-		this.perUserFollowingChart.update(follower, followee, true);
 
 		// Publish follow event
 		if (this.userEntityService.isLocalUser(follower) && !silent) {
@@ -283,12 +335,18 @@ export class UserFollowingService implements OnModuleInit {
 		},
 		silent = false,
 	): Promise<void> {
-		const following = await this.followingsRepository.findOneBy({
-			followerId: follower.id,
-			followeeId: followee.id,
+		const following = await this.followingsRepository.findOne({
+			relations: {
+				follower: true,
+				followee: true,
+			},
+			where: {
+				followerId: follower.id,
+				followeeId: followee.id,
+			}
 		});
 
-		if (following == null) {
+		if (following === null || !following.follower || !following.followee) {
 			logger.warn('フォロー解除がリクエストされましたがフォローしていませんでした');
 			return;
 		}
@@ -297,7 +355,7 @@ export class UserFollowingService implements OnModuleInit {
 
 		this.cacheService.userFollowingsCache.refresh(follower.id);
 
-		this.decrementFollowing(follower, followee);
+		this.decrementFollowing(following.follower, following.followee);
 
 		// Publish unfollow event
 		if (!silent && this.userEntityService.isLocalUser(follower)) {
@@ -329,37 +387,74 @@ export class UserFollowingService implements OnModuleInit {
 
 	@bindThis
 	private async decrementFollowing(
-		follower: { id: User['id']; host: User['host']; },
-		followee: { id: User['id']; host: User['host']; },
+		follower: User,
+		followee: User,
 	): Promise<void> {
 		this.globalEventService.publishInternalEvent('unfollow', { followerId: follower.id, followeeId: followee.id });
 
-		//#region Decrement following / followers counts
-		await Promise.all([
-			this.usersRepository.decrement({ id: follower.id }, 'followingCount', 1),
-			this.usersRepository.decrement({ id: followee.id }, 'followersCount', 1),
-		]);
-		//#endregion
+		// Neither followee nor follower has moved.
+		if (!follower.movedToUri && !followee.movedToUri) {
+			//#region Decrement following / followers counts
+			await Promise.all([
+				this.usersRepository.decrement({ id: follower.id }, 'followingCount', 1),
+				this.usersRepository.decrement({ id: followee.id }, 'followersCount', 1),
+			]);
+			//#endregion
 
-		//#region Update instance stats
-		if (this.userEntityService.isRemoteUser(follower) && this.userEntityService.isLocalUser(followee)) {
-			this.federatedInstanceService.fetch(follower.host).then(async i => {
-				this.instancesRepository.decrement({ id: i.id }, 'followingCount', 1);
-				if ((await this.metaService.fetch()).enableChartsForFederatedInstances) {
-					this.instanceChart.updateFollowing(i.host, false);
-				}
-			});
-		} else if (this.userEntityService.isLocalUser(follower) && this.userEntityService.isRemoteUser(followee)) {
-			this.federatedInstanceService.fetch(followee.host).then(async i => {
-				this.instancesRepository.decrement({ id: i.id }, 'followersCount', 1);
-				if ((await this.metaService.fetch()).enableChartsForFederatedInstances) {
-					this.instanceChart.updateFollowers(i.host, false);
-				}
-			});
+			//#region Update instance stats
+			if (this.userEntityService.isRemoteUser(follower) && this.userEntityService.isLocalUser(followee)) {
+				this.federatedInstanceService.fetch(follower.host).then(async i => {
+					this.instancesRepository.decrement({ id: i.id }, 'followingCount', 1);
+					if ((await this.metaService.fetch()).enableChartsForFederatedInstances) {
+						this.instanceChart.updateFollowing(i.host, false);
+					}
+				});
+			} else if (this.userEntityService.isLocalUser(follower) && this.userEntityService.isRemoteUser(followee)) {
+				this.federatedInstanceService.fetch(followee.host).then(async i => {
+					this.instancesRepository.decrement({ id: i.id }, 'followersCount', 1);
+					if ((await this.metaService.fetch()).enableChartsForFederatedInstances) {
+						this.instanceChart.updateFollowers(i.host, false);
+					}
+				});
+			}
+			//#endregion
+
+			this.perUserFollowingChart.update(follower, followee, false);
+		} else {
+			// Adjust following/followers counts
+			for (const user of [follower, followee]) {
+				if (user.movedToUri) continue; // No need to update if the user has already moved.
+
+				const nonMovedFollowees = await this.followingsRepository.count({
+					relations: {
+						followee: true,
+					},
+					where: {
+						followerId: user.id,
+						followee: {
+							movedToUri: IsNull(),
+						}
+					}
+				});
+				const nonMovedFollowers = await this.followingsRepository.count({
+					relations: {
+						follower: true,
+					},
+					where: {
+						followeeId: user.id,
+						follower: {
+							movedToUri: IsNull(),
+						}
+					}
+				});
+				await this.usersRepository.update(
+					{ id: user.id },
+					{ followingCount: nonMovedFollowees, followersCount: nonMovedFollowers },
+				);
+			}
+
+			// TODO: adjust charts
 		}
-		//#endregion
-
-		this.perUserFollowingChart.update(follower, followee, false);
 	}
 
 	@bindThis
@@ -562,15 +657,22 @@ export class UserFollowingService implements OnModuleInit {
 	 */
 	@bindThis
 	private async removeFollow(followee: Both, follower: Both): Promise<void> {
-		const following = await this.followingsRepository.findOneBy({
-			followeeId: followee.id,
-			followerId: follower.id,
+		const following = await this.followingsRepository.findOne({
+			relations: {
+				followee: true,
+				follower: true,
+			},
+			where: {
+				followeeId: followee.id,
+				followerId: follower.id,
+			}
 		});
 
-		if (!following) return;
+		if (!following || !following.followee || !following.follower) return;
 
 		await this.followingsRepository.delete(following.id);
-		this.decrementFollowing(follower, followee);
+
+		this.decrementFollowing(following.follower, following.followee);
 	}
 
 	/**
