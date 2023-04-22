@@ -4,7 +4,7 @@ import { IsNull, In, MoreThan, Not } from 'typeorm';
 import { bindThis } from '@/decorators.js';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
-import type { LocalUser } from '@/models/entities/User.js';
+import type { LocalUser, RemoteUser } from '@/models/entities/User.js';
 import type { BlockingsRepository, FollowingsRepository, InstancesRepository, Muting, MutingsRepository, UserListJoiningsRepository, UsersRepository } from '@/models/index.js';
 import type { RelationshipJobData, ThinUser } from '@/queue/types.js';
 import type { User } from '@/models/entities/User.js';
@@ -69,15 +69,19 @@ export class AccountMoveService {
 	 * After delivering Move activity, its local followers unfollow the old account and then follow the new one.
 	 */
 	@bindThis
-	public async moveFromLocal(src: LocalUser, dst: User): Promise<unknown> {
-		const dstUri = this.getUserUri(dst);
+	public async moveFromLocal(src: LocalUser, dst: LocalUser | RemoteUser): Promise<unknown> {
+		const srcUri = this.userEntityService.getUserUri(src);
+		const dstUri = this.userEntityService.getUserUri(dst);
 
 		// add movedToUri to indicate that the user has moved
-		const update = {} as Partial<User>;
+		const update = {} as Partial<LocalUser>;
 		update.alsoKnownAs = src.alsoKnownAs?.includes(dstUri) ? src.alsoKnownAs : src.alsoKnownAs?.concat([dstUri]) ?? [dstUri];
 		update.movedToUri = dstUri;
 		await this.usersRepository.update(src.id, update);
-		src = Object.assign(src, update);
+		Object.assign(src, update);
+
+		// Update cache
+		this.cacheService.uriPersonCache.set(srcUri, src);
 
 		const srcPerson = await this.apRendererService.renderPerson(src);
 		const updateAct = this.apRendererService.addContext(this.apRendererService.renderUpdate(srcPerson, src));
@@ -92,14 +96,22 @@ export class AccountMoveService {
 		const iObj = await this.userEntityService.pack<true, true>(src.id, src, { detail: true, includeSecrets: true });
 		this.globalEventService.publishMainStream(src.id, 'meUpdated', iObj);
 
-		// Move!
-		await this.move(src, dst);
+		// Unfollow after 24 hours
+		const followings = await this.followingsRepository.findBy({
+			followerId: src.id,
+		});
+		this.queueService.createDelayedUnfollowJob(followings.map(following => ({
+			from: { id: src.id },
+			to: { id: following.followeeId },
+		})), process.env.NODE_ENV === 'test' ? 10000 : 1000 * 60 * 60 * 24);
+
+		await this.postMoveProcess(src, dst);
 
 		return iObj;
 	}
 
 	@bindThis
-	public async move(src: User, dst: User): Promise<void> {
+	public async postMoveProcess(src: User, dst: User): Promise<void> {
 		// Copy blockings and mutings, and update lists
 		try {
 			await Promise.all([
@@ -111,7 +123,7 @@ export class AccountMoveService {
 			/* skip if any error happens */
 		}
 
-		// follow the new account and unfollow the old one
+		// follow the new account
 		const proxy = await this.proxyAccountService.fetch();
 		const followings = await this.followingsRepository.findBy({
 			followeeId: src.id,
@@ -242,12 +254,6 @@ export class AccountMoveService {
 				this.queueService.createFollowJob([{ from: { id: proxy.id }, to: { id: dst.id } }]);
 			}
 		}
-	}
-
-	@bindThis
-	public getUserUri(user: User): string {
-		return this.userEntityService.isRemoteUser(user)
-			? user.uri : `${this.config.url}/users/${user.id}`;
 	}
 
 	@bindThis

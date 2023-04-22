@@ -5,7 +5,7 @@ import rndstr from 'rndstr';
 import { loadConfig } from '@/config.js';
 import { User, UsersRepository } from '@/models/index.js';
 import { jobQueue } from '@/boot/common.js';
-import { uploadFile, signup, startServer, initTestDb, api, sleep } from '../utils.js';
+import { uploadFile, signup, startServer, initTestDb, api, sleep, successfulApiCall } from '../utils.js';
 import type { INestApplicationContext } from '@nestjs/common';
 
 describe('Account Move', () => {
@@ -264,15 +264,22 @@ describe('Account Move', () => {
 
 			assert.strictEqual(move.status, 200);
 
-			await sleep(1000 * 1); // wait for jobs to finish
+			await sleep(1000 * 3); // wait for jobs to finish
 
-			const followings = await api('/users/following', {
+			// Unfollow delayed?
+			const aliceFollowings = await api('/users/following', {
+				userId: alice.id,
+			}, alice);
+			assert.strictEqual(aliceFollowings.status, 200);
+			assert.strictEqual(aliceFollowings.body.length, 3);
+
+			const carolFollowings = await api('/users/following', {
 				userId: carol.id,
 			}, carol);
-			assert.strictEqual(followings.status, 200);
-			assert.strictEqual(followings.body.length, 2);
-			assert.strictEqual(followings.body[0].followeeId, bob.id);
-			assert.strictEqual(followings.body[1].followeeId, alice.id);
+			assert.strictEqual(carolFollowings.status, 200);
+			assert.strictEqual(carolFollowings.body.length, 2);
+			assert.strictEqual(carolFollowings.body[0].followeeId, bob.id);
+			assert.strictEqual(carolFollowings.body[1].followeeId, alice.id);
 
 			const blockings = await api('/blocking/list', {}, dave);
 			assert.strictEqual(blockings.status, 200);
@@ -298,16 +305,35 @@ describe('Account Move', () => {
 			assert.ok(eveLists.body[0].userIds.find((id: string) => id === bob.id));
 		});
 
-		test('Unable to move if the destination account has already moved.', async () => {
-			await api('/i/move', {
-				moveToAccount: `@bob@${url.hostname}`,
+		test('A locked account automatically accept the follow request if it had already accepted the old account.', async () => {
+			await successfulApiCall({
+				endpoint: '/following/create',
+				parameters: {
+					userId: frank.id,
+				},
+				user: bob,
+			});
+			const followers = await api('/users/followers', {
+				userId: frank.id,
+			}, frank);
+
+			assert.strictEqual(followers.status, 200);
+			assert.strictEqual(followers.body.length, 2);
+			assert.strictEqual(followers.body[0].followerId, bob.id);
+		});
+
+		test('Unfollowed after 10 sec (24 hours in production).', async () => {
+			await sleep(1000 * 8);
+
+			const following = await api('/users/following', {
+				userId: alice.id,
 			}, alice);
 
-			const newAlice = await Users.findOneByOrFail({ id: alice.id });
-			assert.strictEqual(newAlice.movedToUri, `${url.origin}/users/${bob.id}`);
-			assert.strictEqual(newAlice.alsoKnownAs?.length, 1);
-			assert.strictEqual(newAlice.alsoKnownAs[0], `${url.origin}/users/${bob.id}`);
+			assert.strictEqual(following.status, 200);
+			assert.strictEqual(following.body.length, 0);
+		});
 
+		test('Unable to move if the destination account has already moved.', async () => {
 			const res = await api('/i/move', {
 				moveToAccount: `@alice@${url.hostname}`,
 			}, bob);
@@ -337,19 +363,6 @@ describe('Account Move', () => {
 			newEve = await Users.findOneByOrFail({ id: eve.id });
 			assert.strictEqual(newEve.followingCount, 1);
 			assert.strictEqual(newEve.followersCount, 1);
-		});
-
-		test('A locked account automatically accept the follow request if it had already accepted the old account.', async () => {
-			await api('/following/create', {
-				userId: frank.id,
-			}, bob);
-			const followers = await api('/users/followers', {
-				userId: frank.id,
-			}, frank);
-
-			assert.strictEqual(followers.status, 200);
-			assert.strictEqual(followers.body.length, 2);
-			assert.strictEqual(followers.body[0].followerId, bob.id);
 		});
 
 		test.each([

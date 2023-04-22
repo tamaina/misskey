@@ -744,7 +744,7 @@ export class ApInboxService {
 		if (!targetUri) return 'skip: invalid activity target';
 		await Promise.all([
 			this.apPersonService.updatePerson(targetUri),
-			this.apPersonService.updatePerson(actor.uri),
+			this.apPersonService.updatePerson(actor.uri), // actor may cached for a day or more
 		]);
 		const [newAccount, oldAccount] = await Promise.all([
 			this.apPersonService.resolvePerson(targetUri),
@@ -757,7 +757,7 @@ export class ApInboxService {
 			if (!newAccount.alsoKnownAs?.includes(oldAccount.uri)) {
 				isValidMove = false;
 			}
-		} else if (!newAccount.alsoKnownAs?.includes(this.accountMoveService.getUserUri(oldAccount))) {
+		} else if (!newAccount.alsoKnownAs?.includes(this.userEntityService.getUserUri(oldAccount))) {
 			isValidMove = false;
 		}
 		if (newAccount.movedToUri) {
@@ -774,7 +774,7 @@ export class ApInboxService {
 		}
 
 		// Move!
-		await this.accountMoveService.move(oldAccount, newAccount);
+		await this.accountMoveService.postMoveProcess(oldAccount, newAccount);
 
 		return 'ok';
 	}

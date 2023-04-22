@@ -314,7 +314,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 					});
 					if (knownAs.id === _user.id) throw new ApiError(meta.errors.forbiddenToSetYourself);
 
-					const toUrl = this.accountMoveService.getUserUri(knownAs);
+					const toUrl = this.userEntityService.getUserUri(knownAs);
 					if (!toUrl) throw new ApiError(meta.errors.uriNull);
 
 					newAlsoKnownAs.add(toUrl);
@@ -350,6 +350,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			//#endregion
 
 			if (Object.keys(updates).length > 0) await this.usersRepository.update(user.id, updates);
+			if (Object.keys(updates).includes('alsoKnownAs')) {
+				this.cacheService.uriPersonCache.set(this.userEntityService.genLocalUserUri(user.id), { ...user, ...updates });
+			}
 			if (Object.keys(profileUpdates).length > 0) await this.userProfilesRepository.update(user.id, profileUpdates);
 
 			const iObj = await this.userEntityService.pack<true, true>(user.id, user, {
