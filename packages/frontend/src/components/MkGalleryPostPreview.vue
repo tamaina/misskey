@@ -40,7 +40,8 @@ const props = defineProps<{
 }>();
 
 const hover = ref(false);
-const show = computed(() => defaultStore.state.nsfw === 'ignore' || defaultStore.state.nsfw === 'respect' && !props.post.isSensitive || hover.value);
+const safe = computed(() => defaultStore.state.nsfw === 'ignore' || defaultStore.state.nsfw === 'respect' && !props.post.isSensitive);
+const show = computed(() => safe.value || hover.value);
 
 function enterHover(): void {
 	hover.value = true;
