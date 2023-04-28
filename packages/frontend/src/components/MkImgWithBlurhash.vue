@@ -19,6 +19,7 @@
 <script lang="ts" setup>
 import { onMounted, shallowRef, useCssModule, watch } from 'vue';
 import { decode } from 'blurhash';
+import { defaultStore } from '@/store';
 
 const $style = useCssModule();
 
