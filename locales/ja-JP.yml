@@ -703,6 +703,8 @@ contact: "連絡先"
 useSystemFont: "システムのデフォルトのフォントを使う"
 clips: "クリップ"
 experimentalFeatures: "実験的機能"
+experimental: "実験的"
+thisIsExperimentalFeature: "これは実験的な機能です。仕様が変更されたり、正常に動作しなかったりする可能性があります。"
 developer: "開発者"
 makeExplorable: "アカウントを見つけやすくする"
 makeExplorableDescription: "オフにすると、「みつける」にアカウントが載らなくなります。"
@@ -1029,6 +1031,7 @@ pleaseAgreeAllToContinue: "続けるには、全ての「同意する」にチ�
 continue: "続ける"
 preservedUsernames: "予約ユーザー名"
 preservedUsernamesDescription: "予約するユーザー名を改行で列挙します。ここで指定されたユーザー名はアカウント作成時に使えなくなりますが、管理者によるアカウント作成時はこの制限を受けません。また、既に存在するアカウントも影響を受けません。"
+createNoteFromTheFile: "このファイルからノートを作成"
 
 _serverRules:
   description: "新規登録前に表示する、サーバーの簡潔なルールを設定します。内容は利用規約の要約とすることを推奨します。"
