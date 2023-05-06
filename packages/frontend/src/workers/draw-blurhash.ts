@@ -6,7 +6,11 @@ onmessage = (event) => {
     if ('canvas' in event.data) {
         canvas = event.data.canvas;
     }
-    if (!(canvas && 'hash' in event.data && typeof event.data.hash === 'string')) {
+    if (!canvas) {
+        console.error('Cannot draw blurhash without canvas', canvas, event.data);
+        throw new Error('Cannot draw blurhash without canvas');
+    }
+    if (!('hash' in event.data && typeof event.data.hash === 'string')) {
         return;
     }
     const width = event.data.width ?? 64;
