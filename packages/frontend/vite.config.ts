@@ -44,6 +44,10 @@ export function getConfig(): UserConfig {
 	return {
 		base: '/vite/',
 
+		server: {
+			port: 5173,
+		},
+
 		plugins: [
 			pluginVue({
 				reactivityTransform: true,
@@ -133,6 +137,10 @@ export function getConfig(): UserConfig {
 			commonjsOptions: {
 				include: [/misskey-js/, /node_modules/],
 			},
+		},
+
+		worker: {
+			format: 'es',
 		},
 
 		test: {
