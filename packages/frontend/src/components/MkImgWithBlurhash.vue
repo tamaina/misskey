@@ -1,18 +1,17 @@
 <template>
 <div :class="[$style.root, { [$style.cover]: cover }]" :title="title ?? ''">
-	<img v-if="!loaded && src" :class="$style.loader" :src="src" loading="eager" @load="onLoad"/>
-	<Transition
-		mode="in-out"
-		:enter-active-class="defaultStore.state.animation && (props.transition?.enterActiveClass ?? $style['transition_toggle_enterActive']) || undefined"
-		:leave-active-class="defaultStore.state.animation && (props.transition?.leaveActiveClass ?? $style['transition_toggle_leaveActive']) || undefined"
+	<TransitionGroup
+		:duration="defaultStore.state.animation && props.transition?.duration || undefined"
+		:enter-active-class="defaultStore.state.animation && props.transition?.enterActiveClass || undefined"
+		:leave-active-class="defaultStore.state.animation && (props.transition?.leaveActiveClass ?? $style['transition_leaveActive']) || undefined"
 		:enter-from-class="defaultStore.state.animation && props.transition?.enterFromClass || undefined"
 		:leave-to-class="defaultStore.state.animation && props.transition?.leaveToClass || undefined"
-		:enter-to-class="defaultStore.state.animation && (props.transition?.enterToClass ?? $style['transition_toggle_enterTo']) || undefined"
-		:leave-from-class="defaultStore.state.animation && (props.transition?.leaveFromClass ?? $style['transition_toggle_leaveFrom']) || undefined"
+		:enter-to-class="defaultStore.state.animation && props.transition?.enterToClass || undefined"
+		:leave-from-class="defaultStore.state.animation && props.transition?.leaveFromClass || undefined"
 	>
-		<canvas v-if="!loaded || forceBlurhash" ref="canvas" :class="$style.canvas" :width="canvasWidth" :height="canvasHeight" :title="title ?? undefined"/>
-		<img v-else :class="$style.img" :src="src ?? undefined" :title="title ?? undefined" :alt="alt ?? undefined" loading="eager"/>
-	</Transition>
+		<canvas v-show="hide" key="canvas" ref="canvas" :class="$style.canvas" :width="canvasWidth" :height="canvasHeight" :title="title ?? undefined"/>
+		<img v-show="!hide" key="img" :height="height" :width="width" :class="$style.img" :src="src ?? undefined" :title="title ?? undefined" :alt="alt ?? undefined" loading="eager" @load="onLoad"/>
+	</TransitionGroup>
 </div>
 </template>
 
@@ -21,12 +20,13 @@ import { computed, onMounted, onUnmounted, shallowRef, useCssModule, watch } fro
 import { defaultStore } from '@/store';
 import DrawBlurhash from '@/workers/draw-blurhash?worker';
 
-let worker: Worker;
+const worker = new DrawBlurhash();
 
 const $style = useCssModule();
 
 const props = withDefaults(defineProps<{
 	transition?: {
+		duration?: number | { enter: number; leave: number; };
 		enterActiveClass?: string;
 		leaveActiveClass?: string;
 		enterFromClass?: string;
@@ -54,17 +54,10 @@ const props = withDefaults(defineProps<{
 });
 
 const canvas = shallowRef<HTMLCanvasElement>();
-const offscreen = computed(() => {
-	if (!canvas.value) return;
-	const _offscreen = canvas.value.transferControlToOffscreen();
-	worker.postMessage({
-		canvas: _offscreen,
-	}, [_offscreen]);
-	return _offscreen;
-});
 let loaded = $ref(false);
 let canvasWidth = $ref(props.width);
 let canvasHeight = $ref(props.height);
+const hide = computed(() => !loaded || props.forceBlurhash);
 
 function onLoad() {
 	loaded = true;
@@ -84,7 +77,7 @@ watch([() => props.width, () => props.height], () => {
 });
 
 function draw() {
-	if (props.hash == null || !offscreen.value) return;
+	if (props.hash == null) return;
 	worker.postMessage({
 		hash: props.hash,
 		width: canvasWidth,
@@ -92,22 +85,20 @@ function draw() {
 	});
 }
 
-watch([() => props.hash, offscreen], () => {
+worker.addEventListener('message', event => {
+	if (!canvas.value) return;
+	const ctx = canvas.value.getContext('2d');
+	if (!ctx) return;
+	const bitmap = event.data as ImageBitmap;
+	ctx.drawImage(bitmap, 0, 0, canvasWidth, canvasHeight);
+});
+
+watch(() => props.hash, () => {
 	draw();
 });
 
 onMounted(() => {
-	worker = new DrawBlurhash();
-	if (props.forceBlurhash) {
-		draw();
-	} else {
-		// 100ms後に画像の読み込みが完了していなければblurhashを描画する
-		setTimeout(() => {
-			if (!loaded) {
-				draw();
-			}
-		}, 100);
-	}
+	draw();
 });
 
 onUnmounted(() => {
@@ -116,26 +107,11 @@ onUnmounted(() => {
 </script>
 
 <style lang="scss" module>
-.transition_toggle_enterActive,
-.transition_toggle_leaveActive {
+.transition_leaveActive {
 	position: absolute;
 	top: 0;
 	left: 0;
 }
-
-.transition_toggle_enterTo,
-.transition_toggle_leaveFrom {
-	opacity: 0;
-}
-
-.loader {
-	position: absolute;
-	top: 0;
-	left: 0;
-	width: 0;
-	height: 0;
-}
-
 .root {
 	position: relative;
 	width: 100%;
