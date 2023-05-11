@@ -151,7 +151,7 @@ export class UserProfile {
 	@Column('boolean', {
 		default: true,
 	})
-	public preventAiLarning: boolean;
+	public preventAiLearning: boolean;
 
 	@Column('boolean', {
 		default: false,

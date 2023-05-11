@@ -425,7 +425,7 @@ export class ClientServerService {
 					: [];
 
 				reply.header('Cache-Control', 'public, max-age=15');
-				if (profile.preventAiLarning) {
+				if (profile.preventAiLearning) {
 					reply.header('X-Robots-Tag', 'noimageai');
 					reply.header('X-Robots-Tag', 'noai');
 				}
@@ -473,7 +473,7 @@ export class ClientServerService {
 				const profile = await this.userProfilesRepository.findOneByOrFail({ userId: note.userId });
 				const meta = await this.metaService.fetch();
 				reply.header('Cache-Control', 'public, max-age=15');
-				if (profile.preventAiLarning) {
+				if (profile.preventAiLearning) {
 					reply.header('X-Robots-Tag', 'noimageai');
 					reply.header('X-Robots-Tag', 'noai');
 				}
@@ -516,7 +516,7 @@ export class ClientServerService {
 				} else {
 					reply.header('Cache-Control', 'private, max-age=0, must-revalidate');
 				}
-				if (profile.preventAiLarning) {
+				if (profile.preventAiLearning) {
 					reply.header('X-Robots-Tag', 'noimageai');
 					reply.header('X-Robots-Tag', 'noai');
 				}
@@ -544,7 +544,7 @@ export class ClientServerService {
 				const profile = await this.userProfilesRepository.findOneByOrFail({ userId: flash.userId });
 				const meta = await this.metaService.fetch();
 				reply.header('Cache-Control', 'public, max-age=15');
-				if (profile.preventAiLarning) {
+				if (profile.preventAiLearning) {
 					reply.header('X-Robots-Tag', 'noimageai');
 					reply.header('X-Robots-Tag', 'noai');
 				}
@@ -572,7 +572,7 @@ export class ClientServerService {
 				const profile = await this.userProfilesRepository.findOneByOrFail({ userId: clip.userId });
 				const meta = await this.metaService.fetch();
 				reply.header('Cache-Control', 'public, max-age=15');
-				if (profile.preventAiLarning) {
+				if (profile.preventAiLearning) {
 					reply.header('X-Robots-Tag', 'noimageai');
 					reply.header('X-Robots-Tag', 'noai');
 				}
@@ -598,7 +598,7 @@ export class ClientServerService {
 				const profile = await this.userProfilesRepository.findOneByOrFail({ userId: post.userId });
 				const meta = await this.metaService.fetch();
 				reply.header('Cache-Control', 'public, max-age=15');
-				if (profile.preventAiLarning) {
+				if (profile.preventAiLearning) {
 					reply.header('X-Robots-Tag', 'noimageai');
 					reply.header('X-Robots-Tag', 'noai');
 				}
