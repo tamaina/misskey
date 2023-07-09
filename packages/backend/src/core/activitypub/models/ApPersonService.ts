@@ -611,7 +611,7 @@ export class ApPersonService implements OnModuleInit {
 			collection;
 
 		// Perform activity but only the first 20 ones
-		await this.apInboxService.performActivity(user, firstPage, 20);
+		await this.apInboxService.performActivity(user, firstPage, 1);
 	}
 
 	@bindThis
