@@ -11,16 +11,19 @@ import { GlobalModule } from '@/GlobalModule.js';
 import { CoreModule } from '@/core/CoreModule.js';
 import { FederatedInstanceService } from '@/core/FederatedInstanceService.js';
 import { LoggerService } from '@/core/LoggerService.js';
-import type { IActor, ICreate, IObject, IOrderedCollection, IOrderedCollectionPage, IPost } from '@/core/activitypub/type.js';
+import type { IActor, ICollection, IPost } from '@/core/activitypub/type.js';
 import { Note } from '@/models/index.js';
 import { secureRndstr } from '@/misc/secure-rndstr.js';
 import { MockResolver } from '../misc/mock-resolver.js';
 
 const host = 'https://host1.test';
 
-function createRandomActor(): IActor & { id: string } {
+type NonTransientIActor = IActor & { id: string };
+type NonTransientIPost = IPost & { id: string };
+
+function createRandomActor({ actorHost = host } = {}): NonTransientIActor {
 	const preferredUsername = secureRndstr(8);
-	const actorId = `${host}/users/${preferredUsername.toLowerCase()}`;
+	const actorId = `${actorHost}/users/${preferredUsername.toLowerCase()}`;
 
 	return {
 		'@context': 'https://www.w3.org/ns/activitystreams',
@@ -32,56 +35,31 @@ function createRandomActor(): IActor & { id: string } {
 	};
 }
 
-function createRandomCreateActivity(actor: IActor, length: number): ICreate[] {
-	return new Array(length).fill(null).map((): ICreate => {
-		const id = secureRndstr(8);
-		const noteId = `${host}/notes/${id}`;
-
-		return {
-			type: 'Create',
-			id: `${noteId}/activity`,
-			actor,
-			object: {
-				id: noteId,
-				type: 'Note',
-				attributedTo: actor.id,
-				content: 'test test foo',
-			} satisfies IPost,
-		};
-	});
-}
-
-function createRandomNonPagedOutbox(actor: IActor, length: number): IOrderedCollection {
-	const orderedItems = createRandomCreateActivity(actor, length);
+function createRandomNote(actor: NonTransientIActor): NonTransientIPost {
+	const id = secureRndstr(8);
+	const noteId = `${new URL(actor.id).origin}/notes/${id}`;
 
 	return {
-		'@context': 'https://www.w3.org/ns/activitystreams',
-		type: 'OrderedCollection',
-		id: actor.outbox as string,
-		totalItems: orderedItems.length,
-		orderedItems,
+		id: noteId,
+		type: 'Note',
+		attributedTo: actor.id,
+		content: 'test test foo',
 	};
 }
 
-function createRandomOutboxPage(actor: IActor, id: string, length: number): IOrderedCollectionPage {
-	const orderedItems = createRandomCreateActivity(actor, length);
-
-	return {
-		'@context': 'https://www.w3.org/ns/activitystreams',
-		type: 'OrderedCollectionPage',
-		id,
-		totalItems: orderedItems.length,
-		orderedItems,
-	};
+function createRandomNotes(actor: NonTransientIActor, length: number): NonTransientIPost[] {
+	return new Array(length).fill(null).map(() => createRandomNote(actor));
 }
 
-function createRandomPagedOutbox(actor: IActor): IOrderedCollection {
+function createRandomFeaturedCollection(actor: NonTransientIActor, length: number): ICollection {
+	const items = createRandomNotes(actor, length);
+
 	return {
 		'@context': 'https://www.w3.org/ns/activitystreams',
-		type: 'OrderedCollection',
+		type: 'Collection',
 		id: actor.outbox as string,
-		totalItems: 10,
-		first: `${actor.outbox}?first`,
+		totalItems: items.length,
+		items,
 	};
 }
 
@@ -91,7 +69,7 @@ describe('ActivityPub', () => {
 	let rendererService: ApRendererService;
 	let resolver: MockResolver;
 
-	beforeEach(async () => {
+	beforeAll(async () => {
 		const app = await Test.createTestingModule({
 			imports: [GlobalModule, CoreModule],
 		}).compile();
@@ -109,6 +87,10 @@ describe('ActivityPub', () => {
 		jest.spyOn(federatedInstanceService, 'fetch').mockImplementation(() => new Promise(() => { }));
 	});
 
+	beforeEach(() => {
+		resolver.clear();
+	});
+
 	describe('Parse minimum object', () => {
 		const actor = createRandomActor();
 
@@ -122,7 +104,7 @@ describe('ActivityPub', () => {
 		};
 
 		test('Minimum Actor', async () => {
-			resolver._register(actor.id, actor);
+			resolver.register(actor.id, actor);
 
 			const user = await personService.createPerson(actor.id, resolver);
 
@@ -132,8 +114,8 @@ describe('ActivityPub', () => {
 		});
 
 		test('Minimum Note', async () => {
-			resolver._register(actor.id, actor);
-			resolver._register(post.id, post);
+			resolver.register(actor.id, actor);
+			resolver.register(post.id, post);
 
 			const note = await noteService.createNote(post.id, resolver, true);
 
@@ -150,7 +132,7 @@ describe('ActivityPub', () => {
 				name: secureRndstr(129),
 			};
 
-			resolver._register(actor.id, actor);
+			resolver.register(actor.id, actor);
 
 			const user = await personService.createPerson(actor.id, resolver);
 
@@ -163,7 +145,7 @@ describe('ActivityPub', () => {
 				name: '',
 			};
 
-			resolver._register(actor.id, actor);
+			resolver.register(actor.id, actor);
 
 			const user = await personService.createPerson(actor.id, resolver);
 
@@ -180,73 +162,61 @@ describe('ActivityPub', () => {
 		});
 	});
 
-	describe('Outbox', () => {
-		test('Fetch non-paged outbox from IActor', async () => {
+	describe('Featured', () => {
+		test('Fetch featured notes from IActor', async () => {
 			const actor = createRandomActor();
-			const outbox = createRandomNonPagedOutbox(actor, 10);
+			actor.featured = `${actor.id}/collections/featured`;
 
-			resolver._register(actor.id, actor);
-			resolver._register(actor.outbox as string, outbox);
+			const featured = createRandomFeaturedCollection(actor, 5);
 
-			// XXX: This shouldn't be needed as the collection already has the full information
-			// But somehow the resolver currently doesn't use it at all and always fetches again
-			for (const item of outbox.orderedItems as IObject[]) {
-				resolver._register(item.id!, item);
-			}
+			resolver.register(actor.id, actor);
+			resolver.register(actor.featured, featured);
 
 			await personService.createPerson(actor.id, resolver);
 
-			for (const item of outbox.orderedItems as ICreate[]) {
-				const note = await noteService.fetchNote(item.object);
+			// All notes in `featured` are same-origin, no need to fetch notes again
+			assert.deepStrictEqual(resolver.remoteGetTrials(), [actor.id, actor.featured]);
+
+			// Created notes without resolving anything
+			for (const item of featured.items as IPost[]) {
+				const note = await noteService.fetchNote(item);
 				assert.ok(note);
 				assert.strictEqual(note.text, 'test test foo');
-				assert.strictEqual(note.uri, (item.object as IObject).id);
+				assert.strictEqual(note.uri, item.id);
 			}
 		});
 
-		test('Fetch paged outbox from IActor', async () => {
-			const actor = createRandomActor();
-			const outbox = createRandomPagedOutbox(actor);
-			const page = createRandomOutboxPage(actor, outbox.id!, 10);
+		test('Fetch featured notes from IActor pointing to another remote server', async () => {
+			const actor1 = createRandomActor();
+			actor1.featured = `${actor1.id}/collections/featured`;
+			const actor2 = createRandomActor({ actorHost: 'https://host2.test' });
 
-			resolver._register(actor.id, actor);
-			resolver._register(actor.outbox as string, outbox);
-			resolver._register(outbox.first as string, page);
+			const actor2Note = createRandomNote(actor2);
+			const featured = createRandomFeaturedCollection(actor1, 0);
+			(featured.items as IPost[]).push({
+				...actor2Note,
+				content: 'test test bar', // fraud!
+			});
 
-			// XXX: This shouldn't be needed as the collection already has the full information
-			// But somehow the resolver currently doesn't use it at all and always fetches again
-			for (const item of page.orderedItems as IObject[]) {
-				resolver._register(item.id!, item);
-			}
+			resolver.register(actor1.id, actor1);
+			resolver.register(actor1.featured, featured);
+			resolver.register(actor2.id, actor2);
+			resolver.register(actor2Note.id, actor2Note);
 
-			await personService.createPerson(actor.id, resolver);
+			await personService.createPerson(actor1.id, resolver);
 
-			for (const item of page.orderedItems as ICreate[]) {
-				const note = await noteService.fetchNote(item.object);
-				assert.ok(note);
-				assert.strictEqual(note.text, 'test test foo');
-				assert.strictEqual(note.uri, (item.object as IObject).id);
-			}
-		});
+			// actor2Note is from a different server and needs to be fetched again
+			assert.deepStrictEqual(
+				resolver.remoteGetTrials(),
+				[actor1.id, actor1.featured, actor2Note.id, actor2.id],
+			);
 
-		test('Fetch only the first 100 items', async () => {
-			const actor = createRandomActor();
-			const outbox = createRandomNonPagedOutbox(actor, 200);
+			const note = await noteService.fetchNote(actor2Note.id);
+			assert.ok(note);
 
-			resolver._register(actor.id, actor);
-			resolver._register(actor.outbox as string, outbox);
-
-			// XXX: This shouldn't be needed as the collection already has the full information
-			// But somehow the resolver currently doesn't use it at all and always fetches again
-			for (const item of outbox.orderedItems as IObject[]) {
-				resolver._register(item.id!, item);
-			}
-
-			await personService.createPerson(actor.id, resolver);
-
-			const items = outbox.orderedItems as ICreate[];
-			assert.ok(await noteService.fetchNote(items[99].object));
-			assert.ok(!await noteService.fetchNote(items[100].object));
+			// Reflects the original content instead of the fraud
+			assert.strictEqual(note.text, 'test test foo');
+			assert.strictEqual(note.uri, actor2Note.id);
 		});
 	});
 });
