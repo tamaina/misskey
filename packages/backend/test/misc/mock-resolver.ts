@@ -18,8 +18,7 @@ type MockResponse = {
 };
 
 export class MockResolver extends Resolver {
-	#responseMap = new Map<string, MockResponse>();
-	#remoteGetTrials: string[] = [];
+	private _rs = new Map<string, MockResponse>();
 
 	constructor(loggerService: LoggerService) {
 		super(
@@ -54,8 +53,7 @@ export class MockResolver extends Resolver {
 	public async resolve(value: string | IObject): Promise<IObject> {
 		if (typeof value !== 'string') return value;
 
-		this.#remoteGetTrials.push(value);
-		const r = this.#responseMap.get(value);
+		const r = this._rs.get(value);
 
 		if (!r) {
 			throw new Error('Not registered for mock');
