@@ -381,8 +381,8 @@ export class ApPersonService implements OnModuleInit {
 		//#endregion
 
 		await Promise.all([
-			this.updateFeatured(user!.id, resolver),
-			this.updateOutboxFirstPage(user!, person.outbox, resolver),
+			this.updateFeatured(user.id, resolver),
+			this.updateOutboxFirstPage(user, person.outbox, resolver),
 		]).catch(err => this.logger.error(err));
 
 		return user;
@@ -610,8 +610,8 @@ export class ApPersonService implements OnModuleInit {
 			await resolver.resolveOrderedCollectionPage(collection.first) :
 			collection;
 
-		// Perform activity but only the first 1 one
-		await this.apInboxService.performActivity(user, firstPage, 1);
+		// Perform activity but only the first 20 ones
+		await this.apInboxService.performActivity(user, firstPage, 20);
 	}
 
 	@bindThis

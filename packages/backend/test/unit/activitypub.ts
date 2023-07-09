@@ -169,9 +169,6 @@ describe('ActivityPub', () => {
 
 			const featured = createRandomFeaturedCollection(actor, 5);
 
-			resolver.register(actor.id, actor);
-			resolver.register(actor.featured, featured);
-
 			await personService.createPerson(actor.id, resolver);
 
 			// All notes in `featured` are same-origin, no need to fetch notes again
@@ -198,12 +195,7 @@ describe('ActivityPub', () => {
 				content: 'test test bar', // fraud!
 			});
 
-			resolver.register(actor1.id, actor1);
-			resolver.register(actor1.featured, featured);
-			resolver.register(actor2.id, actor2);
-			resolver.register(actor2Note.id, actor2Note);
-
-			await personService.createPerson(actor1.id, resolver);
+			await personService.createPerson(actor.id, resolver);
 
 			// actor2Note is from a different server and needs to be fetched again
 			assert.deepStrictEqual(
@@ -214,9 +206,14 @@ describe('ActivityPub', () => {
 			const note = await noteService.fetchNote(actor2Note.id);
 			assert.ok(note);
 
-			// Reflects the original content instead of the fraud
-			assert.strictEqual(note.text, 'test test foo');
-			assert.strictEqual(note.uri, actor2Note.id);
+			resolver._register(actor.id, actor);
+			resolver._register(actor.outbox as string, outbox);
+
+			await personService.createPerson(actor.id, resolver);
+
+			const items = outbox.orderedItems as ICreate[];
+			assert.ok(await noteService.fetchNote(items[19].object));
+			assert.ok(!await noteService.fetchNote(items[20].object));
 		});
 	});
 });
