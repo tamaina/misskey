@@ -1,3 +1,4 @@
+import { toUnicode } from 'punycode';
 import { defineAsyncComponent } from 'vue';
 import * as misskey from 'misskey-js';
 import { i18n } from '@/i18n';
@@ -8,8 +9,7 @@ import { defaultStore, userActions } from '@/store';
 import { $i, iAmModerator } from '@/account';
 import { mainRouter } from '@/router';
 import { Router } from '@/nirax';
-import { rolesCache, userListsCache } from '@/cache';
-import { toUnicode } from 'punycode';
+import { antennasCache, rolesCache, userListsCache } from '@/cache';
 
 export function getUserMenu(user: misskey.entities.UserDetailed, router: Router = mainRouter) {
 	const meId = $i ? $i.id : null;
@@ -142,7 +142,7 @@ export function getUserMenu(user: misskey.entities.UserDetailed, router: Router 
 		icon: 'ti ti-share',
 		text: i18n.ts.copyProfileUrl,
 		action: () => {
-			const canonical = user.host === null ? `@${user.username}` : `@${user.username}@${toUnicode(user.host)}`
+			const canonical = user.host === null ? `@${user.username}` : `@${user.username}@${toUnicode(user.host)}`;
 			copyToClipboard(`${url}/${canonical}`);
 		},
 	}, {
@@ -170,6 +170,32 @@ export function getUserMenu(user: misskey.entities.UserDetailed, router: Router 
 					os.apiWithDialog('users/lists/push', {
 						listId: list.id,
 						userId: user.id,
+					});
+				},
+			}));
+		},
+	}, {
+		type: 'parent',
+		icon: 'ti ti-antenna',
+		text: i18n.ts.addToAntenna,
+		children: async () => {
+			const antennas = await antennasCache.fetch(() => os.api('antennas/list'));
+			const canonical = user.host === null ? `@${user.username}` : `@${user.username}@${toUnicode(user.host)}`;
+			return antennas.filter((a) => a.src === 'users').map(antenna => ({
+				text: antenna.name,
+				action: () => {
+					os.apiWithDialog('antennas/update', {
+						antennaId: antenna.id,
+						name: antenna.name,
+						keywords: antenna.keywords,
+						excludeKeywords: antenna.excludeKeywords,
+						src: antenna.src,
+						userListId: antenna.userListId,
+						users: [...antenna.users, canonical],
+						caseSensitive: antenna.caseSensitive,
+						withReplies: antenna.withReplies,
+						withFile: antenna.withFile,
+						notify: antenna.notify,
 					});
 				},
 			}));
