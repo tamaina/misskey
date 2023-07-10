@@ -10,6 +10,7 @@
 <script lang="ts" setup>
 import { onMounted, ref } from 'vue';
 import * as os from '@/os';
+import { UserLite } from 'misskey-js/built/entities';
 
 const props = withDefaults(defineProps<{
 	userIds: string[];
@@ -18,11 +19,11 @@ const props = withDefaults(defineProps<{
 	limit: Infinity,
 });
 
-const users = ref([]);
+const users = ref<UserLite[]>([]);
 
 onMounted(async () => {
 	users.value = await os.api('users/show', {
 		userIds: props.userIds,
-	});
+	}) as unknown as UserLite[];
 });
 </script>
