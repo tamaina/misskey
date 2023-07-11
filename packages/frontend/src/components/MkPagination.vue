@@ -449,11 +449,13 @@ function visibilityChange() {
 }
 
 onActivated(() => {
+	console.log('activated', rootEl);
 	active.value = true;
 	visibilityChange();
 });
 
 onDeactivated(() => {
+	console.log('deactivated', rootEl);
 	active.value = false;
 });
 
