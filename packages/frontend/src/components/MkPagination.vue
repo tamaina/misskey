@@ -465,6 +465,8 @@ watch(visibility, visibilityChange);
  * @param item アイテム
  */
 const prepend = (item: MisskeyEntity): void => {
+	console.log(item.id, { queueSize: queueSize.value, backed, isPausingUpdate, active: active.value });
+
 	if (items.value.size === 0) {
 		items.value.set(item.id, item);
 		fetching.value = false;
