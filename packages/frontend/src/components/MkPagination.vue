@@ -41,7 +41,7 @@
 import { computed, ComputedRef, isRef, nextTick, onActivated, onBeforeUnmount, onDeactivated, onMounted, ref, watch } from 'vue';
 import * as misskey from 'misskey-js';
 import * as os from '@/os';
-import { onScrollTop, getBodyScrollHeight, getScrollContainer, onScrollBottom, scrollToBottom, scroll } from '@/scripts/scroll';
+import { isBottomVisible, isTopVisible, getBodyScrollHeight, getScrollContainer, scrollToBottom, scroll } from '@/scripts/scroll';
 import { useDocumentVisibility } from '@/scripts/use-document-visibility';
 import MkButton from '@/components/MkButton.vue';
 import { defaultStore } from '@/store';
@@ -49,7 +49,7 @@ import { MisskeyEntity } from '@/types/date-separated-list';
 import { i18n } from '@/i18n';
 
 const SECOND_FETCH_LIMIT = 30;
-const TOLERANCE = 64;
+const TOLERANCE = 128;
 const APPEAR_MINIMUM_INTERVAL = 600;
 
 export type Paging<E extends keyof misskey.Endpoints = keyof misskey.Endpoints> = {
@@ -113,6 +113,7 @@ let rootEl = $shallowRef<HTMLElement>();
  * スクロールが先頭にない場合にtrue
  */
 let backed = $ref(false);
+let weakBacked = $ref(false);
 
 let scrollRemove = $ref<(() => void) | null>(null);
 
@@ -153,7 +154,7 @@ const {
 const displayLimit = computed(() => props.pagination.displayLimit ?? props.pagination.limit * 2);
 
 const contentEl = $computed(() => props.pagination.pageEl ?? rootEl);
-const scrollableElement = $computed(() => contentEl ? getScrollContainer(contentEl) : document.body);
+const scrollableElement = $computed(() => contentEl ? getScrollContainer(contentEl) ?? document.body : document.body);
 
 const visibility = useDocumentVisibility();
 
@@ -172,7 +173,8 @@ watch([() => props.pagination.reversed, $$(scrollableElement)], () => {
 	if (scrollObserver) scrollObserver.disconnect();
 
 	scrollObserver = new IntersectionObserver(entries => {
-		backed = entries[0].isIntersecting;
+		weakBacked = entries[0].isIntersecting;
+		if (weakBacked) backed = true;
 	}, {
 		root: scrollableElement,
 		rootMargin: props.pagination.reversed ? '-100% 0px 100% 0px' : '100% 0px -100% 0px',
@@ -190,15 +192,42 @@ watch($$(rootEl), () => {
 /**
  * onScrollTop/onScrollBottomで細かく検出する
  */
-watch([$$(backed), $$(contentEl)], () => {
-	if (!contentEl) return;
-
+watch($$(backed), () => {
 	if (!backed) {
-		scrollRemove = (props.pagination.reversed ? onScrollBottom : onScrollTop)(contentEl, executeQueue, TOLERANCE);
-	} else {
+		executeQueue();
+	}
+});
+
+watch([$$(weakBacked), $$(contentEl)], () => {
+	if (weakBacked || !contentEl) {
 		if (scrollRemove) scrollRemove();
 		scrollRemove = null;
+		return;
 	}
+
+	scrollRemove = (() => {
+		const checkFn = props.pagination.reversed ? isBottomVisible : isTopVisible;
+		const el = contentEl;
+		const tolerance = TOLERANCE;
+
+		const onScroll = () => {
+			if (!document.body.contains(el)) return;
+			if (checkFn(el, tolerance)) {
+				backed = false;
+			} else {
+				backed = true;
+			}
+		};
+
+		// とりあえず評価してみる
+		onScroll();
+
+		const container = scrollableElement;
+
+		function removeListener() { container.removeEventListener('scroll', onScroll); }
+		container.addEventListener('scroll', onScroll, { passive: true });
+		return removeListener;
+	})();
 });
 //#endregion
 
@@ -411,7 +440,7 @@ const prepend = (item: MisskeyEntity): void => {
 		!isPausingUpdate && // タブがバックグラウンドの時はキューに追加する
 		active.value // keepAliveで隠されている間はキューに追加する
 	) {
-		if (!items.value.has(item.id)) return; // 既にタイムラインにある場合は何もしない
+		if (items.value.has(item.id)) return; // 既にタイムラインにある場合は何もしない
 		unshiftItems([item]);
 	} else {
 		prependQueue(item);
@@ -516,7 +545,6 @@ onBeforeUnmount(() => {
 defineExpose({
 	items,
 	queue,
-	backed,
 	more,
 	inited,
 	reload,
