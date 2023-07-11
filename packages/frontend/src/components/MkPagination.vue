@@ -136,7 +136,7 @@ const fetching = ref(true);
 /**
  * onActivatedでtrue, onDeactivatedでfalseになる
  */
-const active = ref(false);
+const active = ref(true);
 
 const moreFetching = ref(false);
 const more = ref(false);
@@ -449,13 +449,11 @@ function visibilityChange() {
 }
 
 onActivated(() => {
-	console.log('activated', rootEl);
 	active.value = true;
 	visibilityChange();
 });
 
 onDeactivated(() => {
-	console.log('deactivated', rootEl);
 	active.value = false;
 });
 
@@ -467,8 +465,6 @@ watch(visibility, visibilityChange);
  * @param item アイテム
  */
 const prepend = (item: MisskeyEntity): void => {
-	console.log(item.id, { queueSize: queueSize.value, backed, isPausingUpdate, active: active.value });
-
 	if (items.value.size === 0) {
 		items.value.set(item.id, item);
 		fetching.value = false;
@@ -543,15 +539,8 @@ const updateItem = (id: MisskeyEntity['id'], replacer: (old: MisskeyEntity) => M
 
 const inited = init();
 
-onActivated(() => {
-	// nothing to do
-});
-
-onDeactivated(() => {
-	// nothing to do
-});
-
 onMounted(() => {
+	active.value = true;
 	inited.then(scrollAfterInit);
 });
 
