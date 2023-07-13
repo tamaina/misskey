@@ -596,6 +596,7 @@ onBeforeUnmount(() => {
 		preventAppearFetchMoreTimer.value = null;
 	}
 	scrollObserver?.disconnect();
+	if (scrollRemove) scrollRemove();
 });
 
 defineExpose({
