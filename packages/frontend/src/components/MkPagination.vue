@@ -177,6 +177,7 @@ watch([() => props.pagination.reversed, $$(scrollableElement)], () => {
 	if (scrollObserver) scrollObserver.disconnect();
 
 	scrollObserver = new IntersectionObserver(entries => {
+		console.log('scrollObserver', entries[0].isIntersecting);
 		weakBacked = entries[0].isIntersecting;
 	}, {
 		root: scrollableElement,
@@ -196,6 +197,7 @@ watch([$$(rootEl), $$(scrollObserver)], () => {
  * onScrollTop/onScrollBottomで細かく検出する
  */
 watch($$(backed), () => {
+	console.log('backed changed', backed);
 	if (!backed) {
 		executeQueue();
 	}
@@ -211,6 +213,7 @@ watch([$$(weakBacked), $$(contentEl)], () => {
 		return;
 	}
 
+	console.log('weakBacked watcher add scrollRemove', weakBacked, contentEl);
 	scrollRemove = (() => {
 		const checkBacked = () => {
 			backed = !checkTop();
