@@ -184,13 +184,13 @@ watch([() => props.pagination.reversed, $$(scrollableElement)], () => {
 		rootMargin: props.pagination.reversed ? '-100% 0px 100% 0px' : '100% 0px -100% 0px',
 		threshold: 0.1, // 10%ぐらいになったらqueueを読む
 	});
+	console.log('new scrollObserver', scrollObserver);
 }, { immediate: true });
 
 watch([$$(rootEl), $$(scrollObserver)], () => {
 	scrollObserver?.disconnect();
-	nextTick(() => {
-		if (rootEl) scrollObserver?.observe(rootEl);
-	});
+	if (rootEl) scrollObserver?.observe(rootEl);
+	console.log('scrollObserver observe', rootEl);
 });
 
 /**
