@@ -5,7 +5,6 @@
 		<div v-if="list" class="_gaps">
 			<MkFolder>
 				<template #label>{{ i18n.ts.settings }}</template>
-				<template #caption>{{ i18n.t('nUsers', { n: `${list.userIds.length}/${$i?.policies['userEachUserListsLimit']}` }) }}</template>
 
 				<div class="_gaps">
 					<MkInput v-model="name">
@@ -21,6 +20,7 @@
 
 			<MkFolder defaultOpen>
 				<template #label>{{ i18n.ts.members }}</template>
+				<template #caption>{{ i18n.t('nUsers', { n: `${list.userIds.length}/${$i?.policies['userEachUserListsLimit']}` }) }}</template>
 
 				<div class="_gaps_s">
 					<MkButton rounded primary style="margin: 0 auto;" @click="addUser()">{{ i18n.ts.addUser }}</MkButton>
@@ -30,6 +30,9 @@
 						</MkA>
 						<button class="_button" :class="$style.remove" @click="removeUser(user, $event)"><i class="ti ti-x"></i></button>
 					</div>
+					<MkButton v-if="!fetching && queueUserIds.length !== 0" v-appear="enableInfiniteScroll ? fetchMoreUsers : null" :class="$style.more" :style="{ cursor: 'pointer' }" primary rounded @click="fetchMoreUsers">
+						{{ i18n.ts.loadMore }}
+					</MkButton>
 				</div>
 			</MkFolder>
 		</div>
@@ -52,29 +55,49 @@ import MkInput from '@/components/MkInput.vue';
 import { userListsCache } from '@/cache';
 import { UserList, UserLite } from 'misskey-js/built/entities';
 import { $i } from '@/account';
+import { defaultStore } from '@/store';
+const {
+	enableInfiniteScroll,
+} = defaultStore.reactiveState;
 
 const props = defineProps<{
 	listId: string;
 }>();
 
+const FETCH_USERS_LIMIT = 20;
+
 let list = $ref<UserList | null>(null);
 let users = $ref<UserLite[]>([]);
+let queueUserIds = $ref<string[]>([]);
+let fetching = $ref(true);
 const isPublic = ref(false);
 const name = ref('');
 
 function fetchList() {
+	fetching = true;
 	os.api('users/lists/show', {
 		listId: props.listId,
 	}).then(_list => {
 		list = _list;
 		name.value = list.name;
 		isPublic.value = list.isPublic;
+		queueUserIds = list.userIds;
 
-		os.api('users/show', {
-			userIds: list.userIds,
-		}).then(_users => {
-			users = _users;
-		});
+		return fetchMoreUsers();
+	});
+}
+
+function fetchMoreUsers() {
+	if (!list) return;
+	if (fetching && users.length !== 0) return; // fetchingがtrueならやめるが、usersが空なら続行
+	fetching = true;
+	os.api('users/show', {
+		userIds: queueUserIds.slice(0, FETCH_USERS_LIMIT),
+	}).then(_users => {
+		users.concat(_users);
+		queueUserIds = queueUserIds.slice(FETCH_USERS_LIMIT);
+	}).finally(() => {
+		fetching = false;
 	});
 }
 
@@ -171,6 +194,11 @@ definePageMetadata(computed(() => list ? {
 	width: 32px;
 	height: 32px;
 	align-self: center;
+}
+
+.more {
+	margin-left: auto;
+	margin-right: auto;
 }
 
 .footer {
