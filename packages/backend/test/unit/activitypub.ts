@@ -33,7 +33,7 @@ function deepSortedEqual<T extends unknown[]>(array1: unknown[], array2: T): ass
 
 function createRandomActor({ actorHost = host } = {}): NonTransientIActor {
 	const preferredUsername = secureRndstr(8);
-	const actorId = `${host}/users/${preferredUsername.toLowerCase()}`;
+	const actorId = `${actorHost}/users/${preferredUsername.toLowerCase()}`;
 
 	return {
 		'@context': 'https://www.w3.org/ns/activitystreams',
@@ -161,7 +161,7 @@ describe('ActivityPub', () => {
 		};
 
 		test('Minimum Actor', async () => {
-			resolver._register(actor.id, actor);
+			resolver.register(actor.id, actor);
 
 			const user = await personService.createPerson(actor.id, resolver);
 
@@ -171,8 +171,8 @@ describe('ActivityPub', () => {
 		});
 
 		test('Minimum Note', async () => {
-			resolver._register(actor.id, actor);
-			resolver._register(post.id, post);
+			resolver.register(actor.id, actor);
+			resolver.register(post.id, post);
 
 			const note = await noteService.createNote(post.id, resolver, true);
 
@@ -189,7 +189,7 @@ describe('ActivityPub', () => {
 				name: secureRndstr(129),
 			};
 
-			resolver._register(actor.id, actor);
+			resolver.register(actor.id, actor);
 
 			const user = await personService.createPerson(actor.id, resolver);
 
@@ -202,7 +202,7 @@ describe('ActivityPub', () => {
 				name: '',
 			};
 
-			resolver._register(actor.id, actor);
+			resolver.register(actor.id, actor);
 
 			const user = await personService.createPerson(actor.id, resolver);
 
