@@ -612,7 +612,7 @@ defineExpose({
 	prepend,
 	append: appendItem,
 	removeItem,
-pa	updateItem,
+	updateItem,
 });
 </script>
 
