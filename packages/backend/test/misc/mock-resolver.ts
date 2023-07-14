@@ -38,15 +38,20 @@ export class MockResolver extends Resolver {
 		);
 	}
 
-	public _register(uri: string, content: string | Record<string, any>, type = 'application/activity+json') {
-		this._rs.set(uri, {
+	public register(uri: string, content: string | Record<string, any>, type = 'application/activity+json'): void {
+		this.#responseMap.set(uri, {
 			type,
 			content: typeof content === 'string' ? content : JSON.stringify(content),
 		});
 	}
 
-	public clear() {
-		this._rs.clear();
+	public clear(): void {
+		this.#responseMap.clear();
+		this.#remoteGetTrials.length = 0;
+	}
+
+	public remoteGetTrials(): string[] {
+		return this.#remoteGetTrials;
 	}
 
 	@bindThis
