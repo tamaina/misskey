@@ -338,6 +338,7 @@ export type DetailedInstanceMetadata = LiteInstanceMetadata & {
 	pinnedPages: string[];
 	pinnedClipId: string | null;
 	cacheRemoteFiles: boolean;
+	cacheRemoteSensitiveFiles: boolean;
 	requireSetup: boolean;
 	proxyAccountName: string | null;
 	features: Record<string, any>;
@@ -521,7 +522,7 @@ export type Invite = {
 	code: string;
 	expiresAt: DateString | null;
 	createdAt: DateString;
-	createdBy: UserLite;
+	createdBy: UserLite | null;
 	usedBy: UserLite | null;
 	usedAt: DateString | null;
 	used: boolean;
