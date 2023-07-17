@@ -182,11 +182,11 @@ watch([() => props.pagination.reversed, $$(scrollableElement)], () => {
 
 	scrollObserver = new IntersectionObserver(entries => {
 		if (!active.value) return; // activeでない時は触らない
-		weakBacked = entries[0].isIntersecting;
+		weakBacked = entries[0].intersectionRatio > 0.1;
 	}, {
 		root: scrollableElement,
-		rootMargin: props.pagination.reversed ? '-130% 0px 130% 0px' : '130% 0px -130% 0px',
-		threshold: [0],
+		rootMargin: props.pagination.reversed ? '-100% 0px 100% 0px' : '100% 0px -100% 0px',
+		threshold: [0, 0.01, 0.02, 0.04, 0.08, 0.1, 0.12],
 	});
 }, { immediate: true });
 
@@ -248,6 +248,7 @@ function preventDefault(ev: Event) {
 
 /**
  * アイテムを上に追加した場合に追加分だけスクロールを下にずらす
+ * ChromeやFirefoxはこれをいい感じにやってくれるが、Safariはやってくれないため自分で実装する必要がある
  * @param fn DOM操作(unshiftItemsなどで)
  */
 function adjustScroll(fn: () => void): Promise<void> {
