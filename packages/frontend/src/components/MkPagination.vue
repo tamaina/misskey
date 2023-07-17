@@ -41,7 +41,7 @@
 import { computed, ComputedRef, isRef, nextTick, onActivated, onBeforeUnmount, onDeactivated, onMounted, ref, watch } from 'vue';
 import * as misskey from 'misskey-js';
 import * as os from '@/os';
-import { isBottomVisible, isTopVisible, getBodyScrollHeight, getScrollContainer, scrollToBottom, scrollToTop, scroll } from '@/scripts/scroll';
+import { isBottomVisible, isTopVisible, getBodyScrollHeight, getScrollContainer, scrollToBottom, scrollToTop, scroll, scrollBy } from '@/scripts/scroll';
 import { useDocumentVisibility } from '@/scripts/use-document-visibility';
 import MkButton from '@/components/MkButton.vue';
 import { defaultStore } from '@/store';
@@ -50,7 +50,6 @@ import { i18n } from '@/i18n';
 
 const SECOND_FETCH_LIMIT = 30;
 const TOLERANCE = 6;
-const WEAK_TOLERAMCE = 256;
 const APPEAR_MINIMUM_INTERVAL = 600;
 const BACKGROUND_PAUSE_WAIT_SEC = 10;
 
@@ -243,10 +242,6 @@ watch([$$(weakBacked), $$(contentEl)], () => {
 	})();
 });
 
-function preventDefault(ev: Event) {
-	ev.preventDefault();
-}
-
 /**
  * アイテムを上に追加した場合に追加分だけスクロールを下にずらす
  * ChromeやFirefoxはこれをいい感じにやってくれるが、Safariはやってくれないため自分で実装する必要がある
@@ -254,33 +249,14 @@ function preventDefault(ev: Event) {
  */
 function adjustScroll(fn: () => void): Promise<void> {
 	const oldHeight = scrollableElement ? scrollableElement.scrollHeight : getBodyScrollHeight();
-	const oldScroll = scrollableElement ? scrollableElement.scrollTop : window.scrollY;
-	// スクロールをやめさせる
-	try {
-		// なぜかscrollableElementOrHtmlがundefinedであるというエラーが出る
-		scrollableElementOrHtml.addEventListener('wheel', preventDefault, { passive: false });
-		scrollableElementOrHtml.addEventListener('touchmove', preventDefault, { passive: false });
-		// ついでにtryに入れてみる
-		scroll(scrollableElement, { top: oldScroll, behavior: 'instant' });
-	} catch (err) {
-		console.error(err, { scrollableElementOrHtml });
-	}
 
 	denyMoveTransition.value = true;
 
 	fn();
 
 	return nextTick(() => {
-		try {
-			const top = oldScroll + ((scrollableElement ? scrollableElement.scrollHeight : getBodyScrollHeight()) - oldHeight);
-			scroll(scrollableElement, { top, behavior: 'instant' });
-
-			// なぜかscrollableElementOrHtmlがundefinedであるというエラーが出る
-			scrollableElementOrHtml.removeEventListener('wheel', preventDefault);
-			scrollableElementOrHtml.removeEventListener('touchmove', preventDefault);
-		} catch (err) {
-			console.error(err, { scrollableElementOrHtml });
-		}
+		const top = (scrollableElement ? scrollableElement.scrollHeight : getBodyScrollHeight()) - oldHeight;
+		scrollBy(scrollableElement, { top, behavior: 'instant' });
 		denyMoveTransition.value = false;
 		return nextTick();
 	});
