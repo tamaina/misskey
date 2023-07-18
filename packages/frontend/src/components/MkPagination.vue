@@ -41,7 +41,7 @@
 import { computed, ComputedRef, isRef, nextTick, onActivated, onBeforeUnmount, onDeactivated, onMounted, ref, watch } from 'vue';
 import * as misskey from 'misskey-js';
 import * as os from '@/os';
-import { isBottomVisible, isTopVisible, getScrollContainer, scrollToBottom, scrollToTop, scrollBy } from '@/scripts/scroll';
+import { isBottomVisible, isTopVisible, getScrollContainer, scrollToBottom, scrollToTop } from '@/scripts/scroll';
 import { useDocumentVisibility } from '@/scripts/use-document-visibility';
 import MkButton from '@/components/MkButton.vue';
 import { defaultStore } from '@/store';
@@ -426,11 +426,8 @@ const appearFetchMoreAhead = async (): Promise<void> => {
 function visibilityChange() {
 	if (visibility.value === 'hidden') {
 		timerForSetPause.value = window.setTimeout(() => {
+			isPausingUpdate.value = true;
 			timerForSetPause.value = null;
-			if (!backed) {
-				scrollBy(scrollableElement, { top: 32, behavior: 'instant' });
-				backed = true;
-			}
 		},
 		BACKGROUND_PAUSE_WAIT_SEC * 1000);
 	} else { // 'visible'
@@ -438,7 +435,8 @@ function visibilityChange() {
 			clearTimeout(timerForSetPause.value);
 			timerForSetPause.value = null;
 		} else {
-			if (!weakBacked && active.value) {
+			isPausingUpdate.value = false;
+			if (!backed && active.value) {
 				executeQueue();
 			}
 		}
@@ -471,7 +469,7 @@ const prepend = (item: MisskeyEntity): void => {
 	}
 
 	if (
-		!isPausingUpdate.value && // スクロール調整中はキューに追加する
+		!isPausingUpdate.value && // タブがバックグラウンドの時/スクロール調整中はキューに追加する
 		queueSize.value === 0 && // キューに残っている場合はキューに追加する
 		active.value // keepAliveで隠されている間はキューに追加する
 	) {
