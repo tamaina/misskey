@@ -88,11 +88,11 @@ export function getConfig(): UserConfig {
 			modules: {
 				generateScopedName(name, filename, _css): string {
 					const id = (path.relative(__dirname, filename.split('?')[0]) + '-' + name).replace(/[\\\/\.\?&=]/g, '-').replace(/(src-|vue-)/g, '');
-					if (process.env.NODE_ENV === 'production') {
-						return 'x' + toBase62(hash(id)).substring(0, 4);
-					} else {
+					//if (process.env.NODE_ENV === 'production') {
+					//	return 'x' + toBase62(hash(id)).substring(0, 4);
+					//} else {
 						return id;
-					}
+					//}
 				},
 			},
 		},
@@ -116,6 +116,8 @@ export function getConfig(): UserConfig {
 		},
 
 		build: {
+			minify: false,
+			cssMinify: 'esbuild',
 			target: [
 				'chrome108',
 				'firefox109',
