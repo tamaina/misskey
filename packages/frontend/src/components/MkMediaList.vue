@@ -39,16 +39,16 @@ const ro = new ResizeObserver(entries => {
 	}
 });
 
-async function getClientWidthWithCache(targetEl: HTMLElement, containerEl: HTMLElement) {
-	console.log('getClientWidthWithCache', { targetEl, containerEl, cache: widthCache.get(containerEl) });
+async function getClientWidthWithCache(targetEl: HTMLElement, containerEl: HTMLElement, count = 0) {
+	console.log('getClientWidthWithCache', { targetEl, containerEl, count, cache: widthCache.get(containerEl) });
 	if (widthCache.has(containerEl)) return widthCache.get(containerEl)!;
 
 	const width = targetEl.clientWidth;
 
-	if (width < 64) {
+	if (count <= 10 && width < 64) {
 		// widthが64未満はおかしいのでリトライする
 		await new Promise(resolve => setTimeout(resolve, 50));
-		return getClientWidthWithCache(targetEl, containerEl);
+		return getClientWidthWithCache(targetEl, containerEl, count++);
 	}
 
 	widthCache.set(containerEl, width);
