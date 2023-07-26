@@ -40,7 +40,7 @@ const ro = new ResizeObserver(entries => {
 });
 
 async function getClientWidthWithCache(targetEl: HTMLElement, containerEl: HTMLElement, count = 0) {
-	console.log('getClientWidthWithCache', { targetEl, containerEl, count, cache: widthCache.get(containerEl) });
+	if (_DEV_) console.log('getClientWidthWithCache', { targetEl, containerEl, count, cache: widthCache.get(containerEl) });
 	if (widthCache.has(containerEl)) return widthCache.get(containerEl)!;
 
 	const width = targetEl.clientWidth;
@@ -120,7 +120,6 @@ const count = $computed(() => props.mediaList.filter(media => previewable(media)
 			gallery.value.style.height = heightMin(3 / 2);
 			break;
 		default: {
-			console.log('height', container.value?.clientHeight);
 			const maxHeight = Math.max(64, (container.value ? container.value.clientHeight : getBodyScrollHeight()) * 0.5 || 360);
 			if (width === 0 || !maxHeight) return;
 			const imgResizeRatio = width / img.properties.width;
