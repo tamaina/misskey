@@ -200,7 +200,7 @@ watch([$$(rootEl), $$(scrollObserver)], () => {
  * weakBackedがtrue→falseになったらexecuteQueue
  */
 watch($$(weakBacked), () => {
-	if (!isWebKit && !weakBacked) {
+	if (!weakBacked) {
 		executeQueue();
 	}
 });
@@ -502,7 +502,7 @@ const prepend = (item: MisskeyEntity): void => {
 			// かなりスクロールの先頭にいる場合
 			if (items.value.has(item.id)) return; // 既にタイムラインにある場合は何もしない
 			unshiftItems([item]);
-		} else if (!isWebKit && !weakBacked) {
+		} else if (!weakBacked) {
 			// ちょっと先頭にいる場合はスクロールを調整する
 			prependQueue(item);
 			executeQueue();
