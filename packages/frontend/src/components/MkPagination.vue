@@ -200,7 +200,7 @@ watch([$$(rootEl), $$(scrollObserver)], () => {
  * weakBackedがtrue→falseになったらexecuteQueue
  */
 watch($$(weakBacked), () => {
-	if (!weakBacked) {
+	if (!isWebKit && !weakBacked) {
 		executeQueue();
 	}
 });
@@ -268,17 +268,12 @@ async function adjustScroll(fn: () => void): Promise<void> {
 	}
 	denyMoveTransition.value = true;
 	fn();
-	return await nextTick().then(async () => {
+	return await nextTick().then(() => {
 		const top = oldScroll + ((scrollableElement ? scrollableElement.scrollHeight : getBodyScrollHeight()) - oldHeight);
 		scroll(scrollableElement, { top, behavior: 'instant' });
 		// なぜかscrollableElementOrHtmlがundefinedであるというエラーが出る
 		scrollableElementOrHtml.removeEventListener('wheel', preventDefault);
 		scrollableElementOrHtml.removeEventListener('touchmove', preventDefault);
-
-		if (isWebKit) {
-			await nextTick();
-			scroll(scrollableElement, { top, behavior: 'instant' });
-		}
 	}).then(() => nextTick()).finally(() => {
 		denyMoveTransition.value = false;
 	});
@@ -504,7 +499,7 @@ const prepend = (item: MisskeyEntity): void => {
 			// かなりスクロールの先頭にいる場合
 			if (items.value.has(item.id)) return; // 既にタイムラインにある場合は何もしない
 			unshiftItems([item]);
-		} else if (!weakBacked) {
+		} else if (!isWebKit && !weakBacked) {
 			// ちょっと先頭にいる場合はスクロールを調整する
 			prependQueue(item);
 			executeQueue();
@@ -524,7 +519,7 @@ const prepend = (item: MisskeyEntity): void => {
  */
 function unshiftItems(newItems: MisskeyEntity[], limit = displayLimit.value) {
 	const length = newItems.length + items.value.size;
-	items.value = new Map([...arrayToEntries(newItems), ...items.value].slice(0, limit));
+	items.value = new Map([...arrayToEntries(newItems), ...(newItems.length >= limit ? [] : items.value)].slice(0, limit));
 
 	if (length >= limit) more.value = true;
 }
@@ -543,19 +538,25 @@ function concatItems(oldItems: MisskeyEntity[]) {
 async function executeQueue() {
 	if (queue.value.size === 0) return;
 	if (isPausingUpdateByExecutingQueue.value) return;
-	const queueArr = Array.from(queue.value.entries());
-	queue.value = new Map(queueArr.slice(props.pagination.limit));
-	const newItems = Array.from({ length: Math.min(queueArr.length, props.pagination.limit) }, (_, i) => queueArr[i][1]).reverse();
-	isPausingUpdateByExecutingQueue.value = true;
+	if (isWebKit) {
+		// Safariは最新のアイテムにするだけ
+		const newItems = Array.from(queue.value.values()).slice(-1 * props.pagination.limit);
+		unshiftItems(newItems);
+	} else {
+		const queueArr = Array.from(queue.value.entries());
+		queue.value = new Map(queueArr.slice(props.pagination.limit));
+		const newItems = Array.from({ length: Math.min(queueArr.length, props.pagination.limit) }, (_, i) => queueArr[i][1]).reverse();
+		isPausingUpdateByExecutingQueue.value = true;
 
-	await adjustScroll(() => unshiftItems(newItems, Infinity));
+		await adjustScroll(() => unshiftItems(newItems, Infinity));
+		backed = true;
 
-	backed = true;
-	denyMoveTransition.value = true;
-	items.value = new Map([...items.value].slice(0, displayLimit.value));
-	await nextTick();
-	isPausingUpdateByExecutingQueue.value = false;
-	denyMoveTransition.value = false;
+		denyMoveTransition.value = true;
+		items.value = new Map([...items.value].slice(0, displayLimit.value));
+		await nextTick();
+		isPausingUpdateByExecutingQueue.value = false;
+		denyMoveTransition.value = false;
+	}
 }
 
 function prependQueue(newItem: MisskeyEntity) {
