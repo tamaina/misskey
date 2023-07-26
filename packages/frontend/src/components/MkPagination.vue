@@ -270,7 +270,7 @@ async function adjustScroll(fn: () => void): Promise<void> {
 	fn();
 	return await nextTick().then(async () => {
 		if (isWebKit) {
-			await new Promise(resolve => setTimeout(resolve, 0);
+			await new Promise(resolve => setTimeout(resolve, 0));
 		}
 		const top = oldScroll + ((scrollableElement ? scrollableElement.scrollHeight : getBodyScrollHeight()) - oldHeight);
 		scroll(scrollableElement, { top, behavior: 'instant' });
