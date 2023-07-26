@@ -95,7 +95,7 @@ function concatMapWithArray(map: MisskeyEntityMap, entities: MisskeyEntity[]): M
 }
 
 const ua = new UAParser(navigator.userAgent);
-const isWebKit = false; //ua.getEngine().name === 'WebKit';
+const isWebKit = ua.getEngine().name === 'WebKit';
 </script>
 <script lang="ts" setup>
 import { infoImageUrl } from '@/instance';
@@ -262,13 +262,16 @@ async function adjustScroll(fn: () => void): Promise<void> {
 		scrollableElementOrHtml.addEventListener('wheel', preventDefault, { passive: false });
 		scrollableElementOrHtml.addEventListener('touchmove', preventDefault, { passive: false });
 		// スクロールを強制的に停止
-		//scroll(scrollableElement, { top: oldScroll, behavior: 'instant' });
+		scroll(scrollableElement, { top: oldScroll, behavior: 'instant' });
 	} catch (err) {
 		console.error(err, { scrollableElementOrHtml });
 	}
 	denyMoveTransition.value = true;
 	fn();
 	return await nextTick().then(async () => {
+		if (isWebKit) {
+			await new Promise(resolve => setTimeout(resolve, 0);
+		}
 		const top = oldScroll + ((scrollableElement ? scrollableElement.scrollHeight : getBodyScrollHeight()) - oldHeight);
 		scroll(scrollableElement, { top, behavior: 'instant' });
 		// なぜかscrollableElementOrHtmlがundefinedであるというエラーが出る
@@ -543,20 +546,10 @@ async function executeQueue() {
 	const newItems = Array.from({ length: Math.min(queueArr.length, props.pagination.limit) }, (_, i) => queueArr[i][1]).reverse();
 	isPausingUpdateByExecutingQueue.value = true;
 
-	if (isWebKit) {
-		// Safariでは描画が微妙になるので一定程度スクロールするだけ
-		scrollBy(scrollableElement, { top: TOLERANCE + 4, behavior: 'instant' });
-		backed = true;
-		denyMoveTransition.value = true;
-		await nextTick();
-		unshiftItems(newItems, Infinity);
-		await nextTick();
-	} else {
-		await adjustScroll(() => unshiftItems(newItems, Infinity));
-		backed = true;
-		denyMoveTransition.value = true;
-	}
+	await adjustScroll(() => unshiftItems(newItems, Infinity));
 
+	backed = true;
+	denyMoveTransition.value = true;
 	items.value = new Map([...items.value].slice(0, displayLimit.value));
 	await nextTick();
 	isPausingUpdateByExecutingQueue.value = false;
