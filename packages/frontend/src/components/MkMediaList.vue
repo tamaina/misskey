@@ -48,7 +48,7 @@ async function getClientWidthWithCache(targetEl: HTMLElement, containerEl: HTMLE
 	if (count <= 10 && width < 64) {
 		// widthが64未満はおかしいのでリトライする
 		await new Promise(resolve => setTimeout(resolve, 50));
-		return getClientWidthWithCache(targetEl, containerEl, count++);
+		return getClientWidthWithCache(targetEl, containerEl, count + 1);
 	}
 
 	widthCache.set(containerEl, width);
