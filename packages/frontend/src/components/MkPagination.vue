@@ -95,7 +95,7 @@ function concatMapWithArray(map: MisskeyEntityMap, entities: MisskeyEntity[]): M
 }
 
 const ua = new UAParser(navigator.userAgent);
-const isWebKit = ua.getEngine().name === 'WebKit';
+const isWebKit = false; //ua.getEngine().name === 'WebKit';
 </script>
 <script lang="ts" setup>
 import { infoImageUrl } from '@/instance';
