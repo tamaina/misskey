@@ -269,7 +269,6 @@ async function adjustScroll(fn: () => void): Promise<void> {
 	denyMoveTransition.value = true;
 	fn();
 	return await nextTick().then(async () => {
-		await new Promise(resolve => setTimeout(resolve, 0));
 		const top = oldScroll + ((scrollableElement ? scrollableElement.scrollHeight : getBodyScrollHeight()) - oldHeight);
 		scroll(scrollableElement, { top, behavior: 'instant' });
 		// なぜかscrollableElementOrHtmlがundefinedであるというエラーが出る
