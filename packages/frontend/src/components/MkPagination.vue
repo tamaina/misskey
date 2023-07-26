@@ -262,22 +262,19 @@ async function adjustScroll(fn: () => void): Promise<void> {
 		scrollableElementOrHtml.addEventListener('wheel', preventDefault, { passive: false });
 		scrollableElementOrHtml.addEventListener('touchmove', preventDefault, { passive: false });
 		// スクロールを強制的に停止
-		//scroll(scrollableElement, { top: oldScroll, behavior: 'instant' });
+		scroll(scrollableElement, { top: oldScroll, behavior: 'instant' });
 	} catch (err) {
 		console.error(err, { scrollableElementOrHtml });
 	}
 	denyMoveTransition.value = true;
 	fn();
-	return await nextTick(() => {
-		try {
-			const top = oldScroll + ((scrollableElement ? scrollableElement.scrollHeight : getBodyScrollHeight()) - oldHeight);
-			scroll(scrollableElement, { top, behavior: 'instant' });
-			// なぜかscrollableElementOrHtmlがundefinedであるというエラーが出る
-			scrollableElementOrHtml.removeEventListener('wheel', preventDefault);
-			scrollableElementOrHtml.removeEventListener('touchmove', preventDefault);
-		} catch (err) {
-			console.error(err, { scrollableElementOrHtml });
-		}
+	return await nextTick().then(async () => {
+		await new Promise(resolve => setTimeout(resolve, 0));
+		const top = oldScroll + ((scrollableElement ? scrollableElement.scrollHeight : getBodyScrollHeight()) - oldHeight);
+		scroll(scrollableElement, { top, behavior: 'instant' });
+		// なぜかscrollableElementOrHtmlがundefinedであるというエラーが出る
+		scrollableElementOrHtml.removeEventListener('wheel', preventDefault);
+		scrollableElementOrHtml.removeEventListener('touchmove', preventDefault);
 	}).then(() => nextTick()).finally(() => {
 		denyMoveTransition.value = false;
 	});
