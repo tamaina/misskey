@@ -23,13 +23,29 @@
 </template>
 
 <script lang="ts">
-const widthCache = new Map<HTMLElement, number>();
+/**
+ * アスペクト比算出のためにHTMLElement.clientWidthを使うが、
+ * 大変重たいのでコンテナ要素とメディアリスト幅のペアをキャッシュする
+ * （タイムラインごとにスクロールコンテナが存在する前提だが……）
+ */
+const widthCache = new Map<Element, number>();
+
+/**
+ * コンテナ要素がリサイズされたらキャッシュを削除する
+ */
+const ro = new ResizeObserver(entries => {
+	for (const entry of entries) {
+		widthCache.delete(entry.target);
+	}
+});
 
 function getClientWidthWithCache(targetEl: HTMLElement, containerEl: HTMLElement) {
 	console.log('getClientWidthWithCache', { targetEl, containerEl, cache: widthCache.get(containerEl) });
 	if (widthCache.has(containerEl)) return widthCache.get(containerEl)!;
+
 	const width = targetEl.clientWidth;
 	widthCache.set(containerEl, width);
+	ro.observe(containerEl);
 	return width;
 }
 </script>
