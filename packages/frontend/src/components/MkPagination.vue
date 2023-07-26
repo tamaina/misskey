@@ -542,6 +542,7 @@ async function executeQueue() {
 		// Safariは最新のアイテムにするだけ
 		const newItems = Array.from(queue.value.values()).slice(-1 * props.pagination.limit);
 		unshiftItems(newItems);
+		queue.value = new Map();
 	} else {
 		const queueArr = Array.from(queue.value.entries());
 		queue.value = new Map(queueArr.slice(props.pagination.limit));
