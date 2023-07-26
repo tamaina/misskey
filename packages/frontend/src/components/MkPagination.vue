@@ -262,7 +262,7 @@ async function adjustScroll(fn: () => void): Promise<void> {
 		scrollableElementOrHtml.addEventListener('wheel', preventDefault, { passive: false });
 		scrollableElementOrHtml.addEventListener('touchmove', preventDefault, { passive: false });
 		// スクロールを強制的に停止
-		scroll(scrollableElement, { top: oldScroll, behavior: 'instant' });
+		//scroll(scrollableElement, { top: oldScroll, behavior: 'instant' });
 	} catch (err) {
 		console.error(err, { scrollableElementOrHtml });
 	}
