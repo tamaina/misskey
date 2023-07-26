@@ -40,7 +40,6 @@ const ro = new ResizeObserver(entries => {
 });
 
 function getClientWidthWithCache(targetEl: HTMLElement, containerEl: HTMLElement) {
-	console.log('getClientWidthWithCache', { targetEl, containerEl, cache: widthCache.get(containerEl) });
 	if (widthCache.has(containerEl)) return widthCache.get(containerEl)!;
 
 	const width = targetEl.clientWidth;
