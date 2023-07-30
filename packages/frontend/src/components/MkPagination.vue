@@ -516,6 +516,7 @@ const prepend = (_item: MisskeyEntity): void => {
 		queueSize.value === 0 && // キューに残っている場合はキューに追加する
 		active.value // keepAliveで隠されている間はキューに追加する
 	) {
+		console.log('prepend', backed, weakBacked, scrollableElement);
 		if (!backed) {
 			// かなりスクロールの先頭にいる場合
 			if (items.value.has(item.id)) return; // 既にタイムラインにある場合は何もしない
