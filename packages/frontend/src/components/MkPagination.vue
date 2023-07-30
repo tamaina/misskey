@@ -246,6 +246,7 @@ watch([weakBacked, $$(contentEl)], () => {
 			console.log('checkBacked', active.value, checkTop(TOLERANCE));
 			if (!active.value) return; // activeでない時は触らない
 			backed.value = !checkTop(TOLERANCE);
+			console.log('backed', backed.value);
 		};
 
 		// とりあえず評価してみる
