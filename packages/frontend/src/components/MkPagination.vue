@@ -122,9 +122,9 @@ let rootEl = $shallowRef<HTMLElement>();
  * スクロールが先頭にない場合にtrue
  */
 // 先頭にいるか（prependでキューに追加するかどうかの判定に使う）
-let backed = ref(false);
+const backed = ref(false);
 // true→falseの変更でexecuteQueueする
-let weakBacked = ref(false);
+const weakBacked = ref(false);
 
 let scrollRemove = $ref<(() => void) | null>(null);
 
@@ -236,7 +236,7 @@ watch([weakBacked, $$(contentEl)], () => {
 	if (scrollRemove) scrollRemove();
 	scrollRemove = null;
 
-	if (weakBacked || !contentEl) {
+	if (weakBacked.value || !contentEl) {
 		if (weakBacked.value) backed.value = true;
 		return;
 	}
