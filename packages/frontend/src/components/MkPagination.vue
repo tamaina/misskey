@@ -232,6 +232,7 @@ watch(backed, () => {
  * onScrollTop/onScrollBottomでbackedを厳密に検出する
  */
 watch([weakBacked, $$(contentEl)], () => {
+	console.log('weakBacked changed', weakBacked.value, contentEl);
 	if (scrollRemove) scrollRemove();
 	scrollRemove = null;
 
