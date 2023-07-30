@@ -107,7 +107,7 @@ export function getConfig(): UserConfig {
 			_DATA_TRANSFER_DRIVE_FOLDER_: JSON.stringify('mk_drive_folder'),
 			_DATA_TRANSFER_DECK_COLUMN_: JSON.stringify('mk_deck_column'),
 			__VUE_OPTIONS_API__: true,
-			__VUE_PROD_DEVTOOLS__: true, // P1 MODIFIED
+			__VUE_PROD_DEVTOOLS__: false, // P1 MODIFIED
 		},
 
 		// https://vitejs.dev/guide/dep-pre-bundling.html#monorepos-and-linked-dependencies
