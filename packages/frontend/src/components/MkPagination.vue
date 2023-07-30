@@ -223,6 +223,7 @@ watch(weakBacked, () => {
  * backedがtrue→falseになってもexecuteQueue
  */
 watch(backed, () => {
+	console.log('backed changed', backed, backed.value);
 	if (!backed.value) {
 		executeQueue();
 	}
