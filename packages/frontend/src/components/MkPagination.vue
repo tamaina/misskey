@@ -232,6 +232,7 @@ watch($$(backed), () => {
  * onScrollTop/onScrollBottomでbackedを厳密に検出する
  */
 watch([$$(weakBacked), $$(contentEl)], () => {
+	console.log(weakBacked, contentEl);
 	if (scrollRemove) scrollRemove();
 	scrollRemove = null;
 
@@ -242,6 +243,7 @@ watch([$$(weakBacked), $$(contentEl)], () => {
 
 	scrollRemove = (() => {
 		const checkBacked = () => {
+			console.log('checkBacked', active.value, checkTop(TOLERANCE));
 			if (!active.value) return; // activeでない時は触らない
 			backed = !checkTop(TOLERANCE);
 		};
