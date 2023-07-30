@@ -520,7 +520,7 @@ const prepend = (_item: MisskeyEntity): void => {
 		active.value // keepAliveで隠されている間はキューに追加する
 	) {
 		console.log('prepend', backed.value, weakBacked.value, scrollableElement);
-		if (!backed.value) {
+		if (backed.value === false) {
 			// かなりスクロールの先頭にいる場合
 			if (items.value.has(item.id)) return; // 既にタイムラインにある場合は何もしない
 			unshiftItems([item]);
