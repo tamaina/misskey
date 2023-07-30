@@ -46,7 +46,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed, ComputedRef, isRef, nextTick, onActivated, onBeforeUnmount, onDeactivated, onMounted, ref, watch } from 'vue';
 import * as misskey from 'misskey-js';
 import * as os from '@/os';
-import { isBottomVisible, isTopVisible, getScrollContainer, scrollToBottom, scrollToTop, scrollBy, scroll, getBodyScrollHeight } from '@/scripts/scroll';
+import { isBottomVisible, isTopVisible, getScrollContainer, scrollToBottom, scrollToTop, scroll, getBodyScrollHeight } from '@/scripts/scroll';
 import { useDocumentVisibility } from '@/scripts/use-document-visibility';
 import MkButton from '@/components/MkButton.vue';
 import { defaultStore } from '@/store';
@@ -122,9 +122,9 @@ let rootEl = $shallowRef<HTMLElement>();
  * スクロールが先頭にない場合にtrue
  */
 // 先頭にいるか（prependでキューに追加するかどうかの判定に使う）
-let backed = $ref(false);
+let backed = ref(false);
 // true→falseの変更でexecuteQueueする
-let weakBacked = $ref(false);
+let weakBacked = ref(false);
 
 let scrollRemove = $ref<(() => void) | null>(null);
 
@@ -197,7 +197,7 @@ watch([() => props.pagination.reversed, $$(scrollableElement)], () => {
 
 	scrollObserver = new IntersectionObserver(entries => {
 		if (!active.value) return; // activeでない時は触らない
-		weakBacked = entries[0].intersectionRatio >= 0.1;
+		weakBacked.value = entries[0].intersectionRatio >= 0.1;
 	}, {
 		root: scrollableElement,
 		rootMargin: props.pagination.reversed ? '-100% 0px 1000% 0px' : '1000% 0px -100% 0px',
@@ -213,8 +213,8 @@ watch([$$(rootEl), $$(scrollObserver)], () => {
 /**
  * weakBackedがtrue→falseになったらexecuteQueue
  */
-watch($$(weakBacked), () => {
-	if (timelineBackTopBehavior.value === 'next' && !weakBacked) {
+watch(weakBacked, () => {
+	if (timelineBackTopBehavior.value === 'next' && !weakBacked.value) {
 		executeQueue();
 	}
 });
@@ -222,8 +222,8 @@ watch($$(weakBacked), () => {
 /**
  * backedがtrue→falseになってもexecuteQueue
  */
-watch($$(backed), () => {
-	if (!backed) {
+watch(backed, () => {
+	if (!backed.value) {
 		executeQueue();
 	}
 });
@@ -231,13 +231,12 @@ watch($$(backed), () => {
 /**
  * onScrollTop/onScrollBottomでbackedを厳密に検出する
  */
-watch([$$(weakBacked), $$(contentEl)], () => {
-	console.log(weakBacked, contentEl);
+watch([weakBacked, $$(contentEl)], () => {
 	if (scrollRemove) scrollRemove();
 	scrollRemove = null;
 
 	if (weakBacked || !contentEl) {
-		if (weakBacked) backed = true;
+		if (weakBacked.value) backed.value = true;
 		return;
 	}
 
@@ -245,7 +244,7 @@ watch([$$(weakBacked), $$(contentEl)], () => {
 		const checkBacked = () => {
 			console.log('checkBacked', active.value, checkTop(TOLERANCE));
 			if (!active.value) return; // activeでない時は触らない
-			backed = !checkTop(TOLERANCE);
+			backed.value = !checkTop(TOLERANCE);
 		};
 
 		// とりあえず評価してみる
@@ -348,7 +347,7 @@ function scrollAfterInit() {
 				if (contentEl) {
 					scrollToBottom(contentEl);
 					// scrollToしてもbacked周りがうまく動かないので手動で戻す必要がある
-					weakBacked = false;
+					weakBacked.value = false;
 				}
 			}, 200);
 
@@ -363,7 +362,7 @@ function scrollAfterInit() {
 			setTimeout(() => {
 				scrollToTop(scrollableElement);
 				// scrollToしてもbacked周りがうまく動かないので手動で戻す必要がある
-				weakBacked = false;
+				weakBacked.value = false;
 
 				moreFetching.value = false;
 			}, 200);
@@ -492,7 +491,7 @@ onDeactivated(() => {
 });
 
 watch([active, visibility], () => {
-	if (!backed && active.value && visibility.value === 'visible') {
+	if (!backed.value && active.value && visibility.value === 'visible') {
 		executeQueue();
 	}
 });
@@ -518,12 +517,12 @@ const prepend = (_item: MisskeyEntity): void => {
 		queueSize.value === 0 && // キューに残っている場合はキューに追加する
 		active.value // keepAliveで隠されている間はキューに追加する
 	) {
-		console.log('prepend', backed, weakBacked, scrollableElement);
-		if (!backed) {
+		console.log('prepend', backed.value, weakBacked.value, scrollableElement);
+		if (!backed.value) {
 			// かなりスクロールの先頭にいる場合
 			if (items.value.has(item.id)) return; // 既にタイムラインにある場合は何もしない
 			unshiftItems([item]);
-		} else if (timelineBackTopBehavior.value === 'next' && !weakBacked) {
+		} else if (timelineBackTopBehavior.value === 'next' && !weakBacked.value) {
 			// ちょっと先頭にいる場合はスクロールを調整する
 			prependQueue(item);
 			executeQueue();
@@ -577,7 +576,7 @@ async function executeQueue() {
 		isPausingUpdateByExecutingQueue.value = true;
 
 		await adjustScroll(() => unshiftItems(newItems, Infinity));
-		backed = true;
+		backed.value = true;
 
 		denyMoveTransition.value = true;
 		items.value = new Map([...items.value].slice(0, displayLimit.value));
@@ -637,7 +636,7 @@ defineExpose({
 	more,
 	inited,
 	queueSize,
-	backed: $$(backed),
+	backed,
 	reload,
 	prepend,
 	append: appendItem,
