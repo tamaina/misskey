@@ -181,7 +181,7 @@ const timetravel = (date?: Date) => {
 
 const reload = () => {
 	tlComponent?.pagingComponent?.reload();
-	emit('reload');
+	emit('reload');P
 };
 
 defineExpose({
