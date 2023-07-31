@@ -193,6 +193,7 @@ function focusDown() {
 }
 
 function switchItem(item: MenuSwitch & { ref: any }) {
+	console.log('switchItem', item);
 	if (item.disabled) return;
 	item.ref = !item.ref;
 }
