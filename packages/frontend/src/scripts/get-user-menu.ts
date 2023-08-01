@@ -173,7 +173,6 @@ export function getUserMenu(user: misskey.entities.UserDetailed, router: Router 
 			const lists = await userListsCache.fetch(() => os.api('users/lists/list'));
 			return lists.map(list => {
 				const isListed = ref(list.userIds.includes(user.id));
-				console.log(list, isListed);
 				cleanups.push(watch(isListed, () => {
 					if (isListed.value) {
 						os.apiWithDialog('users/lists/push', {
@@ -331,7 +330,7 @@ export function getUserMenu(user: misskey.entities.UserDetailed, router: Router 
 	}
 
 	const cleanup = () => {
-		console.log('user menu cleanup', cleanups);
+		if (_DEV_) console.log('user menu cleanup', cleanups);
 		cleanups.forEach(cleanup => cleanup());
 	};
 
