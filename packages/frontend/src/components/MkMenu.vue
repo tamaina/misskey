@@ -61,14 +61,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 </div>
 </template>
 
-<script lang="ts" setup>
-import { defineAsyncComponent, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue';
+<script lang="ts">
+import { Ref, defineAsyncComponent, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import { focusPrev, focusNext } from '@/scripts/focus';
 import MkSwitchButton from '@/components/MkSwitch.button.vue';
-import { MenuItem, InnerMenuItem, OuterMenuItem, MenuPending, MenuAction, MenuSwitch, MenuParent } from '@/types/menu';
+import { MenuItem, InnerMenuItem, MenuPending, MenuAction, MenuSwitch, MenuParent } from '@/types/menu';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
 
+const childrenCache = new WeakMap<MenuParent, MenuItem[]>();
+</script>
+
+<script lang="ts" setup>
 const XChild = defineAsyncComponent(() => import('./MkMenu.child.vue'));
 
 const props = defineProps<{
@@ -147,10 +151,9 @@ function onItemMouseLeave(item) {
 	if (childCloseTimer) window.clearTimeout(childCloseTimer);
 }
 
-let childrenCache = new WeakMap<MenuParent, OuterMenuItem[]>();
 async function showChildren(item: MenuParent, ev: MouseEvent) {
-	const children = ref<OuterMenuItem[]>([]);
-	if (childrenCache.has(item)) {
+	const children: Ref<(MenuItem | MenuPending)[]> = ref([]);
+	if (!item.noCache && childrenCache.has(item)) {
 		children.value = childrenCache.get(item)!;
 	} else {
 		if (typeof item.children === 'function') {
@@ -167,7 +170,7 @@ async function showChildren(item: MenuParent, ev: MouseEvent) {
 	}
 
 	if (props.asDrawer) {
-		os.popupMenu(children, ev.currentTarget ?? ev.target, {
+		os.popupMenu(children.value as MenuItem[], ev.currentTarget ?? ev.target, {
 			onClosing: () => {
 				close();
 			}
