@@ -4,8 +4,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkModal ref="modal" v-slot="{ type, maxHeight }" :manualShowing="manualShowing" :zPriority="'high'" :src="src" :transparentBg="true" @click="close" @close="emit('closing')" @closed="emit('closed')">
-	<MkMenu :items="items" :align="align" :width="width" :max-height="maxHeight" :asDrawer="type === 'drawer'" :class="{ [$style.drawer]: type === 'drawer' }" @close="close" @hide="manualShowing = false"/>
+<MkModal ref="modal" v-slot="{ type, maxHeight }" :manualShowing="manualShowing" :zPriority="'high'" :src="src" :transparentBg="true" @click="click" @close="onModalClose" @closed="closed">
+	<MkMenu :items="items" :align="align" :width="width" :max-height="maxHeight" :asDrawer="type === 'drawer'" :class="{ [$style.drawer]: type === 'drawer' }" @close="onMenuClose" @hide="manualShowing = false"/>
 </MkModal>
 </template>
 
@@ -15,7 +15,7 @@ import MkModal from './MkModal.vue';
 import MkMenu from './MkMenu.vue';
 import { MenuItem } from '@/types/menu';
 
-defineProps<{
+const props = defineProps<{
 	items: MenuItem[];
 	align?: 'center' | string;
 	width?: number;
@@ -31,9 +31,24 @@ const emit = defineEmits<{
 let modal = $shallowRef<InstanceType<typeof MkModal>>();
 const manualShowing = ref(true);
 
+function click() {
+	close();
+}
+
+function onModalClose() {
+	emit('closing');
+}
+
+function onMenuClose() {
+	close();
+}
+
+function closed() {
+	emit('closed');
+}
+
 function close() {
 	if (!modal) return;
-	manualShowing.value = false;
 	modal.close();
 }
 </script>
