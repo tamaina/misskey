@@ -168,7 +168,6 @@ export function getUserMenu(user: misskey.entities.UserDetailed, router: Router 
 		type: 'parent',
 		icon: 'ti ti-list',
 		text: i18n.ts.addToList,
-		noCache: true,
 		children: async () => {
 			const lists = await userListsCache.fetch(() => os.api('users/lists/list'));
 			return lists.map(list => {
@@ -331,7 +330,9 @@ export function getUserMenu(user: misskey.entities.UserDetailed, router: Router 
 
 	const cleanup = () => {
 		if (_DEV_) console.log('user menu cleanup', cleanups);
-		cleanups.forEach(cleanup => cleanup());
+		for (const cl of cleanups) {
+			cl();
+		}
 	};
 
 	return {
