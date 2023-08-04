@@ -224,6 +224,10 @@ export class NoteManager {
     public async fetch(id: string, force = false): Promise<CachedNote> {
         if (!force) {
             const cachedNote = this.get(id);
+            if (cachedNote.value === null) {
+                // 削除されている場合はnullを返す
+                return cachedNote;
+            }
             // Renoteの場合はRenote元の更新日時も考慮する
             const updatedAt = isRenote(cachedNote.value) ?
                 this.updatedAt.get(id) :
@@ -264,13 +268,20 @@ export class NoteManager {
 				const reaction = body.reaction;
 
 				if (body.emoji && !(body.emoji.name in note.value.reactionEmojis)) {
-					note.value.reactionEmojis[body.emoji.name] = body.emoji.url;
-				}
+                    note.value.reactionEmojis = {
+                        ...note.value.reactionEmojis,
+                        [body.emoji.name]: body.emoji.url,
+                    };
+                }
 
-				// TODO: reactionsプロパティがない場合ってあったっけ？ なければ || {} は消せる
-				const currentCount = (note.value.reactions || {})[reaction] || 0;
-
-				note.value.reactions[reaction] = currentCount + 1;
+                if (reaction in note.value.reactions) {
+                    note.value.reactions[reaction]++;
+                } else {
+                    note.value.reactions = {
+                        ...note.value.reactions,
+                        [reaction]: 1,
+                    };
+                }
 
 				if ($i && (body.userId === $i.id)) {
 					note.value.myReaction = reaction;
@@ -311,6 +322,10 @@ export class NoteManager {
 
 			case 'deleted': {
 				note.value = null;
+                this.connection?.send('un', { id });
+                this.captureing.delete(id);
+                this.notesComputed.delete(id);
+                this.updatedAt.delete(id);
 				break;
 			}
 		}
