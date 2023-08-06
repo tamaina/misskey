@@ -4,7 +4,7 @@
  */
 
 import { Note, UserLite, DriveFile } from "misskey-js/built/entities";
-import { Ref, ref, ComputedRef, computed, watch, unref } from "vue";
+import { Ref, ref, ComputedRef, computed, watch } from "vue";
 import { api } from "./api";
 import { useStream } from '@/stream';
 import { Stream } from "misskey-js";
@@ -279,8 +279,10 @@ export class NoteManager {
                 this.set(fetchedNote);
                 return this.get(id)!;
             })
-            .catch(() => {
-                if (this.isDebuggerEnabled) console.log('NoteManager: fetch note (error)', id);
+            .catch(err => {
+                if (this.isDebuggerEnabled) {
+                    console.error('NoteManager: fetch note (error)', id, err);
+                }
                 // エラーが発生した場合は何もしない
                 return this.get(id)!;
             });
