@@ -435,11 +435,10 @@ export class NoteManager {
         this.captureing.delete(id);
 
         // キャプチャが終わったらcomputedキャッシュも消してしまう
-        //if (!noDeletion) {
-        //    this.notesComputed.delete(id);
-        //    if (this.isDebuggerEnabled) console.log('NoteManager: decapture (delete computed)', id);
-        //}
-        // と思ったが、computedキャッシュを消すと壊れるのでやめる
+        if (!noDeletion) {
+            this.notesComputed.delete(id);
+            if (this.isDebuggerEnabled) console.log('NoteManager: decapture (delete computed)', id);
+        }
 	}
 
     /**
