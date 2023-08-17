@@ -206,6 +206,7 @@ const onContextmenu = (ev) => {
 };
 
 function onWheel(ev: WheelEvent) {
+	console.log('wheel', ev);
 	if (ev.deltaX === 0) {
 		columnsEl.scrollLeft += ev.deltaY;
 	}
