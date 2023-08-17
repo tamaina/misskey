@@ -206,7 +206,9 @@ const onContextmenu = (ev) => {
 };
 
 function onWheel(ev: WheelEvent) {
-	columnsEl.scrollLeft += ev.deltaY;
+	if (ev.deltaX === 0) {
+		columnsEl.scrollLeft += ev.deltaY;
+	}
 }
 
 document.documentElement.style.overflowY = 'hidden';
