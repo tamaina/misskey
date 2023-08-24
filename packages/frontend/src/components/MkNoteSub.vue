@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div :class="[$style.root, { [$style.children]: depth > 1 }]">
+<div v-if="!muted" :class="[$style.root, { [$style.children]: depth > 1 }]">
 	<div :class="$style.main">
 		<div v-if="note.channel" :class="$style.colorBar" :style="{ background: note.channel.color }"></div>
 		<MkAvatar :class="$style.avatar" :user="note.user" link preview/>
@@ -28,10 +28,20 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<MkA class="_link" :to="notePage(note)">{{ i18n.ts.continueThread }} <i class="ti ti-chevron-double-right"></i></MkA>
 	</div>
 </div>
+<div v-else :class="$style.muted" @click="muted = false">
+	<I18n :src="i18n.ts.userSaysSomething" tag="small">
+		<template #name>
+			<MkA v-user-preview="note.userId" :to="userPage(note.user)">
+				<MkUserName :user="note.user"/>
+			</MkA>
+		</template>
+	</I18n>
+</div>
 </template>
 
 <script lang="ts" setup>
-import { } from 'vue';
+import { ref } from 'vue';
+import * as misskey from 'misskey-js';
 import MkNoteHeader from '@/components/MkNoteHeader.vue';
 import MkSubNoteContent from '@/components/MkSubNoteContent.vue';
 import MkCwButton from '@/components/MkCwButton.vue';
@@ -39,7 +49,9 @@ import { notePage } from '@/filters/note';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
 import { $i } from '@/account';
-import { noteManager } from '@/scripts/entity-manager';
+import { userPage } from "@/filters/user";
+import { checkWordMute } from "@/scripts/check-word-mute";
+import { defaultStore } from "@/store";
 
 const props = withDefaults(defineProps<{
 	note: { id: string };
@@ -52,11 +64,7 @@ const props = withDefaults(defineProps<{
 	depth: 1,
 });
 
-if (props.setNote) {
-	noteManager.set(props.note as any);
-}
-
-const note = noteManager.get(props.note.id);
+const muted = ref(checkWordMute(props.note, $i, defaultStore.state.mutedWords));
 
 let showContent = $ref(false);
 let replies: { id: string }[] = $ref([]);
@@ -145,5 +153,13 @@ if (props.detail) {
 			padding: 10px 0 0 8px;
 		}
 	}
+}
+
+.muted {
+	text-align: center;
+	padding: 8px !important;
+	border: 1px solid var(--divider);
+	margin: 8px 8px 0 8px;
+	border-radius: 8px;
 }
 </style>
