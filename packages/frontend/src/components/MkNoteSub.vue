@@ -40,8 +40,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue';
-import * as misskey from 'misskey-js';
+import { computed } from 'vue';
 import MkNoteHeader from '@/components/MkNoteHeader.vue';
 import MkSubNoteContent from '@/components/MkSubNoteContent.vue';
 import MkCwButton from '@/components/MkCwButton.vue';
@@ -49,6 +48,7 @@ import { notePage } from '@/filters/note';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
 import { $i } from '@/account';
+import { noteManager } from '@/scripts/entity-manager';
 import { userPage } from "@/filters/user";
 import { checkWordMute } from "@/scripts/check-word-mute";
 import { defaultStore } from "@/store";
@@ -64,7 +64,12 @@ const props = withDefaults(defineProps<{
 	depth: 1,
 });
 
-const muted = ref(checkWordMute(props.note, $i, defaultStore.state.mutedWords));
+if (props.setNote) {
+	noteManager.set(props.note as any);
+}
+
+const note = noteManager.get(props.note.id);
+const muted = computed(() => !!note.value && checkWordMute(note.value, $i, defaultStore.state.mutedWords));
 
 let showContent = $ref(false);
 let replies: { id: string }[] = $ref([]);
