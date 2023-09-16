@@ -114,8 +114,8 @@ export function getConfig(): UserConfig {
 			minify: false,
 			cssMinify: 'esbuild',
 			target: [
-				'chrome108',
-				'firefox109',
+				'chrome116',
+				'firefox116',
 				'safari16',
 			],
 			manifest: 'manifest.json',
