@@ -433,8 +433,8 @@ importers:
         specifier: 4.4.0
         version: 4.4.0(seedrandom@3.0.5)
       '@tensorflow/tfjs-node':
-        specifier: 4.4.0
-        version: 4.4.0(seedrandom@3.0.5)
+        specifier: 4.12.0
+        version: 4.12.0(seedrandom@3.0.5)
       bufferutil:
         specifier: 4.0.7
         version: 4.0.7
@@ -871,10 +871,10 @@ importers:
         version: 7.5.1
       '@storybook/vue3':
         specifier: 7.5.1
-        version: 7.5.1(@vue/compiler-core@3.3.4)(vue@3.3.5)
+        version: 7.5.1(@vue/compiler-core@3.3.5)(vue@3.3.5)
       '@storybook/vue3-vite':
         specifier: 7.5.1
-        version: 7.5.1(@vue/compiler-core@3.3.4)(react-dom@18.2.0)(react@18.2.0)(typescript@5.2.2)(vite@4.5.0)(vue@3.3.5)
+        version: 7.5.1(@vue/compiler-core@3.3.5)(react-dom@18.2.0)(react@18.2.0)(typescript@5.2.2)(vite@4.5.0)(vue@3.3.5)
       '@testing-library/vue':
         specifier: 7.0.0
         version: 7.0.0(@vue/compiler-sfc@3.3.5)(vue@3.3.5)
@@ -979,7 +979,7 @@ importers:
         version: 7.5.1
       storybook-addon-misskey-theme:
         specifier: github:misskey-dev/storybook-addon-misskey-theme
-        version: github.com/misskey-dev/storybook-addon-misskey-theme/cf583db098365b2ccc81a82f63ca9c93bc32b640(@storybook/blocks@7.5.1)(@storybook/components@7.5.0)(@storybook/core-events@7.5.1)(@storybook/manager-api@7.5.1)(@storybook/preview-api@7.5.1)(@storybook/theming@7.5.1)(@storybook/types@7.5.1)(react-dom@18.2.0)(react@18.2.0)
+        version: github.com/misskey-dev/storybook-addon-misskey-theme/cf583db098365b2ccc81a82f63ca9c93bc32b640(@storybook/blocks@7.5.1)(@storybook/components@7.5.1)(@storybook/core-events@7.5.1)(@storybook/manager-api@7.5.1)(@storybook/preview-api@7.5.1)(@storybook/theming@7.5.1)(@storybook/types@7.5.1)(react-dom@18.2.0)(react@18.2.0)
       summaly:
         specifier: github:misskey-dev/summaly
         version: github.com/misskey-dev/summaly/d2d8db49943ccb201c1b1b283e9d0a630519fac7
@@ -4330,7 +4330,7 @@ packages:
       detect-libc: 2.0.2
       https-proxy-agent: 5.0.1
       make-dir: 3.1.0
-      node-fetch: 2.6.11
+      node-fetch: 2.7.0
       nopt: 5.0.0
       npmlog: 5.0.1
       rimraf: 3.0.2
@@ -6368,17 +6368,6 @@ packages:
       - supports-color
     dev: true
 
-  /@storybook/channels@7.5.0:
-    resolution: {integrity: sha512-/7QJS1UA7TX3uhZqCpjv4Ib8nfMnDOJrBWvjiXiUONaRcSk/he5X+W1Zz/c7dgt+wkYuAh+evjc7glIaBhVNVQ==}
-    dependencies:
-      '@storybook/client-logger': 7.5.0
-      '@storybook/core-events': 7.5.0
-      '@storybook/global': 5.0.0
-      qs: 6.11.1
-      telejson: 7.2.0
-      tiny-invariant: 1.3.1
-    dev: true
-
   /@storybook/channels@7.5.1:
     resolution: {integrity: sha512-7hTGHqvtdFTqRx8LuCznOpqPBYfUeMUt/0IIp7SFuZT585yMPxrYoaK//QmLEWnPb80B8HVTSQi7caUkJb32LA==}
     dependencies:
@@ -6442,12 +6431,6 @@ packages:
       - utf-8-validate
     dev: true
 
-  /@storybook/client-logger@7.5.0:
-    resolution: {integrity: sha512-JV7J9vc69f9Il4uW62NIeweUU7O38VwFWxtCkhd0bcBA/9RG0go4M2avzxYYEAe9kIOX9IBBk8WGzMacwW4gKQ==}
-    dependencies:
-      '@storybook/global': 5.0.0
-    dev: true
-
   /@storybook/client-logger@7.5.1:
     resolution: {integrity: sha512-XxbLvg0aQRoBrzxYLcVYCbjDkGbkU8Rfb74XbV2CLiO2bIbFPmA1l1Nwbp+wkCGA+O6Z1zwzSl6wcKKqZ6XZCg==}
     dependencies:
@@ -6473,29 +6456,6 @@ packages:
       recast: 0.23.1
     transitivePeerDependencies:
       - supports-color
-    dev: true
-
-  /@storybook/components@7.5.0(react-dom@18.2.0)(react@18.2.0):
-    resolution: {integrity: sha512-6lmZ6PbS27xN32vTJ/NvgaiKkFIQRzZuBeBIg2u+FoAEgCiCwRXjZKe/O8NZC2Xr0uf97+7U2P0kD4Hwr9SNhw==}
-    peerDependencies:
-      react: ^16.8.0 || ^17.0.0 || ^18.0.0
-      react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0
-    dependencies:
-      '@radix-ui/react-select': 1.2.2(react-dom@18.2.0)(react@18.2.0)
-      '@radix-ui/react-toolbar': 1.0.4(react-dom@18.2.0)(react@18.2.0)
-      '@storybook/client-logger': 7.5.0
-      '@storybook/csf': 0.1.0
-      '@storybook/global': 5.0.0
-      '@storybook/theming': 7.5.0(react-dom@18.2.0)(react@18.2.0)
-      '@storybook/types': 7.5.0
-      memoizerific: 1.11.3
-      react: 18.2.0
-      react-dom: 18.2.0(react@18.2.0)
-      use-resize-observer: 9.1.0(react-dom@18.2.0)(react@18.2.0)
-      util-deprecate: 1.0.2
-    transitivePeerDependencies:
-      - '@types/react'
-      - '@types/react-dom'
     dev: true
 
   /@storybook/components@7.5.1(react-dom@18.2.0)(react@18.2.0):
@@ -6557,12 +6517,6 @@ packages:
     transitivePeerDependencies:
       - encoding
       - supports-color
-    dev: true
-
-  /@storybook/core-events@7.5.0:
-    resolution: {integrity: sha512-FsD+clTzayqprbVllnL8LLch+uCslJFDgsv7Zh99/zoi7OHtHyauoCZkdLBSiDzgc84qS41dY19HqX1/y7cnOw==}
-    dependencies:
-      ts-dedent: 2.2.0
     dev: true
 
   /@storybook/core-events@7.5.1:
@@ -6897,20 +6851,6 @@ packages:
       ts-dedent: 2.2.0
     dev: true
 
-  /@storybook/theming@7.5.0(react-dom@18.2.0)(react@18.2.0):
-    resolution: {integrity: sha512-uTo97oh+pvmlfsZocFq5qae0zGo0VGk7oiBqNSSw6CiTqE1rIuSxoPrMAY+oCTWCUZV7DjONIGvpnGl2QALsAw==}
-    peerDependencies:
-      react: ^16.8.0 || ^17.0.0 || ^18.0.0
-      react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0
-    dependencies:
-      '@emotion/use-insertion-effect-with-fallbacks': 1.0.0(react@18.2.0)
-      '@storybook/client-logger': 7.5.0
-      '@storybook/global': 5.0.0
-      memoizerific: 1.11.3
-      react: 18.2.0
-      react-dom: 18.2.0(react@18.2.0)
-    dev: true
-
   /@storybook/theming@7.5.1(react-dom@18.2.0)(react@18.2.0):
     resolution: {integrity: sha512-ETLAOn10hI4Mkmjsr0HGcM6HbzaURrrPBYmfXOrdbrzEVN+AHW4FlvP9d8fYyP1gdjPE1F39XvF0jYgt1zXiHQ==}
     peerDependencies:
@@ -6925,15 +6865,6 @@ packages:
       react-dom: 18.2.0(react@18.2.0)
     dev: true
 
-  /@storybook/types@7.5.0:
-    resolution: {integrity: sha512-fiOUnHKFi/UZSfvc53F0WEQCiquqcSqslL3f5EffwQRiXfeXlGavJb0kU03BO+CvOXcliRn6qKSF2dL0Rgb7Xw==}
-    dependencies:
-      '@storybook/channels': 7.5.0
-      '@types/babel__core': 7.20.0
-      '@types/express': 4.17.17
-      file-system-cache: 2.3.0
-    dev: true
-
   /@storybook/types@7.5.1:
     resolution: {integrity: sha512-ZcMSaqFNx1E+G00nRDUi8kKL7gxJVlnCvbKLNj3V85guy4DkIYAZr31yDqze07gDWbjvKoHIp3tKpgE+2i8upQ==}
     dependencies:
@@ -6943,7 +6874,7 @@ packages:
       file-system-cache: 2.3.0
     dev: true
 
-  /@storybook/vue3-vite@7.5.1(@vue/compiler-core@3.3.4)(react-dom@18.2.0)(react@18.2.0)(typescript@5.2.2)(vite@4.5.0)(vue@3.3.5):
+  /@storybook/vue3-vite@7.5.1(@vue/compiler-core@3.3.5)(react-dom@18.2.0)(react@18.2.0)(typescript@5.2.2)(vite@4.5.0)(vue@3.3.5):
     resolution: {integrity: sha512-5bO5BactTbyOxxeRw8U6t3FqqfTvVLTefzg1NLDkKt2iAL6lGBSsPTKMgpy3dt+cxdiqEis67niQL68ZtW02Zw==}
     engines: {node: ^14.18 || >=16}
     peerDependencies:
@@ -6953,7 +6884,7 @@ packages:
     dependencies:
       '@storybook/builder-vite': 7.5.1(typescript@5.2.2)(vite@4.5.0)
       '@storybook/core-server': 7.5.1
-      '@storybook/vue3': 7.5.1(@vue/compiler-core@3.3.4)(vue@3.3.5)
+      '@storybook/vue3': 7.5.1(@vue/compiler-core@3.3.5)(vue@3.3.5)
       '@vitejs/plugin-vue': 4.4.0(vite@4.5.0)(vue@3.3.5)
       magic-string: 0.30.3
       react: 18.2.0
@@ -6972,7 +6903,7 @@ packages:
       - vue
     dev: true
 
-  /@storybook/vue3@7.5.1(@vue/compiler-core@3.3.4)(vue@3.3.5):
+  /@storybook/vue3@7.5.1(@vue/compiler-core@3.3.5)(vue@3.3.5):
     resolution: {integrity: sha512-9srw2rnSYaU45kkunXT8+bX3QMO2QPV6MCWRayKo7Pl+B0H/euHvxPSZb1X8mRpgLtYgVgSNJFoNbk/2Fn8z8g==}
     engines: {node: '>=16.0.0'}
     peerDependencies:
@@ -6984,7 +6915,7 @@ packages:
       '@storybook/global': 5.0.0
       '@storybook/preview-api': 7.5.1
       '@storybook/types': 7.5.1
-      '@vue/compiler-core': 3.3.4
+      '@vue/compiler-core': 3.3.5
       lodash: 4.17.21
       ts-dedent: 2.2.0
       type-fest: 2.19.0
@@ -7286,6 +7217,19 @@ packages:
     resolution: {integrity: sha512-Qo/aRhs2xXcD8IDSuePonR/39GSvQUdwv6RXdbcAhMfpJZP+pHRn2TQFPNGJND9B5uUBez694j4Nx71539XHGA==}
     dev: false
 
+  /@tensorflow/tfjs-backend-cpu@4.12.0(@tensorflow/tfjs-core@4.12.0):
+    resolution: {integrity: sha512-xm4/eABnNDjZ9pHbvUxebMt7yy6n2IGNgj8PQjp58MnPgarZdIROqKEbz9fW2BG5318TCkbgf6vK30AJqqukSw==}
+    engines: {yarn: '>= 1.3.2'}
+    requiresBuild: true
+    peerDependencies:
+      '@tensorflow/tfjs-core': 4.12.0
+    dependencies:
+      '@tensorflow/tfjs-core': 4.12.0
+      '@types/seedrandom': 2.4.30
+      seedrandom: 3.0.5
+    dev: false
+    optional: true
+
   /@tensorflow/tfjs-backend-cpu@4.4.0(@tensorflow/tfjs-core@4.4.0):
     resolution: {integrity: sha512-d4eln500/qNym78z9IrUUzF0ITBoJGLrxV8xd92kLVoXhg35Mm+zqUXShjFcrH8joOHOFuST0qZ0TbDDqcPzPA==}
     engines: {yarn: '>= 1.3.2'}
@@ -7297,6 +7241,21 @@ packages:
       '@types/seedrandom': 2.4.30
       seedrandom: 3.0.5
     dev: false
+
+  /@tensorflow/tfjs-backend-webgl@4.12.0(@tensorflow/tfjs-core@4.12.0):
+    resolution: {integrity: sha512-LVBMFg+Qck1CW/NWqR3WOWzIerk0/GdS3HKi3guIZdERJqJLW46TRVBCqllY7a4fpkKsmrIR3yzUeXSBx5DqLA==}
+    engines: {yarn: '>= 1.3.2'}
+    requiresBuild: true
+    peerDependencies:
+      '@tensorflow/tfjs-core': 4.12.0
+    dependencies:
+      '@tensorflow/tfjs-backend-cpu': 4.12.0(@tensorflow/tfjs-core@4.12.0)
+      '@tensorflow/tfjs-core': 4.12.0
+      '@types/offscreencanvas': 2019.3.0
+      '@types/seedrandom': 2.4.30
+      seedrandom: 3.0.5
+    dev: false
+    optional: true
 
   /@tensorflow/tfjs-backend-webgl@4.4.0(@tensorflow/tfjs-core@4.4.0):
     resolution: {integrity: sha512-TzQKvfAPgGt9cMG+5bVoTckoG1xr/PVJM/uODkPvzcMqi3j97kuWDXwkYJIgXldStmfiKkU7f5CmyD3Cq3E6BA==}
@@ -7313,6 +7272,16 @@ packages:
       seedrandom: 3.0.5
     dev: false
 
+  /@tensorflow/tfjs-converter@4.12.0(@tensorflow/tfjs-core@4.12.0):
+    resolution: {integrity: sha512-+UDwSO4PhobfmdqZTQQ41vvtEPMuFwZKEEcuS7zhydLK3L7Ro9+ak+rIrlWAHHrTS8knepincW1EpyDDjIkmNw==}
+    requiresBuild: true
+    peerDependencies:
+      '@tensorflow/tfjs-core': 4.12.0
+    dependencies:
+      '@tensorflow/tfjs-core': 4.12.0
+    dev: false
+    optional: true
+
   /@tensorflow/tfjs-converter@4.4.0(@tensorflow/tfjs-core@4.4.0):
     resolution: {integrity: sha512-JUjpRStrAuw37tgPd5UENu0UjQVuJT09yF7KpOur4BriJ0uQqrbEZHMPHmvUtr5nYzkqlXJTuXIyxvEY/olNpg==}
     requiresBuild: true
@@ -7321,6 +7290,23 @@ packages:
     dependencies:
       '@tensorflow/tfjs-core': 4.4.0
     dev: false
+
+  /@tensorflow/tfjs-core@4.12.0:
+    resolution: {integrity: sha512-5pyJnDQOWOGsjPCgKf7w/7v+RLVUdbsZKjfDIMFbVPPLeHXpuUfOl4rZsZHofKZGtkQgz+oV2//ByanlYBuFLA==}
+    engines: {yarn: '>= 1.3.2'}
+    requiresBuild: true
+    dependencies:
+      '@types/long': 4.0.2
+      '@types/offscreencanvas': 2019.7.0
+      '@types/seedrandom': 2.4.30
+      '@webgpu/types': 0.1.30
+      long: 4.0.0
+      node-fetch: 2.6.11
+      seedrandom: 3.0.5
+    transitivePeerDependencies:
+      - encoding
+    dev: false
+    optional: true
 
   /@tensorflow/tfjs-core@4.4.0:
     resolution: {integrity: sha512-Anxpc7cAOA0Q7EUXdTbQKMg3reFvrdkgDlaYzH9ZfkMq2CgLV4Au6E/s6HmbYn/VrAtWy9mLY5c/lLJqh4764g==}
@@ -7339,6 +7325,23 @@ packages:
       - encoding
     dev: false
 
+  /@tensorflow/tfjs-data@4.12.0(@tensorflow/tfjs-core@4.12.0)(seedrandom@3.0.5):
+    resolution: {integrity: sha512-ppwkj7XMUPX2EIwAlLmNgyyHNgiJMPyRSNTvNGD0kXlwjkF8lms2mggqTcVHFK6zBtDzMZm/i1Z56d5FUs2otA==}
+    requiresBuild: true
+    peerDependencies:
+      '@tensorflow/tfjs-core': 4.12.0
+      seedrandom: ^3.0.5
+    dependencies:
+      '@tensorflow/tfjs-core': 4.12.0
+      '@types/node-fetch': 2.6.4
+      node-fetch: 2.6.11
+      seedrandom: 3.0.5
+      string_decoder: 1.3.0
+    transitivePeerDependencies:
+      - encoding
+    dev: false
+    optional: true
+
   /@tensorflow/tfjs-data@4.4.0(@tensorflow/tfjs-core@4.4.0)(seedrandom@3.0.5):
     resolution: {integrity: sha512-aY4eq4cgrsrXeBU6ABZAAN3tV0fG4YcHd0z+cYuNXnCo+VEQLJnPmhn+xymZ4VQZQH4GXbVS4dV9pXMclFNRFw==}
     requiresBuild: true
@@ -7355,6 +7358,16 @@ packages:
       - encoding
     dev: false
 
+  /@tensorflow/tfjs-layers@4.12.0(@tensorflow/tfjs-core@4.12.0):
+    resolution: {integrity: sha512-LWK8IOfZjS9nr+lpEDcR7qzQL1l4bcRhjOSembZqwfsc6gYgvkGTxqVFqk21FcvJVM/K5XxYn0ucJqC9pjw1Kg==}
+    requiresBuild: true
+    peerDependencies:
+      '@tensorflow/tfjs-core': 4.12.0
+    dependencies:
+      '@tensorflow/tfjs-core': 4.12.0
+    dev: false
+    optional: true
+
   /@tensorflow/tfjs-layers@4.4.0(@tensorflow/tfjs-core@4.4.0):
     resolution: {integrity: sha512-OGC7shfiD9Gc698hINHK4y9slOJvu5m54tVNm4xf+WSNrw/avvgpar6yyoL5bakYIZNQvFNK75Yr8VRPR7oPeQ==}
     requiresBuild: true
@@ -7364,13 +7377,13 @@ packages:
       '@tensorflow/tfjs-core': 4.4.0
     dev: false
 
-  /@tensorflow/tfjs-node@4.4.0(seedrandom@3.0.5):
-    resolution: {integrity: sha512-+JSAddsupjSQUDZeb7QGOFkL3Tty3kjPHx8ethiYFzwTZJHCMvM7wZJd0Fqnjxym6A0KpsmB7SPZgwRRXVIlPA==}
+  /@tensorflow/tfjs-node@4.12.0(seedrandom@3.0.5):
+    resolution: {integrity: sha512-6CnckVTUK1eY7Y2mqccTo/iqO9CTCrHG540iIsXDBtRU35SJqzoSDRZpGPkqsFO7Wjv2Kzy1hS49PzE5tATrGw==}
     engines: {node: '>=8.11.0'}
     requiresBuild: true
     dependencies:
       '@mapbox/node-pre-gyp': 1.0.9
-      '@tensorflow/tfjs': 4.4.0(seedrandom@3.0.5)
+      '@tensorflow/tfjs': 4.12.0(seedrandom@3.0.5)
       adm-zip: 0.5.10
       google-protobuf: 3.21.2
       https-proxy-agent: 2.2.4
@@ -7381,6 +7394,28 @@ packages:
       - encoding
       - seedrandom
       - supports-color
+    dev: false
+    optional: true
+
+  /@tensorflow/tfjs@4.12.0(seedrandom@3.0.5):
+    resolution: {integrity: sha512-POVhMqP1cHRznRzf34mY7fiZEcxOX+4dJBhXxgSOA0Zu1Ttk8WcrGZsXwUMmEnrYwWSfHY56LNQZmWDPfUEBJQ==}
+    hasBin: true
+    requiresBuild: true
+    dependencies:
+      '@tensorflow/tfjs-backend-cpu': 4.12.0(@tensorflow/tfjs-core@4.12.0)
+      '@tensorflow/tfjs-backend-webgl': 4.12.0(@tensorflow/tfjs-core@4.12.0)
+      '@tensorflow/tfjs-converter': 4.12.0(@tensorflow/tfjs-core@4.12.0)
+      '@tensorflow/tfjs-core': 4.12.0
+      '@tensorflow/tfjs-data': 4.12.0(@tensorflow/tfjs-core@4.12.0)(seedrandom@3.0.5)
+      '@tensorflow/tfjs-layers': 4.12.0(@tensorflow/tfjs-core@4.12.0)
+      argparse: 1.0.10
+      chalk: 4.1.2
+      core-js: 3.29.1
+      regenerator-runtime: 0.13.11
+      yargs: 16.2.0
+    transitivePeerDependencies:
+      - encoding
+      - seedrandom
     dev: false
     optional: true
 
@@ -8422,15 +8457,6 @@ packages:
       postcss: 8.4.31
       source-map-js: 1.0.2
 
-  /@vue/compiler-ssr@3.3.4:
-    resolution: {integrity: sha512-m0v6oKpup2nMSehwA6Uuu+j+wEwcy7QmwMkVNVfrV9P2qE5KshC6RwOCq8fjGS/Eak/uNb8AaWekfiXxbBB6gQ==}
-    requiresBuild: true
-    dependencies:
-      '@vue/compiler-dom': 3.3.4
-      '@vue/shared': 3.3.4
-    dev: true
-    optional: true
-
   /@vue/compiler-ssr@3.3.5:
     resolution: {integrity: sha512-v7p2XuEpOcgjd6c49NqOnq3UTJOv5Uo9tirOyGnEadwxTov2O1J3/TUt4SgAAnwA+9gcUyH5c3lIOFsBe+UIyw==}
     dependencies:
@@ -8489,17 +8515,6 @@ packages:
       '@vue/shared': 3.3.5
       csstype: 3.1.2
 
-  /@vue/server-renderer@3.3.4(vue@3.3.5):
-    resolution: {integrity: sha512-Q6jDDzR23ViIb67v+vM1Dqntu+HUexQcsWKhhQa4ARVzxOY2HbC7QRW/ggkDBd5BU+uM1sV6XOAP0b216o34JQ==}
-    peerDependencies:
-      vue: 3.3.4
-    dependencies:
-      '@vue/compiler-ssr': 3.3.4
-      '@vue/shared': 3.3.4
-      vue: 3.3.5(typescript@5.2.2)
-    dev: true
-    optional: true
-
   /@vue/server-renderer@3.3.5(vue@3.3.5):
     resolution: {integrity: sha512-7VIZkohYn8GAnNT9chrm0vDpHJ6mWPL+TmUBKtDWcWxYcq33YJP/VHCPQN5TazkxXCtv3c1KfXAMZowX4giLoQ==}
     peerDependencies:
@@ -8523,8 +8538,8 @@ packages:
       js-beautify: 1.14.6
       vue: 3.3.5(typescript@5.2.2)
     optionalDependencies:
-      '@vue/compiler-dom': 3.3.4
-      '@vue/server-renderer': 3.3.4(vue@3.3.5)
+      '@vue/compiler-dom': 3.3.5
+      '@vue/server-renderer': 3.3.5(vue@3.3.5)
     dev: true
 
   /@vue/typescript@1.8.19(typescript@5.2.2):
@@ -9880,6 +9895,7 @@ packages:
 
   /cliui@7.0.4:
     resolution: {integrity: sha512-OcRE68cOsVMXp1Yvonl/fzkQOyjLSu/8bhPDfQt0e0/Eb283TKP20Fs2MqoPsr9SwA595rRCA+QMzYc9nBP+JQ==}
+    requiresBuild: true
     dependencies:
       string-width: 4.2.3
       strip-ansi: 6.0.1
@@ -10655,6 +10671,7 @@ packages:
   /delayed-stream@1.0.0:
     resolution: {integrity: sha512-ZySD7Nf91aLB0RxL4KGrKHBXl7Eds1DAmEdcoVawXnLD7SDhpNgtuII2aAkg7a7QS41jxPSZ17p4VdGnMHk3MQ==}
     engines: {node: '>=0.4.0'}
+    requiresBuild: true
 
   /delegates@1.0.0:
     resolution: {integrity: sha512-bd2L678uiWATM6m5Z1VzNCErI3jiGzt6HGY8OVICs40JQq/HALfbyNJmp0UDakEY4pMMaN0Ly5om/B1VI/+xfQ==}
@@ -10868,6 +10885,7 @@ packages:
 
   /emoji-regex@8.0.0:
     resolution: {integrity: sha512-MSjYzcWNOA0ewAHpz0MxpYFvwg6yjy1NG3xteoqz644VCo/RPgnr1/GGt+ic3iJTzQ8Eu3TdM14SawnVUmGE6A==}
+    requiresBuild: true
 
   /emoji-regex@9.2.2:
     resolution: {integrity: sha512-L18DaJsXSUk2+42pv8mLs5jJT2hqFkFE4j21wOmgbUqsZ2hL72NsUU785g9RXgo3s0ZNgVl42TiHp3ZtOv/Vyg==}
@@ -12244,7 +12262,7 @@ packages:
     dependencies:
       foreground-child: 3.1.1
       jackspeak: 2.2.1
-      minimatch: 9.0.2
+      minimatch: 9.0.3
       minipass: 5.0.0
       path-scurry: 1.9.2
 
@@ -14599,18 +14617,11 @@ packages:
     dependencies:
       brace-expansion: 2.0.1
 
-  /minimatch@9.0.2:
-    resolution: {integrity: sha512-PZOT9g5v2ojiTL7r1xF6plNHLtOeTpSlDI007As2NlA2aYBMfVom17yqa6QzhmDP8QOhn7LjHTg7DFCVSSa6yg==}
-    engines: {node: '>=16 || 14 >=14.17'}
-    dependencies:
-      brace-expansion: 2.0.1
-
   /minimatch@9.0.3:
     resolution: {integrity: sha512-RHiac9mvaRw0x3AYRgDC1CxAP7HTcNrrECeA8YYJeWnpo+2Q5CegtZjaotWTWxDG3UeGA1coE05iH1mPjT/2mg==}
     engines: {node: '>=16 || 14 >=14.17'}
     dependencies:
       brace-expansion: 2.0.1
-    dev: true
 
   /minimist-options@4.1.0:
     resolution: {integrity: sha512-Q4r8ghd80yhO/0j1O3B2BjweX3fiHg9cdOwjJd2J76Q135c+NDxGCqdYKQ1SKBuFfgWbAUzBfvYjPUEeNgqN1A==}
@@ -15582,6 +15593,7 @@ packages:
   /path-is-absolute@1.0.1:
     resolution: {integrity: sha512-AVbw3UJ2e9bq64vSaS9Am0fje1Pa8pbGqTTsmXfaIiMpnr5DlDhfJOuLj9Sf95ZPVDAUerDfEk88MPmPe7UCQg==}
     engines: {node: '>=0.10.0'}
+    requiresBuild: true
 
   /path-key@2.0.1:
     resolution: {integrity: sha512-fEHGKCSmUSDPv4uoj8AlD+joPlq3peND+HRYyxFz4KPw4z926S/b8rIuFs2FYJg3BwsxJf6A9/3eIdLaYC+9Dw==}
@@ -18068,6 +18080,7 @@ packages:
 
   /string_decoder@1.3.0:
     resolution: {integrity: sha512-hkRX8U1WjJFd8LsDJ2yQ/wWWxaopEsABU1XfkM8A+j0+85JAGppt16cr1Whg6KIbb4okU6Mql6BOj+uup/wKeA==}
+    requiresBuild: true
     dependencies:
       safe-buffer: 5.2.1
 
@@ -19600,6 +19613,7 @@ packages:
 
   /wrappy@1.0.2:
     resolution: {integrity: sha512-l4Sp/DRseor9wL6EvV2+TuQn63dMkPjZ/sp9XkghTEbV9KlPS1xUsZ3u7/IQO4wxtcFB4bgpQPRcR3QCvezPcQ==}
+    requiresBuild: true
 
   /write-file-atomic@2.4.3:
     resolution: {integrity: sha512-GaETH5wwsX+GcnzhPgKcKjJ6M2Cq3/iZp1WyY/X1CSqrW+jVNM9Y7D8EC2sM4ZG/V8wZlSniJnCKWPmBYAucRQ==}
@@ -19697,6 +19711,7 @@ packages:
 
   /yallist@4.0.0:
     resolution: {integrity: sha512-3wdGidZyq5PB084XLES5TpOSRA3wjXAlIWMhum2kRcv/41Sn2emQ0dycQW4uZXLejwKvg6EsvbdlVL+FYEct7A==}
+    requiresBuild: true
 
   /yaml@2.3.1:
     resolution: {integrity: sha512-2eHWfjaoXgTBC2jNM1LRef62VQa0umtvRiDSk6HSzW7RvS5YtkabJrwYLLEKWBc8a5U2PTSCs+dJjUTJdlHsWQ==}
@@ -19814,7 +19829,7 @@ packages:
       sharp: 0.31.3
     dev: false
 
-  github.com/misskey-dev/storybook-addon-misskey-theme/cf583db098365b2ccc81a82f63ca9c93bc32b640(@storybook/blocks@7.5.1)(@storybook/components@7.5.0)(@storybook/core-events@7.5.1)(@storybook/manager-api@7.5.1)(@storybook/preview-api@7.5.1)(@storybook/theming@7.5.1)(@storybook/types@7.5.1)(react-dom@18.2.0)(react@18.2.0):
+  github.com/misskey-dev/storybook-addon-misskey-theme/cf583db098365b2ccc81a82f63ca9c93bc32b640(@storybook/blocks@7.5.1)(@storybook/components@7.5.1)(@storybook/core-events@7.5.1)(@storybook/manager-api@7.5.1)(@storybook/preview-api@7.5.1)(@storybook/theming@7.5.1)(@storybook/types@7.5.1)(react-dom@18.2.0)(react@18.2.0):
     resolution: {tarball: https://codeload.github.com/misskey-dev/storybook-addon-misskey-theme/tar.gz/cf583db098365b2ccc81a82f63ca9c93bc32b640}
     id: github.com/misskey-dev/storybook-addon-misskey-theme/cf583db098365b2ccc81a82f63ca9c93bc32b640
     name: storybook-addon-misskey-theme
@@ -19836,7 +19851,7 @@ packages:
         optional: true
     dependencies:
       '@storybook/blocks': 7.5.1(react-dom@18.2.0)(react@18.2.0)
-      '@storybook/components': 7.5.0(react-dom@18.2.0)(react@18.2.0)
+      '@storybook/components': 7.5.1(react-dom@18.2.0)(react@18.2.0)
       '@storybook/core-events': 7.5.1
       '@storybook/manager-api': 7.5.1(react-dom@18.2.0)(react@18.2.0)
       '@storybook/preview-api': 7.5.1
