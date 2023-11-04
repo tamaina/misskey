@@ -73,7 +73,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div v-show="appearNote.cw == null || showContent">
 				<span v-if="appearNote.isHidden" style="opacity: 0.5">({{ i18n.ts.private }})</span>
 				<MkA v-if="appearNote.replyId" :class="$style.noteReplyTarget" :to="`/notes/${appearNote.replyId}`"><i class="ti ti-arrow-back-up"></i></MkA>
-				<Mfm v-if="appearNote.text" :text="appearNote.text" :author="appearNote.user" :nyaize="'account'" :i="$i" :emojiUrls="appearNote.emojis"/>
+				<Mfm v-if="appearNote.text" :parsedNodes="parsed" :text="appearNote.text" :author="appearNote.user" :nyaize="'account'" :i="$i" :emojiUrls="appearNote.emojis"/>
 				<a v-if="appearNote.renote != null" :class="$style.rn">RN:</a>
 				<div v-if="translating || translation" :class="$style.translation">
 					<MkLoading v-if="translating" mini/>
@@ -206,7 +206,7 @@ import { reactionPicker } from '@/scripts/reaction-picker.js';
 import { extractUrlFromMfm } from '@/scripts/extract-url-from-mfm.js';
 import { $i } from '@/account.js';
 import { i18n } from '@/i18n.js';
-import { getNoteClipMenu, getNoteMenu } from '@/scripts/get-note-menu.js';
+import { getNoteClipMenu, getNoteMenu, getRenoteMenu } from '@/scripts/get-note-menu.js';
 import { useNoteCapture } from '@/scripts/use-note-capture.js';
 import { deepClone } from '@/scripts/clone.js';
 import { useTooltip } from '@/scripts/use-tooltip.js';
@@ -260,7 +260,8 @@ const isDeleted = ref(false);
 const muted = ref($i ? checkWordMute(appearNote, $i, $i.mutedWords) : false);
 const translation = ref(null);
 const translating = ref(false);
-const urls = appearNote.text ? extractUrlFromMfm(mfm.parse(appearNote.text)) : null;
+const parsed = appearNote.text ? mfm.parse(appearNote.text) : null;
+const urls = parsed ? extractUrlFromMfm(parsed) : null;
 const showTicker = (defaultStore.state.instanceTicker === 'always') || (defaultStore.state.instanceTicker === 'remote' && appearNote.user.instance);
 const conversation = ref<Misskey.entities.Note[]>([]);
 const replies = ref<Misskey.entities.Note[]>([]);
@@ -324,71 +325,10 @@ function renote(viaKeyboard = false) {
 	pleaseLogin();
 	showMovedDialog();
 
-	let items = [] as MenuItem[];
-
-	if (appearNote.channel) {
-		items = items.concat([{
-			text: i18n.ts.inChannelRenote,
-			icon: 'ti ti-repeat',
-			action: () => {
-				const el = renoteButton.value as HTMLElement | null | undefined;
-				if (el) {
-					const rect = el.getBoundingClientRect();
-					const x = rect.left + (el.offsetWidth / 2);
-					const y = rect.top + (el.offsetHeight / 2);
-					os.popup(MkRippleEffect, { x, y }, {}, 'end');
-				}
-
-				os.api('notes/create', {
-					renoteId: appearNote.id,
-					channelId: appearNote.channelId,
-				}).then(() => {
-					os.toast(i18n.ts.renoted);
-				});
-			},
-		}, {
-			text: i18n.ts.inChannelQuote,
-			icon: 'ti ti-quote',
-			action: () => {
-				os.post({
-					renote: appearNote,
-					channel: appearNote.channel,
-				});
-			},
-		}, null]);
-	}
-
-	items = items.concat([{
-		text: i18n.ts.renote,
-		icon: 'ti ti-repeat',
-		action: () => {
-			const el = renoteButton.value as HTMLElement | null | undefined;
-			if (el) {
-				const rect = el.getBoundingClientRect();
-				const x = rect.left + (el.offsetWidth / 2);
-				const y = rect.top + (el.offsetHeight / 2);
-				os.popup(MkRippleEffect, { x, y }, {}, 'end');
-			}
-
-			os.api('notes/create', {
-				renoteId: appearNote.id,
-			}).then(() => {
-				os.toast(i18n.ts.renoted);
-			});
-		},
-	}, {
-		text: i18n.ts.quote,
-		icon: 'ti ti-quote',
-		action: () => {
-			os.post({
-				renote: appearNote,
-			});
-		},
-	}]);
-
-	os.popupMenu(items, renoteButton.value, {
+	const { menu } = getRenoteMenu({ note: note, renoteButton });
+	os.popupMenu(menu, renoteButton.value, {
 		viaKeyboard,
-	});
+	}).then(focus);
 }
 
 function reply(viaKeyboard = false): void {
