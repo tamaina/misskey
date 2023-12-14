@@ -31,6 +31,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			:style="{
 				rotate: getDecorationAngle(decoration),
 				scale: getDecorationScale(decoration),
+				translate: getDecorationOffset(decoration),
 			}"
 			alt=""
 		>
@@ -59,7 +60,7 @@ const props = withDefaults(defineProps<{
 	link?: boolean;
 	preview?: boolean;
 	indicator?: boolean;
-	decorations?: Misskey.entities.UserDetailed['avatarDecorations'][number][];
+	decorations?: Omit<Misskey.entities.UserDetailed['avatarDecorations'][number], 'id'>[];
 	forceShowDecoration?: boolean;
 }>(), {
 	target: null,
@@ -89,14 +90,20 @@ function onClick(ev: MouseEvent): void {
 	emit('click', ev);
 }
 
-function getDecorationAngle(decoration: Misskey.entities.UserDetailed['avatarDecorations'][number]) {
+function getDecorationAngle(decoration: Omit<Misskey.entities.UserDetailed['avatarDecorations'][number], 'id'>) {
 	const angle = decoration.angle ?? 0;
 	return angle === 0 ? undefined : `${angle * 360}deg`;
 }
 
-function getDecorationScale(decoration: Misskey.entities.UserDetailed['avatarDecorations'][number]) {
+function getDecorationScale(decoration: Omit<Misskey.entities.UserDetailed['avatarDecorations'][number], 'id'>) {
 	const scaleX = decoration.flipH ? -1 : 1;
 	return scaleX === 1 ? undefined : `${scaleX} 1`;
+}
+
+function getDecorationOffset(decoration: Omit<Misskey.entities.UserDetailed['avatarDecorations'][number], 'id'>) {
+	const offsetX = decoration.offsetX ?? 0;
+	const offsetY = decoration.offsetY ?? 0;
+	return offsetX === 0 && offsetY === 0 ? undefined : `${offsetX * 100}% ${offsetY * 100}%`;
 }
 
 const color = ref<string | undefined>();

@@ -124,7 +124,12 @@ export interface Locale {
     "add": string;
     "reaction": string;
     "reactions": string;
-    "reactionSetting": string;
+    "emojiPicker": string;
+    "pinnedEmojisForReactionSettingDescription": string;
+    "pinnedEmojisSettingDescription": string;
+    "emojiPickerDisplay": string;
+    "copyFromPinnedEmojisForReaction": string;
+    "copyFromPinnedEmojis": string;
     "reactionSettingDescription2": string;
     "rememberNoteVisibility": string;
     "attachCancel": string;
@@ -1176,6 +1181,7 @@ export interface Locale {
     "code": string;
     "reloadRequiredToApplySettings": string;
     "remainingN": string;
+    "overwriteContentConfirm": string;
     "_announcement": {
         "forExistingUsers": string;
         "forExistingUsersDescription": string;
