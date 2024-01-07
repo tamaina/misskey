@@ -7,14 +7,24 @@ SPDX-License-Identifier: AGPL-3.0-only
 <MkStickyContainer>
 	<template #header><MkPageHeader/></template>
 	<MkSpacer :contentMax="800">
-		<div v-show="!gameStarted" class="_gaps_s" :class="$style.root">
-			<div style="text-align: center;">
-				<div>{{ i18n.ts.bubbleGame }}</div>
-				<MkSelect v-model="gameMode">
-					<option value="normal">NORMAL</option>
-					<option value="square">SQUARE</option>
-				</MkSelect>
-				<MkButton primary gradate large rounded inline @click="start">{{ i18n.ts.start }}</MkButton>
+		<div v-show="!gameStarted" :class="$style.root">
+			<div style="text-align: center;" class="_gaps">
+				<div :class="$style.frame">
+					<div :class="$style.frameInner">
+						<img src="/client-assets/drop-and-fusion/logo.png" style="display: block; max-width: 100%; max-height: 200px; margin: auto;"/>
+					</div>
+				</div>
+				<div :class="$style.frame">
+					<div :class="$style.frameInner">
+						<div class="_gaps" style="padding: 16px;">
+							<MkSelect v-model="gameMode">
+								<option value="normal">NORMAL</option>
+								<option value="square">SQUARE</option>
+							</MkSelect>
+							<MkButton primary gradate large rounded inline @click="start">{{ i18n.ts.start }}</MkButton>
+						</div>
+					</div>
+				</div>
 			</div>
 		</div>
 		<div v-show="gameStarted" class="_gaps_s" :class="$style.root">
@@ -36,7 +46,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 							:moveClass="$style.transition_stock_move"
 						>
 							<div v-for="x in stock" :key="x.id" style="display: inline-block;">
-								<img :src="x.fruit.img" style="width: 32px;"/>
+								<img :src="x.mono.img" style="width: 32px;"/>
 							</div>
 						</TransitionGroup>
 					</div>
@@ -65,15 +75,21 @@ SPDX-License-Identifier: AGPL-3.0-only
 						:moveClass="$style.transition_picked_move"
 						mode="out-in"
 					>
-						<img v-if="currentPick" :key="currentPick.id" :src="currentPick?.fruit.img" :class="$style.currentFruit" :style="{ top: -(currentPick?.fruit.size / 2) + 'px', left: (mouseX - (currentPick?.fruit.size / 2)) + 'px', width: `${currentPick?.fruit.size}px` }"/>
+						<img v-if="currentPick" :key="currentPick.id" :src="currentPick?.mono.img" :class="$style.currentMono" :style="{ top: -(currentPick?.mono.size / 2) + 'px', left: (mouseX - (currentPick?.mono.size / 2)) + 'px', width: `${currentPick?.mono.size}px` }"/>
 					</Transition>
 					<template v-if="dropReady">
-						<img src="/client-assets/drop-and-fusion/drop-arrow.svg" :class="$style.currentFruitArrow" :style="{ top: (currentPick?.fruit.size / 2) + 10 + 'px', left: (mouseX - 10) + 'px', width: `20px` }"/>
+						<img src="/client-assets/drop-and-fusion/drop-arrow.svg" :class="$style.currentMonoArrow" :style="{ top: (currentPick?.mono.size / 2) + 10 + 'px', left: (mouseX - 10) + 'px', width: `20px` }"/>
 						<div :class="$style.dropGuide" :style="{ left: (mouseX - 2) + 'px' }"/>
 					</template>
 					<div v-if="gameOver" :class="$style.gameOverLabel">
-						<div>GAME OVER!</div>
-						<div>SCORE: <MkNumber :value="score"/></div>
+						<div class="_gaps_s">
+							<img src="/client-assets/drop-and-fusion/gameover.png" style="width: 200px; max-width: 100%; display: block; margin: auto; margin-bottom: -5px;"/>
+							<div>SCORE: <MkNumber :value="score"/></div>
+							<div class="_buttonsCenter">
+								<MkButton primary rounded @click="restart">Restart</MkButton>
+								<MkButton primary rounded @click="share">Share</MkButton>
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -101,8 +117,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import * as Matter from 'matter-js';
-import { Ref, onMounted, ref, shallowRef } from 'vue';
+import { onMounted, ref, shallowRef } from 'vue';
 import { EventEmitter } from 'eventemitter3';
+import * as Misskey from 'misskey-js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import * as sound from '@/scripts/sound.js';
 import MkRippleEffect from '@/components/MkRippleEffect.vue';
@@ -115,6 +132,8 @@ import { misskeyApi } from '@/scripts/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { useInterval } from '@/scripts/use-interval.js';
 import MkSelect from '@/components/MkSelect.vue';
+import { apiUrl } from '@/config.js';
+import { $i } from '@/account.js';
 
 type Mono = {
 	id: string;
@@ -365,8 +384,8 @@ const PHYSICS_QUALITY_FACTOR = 16; // 低いほどパフォーマンスが高い
 
 let viewScaleX = 1;
 let viewScaleY = 1;
-const currentPick = shallowRef<{ id: string; fruit: Mono } | null>(null);
-const stock = shallowRef<{ id: string; fruit: Mono }[]>([]);
+const currentPick = shallowRef<{ id: string; mono: Mono } | null>(null);
+const stock = shallowRef<{ id: string; mono: Mono }[]>([]);
 const score = ref(0);
 const combo = ref(0);
 const comboPrev = ref(0);
@@ -379,7 +398,7 @@ const highScore = ref<number | null>(null);
 class Game extends EventEmitter<{
 	changeScore: (score: number) => void;
 	changeCombo: (combo: number) => void;
-	changeStock: (stock: { id: string; fruit: Mono }[]) => void;
+	changeStock: (stock: { id: string; mono: Mono }[]) => void;
 	dropped: () => void;
 	fusioned: (x: number, y: number, score: number) => void;
 	gameOver: () => void;
@@ -405,7 +424,7 @@ class Game extends EventEmitter<{
 
 	private latestDroppedAt = 0;
 	private latestFusionedAt = 0;
-	private stock: { id: string; fruit: Mono }[] = [];
+	private stock: { id: string; mono: Mono }[] = [];
 
 	private _combo = 0;
 	private get combo() {
@@ -505,11 +524,11 @@ class Game extends EventEmitter<{
 		});
 	}
 
-	private createBody(fruit: Mono, x: number, y: number) {
+	private createBody(mono: Mono, x: number, y: number) {
 		const options: Matter.IBodyDefinition = {
-			label: fruit.id,
+			label: mono.id,
 			//density: 0.0005,
-			density: fruit.size / 1000,
+			density: mono.size / 1000,
 			restitution: 0.2,
 			frictionAir: 0.01,
 			friction: 0.7,
@@ -518,16 +537,16 @@ class Game extends EventEmitter<{
 			//mass: 0,
 			render: {
 				sprite: {
-					texture: fruit.img,
-					xScale: (fruit.size / fruit.imgSize) * fruit.spriteScale,
-					yScale: (fruit.size / fruit.imgSize) * fruit.spriteScale,
+					texture: mono.img,
+					xScale: (mono.size / mono.imgSize) * mono.spriteScale,
+					yScale: (mono.size / mono.imgSize) * mono.spriteScale,
 				},
 			},
 		};
-		if (fruit.shape === 'circle') {
-			return Matter.Bodies.circle(x, y, fruit.size / 2, options);
-		} else if (fruit.shape === 'rectangle') {
-			return Matter.Bodies.rectangle(x, y, fruit.size, fruit.size, options);
+		if (mono.shape === 'circle') {
+			return Matter.Bodies.circle(x, y, mono.size / 2, options);
+		} else if (mono.shape === 'rectangle') {
+			return Matter.Bodies.rectangle(x, y, mono.size, mono.size, options);
 		} else {
 			throw new Error('unrecognized shape');
 		}
@@ -549,11 +568,11 @@ class Game extends EventEmitter<{
 		Matter.Composite.remove(this.engine.world, [bodyA, bodyB]);
 		this.activeBodyIds = this.activeBodyIds.filter(x => x !== bodyA.id && x !== bodyB.id);
 
-		const currentFruit = this.monoDefinitions.find(y => y.id === bodyA.label)!;
-		const nextFruit = this.monoDefinitions.find(x => x.level === currentFruit.level + 1);
+		const currentMono = this.monoDefinitions.find(y => y.id === bodyA.label)!;
+		const nextMono = this.monoDefinitions.find(x => x.level === currentMono.level + 1);
 
-		if (nextFruit) {
-			const body = this.createBody(nextFruit, newX, newY);
+		if (nextMono) {
+			const body = this.createBody(nextMono, newX, newY);
 			Matter.Composite.add(this.engine.world, body);
 
 			// 連鎖してfusionした場合の分かりやすさのため少し間を置いてからfusion対象になるようにする
@@ -562,11 +581,11 @@ class Game extends EventEmitter<{
 			}, 100);
 
 			const comboBonus = 1 + ((this.combo - 1) / 5);
-			const additionalScore = Math.round(currentFruit.score * comboBonus);
+			const additionalScore = Math.round(currentMono.score * comboBonus);
 			this.score += additionalScore;
 
 			const pan = ((newX / GAME_WIDTH) - 0.5) * 2;
-			sound.playRaw('syuilo/bubble2', 1, pan, nextFruit.sfxPitch);
+			sound.playRaw('syuilo/bubble2', 1, pan, nextMono.sfxPitch);
 
 			this.emit('fusioned', newX, newY, additionalScore);
 		} else {
@@ -593,7 +612,7 @@ class Game extends EventEmitter<{
 		for (let i = 0; i < this.STOCK_MAX; i++) {
 			this.stock.push({
 				id: Math.random().toString(),
-				fruit: this.monoDefinitions.filter(x => x.dropCandidate)[Math.floor(Math.random() * this.monoDefinitions.filter(x => x.dropCandidate).length)],
+				mono: this.monoDefinitions.filter(x => x.dropCandidate)[Math.floor(Math.random() * this.monoDefinitions.filter(x => x.dropCandidate).length)],
 			});
 		}
 		this.emit('changeStock', this.stock);
@@ -654,12 +673,12 @@ class Game extends EventEmitter<{
 		const st = this.stock.shift()!;
 		this.stock.push({
 			id: Math.random().toString(),
-			fruit: this.monoDefinitions.filter(x => x.dropCandidate)[Math.floor(Math.random() * this.monoDefinitions.filter(x => x.dropCandidate).length)],
+			mono: this.monoDefinitions.filter(x => x.dropCandidate)[Math.floor(Math.random() * this.monoDefinitions.filter(x => x.dropCandidate).length)],
 		});
 		this.emit('changeStock', this.stock);
 
-		const x = Math.min(GAME_WIDTH - this.PLAYAREA_MARGIN - (st.fruit.size / 2), Math.max(this.PLAYAREA_MARGIN + (st.fruit.size / 2), _x));
-		const body = this.createBody(st.fruit, x, 50 + st.fruit.size / 2);
+		const x = Math.min(GAME_WIDTH - this.PLAYAREA_MARGIN - (st.mono.size / 2), Math.max(this.PLAYAREA_MARGIN + (st.mono.size / 2), _x));
+		const body = this.createBody(st.mono, x, 50 + st.mono.size / 2);
 		Matter.Composite.add(this.engine.world, body);
 		this.activeBodyIds.push(body.id);
 		this.latestDroppedBodyId = body.id;
@@ -681,7 +700,7 @@ class Game extends EventEmitter<{
 let game: Game;
 
 function onClick(ev: MouseEvent) {
-	const rect = containerEl.value.getBoundingClientRect();
+	const rect = containerEl.value!.getBoundingClientRect();
 
 	const x = (ev.clientX - rect.left) / viewScaleX;
 
@@ -689,7 +708,7 @@ function onClick(ev: MouseEvent) {
 }
 
 function onTouchend(ev: TouchEvent) {
-	const rect = containerEl.value.getBoundingClientRect();
+	const rect = containerEl.value!.getBoundingClientRect();
 
 	const x = (ev.changedTouches[0].clientX - rect.left) / viewScaleX;
 
@@ -697,11 +716,11 @@ function onTouchend(ev: TouchEvent) {
 }
 
 function onMousemove(ev: MouseEvent) {
-	mouseX.value = ev.clientX - containerEl.value.getBoundingClientRect().left;
+	mouseX.value = ev.clientX - containerEl.value!.getBoundingClientRect().left;
 }
 
 function onTouchmove(ev: TouchEvent) {
-	mouseX.value = ev.touches[0].clientX - containerEl.value.getBoundingClientRect().left;
+	mouseX.value = ev.touches[0].clientX - containerEl.value!.getBoundingClientRect().left;
 }
 
 function restart() {
@@ -786,6 +805,46 @@ async function start() {
 	});
 	attachGame();
 	game.start();
+}
+
+function getGameImageDriveFile() {
+	return new Promise<Misskey.entities.DriveFile | null>(res => {
+		canvasEl.value?.toBlob(blob => {
+			if (!blob) return res(null);
+			if ($i == null) return res(null);
+			const formData = new FormData();
+			formData.append('file', blob);
+			formData.append('name', `bubble-game-${Date.now()}.png`);
+			formData.append('isSensitive', 'false');
+			formData.append('comment', 'null');
+			formData.append('i', $i.token);
+			if (defaultStore.state.uploadFolder) {
+				formData.append('folderId', defaultStore.state.uploadFolder);
+			}
+
+			window.fetch(apiUrl + '/drive/files/create', {
+				method: 'POST',
+				body: formData,
+			})
+				.then(response => response.json())
+				.then(f => {
+					res(f);
+				});
+		}, 'image/png');
+	});
+}
+
+async function share() {
+	const uploading = getGameImageDriveFile();
+	os.promiseDialog(uploading);
+	const file = await uploading;
+	if (!file) return;
+	os.post({
+		initialText: `#BubbleGame
+MODE: ${gameMode.value}
+SCORE: ${score.value}`,
+		initialFiles: [file],
+	});
 }
 
 useInterval(() => {
@@ -926,7 +985,7 @@ definePageMetadata({
 	user-select: none;
 }
 
-.currentFruit {
+.currentMono {
 	position: absolute;
 	margin-top: 80px;
 	z-index: 2;
@@ -947,11 +1006,11 @@ definePageMetadata({
 	user-select: none;
 }
 
-.currentFruitArrow {
+.currentMonoArrow {
 	position: absolute;
 	margin-top: 100px;
 	z-index: 3;
-	animation: currentFruitArrow 2s ease infinite;
+	animation: currentMonoArrow 2s ease infinite;
 	pointer-events: none;
 	user-select: none;
 }
@@ -986,7 +1045,7 @@ definePageMetadata({
 	}
 }
 
-@keyframes currentFruitArrow {
+@keyframes currentMonoArrow {
 	0% { transform: translateY(0); }
 	25% { transform: translateY(-8px); }
 	50% { transform: translateY(0); }
