@@ -24,9 +24,6 @@
 	},
 	"devDependencies": {
 		"@misskey-dev/eslint-plugin": "1.0.0",
-		"@types/matter-js": "0.19.6",
-		"@types/node": "20.11.5",
-		"@types/seedrandom": "3.0.8",
 		"@typescript-eslint/eslint-plugin": "6.19.0",
 		"@typescript-eslint/parser": "6.19.0",
 		"eslint": "8.56.0",
@@ -37,6 +34,9 @@
 		"built"
 	],
 	"dependencies": {
+		"@types/matter-js": "0.19.6",
+		"@types/node": "20.11.5",
+		"@types/seedrandom": "3.0.8",
 		"eventemitter3": "5.0.1",
 		"matter-js": "0.19.0",
 		"seedrandom": "3.0.5"

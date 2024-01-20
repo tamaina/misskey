@@ -1028,6 +1028,15 @@ importers:
 
   packages/misskey-bubble-game:
     dependencies:
+      '@types/matter-js':
+        specifier: 0.19.6
+        version: 0.19.6
+      '@types/node':
+        specifier: 20.11.5
+        version: 20.11.5
+      '@types/seedrandom':
+        specifier: 3.0.8
+        version: 3.0.8
       eventemitter3:
         specifier: 5.0.1
         version: 5.0.1
@@ -1041,15 +1050,6 @@ importers:
       '@misskey-dev/eslint-plugin':
         specifier: 1.0.0
         version: 1.0.0(@typescript-eslint/eslint-plugin@6.19.0)(@typescript-eslint/parser@6.19.0)(eslint-plugin-import@2.29.1)(eslint@8.56.0)
-      '@types/matter-js':
-        specifier: 0.19.6
-        version: 0.19.6
-      '@types/node':
-        specifier: 20.11.5
-        version: 20.11.5
-      '@types/seedrandom':
-        specifier: 3.0.8
-        version: 3.0.8
       '@typescript-eslint/eslint-plugin':
         specifier: 6.19.0
         version: 6.19.0(@typescript-eslint/parser@6.19.0)(eslint@8.56.0)(typescript@5.3.3)
@@ -8334,7 +8334,7 @@ packages:
 
   /@types/matter-js@0.19.6:
     resolution: {integrity: sha512-ffk6tqJM5scla+ThXmnox+mdfCo3qYk6yMjQsNcrbo6eQ5DqorVdtnaL+1agCoYzxUjmHeiNB7poBMAmhuLY7w==}
-    dev: true
+    dev: false
 
   /@types/mdx@2.0.3:
     resolution: {integrity: sha512-IgHxcT3RC8LzFLhKwP3gbMPeaK7BM9eBH46OdapPA7yvuIUJ8H6zHZV53J8hGZcTSnt95jANt+rTBNUUc22ACQ==}
@@ -8528,7 +8528,7 @@ packages:
 
   /@types/seedrandom@3.0.8:
     resolution: {integrity: sha512-TY1eezMU2zH2ozQoAFAQFOPpvP15g+ZgSfTZt31AUUH/Rxtnz3H+A/Sv1Snw2/amp//omibc+AEkTaA8KUeOLQ==}
-    dev: true
+    dev: false
 
   /@types/semver@7.5.6:
     resolution: {integrity: sha512-dn1l8LaMea/IjDoHNd9J52uBbInB796CDffS6VdIxvqYCPSG0V0DzHp76GpaWnlhg88uYyPbXCDIowa86ybd5A==}
