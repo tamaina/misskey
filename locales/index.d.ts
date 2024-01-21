@@ -9553,6 +9553,20 @@ export interface Locale extends ILocale {
          * 対戦相手を探しています
          */
         "lookingForPlayer": string;
+        /**
+         * 対局がキャンセルされました
+         */
+        "gameCanceled": string;
+    };
+    "_offlineScreen": {
+        /**
+         * オフライン - サーバーに接続できません
+         */
+        "title": string;
+        /**
+         * サーバーに接続できません
+         */
+        "header": string;
     };
 }
 declare const locales: {
