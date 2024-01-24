@@ -9591,6 +9591,18 @@ export interface Locale extends ILocale {
          * 対局を開始しました！ #MisskeyReversi
          */
         "iStartedAGame": string;
+        /**
+         * 相手が設定を変更しました
+         */
+        "opponentHasSettingsChanged": string;
+        /**
+         * 変則許可 (完全フリー)
+         */
+        "allowIrregularRules": string;
+        /**
+         * 変則なし
+         */
+        "disallowIrregularRules": string;
     };
     "_offlineScreen": {
         /**
