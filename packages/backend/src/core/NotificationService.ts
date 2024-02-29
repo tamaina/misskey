@@ -163,6 +163,8 @@ export class NotificationService implements OnApplicationShutdown {
 
 		const packed = await this.notificationEntityService.pack(notification, notifieeId, {});
 
+		if (packed == null) return null;
+
 		// Publish notification event
 		this.globalEventService.publishMainStream(notifieeId, 'notification', packed);
 
@@ -210,6 +212,15 @@ export class NotificationService implements OnApplicationShutdown {
 		// TODO: render user information html
 		sendEmail(userProfile.email, i18n.t('_email._receiveFollowRequest.title'), `${follower.name} (@${Acct.toString(follower)})`, `${follower.name} (@${Acct.toString(follower)})`);
 		*/
+	}
+
+	@bindThis
+	public async flushAllNotifications(userId: MiUser['id']) {
+		await Promise.all([
+			this.redisClient.del(`notificationTimeline:${userId}`),
+			this.redisClient.del(`latestReadNotification:${userId}`),
+		]);
+		this.globalEventService.publishMainStream(userId, 'notificationFlushed');
 	}
 
 	@bindThis
