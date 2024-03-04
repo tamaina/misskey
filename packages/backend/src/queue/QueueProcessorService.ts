@@ -71,7 +71,11 @@ function getJobInfo(job: Bull.Job | undefined, increment = false): string {
 function renderError(e: Error): any {
 	if (e) { // 何故かeがundefinedで来ることがある
 		return {
-			...e,
+			...Object.getOwnPropertyNames(e).reduce((acc, key) => {
+				//@ts-expect-error Element implicitly has an 'any' type because expression of type 'string' can't be used to index type 'Error'.
+				acc[key] = e[key];
+				return acc;
+			}, {} as Record<string, any>),
 			stack: e.stack?.split('\n').map(s => s.trim()),
 		};
 	} else {
@@ -155,7 +159,7 @@ export class QueueProcessorService implements OnApplicationShutdown {
 			.on('active', (job) => systemLogger.debug(`active id=${job.id}`))
 			.on('completed', (job, result) => systemLogger.debug(`completed(${result}) id=${job.id}`))
 			.on('failed', (job, err) => systemLogger.warn(`failed(${err.message}) id=${job ? job.id : '-'}`, { data: job?.data, e: renderError(err) }))
-			.on('error', (err: Error) => systemLogger.error(`error`, { e: renderError(err) }))
+			.on('error', (err: Error) => systemLogger.error('error', { e: renderError(err) }))
 			.on('stalled', (jobId) => systemLogger.warn(`stalled id=${jobId}`));
 		//#endregion
 
@@ -243,7 +247,7 @@ export class QueueProcessorService implements OnApplicationShutdown {
 			.on('completed', (job, result) => inboxLogger.debug(`completed(${result}) ${getJobInfo(job, true)}`))
 			.on('failed', (job, err) => inboxLogger.warn(
 				`failed(${err.message}) ${getJobInfo(job)} activity=${job ? (job.data.activity ? job.data.activity.id : 'none') : '-'}`,
-				{ data: job?.data, e: renderError(err) }
+				{ data: job?.data, e: renderError(err) },
 			))
 			.on('error', (err: Error) => inboxLogger.error('error', { e: renderError(err) }))
 			.on('stalled', (jobId) => inboxLogger.warn(`stalled id=${jobId}`));
