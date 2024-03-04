@@ -3,11 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import * as crypto from 'node:crypto';
 import { IncomingMessage } from 'node:http';
 import { Inject, Injectable } from '@nestjs/common';
 import fastifyAccepts from '@fastify/accepts';
-import httpSignature from '@peertube/http-signature';
+import { verifyDigestHeader, parseRequestSignature } from '@misskey-dev/node-http-message-signatures';
 import { Brackets, In, IsNull, LessThan, Not } from 'typeorm';
 import accepts from 'accepts';
 import vary from 'vary';
@@ -100,66 +99,24 @@ export class ActivityPubServerService {
 	}
 
 	@bindThis
-	private inbox(request: FastifyRequest, reply: FastifyReply) {
-		let signature;
+	private async inbox(request: FastifyRequest, reply: FastifyReply) {
+		let signature: ReturnType<typeof parseRequestSignature>;
+
+		const verifyDigest = await verifyDigestHeader(request.raw, request.rawBody || '', true);
+		if (!verifyDigest) {
+			reply.code(401);
+			return;
+		}
 
 		try {
-			signature = httpSignature.parseRequest(request.raw, { 'headers': [] });
+			signature = parseRequestSignature(request.raw, {
+				requiredInputs: {
+					draft: ['(request-target)', 'digest', 'host', 'date'],
+				},
+			});
 		} catch (e) {
 			reply.code(401);
 			return;
-		}
-
-		if (signature.params.headers.indexOf('host') === -1
-			|| request.headers.host !== this.config.host) {
-			// Host not specified or not match.
-			reply.code(401);
-			return;
-		}
-
-		if (signature.params.headers.indexOf('digest') === -1) {
-			// Digest not found.
-			reply.code(401);
-		} else {
-			const digest = request.headers.digest;
-
-			if (typeof digest !== 'string') {
-				// Huh?
-				reply.code(401);
-				return;
-			}
-
-			const re = /^([a-zA-Z0-9\-]+)=(.+)$/;
-			const match = digest.match(re);
-
-			if (match == null) {
-				// Invalid digest
-				reply.code(401);
-				return;
-			}
-
-			const algo = match[1].toUpperCase();
-			const digestValue = match[2];
-
-			if (algo !== 'SHA-256') {
-				// Unsupported digest algorithm
-				reply.code(401);
-				return;
-			}
-
-			if (request.rawBody == null) {
-				// Bad request
-				reply.code(400);
-				return;
-			}
-
-			const hash = crypto.createHash('sha256').update(request.rawBody).digest('base64');
-
-			if (hash !== digestValue) {
-				// Invalid digest
-				reply.code(401);
-				return;
-			}
 		}
 
 		this.queueService.inbox(request.body as IActivity, signature);
@@ -640,7 +597,7 @@ export class ActivityPubServerService {
 			if (this.userEntityService.isLocalUser(user)) {
 				reply.header('Cache-Control', 'public, max-age=180');
 				this.setResponseType(request, reply);
-				return (this.apRendererService.addContext(this.apRendererService.renderKey(user, keypair)));
+				return (this.apRendererService.addContext(this.apRendererService.renderKey(user, keypair.publicKey)));
 			} else {
 				reply.code(400);
 				return;

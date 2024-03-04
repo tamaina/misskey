@@ -15,6 +15,7 @@ import { LoggerService } from '@/core/LoggerService.js';
 import { HttpRequestService } from '@/core/HttpRequestService.js';
 import { bindThis } from '@/decorators.js';
 import { FederatedInstanceService } from '@/core/FederatedInstanceService.js';
+import { REMOTE_SERVER_CACHE_TTL } from '@/const.js';
 import type { DOMWindow } from 'jsdom';
 
 type NodeInfo = {
@@ -24,6 +25,7 @@ type NodeInfo = {
 		version?: unknown;
 	};
 	metadata?: {
+		httpMessageSignaturesImplementationLevel?: unknown,
 		name?: unknown;
 		nodeName?: unknown;
 		nodeDescription?: unknown;
@@ -39,6 +41,7 @@ type NodeInfo = {
 @Injectable()
 export class FetchInstanceMetadataService {
 	private logger: Logger;
+	private httpColon = 'https://';
 
 	constructor(
 		private httpRequestService: HttpRequestService,
@@ -48,10 +51,12 @@ export class FetchInstanceMetadataService {
 		private redisClient: Redis.Redis,
 	) {
 		this.logger = this.loggerService.getLogger('metadata', 'cyan');
+		this.httpColon = process.env.MISSKEY_USE_HTTP?.toLowerCase() === 'true' ? 'http://' : 'https://';
 	}
 
 	@bindThis
-	private async tryLock(host: string): Promise<string | null> {
+	// public for test
+	public async tryLock(host: string): Promise<string | null> {
 		// TODO: マイグレーションなのであとで消す (2024.3.1)
 		this.redisClient.del(`fetchInstanceMetadata:mutex:${host}`);
 
@@ -63,13 +68,21 @@ export class FetchInstanceMetadataService {
 	}
 
 	@bindThis
-	private unlock(host: string): Promise<number> {
+	// public for test
+	public unlock(host: string): Promise<number> {
 		return this.redisClient.del(`fetchInstanceMetadata:mutex:v2:${host}`);
 	}
 
 	@bindThis
 	public async fetchInstanceMetadata(instance: MiInstance, force = false): Promise<void> {
 		const host = instance.host;
+
+		// finallyでunlockされてしまうのでtry内でロックチェックをしない
+		// （returnであってもfinallyは実行される）
+		if (!force && await this.tryLock(host) === '1') {
+			// 1が返ってきていたらロックされているという意味なので、何もしない
+			return;
+		}
 
 		try {
 			if (!force) {
@@ -80,9 +93,8 @@ export class FetchInstanceMetadataService {
 
 				const _instance = await this.federatedInstanceService.fetch(host);
 				const now = Date.now();
-				if (_instance && _instance.infoUpdatedAt && (now - _instance.infoUpdatedAt.getTime() < 1000 * 60 * 60 * 24)) {
-					// unlock at the finally caluse
-					return;
+				if (_instance && _instance.infoUpdatedAt && (now - _instance.infoUpdatedAt.getTime() < REMOTE_SERVER_CACHE_TTL)) {
+					throw new Error(`Skip because updated recently ${_instance.infoUpdatedAt.toJSON()}`);
 				}
 			}
 
@@ -114,6 +126,14 @@ export class FetchInstanceMetadataService {
 				updates.openRegistrations = info.openRegistrations;
 				updates.maintainerName = info.metadata ? info.metadata.maintainer ? (info.metadata.maintainer.name ?? null) : null : null;
 				updates.maintainerEmail = info.metadata ? info.metadata.maintainer ? (info.metadata.maintainer.email ?? null) : null : null;
+				if (info.metadata && info.metadata.httpMessageSignaturesImplementationLevel && (
+					info.metadata.httpMessageSignaturesImplementationLevel === '01' ||
+					info.metadata.httpMessageSignaturesImplementationLevel === '11'
+				)) {
+					updates.httpMessageSignaturesImplementationLevel = info.metadata.httpMessageSignaturesImplementationLevel;
+				} else {
+					updates.httpMessageSignaturesImplementationLevel = '00';
+				}
 			}
 
 			if (name) updates.name = name;
@@ -125,6 +145,12 @@ export class FetchInstanceMetadataService {
 			await this.federatedInstanceService.update(instance.id, updates);
 
 			this.logger.succ(`Successfuly updated metadata of ${instance.host}`);
+			this.logger.debug('Updated metadata:', {
+				info: !!info,
+				dom: !!dom,
+				manifest: !!manifest,
+				updates,
+			});
 		} catch (e) {
 			this.logger.error(`Failed to update metadata of ${instance.host}: ${e}`);
 		} finally {
@@ -137,7 +163,7 @@ export class FetchInstanceMetadataService {
 		this.logger.info(`Fetching nodeinfo of ${instance.host} ...`);
 
 		try {
-			const wellknown = await this.httpRequestService.getJson('https://' + instance.host + '/.well-known/nodeinfo')
+			const wellknown = await this.httpRequestService.getJson(this.httpColon + instance.host + '/.well-known/nodeinfo')
 				.catch(err => {
 					if (err.statusCode === 404) {
 						throw new Error('No nodeinfo provided');
@@ -180,7 +206,7 @@ export class FetchInstanceMetadataService {
 	private async fetchDom(instance: MiInstance): Promise<DOMWindow['document']> {
 		this.logger.info(`Fetching HTML of ${instance.host} ...`);
 
-		const url = 'https://' + instance.host;
+		const url = this.httpColon + instance.host;
 
 		const html = await this.httpRequestService.getHtml(url);
 
@@ -192,7 +218,7 @@ export class FetchInstanceMetadataService {
 
 	@bindThis
 	private async fetchManifest(instance: MiInstance): Promise<Record<string, unknown> | null> {
-		const url = 'https://' + instance.host;
+		const url = this.httpColon + instance.host;
 
 		const manifestUrl = url + '/manifest.json';
 
@@ -203,7 +229,7 @@ export class FetchInstanceMetadataService {
 
 	@bindThis
 	private async fetchFaviconUrl(instance: MiInstance, doc: DOMWindow['document'] | null): Promise<string | null> {
-		const url = 'https://' + instance.host;
+		const url = this.httpColon + instance.host;
 
 		if (doc) {
 			// https://github.com/misskey-dev/misskey/pull/8220#issuecomment-1025104043
@@ -230,12 +256,12 @@ export class FetchInstanceMetadataService {
 	@bindThis
 	private async fetchIconUrl(instance: MiInstance, doc: DOMWindow['document'] | null, manifest: Record<string, any> | null): Promise<string | null> {
 		if (manifest && manifest.icons && manifest.icons.length > 0 && manifest.icons[0].src) {
-			const url = 'https://' + instance.host;
+			const url = this.httpColon + instance.host;
 			return (new URL(manifest.icons[0].src, url)).href;
 		}
 
 		if (doc) {
-			const url = 'https://' + instance.host;
+			const url = this.httpColon + instance.host;
 
 			// https://github.com/misskey-dev/misskey/pull/8220#issuecomment-1025104043
 			const links = Array.from(doc.getElementsByTagName('link')).reverse();

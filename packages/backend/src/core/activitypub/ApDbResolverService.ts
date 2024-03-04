@@ -5,7 +5,7 @@
 
 import { Inject, Injectable, OnApplicationShutdown } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
-import type { NotesRepository, UserPublickeysRepository, UsersRepository } from '@/models/_.js';
+import type { MiUser, NotesRepository, UserPublickeysRepository, UsersRepository } from '@/models/_.js';
 import type { Config } from '@/config.js';
 import { MemoryKVCache } from '@/misc/cache.js';
 import type { MiUserPublickey } from '@/models/UserPublickey.js';
@@ -35,8 +35,7 @@ export type UriParseResult = {
 
 @Injectable()
 export class ApDbResolverService implements OnApplicationShutdown {
-	private publicKeyCache: MemoryKVCache<MiUserPublickey | null>;
-	private publicKeyByUserIdCache: MemoryKVCache<MiUserPublickey | null>;
+	private publicKeyByUserIdCache: MemoryKVCache<MiUserPublickey[] | null>;
 
 	constructor(
 		@Inject(DI.config)
@@ -54,8 +53,7 @@ export class ApDbResolverService implements OnApplicationShutdown {
 		private cacheService: CacheService,
 		private apPersonService: ApPersonService,
 	) {
-		this.publicKeyCache = new MemoryKVCache<MiUserPublickey | null>(Infinity);
-		this.publicKeyByUserIdCache = new MemoryKVCache<MiUserPublickey | null>(Infinity);
+		this.publicKeyByUserIdCache = new MemoryKVCache<MiUserPublickey[] | null>(Infinity);
 	}
 
 	@bindThis
@@ -116,62 +114,90 @@ export class ApDbResolverService implements OnApplicationShutdown {
 		}
 	}
 
-	/**
-	 * AP KeyId => Misskey User and Key
-	 */
 	@bindThis
-	public async getAuthUserFromKeyId(keyId: string): Promise<{
-		user: MiRemoteUser;
-		key: MiUserPublickey;
-	} | null> {
-		const key = await this.publicKeyCache.fetch(keyId, async () => {
-			const key = await this.userPublickeysRepository.findOneBy({
-				keyId,
-			});
+	private async refreshAndfindKey(userId: MiUser['id'], keyId: string): Promise<MiUserPublickey | null> {
+		this.refreshCacheByUserId(userId);
+		const keys = await this.getPublicKeyByUserId(userId);
+		if (keys == null || !Array.isArray(keys)) return null;
 
-			if (key == null) return null;
-
-			return key;
-		}, key => key != null);
-
-		if (key == null) return null;
-
-		const user = await this.cacheService.findUserById(key.userId).catch(() => null) as MiRemoteUser | null;
-		if (user == null) return null;
-		if (user.isDeleted) return null;
-
-		return {
-			user,
-			key,
-		};
+		return keys.find(x => x.keyId === keyId) ?? null;
 	}
 
 	/**
 	 * AP Actor id => Misskey User and Key
+	 * @param uri AP Actor id
+	 * @param keyId Key id to find. If not specified, main key will be selected.
 	 */
 	@bindThis
-	public async getAuthUserFromApId(uri: string): Promise<{
+	public async getAuthUserFromApId(uri: string, keyId?: string): Promise<{
 		user: MiRemoteUser;
 		key: MiUserPublickey | null;
 	} | null> {
-		const user = await this.apPersonService.resolvePerson(uri) as MiRemoteUser;
+		const user = await this.apPersonService.resolvePerson(uri, undefined, true) as MiRemoteUser;
 		if (user.isDeleted) return null;
 
-		const key = await this.publicKeyByUserIdCache.fetch(
-			user.id,
-			() => this.userPublickeysRepository.findOneBy({ userId: user.id }),
+		const keys = await this.getPublicKeyByUserId(user.id);
+
+		if (keys == null || !Array.isArray(keys)) return { user, key: null };
+
+		if (!keyId) {
+			// mainっぽいのを選ぶ
+			const mainKey = keys.find(x => {
+				try {
+					const url = new URL(x.keyId);
+					const path = url.pathname.split('/').pop()?.toLowerCase();
+					if (url.hash) {
+						if (url.hash.toLowerCase().includes('main')) {
+							return true;
+						}
+					} else if (path?.includes('main') || path === 'publickey') {
+						return true;
+					}
+				} catch { /* noop */ }
+
+				return false;
+			});
+			return { user, key: mainKey ?? keys[0] };
+		}
+
+		const exactKey = keys.find(x => x.keyId === keyId);
+		if (exactKey) return { user, key: exactKey };
+
+		// keyIdで見つからない場合
+		// まずはキャッシュを更新して再取得
+		const cacheRaw = this.publicKeyByUserIdCache.cache.get(user.id);
+		if (cacheRaw && cacheRaw.date > Date.now() - 1000 * 60 * 12) {
+			const exactKey = await this.refreshAndfindKey(user.id, keyId);
+			if (exactKey) return { user, key: exactKey };
+		}
+
+		// lastFetchedAtでの更新制限を弱めて再取得
+		if (user.lastFetchedAt == null || user.lastFetchedAt < new Date(Date.now() - 1000 * 60 * 12)) {
+			const renewed = await this.apPersonService.fetchPersonWithRenewal(uri, 0);
+			if (renewed == null || renewed.isDeleted) return null;
+
+			return { user, key: await this.refreshAndfindKey(user.id, keyId) };
+		}
+
+		return { user, key: null };
+	}
+
+	@bindThis
+	public async getPublicKeyByUserId(userId: MiUser['id']): Promise<MiUserPublickey[] | null> {
+		return await this.publicKeyByUserIdCache.fetch(
+			userId,
+			() => this.userPublickeysRepository.find({ where: { userId } }),
 			v => v != null,
 		);
+	}
 
-		return {
-			user,
-			key,
-		};
+	@bindThis
+	public refreshCacheByUserId(userId: MiUser['id']): void {
+		this.publicKeyByUserIdCache.delete(userId);
 	}
 
 	@bindThis
 	public dispose(): void {
-		this.publicKeyCache.dispose();
 		this.publicKeyByUserIdCache.dispose();
 	}
 

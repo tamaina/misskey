@@ -5,8 +5,8 @@
 
 import { URL } from 'node:url';
 import { Injectable } from '@nestjs/common';
-import httpSignature from '@peertube/http-signature';
 import * as Bull from 'bullmq';
+import { verifyDraftSignature } from '@misskey-dev/node-http-message-signatures';
 import type Logger from '@/logger.js';
 import { MetaService } from '@/core/MetaService.js';
 import { FederatedInstanceService } from '@/core/FederatedInstanceService.js';
@@ -19,6 +19,7 @@ import type { MiRemoteUser } from '@/models/User.js';
 import type { MiUserPublickey } from '@/models/UserPublickey.js';
 import { ApDbResolverService } from '@/core/activitypub/ApDbResolverService.js';
 import { StatusError } from '@/misc/status-error.js';
+import * as Acct from '@/misc/acct.js';
 import { UtilityService } from '@/core/UtilityService.js';
 import { ApPersonService } from '@/core/activitypub/models/ApPersonService.js';
 import { LdSignatureService } from '@/core/activitypub/LdSignatureService.js';
@@ -51,7 +52,7 @@ export class InboxProcessorService {
 
 	@bindThis
 	public async process(job: Bull.Job<InboxJobData>): Promise<string> {
-		const signature = job.data.signature;	// HTTP-signature
+		const signature = 'version' in job.data.signature ? job.data.signature.value : job.data.signature;
 		const activity = job.data.activity;
 
 		//#region Log
@@ -77,20 +78,17 @@ export class InboxProcessorService {
 		let authUser: {
 			user: MiRemoteUser;
 			key: MiUserPublickey | null;
-		} | null = await this.apDbResolverService.getAuthUserFromKeyId(signature.keyId);
+		} | null = null;
 
-		// keyIdでわからなければ、activity.actorを元にDBから取得 || activity.actorを元にリモートから取得
-		if (authUser == null) {
-			try {
-				authUser = await this.apDbResolverService.getAuthUserFromApId(getApId(activity.actor));
-			} catch (err) {
-				// 対象が4xxならスキップ
-				if (err instanceof StatusError) {
-					if (!err.isRetryable) {
-						throw new Bull.UnrecoverableError(`skip: Ignored deleted actors on both ends ${activity.actor} - ${err.statusCode}`);
-					}
-					throw new Error(`Error in actor ${activity.actor} - ${err.statusCode}`);
+		try {
+			authUser = await this.apDbResolverService.getAuthUserFromApId(getApId(activity.actor), signature.keyId);
+		} catch (err) {
+			// 対象が4xxならスキップ
+			if (err instanceof StatusError) {
+				if (!err.isRetryable) {
+					throw new Bull.UnrecoverableError(`skip: Ignored deleted actors on both ends ${activity.actor} - ${err.statusCode}`);
 				}
+				throw new Error(`Error in actor ${activity.actor} - ${err.statusCode}`);
 			}
 		}
 
@@ -105,25 +103,26 @@ export class InboxProcessorService {
 		}
 
 		// HTTP-Signatureの検証
-		const httpSignatureValidated = httpSignature.verifySignature(signature, authUser.key.keyPem);
+		const errorLogger = (ms: any) => this.logger.error(ms);
+		const httpSignatureValidated = await verifyDraftSignature(signature, authUser.key.keyPem, errorLogger);
+		this.logger.debug('Inbox message validation: ', {
+			userId: authUser.user.id,
+			userAcct: Acct.toString(authUser.user),
+			parsedKeyId: signature.keyId,
+			foundKeyId: authUser.key.keyId,
+			httpSignatureValidated,
+		});
 
 		// また、signatureのsignerは、activity.actorと一致する必要がある
 		if (!httpSignatureValidated || authUser.user.uri !== activity.actor) {
 			// 一致しなくても、でもLD-Signatureがありそうならそっちも見る
-			if (activity.signature) {
+			if (activity.signature?.creator) {
 				if (activity.signature.type !== 'RsaSignature2017') {
 					throw new Bull.UnrecoverableError(`skip: unsupported LD-signature type ${activity.signature.type}`);
 				}
 
-				// activity.signature.creator: https://example.oom/users/user#main-key
-				// みたいになっててUserを引っ張れば公開キーも入ることを期待する
-				if (activity.signature.creator) {
-					const candicate = activity.signature.creator.replace(/#.*/, '');
-					await this.apPersonService.resolvePerson(candicate).catch(() => null);
-				}
+				authUser = await this.apDbResolverService.getAuthUserFromApId(activity.signature.creator.replace(/#.*/, ''));
 
-				// keyIdからLD-Signatureのユーザーを取得
-				authUser = await this.apDbResolverService.getAuthUserFromKeyId(activity.signature.creator);
 				if (authUser == null) {
 					throw new Bull.UnrecoverableError('skip: LD-Signatureのユーザーが取得できませんでした');
 				}

@@ -250,15 +250,15 @@ export class ApRendererService {
 	}
 
 	@bindThis
-	public renderKey(user: MiLocalUser, key: MiUserKeypair, postfix?: string): IKey {
+	public renderKey(user: MiLocalUser, publicKey: string, postfix?: string): IKey {
 		return {
 			id: `${this.config.url}/users/${user.id}${postfix ?? '/publickey'}`,
 			type: 'Key',
 			owner: this.userEntityService.genLocalUserUri(user.id),
-			publicKeyPem: createPublicKey(key.publicKey).export({
+			publicKeyPem: createPublicKey(publicKey).export({
 				type: 'spki',
 				format: 'pem',
-			}),
+			}) as string,
 		};
 	}
 
@@ -498,7 +498,10 @@ export class ApRendererService {
 			tag,
 			manuallyApprovesFollowers: user.isLocked,
 			discoverable: user.isExplorable,
-			publicKey: this.renderKey(user, keypair, '#main-key'),
+			publicKey: this.renderKey(user, keypair.publicKey, '#main-key'),
+			additionalPublicKeys: [
+				...(keypair.ed25519PublicKey ? [this.renderKey(user, keypair.ed25519PublicKey, '#ed25519-key')] : []),
+			],
 			isCat: user.isCat,
 			attachment: attachment.length ? attachment : undefined,
 		};
@@ -645,6 +648,7 @@ export class ApRendererService {
 					'_misskey_votes': 'misskey:_misskey_votes',
 					'_misskey_summary': 'misskey:_misskey_summary',
 					'isCat': 'misskey:isCat',
+					additionalPublicKeys: 'misskey:additionalPublicKeys',
 					// vcard
 					vcard: 'http://www.w3.org/2006/vcard/ns#',
 				},
