@@ -12,7 +12,7 @@ import type { KEYWORD } from 'color-convert/conversions.js';
 // eslint-disable-next-line import/no-default-export
 export default class Logger {
 	private readonly domain: string;
-	private logger: pino.Logger;
+	private logger: null;
 
 	constructor(domain: string, _color?: KEYWORD, _store = true, parentLogger?: Logger) {
 		if (parentLogger) {
@@ -21,35 +21,7 @@ export default class Logger {
 			this.domain = domain;
 		}
 
-		this.logger = pino({
-			name: this.domain,
-			level: envOption.verbose ? 'debug' : 'info',
-			depthLimit: 8,
-			edgeLimit: 128,
-			redact: ['context.password', 'context.token'],
-			enabled: !envOption.quiet || envOption.logJson,
-			timestamp: envOption.withLogTime || envOption.logJson ? pino.stdTimeFunctions.isoTime : false,
-			messageKey: 'message',
-			errorKey: 'error',
-			formatters: {
-				level: (label, number) => ({ severity: label, level: number }),
-			},
-			mixin: () => ({ cluster: cluster.isPrimary ? 'primary' : `worker#${cluster.worker!.id}` }),
-			transport: !envOption.logJson ? {
-				target: 'pino-pretty',
-				options: {
-					colorize: true,
-					colorizeObjects: true,
-					levelFirst: false,
-					levelKey: 'level',
-					timestampKey: 'time',
-					messageKey: 'message',
-					errorLikeObjectKeys: ['e', 'err', 'error', 'context.e', 'context.err', 'context.error'],
-					ignore: 'severity,pid,hostname,cluster,important',
-					messageFormat: '@{cluster} | {message}',
-				},
-			} : undefined,
-		});
+		this.logger = null;
 	}
 
 	@bindThis
