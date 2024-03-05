@@ -65,17 +65,17 @@ export default class Logger {
 			context = context ?? {};
 			context.error = x;
 
-			if (important) this.logger.fatal({ context, important }, x.toString());
-			else this.logger.error({ context, important }, x.toString());
+			//if (important) this.logger.fatal({ context, important }, x.toString());
+			//else this.logger.error({ context, important }, x.toString());
 		} else if (typeof x === 'object') {
 			context = context ?? {};
 			context.error = context.error ?? x;
 
-			if (important) this.logger.fatal({ context, important }, `${(x as any).message ?? (x as any).name ?? x}`);
-			else this.logger.error({ context, important }, `${(x as any).message ?? (x as any).name ?? x}`);
+			//if (important) this.logger.fatal({ context, important }, `${(x as any).message ?? (x as any).name ?? x}`);
+			//else this.logger.error({ context, important }, `${(x as any).message ?? (x as any).name ?? x}`);
 		} else {
-			if (important) this.logger.fatal({ context, important }, x);
-			else this.logger.error({ context, important }, x);
+			//if (important) this.logger.fatal({ context, important }, x);
+			//else this.logger.error({ context, important }, x);
 		}
 	}
 
@@ -87,14 +87,14 @@ export default class Logger {
 			context = context ?? {};
 			context.error = x;
 
-			this.logger.warn({ context, important }, x.toString());
+			//this.logger.warn({ context, important }, x.toString());
 		} else if (typeof x === 'object') {
 			context = context ?? {};
 			context.error = context.error ?? x;
 
-			this.logger.warn({ context, important }, `${(x as any).message ?? (x as any).name ?? x}`);
+			//this.logger.warn({ context, important }, `${(x as any).message ?? (x as any).name ?? x}`);
 		} else {
-			this.logger.warn({ context, important }, x);
+			//this.logger.warn({ context, important }, x);
 		}
 	}
 
@@ -102,20 +102,20 @@ export default class Logger {
 	public succ(message: string, context?: Record<string, any> | null, important = false): void { // 何かに成功した状況で使う
 		if (context === null) context = undefined;
 
-		this.logger.trace({ context, important }, message);
+		//this.logger.trace({ context, important }, message);
 	}
 
 	@bindThis
 	public debug(message: string, context?: Record<string, any> | null, important = false): void { // デバッグ用に使う(開発者に必要だが利用者に不要な情報)
 		if (context === null) context = undefined;
 
-		this.logger.debug({ context, important }, message);
+		//this.logger.debug({ context, important }, message);
 	}
 
 	@bindThis
 	public info(message: string, context?: Record<string, any> | null, important = false): void { // それ以外
 		if (context === null) context = undefined;
 
-		this.logger.info({ context, important }, message);
+		//this.logger.info({ context, important }, message);
 	}
 }
