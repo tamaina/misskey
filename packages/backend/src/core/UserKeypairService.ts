@@ -5,19 +5,21 @@
 
 import { Inject, Injectable, OnApplicationShutdown } from '@nestjs/common';
 import * as Redis from 'ioredis';
-import { genEd25519KeyPair } from '@misskey-dev/node-http-message-signatures';
+import { genEd25519KeyPair, importPrivateKey, PrivateKey, PrivateKeyWithPem } from '@misskey-dev/node-http-message-signatures';
 import type { MiUser } from '@/models/User.js';
 import type { UserKeypairsRepository } from '@/models/_.js';
-import { RedisKVCache } from '@/misc/cache.js';
+import { RedisKVCache, MemoryKVCache } from '@/misc/cache.js';
 import type { MiUserKeypair } from '@/models/UserKeypair.js';
 import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
 import { GlobalEventService, GlobalEvents } from '@/core/GlobalEventService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
+import type { webcrypto } from 'node:crypto';
 
 @Injectable()
 export class UserKeypairService implements OnApplicationShutdown {
-	private cache: RedisKVCache<MiUserKeypair>;
+	private keypairEntityCache: RedisKVCache<MiUserKeypair>;
+	private privateKeyObjectCache: MemoryKVCache<webcrypto.CryptoKey>;
 
 	constructor(
 		@Inject(DI.redis)
@@ -30,32 +32,35 @@ export class UserKeypairService implements OnApplicationShutdown {
 		private globalEventService: GlobalEventService,
 		private userEntityService: UserEntityService,
 	) {
-		this.cache = new RedisKVCache<MiUserKeypair>(this.redisClient, 'userKeypair', {
+		this.keypairEntityCache = new RedisKVCache<MiUserKeypair>(this.redisClient, 'userKeypair', {
 			lifetime: 1000 * 60 * 60 * 24, // 24h
 			memoryCacheLifetime: Infinity,
 			fetcher: (key) => this.userKeypairsRepository.findOneByOrFail({ userId: key }),
 			toRedisConverter: (value) => JSON.stringify(value),
 			fromRedisConverter: (value) => JSON.parse(value),
 		});
+		this.privateKeyObjectCache = new MemoryKVCache<webcrypto.CryptoKey>(1000 * 60 * 60 * 1);
 
 		this.redisForSub.on('message', this.onMessage);
 	}
 
 	@bindThis
 	public async getUserKeypair(userId: MiUser['id']): Promise<MiUserKeypair> {
-		return await this.cache.fetch(userId);
+		return await this.keypairEntityCache.fetch(userId);
 	}
 
 	/**
-	 *
+	 * Get private key [Only PrivateKeyWithPem for queue data etc.]
 	 * @param userIdOrHint user id or MiUserKeypair
-	 * @param preferType If ed25519-like(`ed25519`, `01`, `11`) is specified, ed25519 keypair is returned if exists. Otherwise, main keypair is returned.
+	 * @param preferType
+	 *		If ed25519-like(`ed25519`, `01`, `11`) is specified, ed25519 keypair is returned if exists.
+	 *		Otherwise, main keypair is returned.
 	 * @returns
 	 */
 	@bindThis
-	public async getLocalUserKeypairWithKeyId(
+	public async getLocalUserPrivateKeyPem(
 		userIdOrHint: MiUser['id'] | MiUserKeypair, preferType?: string,
-	): Promise<{ keyId: string; publicKey: string; privateKey: string; }> {
+	): Promise<PrivateKeyWithPem> {
 		const keypair = typeof userIdOrHint === 'string' ? await this.getUserKeypair(userIdOrHint) : userIdOrHint;
 		if (
 			preferType && ['01', '11', 'ed25519'].includes(preferType.toLowerCase()) &&
@@ -63,20 +68,71 @@ export class UserKeypairService implements OnApplicationShutdown {
 		) {
 			return {
 				keyId: `${this.userEntityService.genLocalUserUri(keypair.userId)}#ed25519-key`,
-				publicKey: keypair.ed25519PublicKey,
-				privateKey: keypair.ed25519PrivateKey,
+				privateKeyPem: keypair.ed25519PrivateKey,
 			};
 		}
 		return {
 			keyId: `${this.userEntityService.genLocalUserUri(keypair.userId)}#main-key`,
-			publicKey: keypair.publicKey,
-			privateKey: keypair.privateKey,
+			privateKeyPem: keypair.privateKey,
+		};
+	}
+
+	/**
+	 * Get private key [Only PrivateKey for ap request]
+	 * Using cache due to performance reasons of `crypto.subtle.importKey`
+	 * @param userIdOrHint user id, MiUserKeypair, or PrivateKeyWithPem
+	 * @param preferType
+	 * 		If ed25519-like(`ed25519`, `01`, `11`) is specified, ed25519 keypair is returned if exists.
+	 *		Otherwise, main keypair is returned. (ignored if userIdOrHint is PrivateKeyWithPem)
+	 * @returns
+	 */
+	@bindThis
+	public async getLocalUserPrivateKey(
+		userIdOrHint: MiUser['id'] | MiUserKeypair | PrivateKeyWithPem, preferType?: string,
+	): Promise<PrivateKey> {
+		if (typeof userIdOrHint === 'object' && 'privateKeyPem' in userIdOrHint) {
+			// userIdOrHint is PrivateKeyWithPem
+			return {
+				keyId: userIdOrHint.keyId,
+				privateKey: await this.privateKeyObjectCache.fetch(userIdOrHint.keyId, async () => {
+					return await importPrivateKey(userIdOrHint.privateKeyPem);
+				}),
+			};
+		}
+
+		const userId = typeof userIdOrHint === 'string' ? userIdOrHint : userIdOrHint.userId;
+		const getKeypair = () => typeof userIdOrHint === 'string' ? this.getUserKeypair(userId) : userIdOrHint;
+
+		if (preferType && ['01', '11', 'ed25519'].includes(preferType.toLowerCase())) {
+			const keyId = `${this.userEntityService.genLocalUserUri(userId)}#ed25519-key`;
+			const fetched = await this.privateKeyObjectCache.fetchMaybe(keyId, async () => {
+				const keypair = await getKeypair();
+				if (keypair.ed25519PublicKey != null && keypair.ed25519PrivateKey != null) {
+					return await importPrivateKey(keypair.ed25519PrivateKey);
+				}
+				return;
+			});
+			if (fetched) {
+				return {
+					keyId,
+					privateKey: fetched,
+				};
+			}
+		}
+
+		const keyId = `${this.userEntityService.genLocalUserUri(userId)}#main-key`;
+		return {
+			keyId,
+			privateKey: await this.privateKeyObjectCache.fetch(keyId, async () => {
+				const keypair = await getKeypair();
+				return await importPrivateKey(keypair.privateKey);
+			}),
 		};
 	}
 
 	@bindThis
 	public async refresh(userId: MiUser['id']): Promise<void> {
-		return await this.cache.refresh(userId);
+		return await this.keypairEntityCache.refresh(userId);
 	}
 
 	/**
@@ -87,7 +143,7 @@ export class UserKeypairService implements OnApplicationShutdown {
 	@bindThis
 	public async refreshAndprepareEd25519KeyPair(userId: MiUser['id']): Promise<MiUserKeypair | void> {
 		await this.refresh(userId);
-		const keypair = await this.cache.fetch(userId);
+		const keypair = await this.keypairEntityCache.fetch(userId);
 		if (keypair.ed25519PublicKey != null) {
 			return;
 		}
@@ -121,7 +177,7 @@ export class UserKeypairService implements OnApplicationShutdown {
 	}
 	@bindThis
 	public dispose(): void {
-		this.cache.dispose();
+		this.keypairEntityCache.dispose();
 	}
 
 	@bindThis

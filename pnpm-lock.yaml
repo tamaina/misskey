@@ -111,8 +111,8 @@ importers:
         specifier: 8.2.0
         version: 8.2.0
       '@misskey-dev/node-http-message-signatures':
-        specifier: 0.0.1
-        version: 0.0.1
+        specifier: 0.0.4
+        version: 0.0.4
       '@misskey-dev/sharp-read-bmp':
         specifier: 1.2.0
         version: 1.2.0
@@ -4760,8 +4760,9 @@ packages:
       eslint-plugin-import: 2.29.1(@typescript-eslint/parser@7.1.0)(eslint@8.57.0)
     dev: true
 
-  /@misskey-dev/node-http-message-signatures@0.0.1:
-    resolution: {integrity: sha512-BaMYEOSBwBtDW0NJcljE4S39gFpgNigVzbVFlVsKzu4+k7snL72mXEaAoMCHWCw7XmdY3+fKADbQoqc4SFrpLw==}
+  /@misskey-dev/node-http-message-signatures@0.0.4:
+    resolution: {integrity: sha512-hAQFaJZwJsg63JAY1RZ/yvcaxHbpZg8fLvNdJFucS270TZGunKYv7I16tuNQMKV7+BYLQNxiE7uL11KVZ9jfrg==}
+    engines: {node: '>=18.4.0'}
     dependencies:
       '@lapo/asn1js': 1.2.4
     dev: false
@@ -6653,7 +6654,7 @@ packages:
       ts-dedent: 2.2.0
       type-fest: 2.19.0
       vue: 3.4.21(typescript@5.3.3)
-      vue-component-type-helpers: 2.0.4
+      vue-component-type-helpers: 2.0.5
     transitivePeerDependencies:
       - encoding
       - supports-color
@@ -19487,8 +19488,8 @@ packages:
     resolution: {integrity: sha512-6bnLkn8O0JJyiFSIF0EfCogzeqNXpnjJ0vW/SZzNHfe6sPx30lTtTXlE5TFs2qhJlAtDFybStVNpL73cPe3OMQ==}
     dev: true
 
-  /vue-component-type-helpers@2.0.4:
-    resolution: {integrity: sha512-IFZ8rjfV1zWf1LOMPfmMaHe28zZfo5w2NyZxCqeqLGT3CGur0Y9+R3/bvX400tqVukuzf8mLw2fOvGTyXKPWjg==}
+  /vue-component-type-helpers@2.0.5:
+    resolution: {integrity: sha512-v9N4ufDSnd8YHcDq/vURPjxDyBVak5ZVAQ6aGNIrf7ZAj/VxRKpLZXFHEaqt9yHkWi0/TZp76Jmf8yNJxDQi4g==}
     dev: true
 
   /vue-demi@0.14.7(vue@3.4.21):
