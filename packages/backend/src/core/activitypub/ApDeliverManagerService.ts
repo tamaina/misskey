@@ -10,7 +10,7 @@ import type { FollowingsRepository } from '@/models/_.js';
 import type { MiLocalUser, MiRemoteUser, MiUser } from '@/models/User.js';
 import { QueueService } from '@/core/QueueService.js';
 import { bindThis } from '@/decorators.js';
-import type { IActivity } from '@/core/activitypub/type.js';
+import type { IActivity, PrivateKey } from '@/core/activitypub/type.js';
 import { ThinUser } from '@/queue/types.js';
 import { AccountUpdateService } from '@/core/AccountUpdateService.js';
 import type Logger from '@/logger.js';
@@ -30,11 +30,18 @@ interface IDirectRecipe extends IRecipe {
 	to: MiRemoteUser;
 }
 
+interface IAllKnowingSharedInboxRecipe extends IRecipe {
+	type: 'AllKnowingSharedInbox';
+}
+
 const isFollowers = (recipe: IRecipe): recipe is IFollowersRecipe =>
 	recipe.type === 'Followers';
 
 const isDirect = (recipe: IRecipe): recipe is IDirectRecipe =>
 	recipe.type === 'Direct';
+
+const isAllKnowingSharedInbox = (recipe: IRecipe): recipe is IAllKnowingSharedInboxRecipe =>
+	recipe.type === 'AllKnowingSharedInbox';
 
 class DeliverManager {
 	private actor: ThinUser;
@@ -97,6 +104,18 @@ class DeliverManager {
 	}
 
 	/**
+	 * Add recipe for all-knowing shared inbox deliver
+	 */
+	@bindThis
+	public addAllKnowingSharedInboxRecipe(): void {
+		const deliver: IAllKnowingSharedInboxRecipe = {
+			type: 'AllKnowingSharedInbox',
+		};
+
+		this.addRecipe(deliver);
+	}
+
+	/**
 	 * Add recipe
 	 * @param recipe Recipe
 	 */
@@ -109,24 +128,43 @@ class DeliverManager {
 	 * Execute delivers
 	 */
 	@bindThis
-	public async execute(opts?: { forceMainKey?: boolean }): Promise<void> {
+	public async execute(opts?: { privateKey?: PrivateKey }): Promise<void> {
 		//#region MIGRATION
-		if (opts?.forceMainKey !== true) {
+		if (!opts?.privateKey) {
 			/**
 			 * ed25519の署名がなければ追加する
 			 */
 			const created = await this.userKeypairService.refreshAndprepareEd25519KeyPair(this.actor.id);
 			if (created) {
+				// createdが存在するということは新規作成されたということなので、フォロワーに配信する
 				this.logger.info(`ed25519 key pair created for user ${this.actor.id} and publishing to followers`);
 				// リモートに配信
-				await this.accountUpdateService.publishToFollowers(this.actor.id, true);
+				const keyPair = await this.userKeypairService.getLocalUserKeypairWithKeyId(created, 'main');
+				await this.accountUpdateService.publishToFollowers(this.actor.id, keyPair);
 			}
 		}
 		//#endregion
 
+		//#region correct inboxes by recipes
 		// The value flags whether it is shared or not.
 		// key: inbox URL, value: whether it is sharedInbox
 		const inboxes = new Map<string, boolean>();
+
+		if (this.recipes.some(r => isAllKnowingSharedInbox(r))) {
+			// all-knowing shared inbox
+			const followings = await this.followingsRepository.find({
+				where: [
+					{ followerSharedInbox: Not(IsNull()) },
+					{ followeeSharedInbox: Not(IsNull()) },
+				],
+				select: ['followerSharedInbox', 'followeeSharedInbox'],
+			});
+
+			for (const following of followings) {
+				if (following.followeeSharedInbox) inboxes.set(following.followeeSharedInbox, true);
+				if (following.followerSharedInbox) inboxes.set(following.followerSharedInbox, true);
+			}
+		}
 
 		// build inbox list
 		// Process follower recipes first to avoid duplication when processing direct recipes later.
@@ -161,9 +199,10 @@ class DeliverManager {
 
 			inboxes.set(recipe.to.inbox, false);
 		}
+		//#endregion
 
 		// deliver
-		await this.queueService.deliverMany(this.actor, this.activity, inboxes);
+		await this.queueService.deliverMany(this.actor, this.activity, inboxes, opts?.privateKey);
 		this.logger.info(`Deliver queues dispatched: inboxes=${inboxes.size} actorId=${this.actor.id} activityId=${this.activity?.id}`);
 	}
 }
@@ -191,7 +230,7 @@ export class ApDeliverManagerService {
 	 * @param forceMainKey Force to use main (rsa) key
 	 */
 	@bindThis
-	public async deliverToFollowers(actor: { id: MiLocalUser['id']; host: null; }, activity: IActivity, forceMainKey?: boolean): Promise<void> {
+	public async deliverToFollowers(actor: { id: MiLocalUser['id']; host: null; }, activity: IActivity, privateKey?: PrivateKey): Promise<void> {
 		const manager = new DeliverManager(
 			this.userKeypairService,
 			this.followingsRepository,
@@ -202,7 +241,7 @@ export class ApDeliverManagerService {
 			activity,
 		);
 		manager.addFollowersRecipe();
-		await manager.execute({ forceMainKey });
+		await manager.execute({ privateKey });
 	}
 
 	/**
