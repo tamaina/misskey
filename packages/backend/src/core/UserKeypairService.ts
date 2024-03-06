@@ -5,7 +5,7 @@
 
 import { Inject, Injectable, OnApplicationShutdown } from '@nestjs/common';
 import * as Redis from 'ioredis';
-import { genEd25519KeyPair, importPrivateKey, PrivateKey, PrivateKeyWithPem } from '@misskey-dev/node-http-message-signatures';
+import { genEd25519KeyPair, importPrivateKey, type PrivateKey, type PrivateKeyWithPem } from '@misskey-dev/node-http-message-signatures';
 import type { MiUser } from '@/models/User.js';
 import type { UserKeypairsRepository } from '@/models/_.js';
 import { RedisKVCache, MemoryKVCache } from '@/misc/cache.js';
