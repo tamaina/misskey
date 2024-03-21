@@ -115,6 +115,7 @@ export class ApInboxService {
 		} else {
 			result = await this.performOneActivity(actor, activity);
 		}
+		return result;
 	}
 
 	@bindThis
