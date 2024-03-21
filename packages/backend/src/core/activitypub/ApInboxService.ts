@@ -28,6 +28,7 @@ import type { UsersRepository, NotesRepository, FollowingsRepository, AbuseUserR
 import { bindThis } from '@/decorators.js';
 import type { MiRemoteUser } from '@/models/User.js';
 import { isNotNull } from '@/misc/is-not-null.js';
+import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { getApHrefNullable, getApId, getApIds, getApType, isAccept, isActor, isAdd, isAnnounce, isBlock, isCollection, isCollectionOrOrderedCollection, isCreate, isDelete, isFlag, isFollow, isLike, isMove, isPost, isReject, isRemove, isTombstone, isUndo, isUpdate, validActor, validPost } from './type.js';
 import { ApNoteService } from './models/ApNoteService.js';
 import { ApLoggerService } from './ApLoggerService.js';
@@ -36,9 +37,8 @@ import { ApResolverService } from './ApResolverService.js';
 import { ApAudienceService } from './ApAudienceService.js';
 import { ApPersonService } from './models/ApPersonService.js';
 import { ApQuestionService } from './models/ApQuestionService.js';
-import { GlobalEventService } from '@/core/GlobalEventService.js';
 import type { Resolver } from './ApResolverService.js';
-import type { IAccept, IAdd, IAnnounce, IBlock, ICreate, IDelete, IFlag, IFollow, ILike, IObject, IReject, IRemove, IUndo, IUpdate, IMove } from './type.js';
+import type { IAccept, IAdd, IAnnounce, IBlock, ICreate, IDelete, IFlag, IFollow, ILike, IObject, IReject, IRemove, IUndo, IUpdate, IMove, IPost } from './type.js';
 
 @Injectable()
 export class ApInboxService {
@@ -257,13 +257,24 @@ export class ApInboxService {
 
 		this.logger.info(`Announce: ${uri}`);
 
-		const targetUri = getApId(activity.object);
+		const resolver = this.apResolverService.createResolver();
 
-		return await this.announceNote(actor, activity, targetUri);
+		if (!activity.object) return 'skip: activity has no object property';
+		const targetUri = getApId(activity.object);
+		if (targetUri.startsWith('bear:')) return 'skip: bearcaps url not supported.';
+
+		const target = await resolver.resolve(activity.object).catch(e => {
+			this.logger.error(`Resolution failed: ${e}`);
+			return e;
+		});
+
+		if (isPost(target)) return await this.announceNote(actor, activity, target);
+
+		return `skip: unknown object type ${getApType(target)}`;
 	}
 
 	@bindThis
-	private async announceNote(actor: MiRemoteUser, activity: IAnnounce, targetUri: string): Promise<string | void> {
+	private async announceNote(actor: MiRemoteUser, activity: IAnnounce, target: IPost): Promise<string | void> {
 		const uri = getApId(activity);
 
 		if (actor.isSuspended) {
@@ -286,16 +297,15 @@ export class ApInboxService {
 			// Announce対象をresolve
 			let renote;
 			try {
-				renote = await this.apNoteService.resolveNote(targetUri);
+				renote = await this.apNoteService.resolveNote(target);
 				if (renote == null) return 'announce target is null';
 			} catch (err) {
 				// 対象が4xxならスキップ
 				if (err instanceof StatusError) {
 					if (!err.isRetryable) {
-						return `Ignored announce target ${targetUri} - ${err.statusCode}`;
+						return `Ignored announce target ${target.id} - ${err.statusCode}`;
 					}
-
-					return `Error in announce target ${targetUri} - ${err.statusCode}`;
+					return `Error in announce target ${target.id} - ${err.statusCode}`;
 				}
 				throw err;
 			}
@@ -348,6 +358,10 @@ export class ApInboxService {
 		const uri = getApId(activity);
 
 		this.logger.info(`Create: ${uri}`);
+
+		if (!activity.object) return 'skip: activity has no object property';
+		const targetUri = getApId(activity.object);
+		if (targetUri.startsWith('bear:')) return 'skip: bearcaps url not supported.';
 
 		// copy audiences between activity <=> object.
 		if (typeof activity.object === 'object') {
