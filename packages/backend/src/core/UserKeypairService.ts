@@ -53,13 +53,14 @@ export class UserKeypairService implements OnApplicationShutdown {
 	 * Get private key [Only PrivateKeyWithPem for queue data etc.]
 	 * @param userIdOrHint user id or MiUserKeypair
 	 * @param preferType
-	 *		If ed25519-like(`ed25519`, `01`, `11`) is specified, ed25519 keypair is returned if exists.
-	 *		Otherwise, main keypair is returned.
+	 *		If ed25519-like(`ed25519`, `01`, `11`) is specified, ed25519 keypair will be returned if exists.
+	 *		Otherwise, main keypair will be returned.
 	 * @returns
 	 */
 	@bindThis
 	public async getLocalUserPrivateKeyPem(
-		userIdOrHint: MiUser['id'] | MiUserKeypair, preferType?: string,
+		userIdOrHint: MiUser['id'] | MiUserKeypair,
+		preferType?: string,
 	): Promise<PrivateKeyWithPem> {
 		const keypair = typeof userIdOrHint === 'string' ? await this.getUserKeypair(userIdOrHint) : userIdOrHint;
 		if (
@@ -82,13 +83,14 @@ export class UserKeypairService implements OnApplicationShutdown {
 	 * Using cache due to performance reasons of `crypto.subtle.importKey`
 	 * @param userIdOrHint user id, MiUserKeypair, or PrivateKeyWithPem
 	 * @param preferType
-	 * 		If ed25519-like(`ed25519`, `01`, `11`) is specified, ed25519 keypair is returned if exists.
-	 *		Otherwise, main keypair is returned. (ignored if userIdOrHint is PrivateKeyWithPem)
+	 * 		If ed25519-like(`ed25519`, `01`, `11`) is specified, ed25519 keypair will be returned if exists.
+	 *		Otherwise, main keypair will be returned. (ignored if userIdOrHint is PrivateKeyWithPem)
 	 * @returns
 	 */
 	@bindThis
 	public async getLocalUserPrivateKey(
-		userIdOrHint: MiUser['id'] | MiUserKeypair | PrivateKeyWithPem, preferType?: string,
+		userIdOrHint: MiUser['id'] | MiUserKeypair | PrivateKeyWithPem,
+		preferType?: string,
 	): Promise<PrivateKey> {
 		if (typeof userIdOrHint === 'object' && 'privateKeyPem' in userIdOrHint) {
 			// userIdOrHint is PrivateKeyWithPem
