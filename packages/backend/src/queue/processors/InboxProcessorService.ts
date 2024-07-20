@@ -82,6 +82,7 @@ export class InboxProcessorService {
 		let httpSignatureIsValid = null as boolean | null;
 
 		try {
+			console.log(`GET_AUTH_USER_FROM_AP_ID: ${actorUri}, ${signature?.keyId}, ${JSON.stringify(signature)}`);
 			authUser = await this.apDbResolverService.getAuthUserFromApId(actorUri, signature?.keyId);
 		} catch (err) {
 			// 対象が4xxならスキップ
