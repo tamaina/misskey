@@ -34,7 +34,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, watch, provide, shallowRef, ref } from 'vue';
+import { computed, watch, provide, shallowRef, ref, onMounted, onActivated } from 'vue';
 import type { Tab } from '@/components/global/MkPageHeader.tabs.vue';
 import MkTimeline from '@/components/MkTimeline.vue';
 import MkInfo from '@/components/MkInfo.vue';
@@ -118,6 +118,7 @@ watch(src, () => {
 });
 
 watch(withSensitive, () => {
+	console.log('withSensitive changed');
 	// これだけはクライアント側で完結する処理なので手動でリロード
 	tlComponent.value?.reloadTimeline();
 });
@@ -331,6 +332,14 @@ const headerTabsWhenNotLogin = computed(() => [
 		iconOnly: true,
 	}] : []),
 ] as Tab[]);
+
+onMounted(() => {
+	console.log('timeline mounted');
+});
+
+onActivated(() => {
+	console.log('timeline activated');
+});
 
 definePageMetadata(() => ({
 	title: i18n.ts.timeline,
