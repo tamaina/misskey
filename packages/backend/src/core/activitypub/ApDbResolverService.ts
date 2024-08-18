@@ -64,7 +64,7 @@ export class ApDbResolverService implements OnApplicationShutdown {
 		private apLoggerService: ApLoggerService,
 		private utilityService: UtilityService,
 	) {
-		this.publicKeyByUserIdCache = new MemoryKVCache<MiUserPublickey[] | null>(Infinity);
+		this.publicKeyByUserIdCache = new MemoryKVCache<MiUserPublickey[] | null>(1000 * 60 * 60 * 12); // 12h
 		this.logger = this.apLoggerService.logger.createSubLogger('db-resolver');
 		this.redisForSub.on('message', this.onMessage);
 	}
@@ -230,7 +230,7 @@ export class ApDbResolverService implements OnApplicationShutdown {
 		 * keyIdで見つからない場合、まずはキャッシュを更新して再取得
 		 * If not found with keyId, update cache and reacquire
 		 */
-		const cacheRaw = this.publicKeyByUserIdCache.cache.get(user.id);
+		const cacheRaw = this.publicKeyByUserIdCache.getRaw(user.id);
 		if (cacheRaw && Date.now() - cacheRaw.date > 1000 * 60 * 5) {
 			const exactKey = await this.refreshAndFindKey(user.id, keyId);
 			if (exactKey) return { user, key: exactKey };
