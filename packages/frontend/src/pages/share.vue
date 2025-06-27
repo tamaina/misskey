@@ -61,8 +61,8 @@ const visibleUsers = ref([] as Misskey.entities.UserDetailed[]);
 async function init() {
 	let noteText = '';
 	if (title.value) noteText += `[ ${title.value} ]\n`;
-	// Googleニュース対策
-	if (text?.startsWith(`${title.value}.\n`)) noteText += text.replace(`${title.value}.\n`, '');
+	// Googleアプリ対策 https://github.com/misskey-dev/misskey/issues/16224
+	if (text?.startsWith(`${title.value}\s+`)) noteText += text.replace(`${title.value}\s+`, '');
 	else if (text && title.value !== text) noteText += `${text}\n`;
 	if (url) {
 		try {
