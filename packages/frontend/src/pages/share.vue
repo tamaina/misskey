@@ -64,10 +64,8 @@ async function init() {
 
 		//#region add text to note text
 		const duplicateTextRegex = new RegExp(`^${RegExp.escape(title.value)}\\s*`, 'u');
-		console.log('duplicateTextRegex', duplicateTextRegex);
-		if (text?.search(duplicateTextRegex)) {
+		if (text && text.search(duplicateTextRegex) >= 0) {
 			// For the Google app https://github.com/misskey-dev/misskey/issues/16224
-			console.log('Removing duplicate text from note text', text);
 			noteText += text.replace(duplicateTextRegex, '');
 		} else if (text && title.value === text) {
 			// Nothing to do
