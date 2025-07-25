@@ -63,6 +63,7 @@ globalThis.addEventListener('fetch', async ev => {
 
       return Response.redirect(responseUrl, 303);
     })());
+		return;
 	}
 
 	//#region others
