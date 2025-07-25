@@ -51,6 +51,7 @@ globalThis.addEventListener('fetch', async ev => {
 			if (formData.has('files')) {
 				const files = formData.getAll('files');
 				if (files.length > 0 && files.every(file => file instanceof Blob)) {
+					console.log('Share files:', files);
 					set('share-files-temp', files);
 				}
 			}
