@@ -5493,6 +5493,14 @@ export interface Locale extends ILocale {
      * 低くすると画質を保てますが、ファイルサイズは増加します。<br>高くするとファイルサイズを減らせますが、画質は低下します。
      */
     "defaultImageCompressionLevel_description": string;
+    /**
+     * 分
+     */
+    "inMinutes": string;
+    /**
+     * 日
+     */
+    "inDays": string;
     "_order": {
         /**
          * 新しい順
@@ -6486,6 +6494,18 @@ export interface Locale extends ILocale {
          * 有効にすると、リアクション作成時のパフォーマンスが大幅に向上し、データベースへの負荷を軽減することが可能です。ただし、Redisのメモリ使用量は増加します。
          */
         "reactionsBufferingDescription": string;
+        /**
+         * 有効にすると、参照されていない古いリモートの投稿を定期的にクリーンアップしてデータベースの肥大化を抑制します。
+         */
+        "remoteNotesCleaning_description": string;
+        /**
+         * 最大クリーニング処理継続時間
+         */
+        "remoteNotesCleaningMaxProcessingDuration": string;
+        /**
+         * 最低ノート保持日数
+         */
+        "remoteNotesCleaningExpiryDaysForEachNotes": string;
         /**
          * 問い合わせ先URL
          */

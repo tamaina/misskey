@@ -1,12 +1,19 @@
 ## Unreleased
 
+### Note
+- サポートされるNode.jsの最小バージョンが**22.15.0**になりました
+
 ### General
 - ノートを削除した際、関連するノートが同時に削除されないようになりました
 	- APIで、「replyIdが存在しているのにreplyがnull」や「renoteIdが存在しているのにrenoteがnull」であるという、今までにはなかったパターンが表れることになります
+- 定期的に参照されていない古いリモートの投稿を削除する機能が実装されました
+	- **デフォルトでオン**になっています
+	- データベースの肥大化を防止することが可能です
 
 ### Client
 - Fix: 一部の設定検索結果が存在しないパスになる問題を修正  
   (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/1171)
+- Fix: テーマエディタが動作しない問題を修正
 
 ### Server
 - Enhance: ノートの削除処理の効率化
