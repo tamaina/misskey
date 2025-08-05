@@ -166,8 +166,6 @@ $widgets-hide-threshold: 1090px;
 
 .content {
 	flex: 1;
-	// See https://github.com/misskey-dev/misskey/issues/16204#issuecomment-3154966557
-	height: unset !important;
 	min-height: 0;
 }
 

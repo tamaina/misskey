@@ -209,8 +209,7 @@ router.useListener('replace', ({ fullPath }) => {
 		.tabContent {
 			flex: 1;
 			width: 100%;
-			// See https://github.com/misskey-dev/misskey/issues/16204#issuecomment-3154966557
-			height: unset !important;
+			height: 100%;
 			background: var(--MI_THEME-bg);
 		}
 	}
