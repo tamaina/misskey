@@ -8,7 +8,6 @@ import locales from '../../locales/index.js';
 import meta from '../../package.json';
 import packageInfo from './package.json' with { type: 'json' };
 import pluginJson5 from './vite.json5.js';
-import pluginRemoveUnrefI18n from '../frontend-builder/rollup-plugin-remove-unref-i18n';
 
 const url = process.env.NODE_ENV === 'development' ? yaml.load(await fsp.readFile('../../.config/default.yml', 'utf-8')).url : null;
 const host = url ? (new URL(url)).hostname : undefined;
@@ -86,7 +85,6 @@ export function getConfig(): UserConfig {
 
 		plugins: [
 			pluginVue(),
-			pluginRemoveUnrefI18n(),
 			pluginJson5(),
 		],
 
@@ -137,20 +135,15 @@ export function getConfig(): UserConfig {
 			manifest: 'manifest.json',
 			rollupOptions: {
 				input: {
-					i18n: './src/i18n.ts',
-					entry: './src/boot.ts',
+					app: './src/boot.ts',
 				},
 				external: externalPackages.map(p => p.match),
-				preserveEntrySignatures: 'allow-extension',
 				output: {
 					manualChunks: {
 						vue: ['vue'],
-						// dependencies of i18n.ts
-						'config': ['@@/js/config.js'],
 					},
-					entryFileNames: 'scripts/[hash:8].js',
-					chunkFileNames: 'scripts/[hash:8].js',
-					assetFileNames: 'assets/[hash:8][extname]',
+					chunkFileNames: process.env.NODE_ENV === 'production' ? '[hash:8].js' : '[name]-[hash:8].js',
+					assetFileNames: process.env.NODE_ENV === 'production' ? '[hash:8][extname]' : '[name]-[hash:8][extname]',
 					paths(id) {
 						for (const p of externalPackages) {
 							if (p.match.test(id)) {
