@@ -5212,6 +5212,7 @@ export type components = {
             canManageCustomEmojis: boolean;
             canManageAvatarDecorations: boolean;
             canSearchNotes: boolean;
+            canSearchUsers: boolean;
             canUseTranslator: boolean;
             canHideAds: boolean;
             driveCapacityMb: number;
