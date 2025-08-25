@@ -32,7 +32,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 			</div>
 			<img v-if="deviceMotionPermissionNeeded" v-flip :class="$style.logo" :src="misskeysvg" alt="Misskey Logo" @click="requestDeviceMotion" />
-			<img v-else :class="$style.logo" :src="misskeysvg" alt="Misskey Logo" />
+			<img v-else v-flip :class="$style.logo" :src="misskeysvg" alt="Misskey Logo" />
 		</div>
 	</div>
 </div>
