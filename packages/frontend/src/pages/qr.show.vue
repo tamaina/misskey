@@ -256,7 +256,7 @@ $avatarSize: 58px;
 	flex-direction: column;
 	justify-content: center;
 	align-items: start;
-	margin: -4px -2px 0 ($avatarSize * 0.25);
+	margin: -4px -2px 0 ($avatarSize * 0.3);
 	padding-right: 16px;
 	max-width: 100%;
 	overflow-x: hidden;
@@ -296,11 +296,11 @@ $avatarSize: 58px;
  * グローバルにクラスを定義することでお茶を濁す。
  */
 ._qrShowFlip {
-	transition: scale rotate 0.3s ease-in;
+	transition: rotate .3s linear, scale .3s .15s step-start;
 }
 
 ._qrShowFlipFliped {
-	rotate: x 1;
-	scale: y -1;
+	scale: -1 1;
+  rotate: x 180deg;
 }
 </style>
