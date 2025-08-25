@@ -47,7 +47,7 @@ import { extractAvgColorFromBlurhash } from '@@/js/extract-avg-color-from-blurha
 import tinycolor from 'tinycolor2';
 import QRCodeStyling from 'qr-code-styling';
 import type { Directive } from 'vue';
-import { computed, ref, watch, onMounted, useCssModule, onUnmounted, type ComponentPublicInstance, nextTick } from 'vue';
+import { computed, ref, watch, onMounted, onUnmounted } from 'vue';
 import { host } from '@@/js/config.js';
 import { instance } from '@/instance.js';
 import { ensureSignin } from '@/i.js';
@@ -57,8 +57,6 @@ import MkAnimBg from '@/components/MkAnimBg.vue';
 import { getStaticImageUrl } from '@/utility/media-proxy.js';
 import { i18n } from '@/i18n.js';
 import { getScrollContainer } from '@@/js/scroll';
-
-const $style = useCssModule();
 
 const $i = ensureSignin();
 
@@ -91,7 +89,7 @@ function share() {
 	});
 }
 
-watch([qrCodeEl, avatarHsl, url], () => {
+onMounted(() => {
 	const qrCodeInstance = new QRCodeStyling({
 		width: 512,
 		height: 512,
@@ -117,7 +115,7 @@ watch([qrCodeEl, avatarHsl, url], () => {
 				rotation: 1, // radian
 				colorStops: [
 					{ offset: 0, color: tinycolor(`hsl(${avatarHsl.value.h}, 100, 25)`).toRgbString() },
-					{ offset: 0.5, color: tinycolor(`hsl(${avatarHsl.value.h}, 100, 18)`).toRgbString() },
+					{ offset: 0.5, color: tinycolor(`hsl(${avatarHsl.value.h}, 100, 20)`).toRgbString() },
 					{ offset: 1, color: tinycolor(`hsl(${avatarHsl.value.h}, 100, 6)`).toRgbString() },
 				],
 			},
@@ -131,7 +129,7 @@ watch([qrCodeEl, avatarHsl, url], () => {
 	if (qrCodeEl.value != null) {
 		qrCodeInstance.append(qrCodeEl.value);
 	}
-}, { immediate: true });
+});
 
 //#region scroll height
 function checkScrollHeight() {
@@ -166,7 +164,7 @@ function handleOrientationChange(event: DeviceOrientationEvent) {
 
 watch(flip, (newState) => {
 	flipEls.forEach(el => {
-		el.classList.toggle($style.fliped, newState);
+		el.classList.toggle('_qrShowFlipFliped', newState);
 	});
 });
 
@@ -181,10 +179,10 @@ onUnmounted(() => {
 const vFlip = {
 	mounted(el: Element) {
 		flipEls.add(el);
-		el.classList.add($style.flip);
+		el.classList.add('_qrShowFlip');
 	},
 	unmounted(el: Element) {
-		el.classList.remove($style.flip);
+		el.classList.remove('_qrShowFlip');
 		flipEls.delete(el);
 	}
 } as Directive;
@@ -195,6 +193,7 @@ const vFlip = {
 $s1: 16px;
 $s2: 24px;
 $s3: 32px;
+$avatarSize: 58px;
 
 .root {
 	position: relative;
@@ -219,15 +218,6 @@ $s3: 32px;
 	margin: 0 auto;
 }
 
-.flip {
-	transition: scale rotate 0.3s ease-in;
-}
-
-.fliped {
-	rotate: x 1;
-	scale: y -1;
-}
-
 .qrOuter {
 	display: flex;
 	width: 100%;
@@ -244,8 +234,6 @@ $s3: 32px;
 		object-fit: contain;
 	}
 }
-
-$avatarSize: 58px;
 
 .user {
 	display: flex;
@@ -299,5 +287,20 @@ $avatarSize: 58px;
 .logo {
 	width: 25%;
 	margin: $s3 auto 0;
+}
+</style>
+
+<style lang="scss">
+/*
+ * useCssModuleで$styleを読み込みたかったが、rollupでのunwindが壊れてしまうらしく失敗。
+ * グローバルにクラスを定義することでお茶を濁す。
+ */
+._qrShowFlip {
+	transition: scale rotate 0.3s ease-in;
+}
+
+._qrShowFlipFliped {
+	rotate: x 1;
+	scale: y -1;
 }
 </style>
