@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and misskey-project
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <MkFolder defaultOpen :withSpacer="false">
 	<template #label>{{ data.split('\n')[0] }}</template>
@@ -30,7 +35,7 @@
 </template>
 
 <script lang="ts" setup>
-import { defineProps, ref, computed } from 'vue';
+import { ref, computed } from 'vue';
 import * as mfm from 'mfm-js';
 import MkFolder from '@/components/MkFolder.vue';
 import MkTabs from '@/components/MkTabs.vue';
