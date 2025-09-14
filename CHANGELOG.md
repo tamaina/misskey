@@ -1,10 +1,10 @@
 ## Unreleased
 
 ### General
--
+- Enhance: 広告ごとにセンシティブフラグを設定できるようになりました
 
 ### Client
--
+- Enhance: 時刻計算のための基準値を一か所で管理するようにし、パフォーマンスを向上
 
 ### Server
 -
