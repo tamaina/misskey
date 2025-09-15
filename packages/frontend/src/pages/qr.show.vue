@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div ref="rootEl" :class="$style.root">
+<div :class="$style.root">
 	<div :class="[$style.content]">
 		<div
 			ref="qrCodeEl" v-flip :style="{
@@ -26,25 +26,19 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { extractAvgColorFromBlurhash } from '@@/js/extract-avg-color-from-blurhash.js';
 import tinycolor from 'tinycolor2';
 import QRCodeStyling from 'qr-code-styling';
-import { computed, ref, shallowRef, watch, onMounted, onUnmounted } from 'vue';
+import { computed, ref, shallowRef, watch, onMounted, onUnmounted, useTemplateRef } from 'vue';
 import { url, host } from '@@/js/config.js';
-import { getScrollContainer } from '@@/js/scroll';
 import type { Directive } from 'vue';
 import { instance } from '@/instance.js';
 import { ensureSignin } from '@/i.js';
 import { userPage, userName } from '@/filters/user.js';
 import misskeysvg from '/client-assets/misskey.svg';
-import MkAnimBg from '@/components/MkAnimBg.vue';
 import { getStaticImageUrl } from '@/utility/media-proxy.js';
 import { i18n } from '@/i18n.js';
 
 const $i = ensureSignin();
-
-const scrollContainer = shallowRef<HTMLElement | null>(null);
-const rootEl = ref<HTMLDivElement | null>(null);
 
 const acct = computed(() => `@${$i.username}@${host}`);
 const userProfileUrl = computed(() => userPage($i, undefined, true));
@@ -55,11 +49,10 @@ const shareData = computed(() => ({
 }));
 const canShare = computed(() => navigator.canShare && navigator.canShare(shareData.value));
 
-const qrCodeEl = ref<HTMLDivElement | null>(null);
+const qrCodeEl = useTemplateRef('qrCodeEl');
 
-const avatarColor = computed(() => tinycolor(instance.themeColor ?? '#86b300'));
-const avatarHsl = computed(() => avatarColor.value.toHsl());
-const bgColor = tinycolor(`hsl(${avatarHsl.value.h}, 60, 46)`).toRgbString();
+const qrColor = computed(() => tinycolor(instance.themeColor ?? '#86b300'));
+const qrHsl = computed(() => qrColor.value.toHsl());
 
 function share() {
 	if (!canShare.value) return;
@@ -85,10 +78,17 @@ const qrCodeInstance = new QRCodeStyling({
 		crossOrigin: 'anonymous',
 	},
 	dotsOptions: {
-		color: tinycolor(`hsl(${avatarHsl.value.h}, 100, 18)`).toRgbString(),
+		type: 'dots',
+		color: tinycolor(`hsl(${qrHsl.value.h}, 100, 18)`).toRgbString(),
+	},
+	cornersDotOptions: {
+		type: 'dot',
+	},
+	cornersSquareOptions: {
+		type: 'extra-rounded',
 	},
 	backgroundOptions: {
-		color: tinycolor(`hsl(${avatarHsl.value.h}, 100, 97)`).toRgbString(),
+		color: tinycolor(`hsl(${qrHsl.value.h}, 100, 97)`).toRgbString(),
 	},
 });
 
@@ -157,21 +157,23 @@ $avatarSize: 58px;
 
 .root {
 	position: relative;
-	padding-top: 16px;
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
 }
 
 .content {
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-	margin: 0 auto;
 }
 
 .qr {
 	position: relative;
 	margin: 0 auto;
 	width: 100%;
-	max-width: 250px;
+	max-width: 230px;
 	border-radius: 8px;
 	overflow: clip;
 	aspect-ratio: 1;
