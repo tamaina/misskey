@@ -174,7 +174,7 @@ $avatarSize: 58px;
 	margin: 0 auto;
 	width: 100%;
 	max-width: 230px;
-	border-radius: 8px;
+	border-radius: 12px;
 	overflow: clip;
 	aspect-ratio: 1;
 
@@ -208,6 +208,7 @@ $avatarSize: 58px;
 
 .name {
 	font-weight: bold;
+	font-size: 110%;
 }
 
 .logo {
