@@ -62,7 +62,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import QrScanner from 'qr-scanner';
-import { onActivated, onDeactivated, onMounted, onUnmounted, ref, shallowRef, watch } from 'vue';
+import { onActivated, onDeactivated, onMounted, onUnmounted, ref, shallowRef, useTemplateRef, watch } from 'vue';
 import * as misskey from 'misskey-js';
 import { getScrollContainer } from '@@/js/scroll.js';
 import type { ApShowResponse } from 'misskey-js/entities.js';
@@ -77,9 +77,9 @@ import MkQrReadRawViewer from '@/pages/qr.read.raw-viewer.vue';
 
 const LIST_RERENDER_INTERVAL = 1500;
 
-const rootEl = ref<HTMLDivElement | null>(null);
-const videoEl = ref<HTMLVideoElement | null>(null);
-const overlayEl = ref<HTMLDivElement | null>(null);
+const rootEl = useTemplateRef('rootEl');
+const videoEl = useTemplateRef('videoEl');
+const overlayEl = useTemplateRef('overlayEl');
 
 const scannerInstance = shallowRef<QrScanner | null>(null);
 
@@ -357,10 +357,10 @@ onUnmounted(() => {
 .controls {
 	width: 100%;
 	position: absolute;
-	left: 0;
+	right: 10px;
 	bottom: 10px;
 	display: flex;
-	justify-content: center;
+	justify-content: end;
 	align-items: center;
 	gap: 10px;
 }

@@ -12236,9 +12236,17 @@ export interface Locale extends ILocale {
          */
         "text": string;
         /**
+         * 二次元コード
+         */
+        "qr": string;
+        /**
          * 位置
          */
         "position": string;
+        /**
+         * マージン
+         */
+        "margin": string;
         /**
          * タイプ
          */
@@ -12295,6 +12303,10 @@ export interface Locale extends ILocale {
          * サブドットの数
          */
         "polkadotSubDotDivisions": string;
+        /**
+         * 空欄にするとアカウントのURLになります
+         */
+        "leaveBlankToAccountUrl": string;
     };
     "_imageEffector": {
         /**
