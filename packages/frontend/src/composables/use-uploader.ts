@@ -634,7 +634,7 @@ export function useUploader(options: {
 					bitrate: item.compressionLevel === 1 ? mediabunny.QUALITY_VERY_HIGH : item.compressionLevel === 2 ? mediabunny.QUALITY_MEDIUM : mediabunny.QUALITY_VERY_LOW,
 				},
 				audio: {
-					bitrate: 32e3,
+					bitrate: item.compressionLevel === 1 ? mediabunny.QUALITY_VERY_HIGH : item.compressionLevel === 2 ? mediabunny.QUALITY_MEDIUM : mediabunny.QUALITY_VERY_LOW,
 				},
 			});
 
@@ -653,6 +653,7 @@ export function useUploader(options: {
 
 			preprocessedFile = new Blob([output.target.buffer!], { type: output.format.mimeType });
 			item.compressedSize = output.target.buffer!.byteLength;
+			item.uploadName = `${item.name}.mp4`;
 		} else {
 			item.compressedSize = null;
 			item.uploadName = item.name;
