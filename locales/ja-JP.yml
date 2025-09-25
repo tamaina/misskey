@@ -1400,16 +1400,6 @@ _compression:
     medium: "サイズ中"
     small: "サイズ小"
 
-_compression:
-  _quality:
-    high: "高品質"
-    medium: "中品質"
-    low: "低品質"
-  _size:
-    large: "サイズ大"
-    medium: "サイズ中"
-    small: "サイズ小"
-
 _order:
   newest: "新しい順"
   oldest: "古い順"
