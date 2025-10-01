@@ -54,7 +54,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 							:class="[$style.draft]"
 						>
 							<div :class="$style.draftBody" class="_gaps_s">
-								<MkInfo v-if="draft.scheduledAt != null && draft.isActuallyScheduled">{{ i18n.tsx.scheduledToPostOnX({ x: new Date(draft.scheduledAt).toLocaleString() }) }}</MkInfo>
+								<MkInfo v-if="draft.scheduledAt != null && draft.isActuallyScheduled">
+									<I18n :src="i18n.ts.scheduledToPostOnX" tag="span">
+										<template #x>
+											<MkTime :time="draft.scheduledAt" :mode="'detail'" style="font-weight: bold;"/>
+										</template>
+									</I18n>
+								</MkInfo>
 								<div :class="$style.draftInfo">
 									<div :class="$style.draftMeta">
 										<div v-if="draft.reply" class="_nowrap">
@@ -110,23 +116,31 @@ SPDX-License-Identifier: AGPL-3.0-only
 							</div>
 
 							<div :class="$style.draftActions" class="_buttons">
-								<MkButton
-									v-if="draft.scheduledAt != null && draft.isActuallyScheduled"
-									:class="$style.itemButton"
-									small
-									@click="cancelSchedule(draft)"
-								>
-									<i class="ti ti-calendar-x"></i>
-									{{ i18n.ts._drafts.cancelSchedule }}
-								</MkButton>
+								<template v-if="draft.scheduledAt != null && draft.isActuallyScheduled">
+									<MkButton
+										:class="$style.itemButton"
+										small
+										@click="cancelSchedule(draft)"
+									>
+										<i class="ti ti-calendar-x"></i> {{ i18n.ts._drafts.cancelSchedule }}
+									</MkButton>
+									<!-- TODO
+									<MkButton
+										:class="$style.itemButton"
+										small
+										@click="reSchedule(draft)"
+									>
+										<i class="ti ti-calendar-time"></i> {{ i18n.ts._drafts.reSchedule }}
+									</MkButton>
+									-->
+								</template>
 								<MkButton
 									v-else
 									:class="$style.itemButton"
 									small
 									@click="restoreDraft(draft)"
 								>
-									<i class="ti ti-corner-up-left"></i>
-									{{ i18n.ts._drafts.restore }}
+									<i class="ti ti-corner-up-left"></i> {{ i18n.ts._drafts.restore }}
 								</MkButton>
 								<MkButton
 									v-tooltip="i18n.ts._drafts.delete"
