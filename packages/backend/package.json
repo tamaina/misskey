@@ -3,13 +3,13 @@
 	"main": "./index.js",
 	"private": true,
 	"type": "module",
-  "engines": {
-    "runtime": {
-      "name": "node",
-      "version": "^24.11.0",
-      "onFail": "download"
-    }
-  },
+	"engines": {
+		"runtime": {
+			"name": "node",
+			"version": "^24.11.0",
+			"onFail": "download"
+		}
+	},
 	"scripts": {
 		"start": "pnpm compile-config && node ./built/boot/entry.js",
 		"start:inspect": "pnpm compile-config && node --inspect ./built/boot/entry.js",
