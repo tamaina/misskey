@@ -433,7 +433,7 @@ export class ApPersonService implements OnModuleInit {
 					isLocked: person.manuallyApprovesFollowers,
 					movedToUri: person.movedTo,
 					movedAt: person.movedTo ? new Date() : null,
-					alsoKnownAs: person.alsoKnownAs,
+					alsoKnownAs: toArray(person.alsoKnownAs),
 					isExplorable: person.discoverable,
 					username: person.preferredUsername,
 					usernameLower: person.preferredUsername?.toLowerCase(),
@@ -634,7 +634,7 @@ export class ApPersonService implements OnModuleInit {
 			isCat: (person as any).isCat === true,
 			isLocked: person.manuallyApprovesFollowers,
 			movedToUri: person.movedTo ?? null,
-			alsoKnownAs: person.alsoKnownAs ?? null,
+			alsoKnownAs: person.alsoKnownAs ? toArray(person.alsoKnownAs) : null,
 			isExplorable: person.discoverable,
 			isRemoteSuspended: person.suspended === true,
 			...(await this.resolveAvatarAndBanner(exist, person.icon, person.image).catch(() => ({}))),
@@ -669,12 +669,12 @@ export class ApPersonService implements OnModuleInit {
 		if (exist.isRemoteSuspended === false && person.suspended === true) {
 			// リモートサーバーでアカウントが凍結された
 			this.logger.info(`Remote User Suspended: acct=${exist.username}@${exist.host} id=${exist.id} uri=${exist.uri}`);
-			this.userSuspendService.suspendFromRemote({ id: exist.id, host: exist.host });
+			await this.userSuspendService.suspendFromRemote({ id: exist.id, host: exist.host });
 		}
 		if (exist.isRemoteSuspended === true && person.suspended === false) {
 			// リモートサーバーでアカウントが解凍された
 			this.logger.info(`Remote User Unsuspended: acct=${exist.username}@${exist.host} id=${exist.id} uri=${exist.uri}`);
-			this.userSuspendService.unsuspendFromRemote({ id: exist.id, host: exist.host });
+			await this.userSuspendService.unsuspendFromRemote({ id: exist.id, host: exist.host });
 		}
 		//#endregion
 
@@ -691,14 +691,14 @@ export class ApPersonService implements OnModuleInit {
 					userId: exist.id,
 					keyPem: key.publicKeyPem,
 				})));
-			}
 
-			this.userPublickeysRepository.delete({
-				keyId: Not(In(Array.from(publicKeys.keys()))),
-				userId: exist.id,
-			}).catch(err => {
-				this.logger.error('something happened while deleting remote user public keys:', { userId: exist.id, err });
-			});
+				this.userPublickeysRepository.delete({
+					keyId: Not(In(Array.from(publicKeys.keys()))),
+					userId: exist.id,
+				}).catch(err => {
+					this.logger.error('something happened while deleting remote user public keys:', { userId: exist.id, err });
+				});
+			}
 		} catch (err) {
 			this.logger.error('something happened while updating remote user public keys:', { userId: exist.id, err });
 		}

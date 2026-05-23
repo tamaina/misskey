@@ -45,8 +45,8 @@ export class UserSuspendService {
 		});
 
 		(async () => {
-			await this.postSuspend(user, false).catch((e: any) => { });
-			await this.suspendFollowings(user).catch((e: any) => { });
+			await this.postSuspend(user, false).catch(_ => {});
+			await this.suspendFollowings(user).catch(_ => {});
 		})();
 	}
 
@@ -57,8 +57,8 @@ export class UserSuspendService {
 		});
 
 		(async () => {
-			await this.postSuspend(user, true).catch((e: any) => { });
-			await this.suspendFollowings(user).catch((e: any) => { });
+			await this.postSuspend(user, true).catch(_ => {});
+			await this.suspendFollowings(user).catch(_ => {});
 		})();
 	}
 
@@ -75,8 +75,8 @@ export class UserSuspendService {
 		});
 
 		(async () => {
-			await this.postUnsuspend(user, false).catch((e: any) => { });
-			await this.restoreFollowings(user).catch((e: any) => { });
+			await this.postUnsuspend(user, false).catch(_ => {});
+			await this.restoreFollowings(user).catch(_ => {});
 		})();
 	}
 
@@ -87,8 +87,8 @@ export class UserSuspendService {
 		});
 
 		(async () => {
-			await this.postUnsuspend(user, true).catch((e: any) => { });
-			await this.restoreFollowings(user).catch((e: any) => { });
+			await this.postUnsuspend(user, true).catch(_ => {});
+			await this.restoreFollowings(user).catch(_ => {});
 		})();
 	}
 
@@ -107,7 +107,7 @@ export class UserSuspendService {
 		});
 
 		if (this.userEntityService.isLocalUser(user)) {
-			this.accountUpdateService.publishToFollowersAndSharedInboxAndRelays(user.id);
+			await this.accountUpdateService.publishToFollowersAndSharedInboxAndRelays(user.id);
 		}
 	}
 
@@ -119,7 +119,7 @@ export class UserSuspendService {
 		);
 
 		if (this.userEntityService.isLocalUser(user)) {
-			this.accountUpdateService.publishToFollowersAndSharedInboxAndRelays(user.id);
+			await this.accountUpdateService.publishToFollowersAndSharedInboxAndRelays(user.id);
 		}
 	}
 
