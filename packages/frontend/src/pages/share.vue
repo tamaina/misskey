@@ -205,9 +205,10 @@ async function init() {
 		}
 	}
 
-	if (urlParams.has('file') && urlParams.get('file').startsWith('data:')) {
+	const fileParam = urlParams.get('file');
+	if (fileParam?.startsWith('data:')) {
 		try {
-			const file = await window.fetch(urlParams.get('file')).then(res => res.blob());
+			const file = await window.fetch(fileParam).then(res => res.blob());
 			if (file instanceof Blob) {
 				tempFiles.value.push(file as File);
 			} else {
