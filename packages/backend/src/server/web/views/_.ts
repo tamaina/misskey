@@ -25,7 +25,7 @@ export type MinimumCommonData = {
 };
 
 export type ViteFiles = {
-	entryJs: string | null;
+	entryJs: string | Record<string, string> | null;
 	css: string[];
 	modulePreloads: string[];
 };

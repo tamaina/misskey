@@ -48,7 +48,18 @@
 
 	//#region Script
 	async function importAppScript() {
-		await import(CLIENT_ENTRY ? `/vite/${CLIENT_ENTRY.replace('scripts', lang)}` : '/vite/src/_boot_.ts')
+		let clientEntry = '/vite/src/_boot_.ts';
+
+		if (CLIENT_ENTRY != null) {
+			if (typeof CLIENT_ENTRY === 'string') {
+				clientEntry = `/vite/${CLIENT_ENTRY}`;
+			} else {
+				const localizedEntry = CLIENT_ENTRY[lang] ?? CLIENT_ENTRY['en-US'] ?? Object.values(CLIENT_ENTRY)[0];
+				clientEntry = `/vite/${localizedEntry}`;
+			}
+		}
+
+		await import(clientEntry)
 			.catch(async e => {
 				console.error(e);
 				renderError('APP_IMPORT', e);

@@ -17,6 +17,12 @@ import type { Config } from '@/config.js';
 import type { MiMeta } from '@/models/Meta.js';
 import type { CommonData, ViteFiles } from './views/_.js';
 
+type InternationalizedManifestChunk = Manifest[string] & {
+	internationalization?: {
+		locales?: Record<string, string>;
+	};
+};
+
 @Injectable()
 export class HtmlTemplateService {
 	private frontendAssetsFetched = false;
@@ -46,7 +52,7 @@ export class HtmlTemplateService {
 	// See https://ja.vite.dev/guide/backend-integration
 	@bindThis
 	private collectViteAssetFiles(manifest: Manifest): ViteFiles {
-		const entryFile = Object.values(manifest).find((chunk) => chunk.isEntry);
+		const entryFile = (manifest['src/_boot_.ts'] ?? Object.values(manifest).find((chunk) => chunk.isEntry)) as InternationalizedManifestChunk | undefined;
 		if (!entryFile) return {
 			entryJs: null,
 			css: [],
@@ -88,7 +94,7 @@ export class HtmlTemplateService {
 		}
 
 		return {
-			entryJs: entryFile.file,
+			entryJs: entryFile.internationalization?.locales ?? entryFile.file,
 			css: Array.from(cssFiles),
 			modulePreloads: Array.from(modulePreloads),
 		};
