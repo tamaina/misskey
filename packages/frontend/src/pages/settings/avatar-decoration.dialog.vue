@@ -11,7 +11,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	@close="cancel"
 	@closed="emit('closed')"
 >
-	<template #header>{{ i18n.ts.avatarDecorations }}</template>
+	<template #header>{{ $locale.env.avatarDecorations }}</template>
 
 	<div>
 		<div class="_spacer" style="--MI_SPACER-min: 20px; --MI_SPACER-max: 28px;">
@@ -21,35 +21,35 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 			<div class="_gaps_s">
 				<MkRange v-model="angle" continuousUpdate :min="-0.5" :max="0.5" :step="0.025" :textConverter="(v) => `${Math.floor(v * 360)}°`">
-					<template #label>{{ i18n.ts.angle }}</template>
+					<template #label>{{ $locale.env.angle }}</template>
 				</MkRange>
 				<MkRange v-model="offsetX" continuousUpdate :min="-0.25" :max="0.25" :step="0.025" :textConverter="(v) => `${Math.floor(v * 100)}%`">
-					<template #label>X {{ i18n.ts.position }}</template>
+					<template #label>X {{ $locale.env.position }}</template>
 				</MkRange>
 				<MkRange v-model="offsetY" continuousUpdate :min="-0.25" :max="0.25" :step="0.025" :textConverter="(v) => `${Math.floor(v * 100)}%`">
-					<template #label>Y {{ i18n.ts.position }}</template>
+					<template #label>Y {{ $locale.env.position }}</template>
 				</MkRange>
 				<MkSwitch v-model="flipH">
-					<template #label>{{ i18n.ts.flip }}</template>
+					<template #label>{{ $locale.env.flip }}</template>
 				</MkSwitch>
 			</div>
 		</div>
 
 		<div :class="$style.footer" class="_buttonsCenter">
-			<MkButton v-if="usingIndex != null" primary rounded @click="update"><i class="ti ti-check"></i> {{ i18n.ts.update }}</MkButton>
-			<MkButton v-if="usingIndex != null" rounded @click="detach"><i class="ti ti-x"></i> {{ i18n.ts.detach }}</MkButton>
-			<MkButton v-else :disabled="exceeded || locked" primary rounded @click="attach"><i class="ti ti-check"></i> {{ i18n.ts.attach }}</MkButton>
+			<MkButton v-if="usingIndex != null" primary rounded @click="update"><i class="ti ti-check"></i> {{ $locale.env.update }}</MkButton>
+			<MkButton v-if="usingIndex != null" rounded @click="detach"><i class="ti ti-x"></i> {{ $locale.env.detach }}</MkButton>
+			<MkButton v-else :disabled="exceeded || locked" primary rounded @click="attach"><i class="ti ti-check"></i> {{ $locale.env.attach }}</MkButton>
 		</div>
 	</div>
 </MkModalWindow>
 </template>
 
 <script lang="ts" setup>
+
 import { useTemplateRef, ref, computed } from 'vue';
 import MkButton from '@/components/MkButton.vue';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
-import { i18n } from '@/i18n.js';
 import MkRange from '@/components/MkRange.vue';
 import { ensureSignin } from '@/i.js';
 

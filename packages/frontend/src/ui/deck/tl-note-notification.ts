@@ -8,25 +8,25 @@ import type { Ref } from 'vue';
 import type { SoundType } from '@/utility/sound.js';
 import type { SoundStore } from '@/preferences/def.js';
 import { getSoundDuration, playMisskeySfxFile, soundsTypes } from '@/utility/sound.js';
-import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
+import { $locale, $l } from '@/i18n.js';
 
 export async function soundSettingsButton(soundSetting: Ref<SoundStore>): Promise<void> {
 	function getSoundTypeName(f: SoundType): string {
 		switch (f) {
 			case null:
-				return i18n.ts.none;
+				return $locale.value.env.none;
 			case '_driveFile_':
-				return i18n.ts._soundSettings.driveFile;
+				return $locale.value.env._soundSettings.driveFile;
 			default:
 				return f;
 		}
 	}
 
-	const { canceled, result } = await os.form(i18n.ts.sound, {
+	const { canceled, result } = await os.form($locale.value.env.sound, {
 		type: {
 			type: 'enum',
-			label: i18n.ts.sound,
+			label: $locale.value.env.sound,
 			default: soundSetting.value.type ?? 'none',
 			enum: soundsTypes.map(f => ({
 				value: f ?? 'none' as Exclude<SoundType, null> | 'none',
@@ -35,15 +35,15 @@ export async function soundSettingsButton(soundSetting: Ref<SoundStore>): Promis
 		},
 		soundFile: {
 			type: 'drive-file',
-			label: i18n.ts.file,
+			label: $locale.value.env.file,
 			defaultFileId: soundSetting.value.type === '_driveFile_' ? soundSetting.value.fileId : null,
 			hidden: v => v.type !== '_driveFile_',
 			validate: async (file: Misskey.entities.DriveFile) => {
 				if (!file.type.startsWith('audio')) {
 					os.alert({
 						type: 'warning',
-						title: i18n.ts._soundSettings.driveFileTypeWarn,
-						text: i18n.ts._soundSettings.driveFileTypeWarnDescription,
+						title: $locale.value.env._soundSettings.driveFileTypeWarn,
+						text: $locale.value.env._soundSettings.driveFileTypeWarnDescription,
 					});
 					return false;
 				}
@@ -52,10 +52,10 @@ export async function soundSettingsButton(soundSetting: Ref<SoundStore>): Promis
 				if (duration >= 2000) {
 					const { canceled } = await os.confirm({
 						type: 'warning',
-						title: i18n.ts._soundSettings.driveFileDurationWarn,
-						text: i18n.ts._soundSettings.driveFileDurationWarnDescription,
-						okText: i18n.ts.continue,
-						cancelText: i18n.ts.cancel,
+						title: $locale.value.env._soundSettings.driveFileDurationWarn,
+						text: $locale.value.env._soundSettings.driveFileDurationWarnDescription,
+						okText: $locale.value.env.continue,
+						cancelText: $locale.value.env.cancel,
 					});
 					if (canceled) return false;
 				}
@@ -65,7 +65,7 @@ export async function soundSettingsButton(soundSetting: Ref<SoundStore>): Promis
 		},
 		volume: {
 			type: 'range',
-			label: i18n.ts.volume,
+			label: $locale.value.env.volume,
 			default: soundSetting.value.volume ?? 1,
 			textConverter: (v) => `${Math.floor(v * 100)}%`,
 			min: 0,
@@ -74,7 +74,7 @@ export async function soundSettingsButton(soundSetting: Ref<SoundStore>): Promis
 		},
 		listen: {
 			type: 'button',
-			content: i18n.ts.listen,
+			content: $locale.value.env.listen,
 			action: (_, v) => {
 				const sound = buildSoundStore(v);
 				if (!sound) return;
@@ -98,7 +98,7 @@ export async function soundSettingsButton(soundSetting: Ref<SoundStore>): Promis
 			if (!fileUrl || !fileId) {
 				os.alert({
 					type: 'warning',
-					text: i18n.ts._soundSettings.driveFileWarn,
+					text: $locale.value.env._soundSettings.driveFileWarn,
 				});
 				return null;
 			}

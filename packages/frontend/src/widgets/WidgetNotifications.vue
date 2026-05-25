@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <MkContainer :style="`height: ${widgetProps.height}px;`" :showHeader="widgetProps.showHeader" :scrollable="true" data-cy-mkw-notifications class="mkw-notifications">
 	<template #icon><i class="ti ti-bell"></i></template>
-	<template #header>{{ i18n.ts.notifications }}</template>
+	<template #header>{{ $locale.env.notifications }}</template>
 	<template #func="{ buttonStyleClass }"><button class="_button" :class="buttonStyleClass" @click="configureNotification()"><i class="ti ti-settings"></i></button></template>
 
 	<div>
@@ -16,6 +16,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef } from '@/i18n.js';
+
 import { defineAsyncComponent } from 'vue';
 import { useWidgetPropsManager } from './widget.js';
 import type { notificationTypes as notificationTypes_typeReferenceOnly } from 'misskey-js';
@@ -24,19 +26,18 @@ import type { FormWithDefault, GetFormResultType } from '@/utility/form.js';
 import MkContainer from '@/components/MkContainer.vue';
 import MkStreamingNotificationsTimeline from '@/components/MkStreamingNotificationsTimeline.vue';
 import * as os from '@/os.js';
-import { i18n } from '@/i18n.js';
 
 const name = 'notifications';
 
 const widgetPropsDef = {
 	showHeader: {
 		type: 'boolean',
-		label: i18n.ts._widgetOptions.showHeader,
+		label: localeRef.value.env._widgetOptions.showHeader,
 		default: true,
 	},
 	height: {
 		type: 'number',
-		label: i18n.ts.height,
+		label: localeRef.value.env.height,
 		default: 300,
 	},
 	excludeTypes: {

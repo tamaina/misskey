@@ -9,21 +9,22 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div class="_gaps_m">
 			<MkInput v-model="password" type="password">
 				<template #prefix><i class="ti ti-lock"></i></template>
-				<template #label>{{ i18n.ts.newPassword }}</template>
+				<template #label>{{ $locale.env.newPassword }}</template>
 			</MkInput>
 
-			<MkButton primary @click="save">{{ i18n.ts.save }}</MkButton>
+			<MkButton primary @click="save">{{ $locale.env.save }}</MkButton>
 		</div>
 	</div>
 </PageWithHeader>
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef } from '@/i18n.js';
+
 import { defineAsyncComponent, onMounted, ref, computed } from 'vue';
 import MkInput from '@/components/MkInput.vue';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os.js';
-import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
 import { mainRouter } from '@/router.js';
 
@@ -56,7 +57,7 @@ const headerActions = computed(() => []);
 const headerTabs = computed(() => []);
 
 definePage(() => ({
-	title: i18n.ts.resetPassword,
+	title: localeRef.value.env.resetPassword,
 	icon: 'ti ti-lock',
 }));
 </script>

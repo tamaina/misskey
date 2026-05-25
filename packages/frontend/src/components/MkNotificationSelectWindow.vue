@@ -14,22 +14,23 @@ SPDX-License-Identifier: AGPL-3.0-only
 	@close="dialog?.close()"
 	@closed="emit('closed')"
 >
-	<template #header>{{ i18n.ts.notificationSetting }}</template>
+	<template #header>{{ $locale.env.notificationSetting }}</template>
 
 	<div class="_spacer" style="--MI_SPACER-min: 20px; --MI_SPACER-max: 28px;">
 		<div class="_gaps_m">
-			<MkInfo>{{ i18n.ts.notificationSettingDesc }}</MkInfo>
+			<MkInfo>{{ $locale.env.notificationSettingDesc }}</MkInfo>
 			<div class="_buttons">
-				<MkButton inline @click="disableAll">{{ i18n.ts.disableAll }}</MkButton>
-				<MkButton inline @click="enableAll">{{ i18n.ts.enableAll }}</MkButton>
+				<MkButton inline @click="disableAll">{{ $locale.env.disableAll }}</MkButton>
+				<MkButton inline @click="enableAll">{{ $locale.env.enableAll }}</MkButton>
 			</div>
-			<MkSwitch v-for="ntype in notificationTypes" :key="ntype" v-model="typesMap[ntype].value">{{ i18n.ts._notification._types[ntype] }}</MkSwitch>
+			<MkSwitch v-for="ntype in notificationTypes" :key="ntype" v-model="typesMap[ntype].value">{{ $locale.env._notification._types[ntype] }}</MkSwitch>
 		</div>
 	</div>
 </MkModalWindow>
 </template>
 
 <script lang="ts" setup>
+
 import { ref, useTemplateRef } from 'vue';
 import { notificationTypes } from 'misskey-js';
 import MkSwitch from './MkSwitch.vue';
@@ -37,7 +38,6 @@ import MkInfo from './MkInfo.vue';
 import MkButton from './MkButton.vue';
 import type { Ref } from 'vue';
 import MkModalWindow from '@/components/MkModalWindow.vue';
-import { i18n } from '@/i18n.js';
 
 type TypesMap = Record<typeof notificationTypes[number], Ref<boolean>>;
 

@@ -15,15 +15,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div style="pointer-events: none;">
 		<div v-if="$i?.avatarId == file.id" :class="[$style.label]">
 			<img :class="$style.labelImg" src="/client-assets/label.svg"/>
-			<p :class="$style.labelText">{{ i18n.ts.avatar }}</p>
+			<p :class="$style.labelText">{{ $locale.env.avatar }}</p>
 		</div>
 		<div v-if="$i?.bannerId == file.id" :class="[$style.label]">
 			<img :class="$style.labelImg" src="/client-assets/label.svg"/>
-			<p :class="$style.labelText">{{ i18n.ts.banner }}</p>
+			<p :class="$style.labelText">{{ $locale.env.banner }}</p>
 		</div>
 		<div v-if="file.isSensitive" :class="[$style.label, $style.red]">
 			<img :class="$style.labelImg" src="/client-assets/label-red.svg"/>
-			<p :class="$style.labelText">{{ i18n.ts.sensitive }}</p>
+			<p :class="$style.labelText">{{ $locale.env.sensitive }}</p>
 		</div>
 
 		<MkDriveFileThumbnail :class="$style.thumbnail" :file="file" fit="contain"/>
@@ -37,12 +37,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+
 import { computed, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkDriveFileThumbnail from '@/components/MkDriveFileThumbnail.vue';
 import bytes from '@/filters/bytes.js';
 import * as os from '@/os.js';
-import { i18n } from '@/i18n.js';
 import { $i } from '@/i.js';
 import { getDriveFileMenu } from '@/utility/get-drive-file-menu.js';
 import { setDragData } from '@/drag-and-drop.js';

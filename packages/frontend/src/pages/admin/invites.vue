@@ -9,28 +9,28 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div class="_gaps_m">
 			<MkFolder :expanded="false">
 				<template #icon><i class="ti ti-plus"></i></template>
-				<template #label>{{ i18n.ts.createInviteCode }}</template>
+				<template #label>{{ $locale.env.createInviteCode }}</template>
 
 				<div class="_gaps_m">
 					<MkSwitch v-model="noExpirationDate">
-						<template #label>{{ i18n.ts.noExpirationDate }}</template>
+						<template #label>{{ $locale.env.noExpirationDate }}</template>
 					</MkSwitch>
 					<MkInput v-if="!noExpirationDate" v-model="expiresAt" type="datetime-local">
-						<template #label>{{ i18n.ts.expirationDate }}</template>
+						<template #label>{{ $locale.env.expirationDate }}</template>
 					</MkInput>
 					<MkInput v-model="createCount" type="number" :min="1">
-						<template #label>{{ i18n.ts.createCount }}</template>
+						<template #label>{{ $locale.env.createCount }}</template>
 					</MkInput>
-					<MkButton primary rounded @click="createWithOptions">{{ i18n.ts.create }}</MkButton>
+					<MkButton primary rounded @click="createWithOptions">{{ $locale.env.create }}</MkButton>
 				</div>
 			</MkFolder>
 
 			<div :class="$style.inputs">
 				<MkSelect v-model="type" :items="typeDef" :class="$style.input">
-					<template #label>{{ i18n.ts.state }}</template>
+					<template #label>{{ $locale.env.state }}</template>
 				</MkSelect>
 				<MkSelect v-model="sort" :items="sortDef" :class="$style.input">
-					<template #label>{{ i18n.ts.sort }}</template>
+					<template #label>{{ $locale.env.sort }}</template>
 				</MkSelect>
 			</div>
 			<MkPagination :paginator="paginator">
@@ -46,9 +46,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef } from '@/i18n.js';
+
 import * as Misskey from 'misskey-js';
 import { computed, markRaw, ref, useTemplateRef } from 'vue';
-import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import MkButton from '@/components/MkButton.vue';
@@ -67,10 +68,10 @@ const {
 	def: typeDef,
 } = useMkSelect({
 	items: [
-		{ label: i18n.ts.all, value: 'all' },
-		{ label: i18n.ts.unused, value: 'unused' },
-		{ label: i18n.ts.used, value: 'used' },
-		{ label: i18n.ts.expired, value: 'expired' },
+		{ label: localeRef.value.env.all, value: 'all' },
+		{ label: localeRef.value.env.unused, value: 'unused' },
+		{ label: localeRef.value.env.used, value: 'used' },
+		{ label: localeRef.value.env.expired, value: 'expired' },
 	],
 	initialValue: 'all',
 });
@@ -79,10 +80,10 @@ const {
 	def: sortDef,
 } = useMkSelect({
 	items: [
-		{ label: `${i18n.ts.createdAt} (${i18n.ts.ascendingOrder})`, value: '+createdAt' },
-		{ label: `${i18n.ts.createdAt} (${i18n.ts.descendingOrder})`, value: '-createdAt' },
-		{ label: `${i18n.ts.usedAt} (${i18n.ts.ascendingOrder})`, value: '+usedAt' },
-		{ label: `${i18n.ts.usedAt} (${i18n.ts.descendingOrder})`, value: '-usedAt' },
+		{ label: `${localeRef.value.env.createdAt} (${localeRef.value.env.ascendingOrder})`, value: '+createdAt' },
+		{ label: `${localeRef.value.env.createdAt} (${localeRef.value.env.descendingOrder})`, value: '-createdAt' },
+		{ label: `${localeRef.value.env.usedAt} (${localeRef.value.env.ascendingOrder})`, value: '+usedAt' },
+		{ label: `${localeRef.value.env.usedAt} (${localeRef.value.env.descendingOrder})`, value: '-usedAt' },
 	],
 	initialValue: '+createdAt',
 });
@@ -109,7 +110,7 @@ async function createWithOptions() {
 	const tickets = await misskeyApi('admin/invite/create', options);
 	os.alert({
 		type: 'success',
-		title: i18n.ts.inviteCodeCreated,
+		title: localeRef.value.env.inviteCodeCreated,
 		text: tickets.map(x => x.code).join('\n'),
 	});
 
@@ -124,7 +125,7 @@ const headerActions = computed(() => []);
 const headerTabs = computed(() => []);
 
 definePage(() => ({
-	title: i18n.ts.invite,
+	title: localeRef.value.env.invite,
 	icon: 'ti ti-user-plus',
 }));
 </script>

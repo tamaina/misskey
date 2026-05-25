@@ -9,11 +9,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div class="banner" :style="bannerStyle">
 			<div class="fade"></div>
 			<div class="name"><i class="ti ti-device-tv"></i> {{ channel.name }}</div>
-			<div v-if="channel.isSensitive" class="sensitiveIndicator">{{ i18n.ts.sensitive }}</div>
+			<div v-if="channel.isSensitive" class="sensitiveIndicator">{{ $locale.env.sensitive }}</div>
 			<div class="status">
 				<div>
 					<i class="ti ti-users ti-fw"></i>
-					<I18n :src="i18n.ts._channel.usersCount" tag="span" style="margin-left: 4px;">
+					<I18n :src="$locale.env._channel.usersCount" tag="span" style="margin-left: 4px;">
 						<template #n>
 							<b>{{ channel.usersCount }}</b>
 						</template>
@@ -21,7 +21,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 				<div>
 					<i class="ti ti-pencil ti-fw"></i>
-					<I18n :src="i18n.ts._channel.notesCount" tag="span" style="margin-left: 4px;">
+					<I18n :src="$locale.env._channel.notesCount" tag="span" style="margin-left: 4px;">
 						<template #n>
 							<b>{{ channel.notesCount }}</b>
 						</template>
@@ -29,7 +29,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 				<div v-if="$i != null && $i.id === channel.userId" style="color: var(--MI_THEME-warn)">
 					<i class="ti ti-user-star ti-fw"></i>
-					<span style="margin-left: 4px;">{{ i18n.ts.youAreAdmin }}</span>
+					<span style="margin-left: 4px;">{{ $locale.env.youAreAdmin }}</span>
 				</div>
 			</div>
 		</div>
@@ -38,7 +38,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</article>
 		<footer>
 			<span v-if="channel.lastNotedAt">
-				{{ i18n.ts.updatedAt }}: <MkTime :time="channel.lastNotedAt"/>
+				{{ $locale.env.updatedAt }}: <MkTime :time="channel.lastNotedAt"/>
 			</span>
 		</footer>
 	</MkA>
@@ -50,10 +50,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+
 import { computed, ref, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import { $i } from '@/i.js';
-import { i18n } from '@/i18n.js';
 import { miLocalStorage } from '@/local-storage.js';
 
 const props = defineProps<{

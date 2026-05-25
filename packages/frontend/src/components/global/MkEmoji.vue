@@ -10,13 +10,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef, $l as localizerRef } from '@/i18n.js';
+
 import { computed, inject } from 'vue';
 import { colorizeEmoji, getEmojiName } from '@@/js/emojilist.js';
 import { char2fluentEmojiFilePath, char2twemojiFilePath } from '@@/js/emoji-base.js';
 import type { MenuItem } from '@/types/menu.js';
 import * as os from '@/os.js';
 import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
-import { i18n } from '@/i18n.js';
 import { prefer } from '@/preferences.js';
 import { DI } from '@/di.js';
 import { mute as muteEmoji, unmute as unmuteEmoji, checkMuted as checkMutedEmoji } from '@/utility/emoji-mute.js';
@@ -46,7 +47,7 @@ function computeTitle(event: PointerEvent): void {
 function mute() {
 	os.confirm({
 		type: 'question',
-		title: i18n.tsx.muteX({ x: props.emoji }),
+		title: localizerRef.value.env.muteX({ x: props.emoji }),
 	}).then(({ canceled }) => {
 		if (canceled) {
 			return;
@@ -58,7 +59,7 @@ function mute() {
 function unmute() {
 	os.confirm({
 		type: 'question',
-		title: i18n.tsx.unmuteX({ x: props.emoji }),
+		title: localizerRef.value.env.unmuteX({ x: props.emoji }),
 	}).then(({ canceled }) => {
 		if (canceled) {
 			return;
@@ -75,7 +76,7 @@ function onClick(ev: PointerEvent) {
 			type: 'label',
 			text: props.emoji,
 		}, {
-			text: i18n.ts.copy,
+			text: localeRef.value.env.copy,
 			icon: 'ti ti-copy',
 			action: () => {
 				copyToClipboard(props.emoji);
@@ -84,7 +85,7 @@ function onClick(ev: PointerEvent) {
 
 		if (props.menuReaction && react) {
 			menuItems.push({
-				text: i18n.ts.doReaction,
+				text: localeRef.value.env.doReaction,
 				icon: 'ti ti-plus',
 				action: () => {
 					react(props.emoji);
@@ -95,13 +96,13 @@ function onClick(ev: PointerEvent) {
 		menuItems.push({
 			type: 'divider',
 		}, isMuted.value ? {
-			text: i18n.ts.emojiUnmute,
+			text: localeRef.value.env.emojiUnmute,
 			icon: 'ti ti-mood-smile',
 			action: () => {
 				unmute();
 			},
 		} : {
-			text: i18n.ts.emojiMute,
+			text: localeRef.value.env.emojiMute,
 			icon: 'ti ti-mood-off',
 			action: () => {
 				mute();

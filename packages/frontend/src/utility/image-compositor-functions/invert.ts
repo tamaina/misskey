@@ -6,7 +6,7 @@
 import shader from './invert.glsl';
 import type { ImageEffectorUiDefinition } from '../image-effector/ImageEffector.js';
 import { defineImageCompositorFunction } from '@/lib/ImageCompositor.js';
-import { i18n } from '@/i18n.js';
+import { $locale, $l } from '@/i18n.js';
 
 export const fn = defineImageCompositorFunction<{
 	r: boolean;
@@ -22,20 +22,20 @@ export const fn = defineImageCompositorFunction<{
 });
 
 export const uiDefinition = {
-	name: i18n.ts._imageEffector._fxs.invert,
+	name: $locale.value.env._imageEffector._fxs.invert,
 	params: {
 		r: {
-			label: i18n.ts._imageEffector._fxProps.redComponent,
+			label: $locale.value.env._imageEffector._fxProps.redComponent,
 			type: 'boolean',
 			default: true,
 		},
 		g: {
-			label: i18n.ts._imageEffector._fxProps.greenComponent,
+			label: $locale.value.env._imageEffector._fxProps.greenComponent,
 			type: 'boolean',
 			default: true,
 		},
 		b: {
-			label: i18n.ts._imageEffector._fxProps.blueComponent,
+			label: $locale.value.env._imageEffector._fxProps.blueComponent,
 			type: 'boolean',
 			default: true,
 		},

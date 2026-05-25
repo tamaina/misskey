@@ -24,10 +24,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<template #footer>
 		<div class="_buttons">
 			<MkButton @click="onEditClick">
-				<i class="ti ti-settings"></i> {{ i18n.ts.edit }}
+				<i class="ti ti-settings"></i> {{ $locale.env.edit }}
 			</MkButton>
 			<MkButton danger @click="onDeleteClick">
-				<i class="ti ti-trash"></i> {{ i18n.ts.delete }}
+				<i class="ti ti-trash"></i> {{ $locale.env.delete }}
 			</MkButton>
 		</div>
 	</template>
@@ -42,10 +42,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+
 import { entities } from 'misskey-js';
 import { toRefs } from 'vue';
 import MkFolder from '@/components/MkFolder.vue';
-import { i18n } from '@/i18n.js';
 import MkButton from '@/components/MkButton.vue';
 import MkKeyValue from '@/components/MkKeyValue.vue';
 

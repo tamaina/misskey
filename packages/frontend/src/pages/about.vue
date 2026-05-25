@@ -21,9 +21,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef } from '@/i18n.js';
+
 import { computed, defineAsyncComponent, ref, watch } from 'vue';
 import { instance } from '@/instance.js';
-import { i18n } from '@/i18n.js';
 import { claimAchievement } from '@/utility/achievements.js';
 import { definePage } from '@/page.js';
 
@@ -50,23 +51,23 @@ const headerActions = computed(() => []);
 
 const headerTabs = computed(() => [{
 	key: 'overview',
-	title: i18n.ts.overview,
+	title: localeRef.value.env.overview,
 }, {
 	key: 'emojis',
-	title: i18n.ts.customEmojis,
+	title: localeRef.value.env.customEmojis,
 	icon: 'ti ti-icons',
 }, ...(instance.federation !== 'none' ? [{
 	key: 'federation',
-	title: i18n.ts.federation,
+	title: localeRef.value.env.federation,
 	icon: 'ti ti-whirl',
 }] : []), {
 	key: 'charts',
-	title: i18n.ts.charts,
+	title: localeRef.value.env.charts,
 	icon: 'ti ti-chart-line',
 }]);
 
 definePage(() => ({
-	title: i18n.ts.instanceInfo,
+	title: localeRef.value.env.instanceInfo,
 	icon: 'ti ti-info-circle',
 }));
 </script>

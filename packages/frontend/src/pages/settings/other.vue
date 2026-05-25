@@ -4,23 +4,23 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<SearchMarker path="/settings/other" :label="i18n.ts.other" :keywords="['other']" icon="ti ti-dots">
+<SearchMarker path="/settings/other" :label="$locale.env.other" :keywords="['other']" icon="ti ti-dots">
 	<div class="_gaps_m">
 		<!--
 		<MkSwitch v-model="$i.injectFeaturedNote" @update:model-value="onChangeInjectFeaturedNote">
-			<template #label>{{ i18n.ts.showFeaturedNotesInTimeline }}</template>
+			<template #label>{{ $locale.env.showFeaturedNotesInTimeline }}</template>
 		</MkSwitch>
 		-->
 
 		<!--
-		<MkSwitch v-model="reportError">{{ i18n.ts.sendErrorReports }}<template #caption>{{ i18n.ts.sendErrorReportsDescription }}</template></MkSwitch>
+		<MkSwitch v-model="reportError">{{ $locale.env.sendErrorReports }}<template #caption>{{ $locale.env.sendErrorReportsDescription }}</template></MkSwitch>
 		-->
 
 		<div class="_gaps_s">
 			<SearchMarker :keywords="['account', 'info']">
 				<MkFolder>
 					<template #icon><SearchIcon><i class="ti ti-info-circle"></i></SearchIcon></template>
-					<template #label><SearchLabel>{{ i18n.ts.accountInfo }}</SearchLabel></template>
+					<template #label><SearchLabel>{{ $locale.env.accountInfo }}</SearchLabel></template>
 
 					<div class="_gaps_m">
 						<MkKeyValue>
@@ -29,14 +29,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 						</MkKeyValue>
 
 						<MkKeyValue>
-							<template #key>{{ i18n.ts.registeredDate }}</template>
+							<template #key>{{ $locale.env.registeredDate }}</template>
 							<template #value><MkTime :time="$i.createdAt" mode="detail"/></template>
 						</MkKeyValue>
 
 						<SearchMarker :keywords="['role', 'policy']">
 							<MkFolder>
 								<template #icon><i class="ti ti-badges"></i></template>
-								<template #label><SearchLabel>{{ i18n.ts._role.policies }}</SearchLabel></template>
+								<template #label><SearchLabel>{{ $locale.env._role.policies }}</SearchLabel></template>
 
 								<div class="_gaps_s">
 									<div v-for="policy in Object.keys($i.policies)" :key="policy">
@@ -52,7 +52,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<SearchMarker :keywords="['roles']">
 				<MkFolder>
 					<template #icon><SearchIcon><i class="ti ti-badges"></i></SearchIcon></template>
-					<template #label><SearchLabel>{{ i18n.ts.rolesAssignedToMe }}</SearchLabel></template>
+					<template #label><SearchLabel>{{ $locale.env.rolesAssignedToMe }}</SearchLabel></template>
 
 					<div class="_gaps_s">
 						<MkRolePreview v-for="role in $i.roles" :key="role.id" :role="role" :forModeration="false"/>
@@ -63,7 +63,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<SearchMarker :keywords="['account', 'move', 'migration']">
 				<MkFolder>
 					<template #icon><SearchIcon><i class="ti ti-plane"></i></SearchIcon></template>
-					<template #label><SearchLabel>{{ i18n.ts.accountMigration }}</SearchLabel></template>
+					<template #label><SearchLabel>{{ $locale.env.accountMigration }}</SearchLabel></template>
 
 					<XMigration/>
 				</MkFolder>
@@ -72,13 +72,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<SearchMarker :keywords="['account', 'close', 'delete']">
 				<MkFolder>
 					<template #icon><SearchIcon><i class="ti ti-alert-triangle"></i></SearchIcon></template>
-					<template #label><SearchLabel>{{ i18n.ts.closeAccount }}</SearchLabel></template>
+					<template #label><SearchLabel>{{ $locale.env.closeAccount }}</SearchLabel></template>
 
 					<div class="_gaps_m">
-						<FormInfo warn>{{ i18n.ts._accountDelete.mayTakeTime }}</FormInfo>
-						<FormInfo>{{ i18n.ts._accountDelete.sendEmail }}</FormInfo>
-						<MkButton v-if="!$i.isDeleted" danger @click="deleteAccount"><SearchText>{{ i18n.ts._accountDelete.requestAccountDelete }}</SearchText></MkButton>
-						<MkButton v-else disabled>{{ i18n.ts._accountDelete.inProgress }}</MkButton>
+						<FormInfo warn>{{ $locale.env._accountDelete.mayTakeTime }}</FormInfo>
+						<FormInfo>{{ $locale.env._accountDelete.sendEmail }}</FormInfo>
+						<MkButton v-if="!$i.isDeleted" danger @click="deleteAccount"><SearchText>{{ $locale.env._accountDelete.requestAccountDelete }}</SearchText></MkButton>
+						<MkButton v-else disabled>{{ $locale.env._accountDelete.inProgress }}</MkButton>
 					</div>
 				</MkFolder>
 			</SearchMarker>
@@ -86,7 +86,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<SearchMarker :keywords="['experimental', 'feature', 'flags']">
 				<MkFolder>
 					<template #icon><SearchIcon><i class="ti ti-flask"></i></SearchIcon></template>
-					<template #label><SearchLabel>{{ i18n.ts.experimentalFeatures }}</SearchLabel></template>
+					<template #label><SearchLabel>{{ $locale.env.experimentalFeatures }}</SearchLabel></template>
 
 					<div class="_gaps_m">
 						<MkSwitch v-model="enableCondensedLine">
@@ -114,11 +114,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<SearchMarker :keywords="['developer', 'mode', 'debug']">
 				<MkFolder>
 					<template #icon><SearchIcon><i class="ti ti-code"></i></SearchIcon></template>
-					<template #label><SearchLabel>{{ i18n.ts.developer }}</SearchLabel></template>
+					<template #label><SearchLabel>{{ $locale.env.developer }}</SearchLabel></template>
 
 					<div class="_gaps_m">
 						<MkSwitch v-model="devMode">
-							<template #label>{{ i18n.ts.devMode }}</template>
+							<template #label>{{ $locale.env.devMode }}</template>
 						</MkSwitch>
 					</div>
 				</MkFolder>
@@ -127,34 +127,36 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 		<hr>
 
-		<FormLink to="/registry"><template #icon><i class="ti ti-adjustments"></i></template>{{ i18n.ts.registry }}</FormLink>
+		<FormLink to="/registry"><template #icon><i class="ti ti-adjustments"></i></template>{{ $locale.env.registry }}</FormLink>
 
 		<hr>
 
-		<MkButton @click="resetAllTips"><i class="ti ti-bulb"></i> {{ i18n.ts.redisplayAllTips }}</MkButton>
-		<MkButton @click="hideAllTips"><i class="ti ti-bulb-off"></i> {{ i18n.ts.hideAllTips }}</MkButton>
+		<MkButton @click="resetAllTips"><i class="ti ti-bulb"></i> {{ $locale.env.redisplayAllTips }}</MkButton>
+		<MkButton @click="hideAllTips"><i class="ti ti-bulb-off"></i> {{ $locale.env.hideAllTips }}</MkButton>
 
 		<hr>
 
 		<template v-if="$i.policies.chatAvailability !== 'unavailable'">
-			<MkButton @click="readAllChatMessages">{{ i18n.ts.readAllChatMessages }}</MkButton>
+			<MkButton @click="readAllChatMessages">{{ $locale.env.readAllChatMessages }}</MkButton>
 
 			<hr>
 		</template>
 
-		<MkButton v-if="storagePersistenceSupported && !storagePersisted" @click="enableStoragePersistence">{{ i18n.ts._settings.settingsPersistence_title }}</MkButton>
+		<MkButton v-if="storagePersistenceSupported && !storagePersisted" @click="enableStoragePersistence">{{ $locale.env._settings.settingsPersistence_title }}</MkButton>
 
-		<MkButton @click="forceCloudBackup">{{ i18n.ts._preferencesBackup.forceBackup }}</MkButton>
+		<MkButton @click="forceCloudBackup">{{ $locale.env._preferencesBackup.forceBackup }}</MkButton>
 
 		<FormSlot>
-			<MkButton danger @click="migrate"><i class="ti ti-refresh"></i> {{ i18n.ts.migrateOldSettings }}</MkButton>
-			<template #caption>{{ i18n.ts.migrateOldSettings_description }}</template>
+			<MkButton danger @click="migrate"><i class="ti ti-refresh"></i> {{ $locale.env.migrateOldSettings }}</MkButton>
+			<template #caption>{{ $locale.env.migrateOldSettings_description }}</template>
 		</FormSlot>
 	</div>
 </SearchMarker>
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef } from '@/i18n.js';
+
 import { computed, watch } from 'vue';
 import XMigration from './migration.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
@@ -167,7 +169,6 @@ import FormSlot from '@/components/form/slot.vue';
 import * as os from '@/os.js';
 import { enableStoragePersistence, getStoragePersistenceStatusRef, storagePersistenceSupported } from '@/utility/storage.js';
 import { ensureSignin } from '@/i.js';
-import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
 import FormSection from '@/components/form/section.vue';
 import { prefer } from '@/preferences.js';
@@ -199,7 +200,7 @@ async function deleteAccount() {
 	{
 		const { canceled } = await os.confirm({
 			type: 'warning',
-			text: i18n.ts.deleteAccountConfirm,
+			text: localeRef.value.env.deleteAccountConfirm,
 		});
 		if (canceled) return;
 	}
@@ -213,7 +214,7 @@ async function deleteAccount() {
 	});
 
 	await os.alert({
-		title: i18n.ts._accountDelete.started,
+		title: localeRef.value.env._accountDelete.started,
 	});
 
 	await signout();
@@ -247,7 +248,7 @@ const headerActions = computed(() => []);
 const headerTabs = computed(() => []);
 
 definePage(() => ({
-	title: i18n.ts.other,
+	title: localeRef.value.env.other,
 	icon: 'ti ti-dots',
 }));
 </script>

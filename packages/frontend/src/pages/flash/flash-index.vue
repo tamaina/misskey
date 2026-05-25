@@ -11,7 +11,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkInput v-model="searchQuery" :large="true" type="search">
 					<template #prefix><i class="ti ti-search"></i></template>
 				</MkInput>
-				<MkButton large primary gradate rounded style="margin: 0 auto;" @click="search">{{ i18n.ts.search }}</MkButton>
+				<MkButton large primary gradate rounded style="margin: 0 auto;" @click="search">{{ $locale.env.search }}</MkButton>
 				<MkPagination v-if="searchPaginator" v-slot="{items}" :key="searchKey" :paginator="searchPaginator">
 					<div class="_gaps_s">
 						<MkFlashPreview v-for="flash in items" :key="flash.id" :flash="flash"/>
@@ -51,13 +51,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef } from '@/i18n.js';
+
 import { computed, markRaw, ref, shallowRef } from 'vue';
 import type { IPaginator } from '@/utility/paginator.js';
 import MkFlashPreview from '@/components/MkFlashPreview.vue';
 import MkPagination from '@/components/MkPagination.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
-import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
 import { useRouter } from '@/router.js';
 import { Paginator } from '@/utility/paginator.js';
@@ -103,25 +104,25 @@ function search() {
 
 const headerActions = computed(() => [{
 	icon: 'ti ti-plus',
-	text: i18n.ts.create,
+	text: localeRef.value.env.create,
 	handler: create,
 }]);
 
 const headerTabs = computed(() => [{
 	key: 'search',
-	title: i18n.ts.search,
+	title: localeRef.value.env.search,
 	icon: 'ti ti-search',
 }, {
 	key: 'featured',
-	title: i18n.ts._play.featured,
+	title: localeRef.value.env._play.featured,
 	icon: 'ti ti-flare',
 }, {
 	key: 'my',
-	title: i18n.ts._play.my,
+	title: localeRef.value.env._play.my,
 	icon: 'ti ti-edit',
 }, {
 	key: 'liked',
-	title: i18n.ts._play.liked,
+	title: localeRef.value.env._play.liked,
 	icon: 'ti ti-heart',
 }]);
 

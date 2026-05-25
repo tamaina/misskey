@@ -14,17 +14,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkRadios
 					v-model="searchType"
 					:options="[
-						{ value: 'nameAndDescription', label: i18n.ts._channel.nameAndDescription },
-						{ value: 'nameOnly', label: i18n.ts._channel.nameOnly },
+						{ value: 'nameAndDescription', label: $locale.env._channel.nameAndDescription },
+						{ value: 'nameOnly', label: $locale.env._channel.nameOnly },
 					]"
 					@update:modelValue="search()"
 				>
 				</MkRadios>
-				<MkButton large primary gradate rounded @click="search">{{ i18n.ts.search }}</MkButton>
+				<MkButton large primary gradate rounded @click="search">{{ $locale.env.search }}</MkButton>
 			</div>
 
 			<MkFoldableSection v-if="channelPaginator">
-				<template #header>{{ i18n.ts.searchResult }}</template>
+				<template #header>{{ $locale.env.searchResult }}</template>
 				<MkChannelList :key="key" :paginator="channelPaginator"/>
 			</MkFoldableSection>
 		</div>
@@ -50,7 +50,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</MkPagination>
 		</div>
 		<div v-else-if="tab === 'owned'" class="_gaps">
-			<MkButton v-if="$i?.policies.canCreateChannel" type="routerLink" primary rounded to="/channels/new"><i class="ti ti-plus"></i> {{ i18n.ts.createNew }}</MkButton>
+			<MkButton v-if="$i?.policies.canCreateChannel" type="routerLink" primary rounded to="/channels/new"><i class="ti ti-plus"></i> {{ $locale.env.createNew }}</MkButton>
 			<MkPagination v-slot="{items}" :paginator="ownedPaginator">
 				<div :class="$style.root">
 					<MkChannelPreview v-for="channel in items" :key="channel.id" :channel="channel"/>
@@ -62,6 +62,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef } from '@/i18n.js';
+
 import { computed, markRaw, onMounted, ref, shallowRef } from 'vue';
 import MkChannelPreview from '@/components/MkChannelPreview.vue';
 import MkChannelList from '@/components/MkChannelList.vue';
@@ -71,7 +73,6 @@ import MkRadios from '@/components/MkRadios.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';
 import { definePage } from '@/page.js';
-import { i18n } from '@/i18n.js';
 import { useRouter } from '@/router.js';
 import { Paginator } from '@/utility/paginator.js';
 import { $i } from '@/i.js';
@@ -138,28 +139,28 @@ const headerActions = computed(() => []);
 
 const headerTabs = computed(() => [{
 	key: 'search',
-	title: i18n.ts.search,
+	title: localeRef.value.env.search,
 	icon: 'ti ti-search',
 }, {
 	key: 'featured',
-	title: i18n.ts._channel.featured,
+	title: localeRef.value.env._channel.featured,
 	icon: 'ti ti-comet',
 }, {
 	key: 'favorites',
-	title: i18n.ts.favorites,
+	title: localeRef.value.env.favorites,
 	icon: 'ti ti-star',
 }, {
 	key: 'following',
-	title: i18n.ts._channel.following,
+	title: localeRef.value.env._channel.following,
 	icon: 'ti ti-eye',
 }, {
 	key: 'owned',
-	title: i18n.ts._channel.owned,
+	title: localeRef.value.env._channel.owned,
 	icon: 'ti ti-edit',
 }]);
 
 definePage(() => ({
-	title: i18n.ts.channel,
+	title: localeRef.value.env.channel,
 	icon: 'ti ti-device-tv',
 }));
 </script>

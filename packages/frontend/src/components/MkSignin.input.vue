@@ -19,33 +19,33 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div v-if="openOnRemote" class="_gaps_m">
 			<div class="_gaps_s">
 				<MkButton type="button" rounded primary style="margin: 0 auto;" @click="openRemote(openOnRemote)">
-					{{ i18n.ts.continueOnRemote }} <i class="ti ti-external-link"></i>
+					{{ $locale.env.continueOnRemote }} <i class="ti ti-external-link"></i>
 				</MkButton>
 				<button type="button" class="_button" :class="$style.instanceManualSelectButton" @click="specifyHostAndOpenRemote(openOnRemote)">
-					{{ i18n.ts.specifyServerHost }}
+					{{ $locale.env.specifyServerHost }}
 				</button>
 			</div>
 			<div :class="$style.orHr">
-				<p :class="$style.orMsg">{{ i18n.ts.or }}</p>
+				<p :class="$style.orMsg">{{ $locale.env.or }}</p>
 			</div>
 		</div>
 
 		<!-- username入力 -->
 		<form class="_gaps_s" @submit.prevent="emit('usernameSubmitted', username)">
-			<MkInput v-model="username" :placeholder="i18n.ts.username" type="text" pattern="^[a-zA-Z0-9_]+$" :spellcheck="false" autocomplete="username webauthn" autofocus required data-cy-signin-username>
+			<MkInput v-model="username" :placeholder="$locale.env.username" type="text" pattern="^[a-zA-Z0-9_]+$" :spellcheck="false" autocomplete="username webauthn" autofocus required data-cy-signin-username>
 				<template #prefix>@</template>
 				<template #suffix>@{{ host }}</template>
 			</MkInput>
-			<MkButton type="submit" large primary rounded style="margin: 0 auto;" data-cy-signin-page-input-continue>{{ i18n.ts.continue }} <i class="ti ti-arrow-right"></i></MkButton>
+			<MkButton type="submit" large primary rounded style="margin: 0 auto;" data-cy-signin-page-input-continue>{{ $locale.env.continue }} <i class="ti ti-arrow-right"></i></MkButton>
 		</form>
 
 		<!-- パスワードレスログイン -->
 		<div :class="$style.orHr">
-			<p :class="$style.orMsg">{{ i18n.ts.or }}</p>
+			<p :class="$style.orMsg">{{ $locale.env.or }}</p>
 		</div>
 		<div>
 			<MkButton type="submit" style="margin: auto auto;" large rounded primary gradate @click="emit('passkeyClick', $event)">
-				<i class="ti ti-device-usb" style="font-size: medium;"></i>{{ i18n.ts.signinWithPasskey }}
+				<i class="ti ti-device-usb" style="font-size: medium;"></i>{{ $locale.env.signinWithPasskey }}
 			</MkButton>
 		</div>
 	</div>
@@ -53,13 +53,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script setup lang="ts">
+import { $locale as localeRef } from '@/i18n.js';
+
 import { ref } from 'vue';
 import { toUnicode } from 'punycode.js';
 
 import { query, extractDomain } from '@@/js/url.js';
 import { host as configHost } from '@@/js/config.js';
 import type { OpenOnRemoteOptions } from '@/utility/please-login.js';
-import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
 
 import MkButton from '@/components/MkButton.vue';
@@ -121,7 +122,7 @@ function openRemote(options: OpenOnRemoteOptions, targetHost?: string): void {
 
 async function specifyHostAndOpenRemote(options: OpenOnRemoteOptions): Promise<void> {
 	const { canceled, result: hostTemp } = await os.inputText({
-		title: i18n.ts.inputHostName,
+		title: localeRef.value.env.inputHostName,
 		placeholder: 'misskey.example.com',
 	});
 
@@ -134,8 +135,8 @@ async function specifyHostAndOpenRemote(options: OpenOnRemoteOptions): Promise<v
 	if (targetHost == null) {
 		os.alert({
 			type: 'error',
-			title: i18n.ts.invalidValue,
-			text: i18n.ts.tryAgain,
+			title: localeRef.value.env.invalidValue,
+			text: localeRef.value.env.tryAgain,
 		});
 		return;
 	}

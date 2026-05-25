@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <div class="_spacer" style="--MI_SPACER-w: 800px;">
 	<div :class="$style.root">
 		<div v-if="!gameLoaded" :class="$style.loadingScreen">
-			<div>{{ i18n.ts.loading }}<MkEllipsis/></div>
+			<div>{{ $locale.env.loading }}<MkEllipsis/></div>
 		</div>
 		<!-- ↓に対してTransitionコンポーネントを使うと何故かkeyを指定していてもキャッシュが効かず様々なコンポーネントが都度再評価されてパフォーマンスが低下する -->
 		<div v-show="gameLoaded" class="_gaps_s">
@@ -32,13 +32,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div :class="$style.header">
 				<div class="_woodenFrame" :class="[$style.headerTitle]">
 					<div class="_woodenFrameInner">
-						<b>{{ i18n.ts.bubbleGame }}</b>
+						<b>{{ $locale.env.bubbleGame }}</b>
 						<div>- {{ gameMode.toUpperCase() }} -</div>
 					</div>
 				</div>
 				<div class="_woodenFrame _woodenFrameH">
 					<div class="_woodenFrameInner">
-						<MkButton inline small @click="hold">{{ i18n.ts._bubbleGame.hold }}</MkButton>
+						<MkButton inline small @click="hold">{{ $locale.env._bubbleGame.hold }}</MkButton>
 						<img v-if="holdingStock" :src="getTextureImageUrl(holdingStock.mono)" style="width: 32px; margin-left: 8px; vertical-align: bottom;"/>
 					</div>
 					<div class="_woodenFrameInner" :class="$style.stock" style="text-align: center;">
@@ -88,24 +88,24 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<div v-if="isGameOver && !replaying" :class="$style.gameOverLabel">
 					<div class="_gaps_s">
 						<img src="/client-assets/drop-and-fusion/gameover.png" style="width: 200px; max-width: 100%; display: block; margin: auto; margin-bottom: -5px;"/>
-						<div>{{ i18n.ts._bubbleGame._score.score }}: <MkNumber :value="score"/>{{ getScoreUnit(gameMode) }}</div>
-						<div>{{ i18n.ts._bubbleGame._score.maxChain }}: <MkNumber :value="maxCombo"/></div>
+						<div>{{ $locale.env._bubbleGame._score.score }}: <MkNumber :value="score"/>{{ getScoreUnit(gameMode) }}</div>
+						<div>{{ $locale.env._bubbleGame._score.maxChain }}: <MkNumber :value="maxCombo"/></div>
 						<div v-if="gameMode === 'yen'">
-							{{ i18n.ts._bubbleGame._score.scoreYen }}:
-							<I18n :src="i18n.ts._bubbleGame._score.yen" tag="b">
+							{{ $locale.env._bubbleGame._score.scoreYen }}:
+							<I18n :src="$locale.env._bubbleGame._score.yen" tag="b">
 								<template #yen><MkNumber :value="yenTotal ?? score"/></template>
 							</I18n>
 						</div>
-						<I18n v-if="gameMode === 'sweets'" :src="i18n.ts._bubbleGame._score.scoreSweets" tag="div">
+						<I18n v-if="gameMode === 'sweets'" :src="$locale.env._bubbleGame._score.scoreSweets" tag="div">
 							<template #onigiriQtyWithUnit>
-								<I18n :src="i18n.ts._bubbleGame._score.estimatedQty" tag="b">
+								<I18n :src="$locale.env._bubbleGame._score.estimatedQty" tag="b">
 									<template #qty><MkNumber :value="score / 130"/></template>
 								</I18n>
 							</template>
 						</I18n>
 					</div>
 				</div>
-				<div v-if="replaying" :class="$style.replayIndicator"><span :class="$style.replayIndicatorText"><i class="ti ti-player-play"></i> {{ i18n.ts.replaying }}</span></div>
+				<div v-if="replaying" :class="$style.replayIndicator"><span :class="$style.replayIndicatorText"><i class="ti ti-player-play"></i> {{ $locale.env.replaying }}</span></div>
 			</div>
 
 			<div v-if="replaying" class="_woodenFrame">
@@ -116,7 +116,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 				<div class="_woodenFrameInner">
 					<div class="_buttonsCenter">
-						<MkButton @click="endReplay"><i class="ti ti-player-stop"></i> {{ i18n.ts.endReplay }}</MkButton>
+						<MkButton @click="endReplay"><i class="ti ti-player-stop"></i> {{ $locale.env.endReplay }}</MkButton>
 						<MkButton :primary="replayPlaybackRate === 4" @click="replayPlaybackRate = replayPlaybackRate === 4 ? 1 : 4"><i class="ti ti-player-track-next"></i> x4</MkButton>
 						<MkButton :primary="replayPlaybackRate === 16" @click="replayPlaybackRate = replayPlaybackRate === 16 ? 1 : 16"><i class="ti ti-player-track-next"></i> x16</MkButton>
 					</div>
@@ -126,10 +126,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div v-if="isGameOver" class="_woodenFrame">
 				<div class="_woodenFrameInner">
 					<div class="_buttonsCenter">
-						<MkButton primary rounded @click="backToTitle">{{ i18n.ts.backToTitle }}</MkButton>
-						<MkButton primary rounded @click="replay">{{ i18n.ts.showReplay }}</MkButton>
-						<MkButton primary rounded @click="share">{{ i18n.ts.share }}</MkButton>
-						<MkButton rounded @click="exportLog">{{ i18n.ts.copyReplayData }}</MkButton>
+						<MkButton primary rounded @click="backToTitle">{{ $locale.env.backToTitle }}</MkButton>
+						<MkButton primary rounded @click="replay">{{ $locale.env.showReplay }}</MkButton>
+						<MkButton primary rounded @click="share">{{ $locale.env.share }}</MkButton>
+						<MkButton rounded @click="exportLog">{{ $locale.env.copyReplayData }}</MkButton>
 					</div>
 				</div>
 			</div>
@@ -137,11 +137,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div style="display: flex;">
 				<div class="_woodenFrame" style="flex: 1; margin-right: 10px;">
 					<div class="_woodenFrameInner">
-						<div>{{ i18n.ts._bubbleGame._score.score }}: <MkNumber :value="score"/>{{ getScoreUnit(gameMode) }}</div>
-						<div>{{ i18n.ts._bubbleGame._score.highScore }}: <b v-if="highScore"><MkNumber :value="highScore"/>{{ getScoreUnit(gameMode) }}</b><b v-else>-</b></div>
+						<div>{{ $locale.env._bubbleGame._score.score }}: <MkNumber :value="score"/>{{ getScoreUnit(gameMode) }}</div>
+						<div>{{ $locale.env._bubbleGame._score.highScore }}: <b v-if="highScore"><MkNumber :value="highScore"/>{{ getScoreUnit(gameMode) }}</b><b v-else>-</b></div>
 						<div v-if="gameMode === 'yen'">
-							{{ i18n.ts._bubbleGame._score.scoreYen }}:
-							<I18n :src="i18n.ts._bubbleGame._score.yen" tag="b">
+							{{ $locale.env._bubbleGame._score.scoreYen }}:
+							<I18n :src="$locale.env._bubbleGame._score.yen" tag="b">
 								<template #yen><MkNumber :value="yenTotal ?? score"/></template>
 							</I18n>
 						</div>
@@ -158,10 +158,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<div class="_woodenFrameInner">
 					<div class="_gaps">
 						<MkRange v-model="bgmVolume" :min="0" :max="1" :step="0.01" :textConverter="(v) => `${Math.floor(v * 100)}%`" :continuousUpdate="true" @dragEnded="(v) => updateSettings('bgmVolume', v)">
-							<template #label>BGM {{ i18n.ts.volume }}</template>
+							<template #label>BGM {{ $locale.env.volume }}</template>
 						</MkRange>
 						<MkRange v-model="sfxVolume" :min="0" :max="1" :step="0.01" :textConverter="(v) => `${Math.floor(v * 100)}%`" :continuousUpdate="true" @dragEnded="(v) => updateSettings('sfxVolume', v)">
-							<template #label>{{ i18n.ts.sfx }} {{ i18n.ts.volume }}</template>
+							<template #label>{{ $locale.env.sfx }} {{ $locale.env.volume }}</template>
 						</MkRange>
 					</div>
 				</div>
@@ -181,8 +181,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 			<div class="_woodenFrame">
 				<div class="_woodenFrameInner">
-					<MkButton v-if="!isGameOver && !replaying" full danger @click="surrender">{{ i18n.ts.surrender }}</MkButton>
-					<MkButton v-else full @click="restart">{{ i18n.ts.gameRetry }}</MkButton>
+					<MkButton v-if="!isGameOver && !replaying" full danger @click="surrender">{{ $locale.env.surrender }}</MkButton>
+					<MkButton v-else full @click="restart">{{ $locale.env.gameRetry }}</MkButton>
 				</div>
 			</div>
 		</div>
@@ -191,6 +191,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef } from '@/i18n.js';
+
 import { computed, onDeactivated, onMounted, onUnmounted, ref, shallowRef, watch, useTemplateRef } from 'vue';
 import * as Matter from 'matter-js';
 import * as Misskey from 'misskey-js';
@@ -207,7 +209,6 @@ import MkButton from '@/components/MkButton.vue';
 import { claimAchievement } from '@/utility/achievements.js';
 import { store } from '@/store.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
-import { i18n } from '@/i18n.js';
 import { $i } from '@/i.js';
 import * as sound from '@/utility/sound.js';
 import MkRange from '@/components/MkRange.vue';
@@ -766,7 +767,7 @@ function hold() {
 async function surrender() {
 	const { canceled } = await os.confirm({
 		type: 'warning',
-		text: i18n.ts.areYouSure,
+		text: localeRef.value.env.areYouSure,
 	});
 	if (canceled) return;
 	game.surrender();
@@ -1178,7 +1179,7 @@ onMounted(async () => {
 			} else {
 				os.alert({
 					type: 'error',
-					text: i18n.ts.cannotLoad,
+					text: localeRef.value.env.cannotLoad,
 				});
 				return;
 			}
@@ -1229,7 +1230,7 @@ onDeactivated(() => {
 });
 
 definePage(() => ({
-	title: i18n.ts.bubbleGame,
+	title: localeRef.value.env.bubbleGame,
 	icon: 'ti ti-apple',
 }));
 </script>

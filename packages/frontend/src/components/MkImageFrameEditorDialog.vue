@@ -14,13 +14,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 	@ok="save()"
 	@closed="emit('closed')"
 >
-	<template #header><i class="ti ti-device-ipad-horizontal"></i> {{ i18n.ts._imageFrameEditor.title }}</template>
+	<template #header><i class="ti ti-device-ipad-horizontal"></i> {{ $locale.env._imageFrameEditor.title }}</template>
 
 	<MkPreviewWithControls>
 		<template #preview>
 			<canvas ref="canvasEl" :class="$style.previewCanvas"></canvas>
 			<div :class="$style.previewContainer">
-				<div class="_acrylic" :class="$style.previewTitle">{{ i18n.ts.preview }}</div>
+				<div class="_acrylic" :class="$style.previewTitle">{{ $locale.env.preview }}</div>
 				<div v-if="props.image == null" class="_acrylic" :class="$style.previewControls">
 					<button class="_button" :class="[$style.previewControlsButton, sampleImageType === '3_2' ? $style.active : null]" @click="sampleImageType = '3_2'"><i class="ti ti-crop-landscape"></i></button>
 					<button class="_button" :class="[$style.previewControlsButton, sampleImageType === '2_3' ? $style.active : null]" @click="sampleImageType = '2_3'"><i class="ti ti-crop-portrait"></i></button>
@@ -32,119 +32,119 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<template #controls>
 			<div class="_spacer _gaps">
 				<MkRange v-model="params.borderThickness" :min="0" :max="0.2" :step="0.01" :continuousUpdate="true">
-					<template #label>{{ i18n.ts._imageFrameEditor.borderThickness }}</template>
+					<template #label>{{ $locale.env._imageFrameEditor.borderThickness }}</template>
 				</MkRange>
 
 				<MkInput :modelValue="getHex(params.bgColor)" type="color" @update:modelValue="v => { const c = getRgb(v); if (c != null) params.bgColor = c; }">
-					<template #label>{{ i18n.ts._imageFrameEditor.backgroundColor }}</template>
+					<template #label>{{ $locale.env._imageFrameEditor.backgroundColor }}</template>
 				</MkInput>
 
 				<MkInput :modelValue="getHex(params.fgColor)" type="color" @update:modelValue="v => { const c = getRgb(v); if (c != null) params.fgColor = c; }">
-					<template #label>{{ i18n.ts._imageFrameEditor.textColor }}</template>
+					<template #label>{{ $locale.env._imageFrameEditor.textColor }}</template>
 				</MkInput>
 
 				<MkSelect
 					v-model="params.font" :items="[
-						{ label: i18n.ts._imageFrameEditor.fontSansSerif, value: 'sans-serif' },
-						{ label: i18n.ts._imageFrameEditor.fontSerif, value: 'serif' },
+						{ label: $locale.env._imageFrameEditor.fontSansSerif, value: 'sans-serif' },
+						{ label: $locale.env._imageFrameEditor.fontSerif, value: 'serif' },
 					]"
 				>
-					<template #label>{{ i18n.ts._imageFrameEditor.font }}</template>
+					<template #label>{{ $locale.env._imageFrameEditor.font }}</template>
 				</MkSelect>
 
 				<MkFolder :defaultOpen="params.labelTop.enabled">
-					<template #label>{{ i18n.ts._imageFrameEditor.header }}</template>
+					<template #label>{{ $locale.env._imageFrameEditor.header }}</template>
 
 					<div class="_gaps">
 						<MkSwitch v-model="params.labelTop.enabled">
-							<template #label>{{ i18n.ts.show }}</template>
+							<template #label>{{ $locale.env.show }}</template>
 						</MkSwitch>
 
 						<MkRange v-model="params.labelTop.padding" :min="0.01" :max="0.5" :step="0.01" :continuousUpdate="true">
-							<template #label>{{ i18n.ts._imageFrameEditor.labelThickness }}</template>
+							<template #label>{{ $locale.env._imageFrameEditor.labelThickness }}</template>
 						</MkRange>
 
 						<MkRange v-model="params.labelTop.scale" :min="0.5" :max="2.0" :step="0.01" :continuousUpdate="true">
-							<template #label>{{ i18n.ts._imageFrameEditor.labelScale }}</template>
+							<template #label>{{ $locale.env._imageFrameEditor.labelScale }}</template>
 						</MkRange>
 
 						<MkSwitch v-model="params.labelTop.centered">
-							<template #label>{{ i18n.ts._imageFrameEditor.centered }}</template>
+							<template #label>{{ $locale.env._imageFrameEditor.centered }}</template>
 						</MkSwitch>
 
 						<MkInput v-model="params.labelTop.textBig">
-							<template #label>{{ i18n.ts._imageFrameEditor.captionMain }}</template>
+							<template #label>{{ $locale.env._imageFrameEditor.captionMain }}</template>
 						</MkInput>
 
 						<MkTextarea v-model="params.labelTop.textSmall">
-							<template #label>{{ i18n.ts._imageFrameEditor.captionSub }}</template>
+							<template #label>{{ $locale.env._imageFrameEditor.captionSub }}</template>
 						</MkTextarea>
 
 						<MkSwitch v-model="params.labelTop.withQrCode">
-							<template #label>{{ i18n.ts._imageFrameEditor.withQrCode }}</template>
+							<template #label>{{ $locale.env._imageFrameEditor.withQrCode }}</template>
 						</MkSwitch>
 					</div>
 				</MkFolder>
 
 				<MkFolder :defaultOpen="params.labelBottom.enabled">
-					<template #label>{{ i18n.ts._imageFrameEditor.footer }}</template>
+					<template #label>{{ $locale.env._imageFrameEditor.footer }}</template>
 
 					<div class="_gaps">
 						<MkSwitch v-model="params.labelBottom.enabled">
-							<template #label>{{ i18n.ts.show }}</template>
+							<template #label>{{ $locale.env.show }}</template>
 						</MkSwitch>
 
 						<MkRange v-model="params.labelBottom.padding" :min="0.01" :max="0.5" :step="0.01" :continuousUpdate="true">
-							<template #label>{{ i18n.ts._imageFrameEditor.labelThickness }}</template>
+							<template #label>{{ $locale.env._imageFrameEditor.labelThickness }}</template>
 						</MkRange>
 
 						<MkRange v-model="params.labelBottom.scale" :min="0.5" :max="2.0" :step="0.01" :continuousUpdate="true">
-							<template #label>{{ i18n.ts._imageFrameEditor.labelScale }}</template>
+							<template #label>{{ $locale.env._imageFrameEditor.labelScale }}</template>
 						</MkRange>
 
 						<MkSwitch v-model="params.labelBottom.centered">
-							<template #label>{{ i18n.ts._imageFrameEditor.centered }}</template>
+							<template #label>{{ $locale.env._imageFrameEditor.centered }}</template>
 						</MkSwitch>
 
 						<MkInput v-model="params.labelBottom.textBig">
-							<template #label>{{ i18n.ts._imageFrameEditor.captionMain }}</template>
+							<template #label>{{ $locale.env._imageFrameEditor.captionMain }}</template>
 						</MkInput>
 
 						<MkTextarea v-model="params.labelBottom.textSmall">
-							<template #label>{{ i18n.ts._imageFrameEditor.captionSub }}</template>
+							<template #label>{{ $locale.env._imageFrameEditor.captionSub }}</template>
 						</MkTextarea>
 
 						<MkSwitch v-model="params.labelBottom.withQrCode">
-							<template #label>{{ i18n.ts._imageFrameEditor.withQrCode }}</template>
+							<template #label>{{ $locale.env._imageFrameEditor.withQrCode }}</template>
 						</MkSwitch>
 					</div>
 				</MkFolder>
 
 				<MkInfo>
-					<div>{{ i18n.ts._imageFrameEditor.availableVariables }}:</div>
-					<div><code class="_selectableAtomic">{filename}</code> - {{ i18n.ts._imageEditing._vars.filename }}</div>
-					<div><code class="_selectableAtomic">{filename_without_ext}</code> - {{ i18n.ts._imageEditing._vars.filename_without_ext }}</div>
-					<div><code class="_selectableAtomic">{caption}</code> - {{ i18n.ts._imageEditing._vars.caption }}</div>
-					<div><code class="_selectableAtomic">{year}</code> - {{ i18n.ts._imageEditing._vars.year }}</div>
-					<div><code class="_selectableAtomic">{month}</code> - {{ i18n.ts._imageEditing._vars.month }}</div>
-					<div><code class="_selectableAtomic">{day}</code> - {{ i18n.ts._imageEditing._vars.day }}</div>
-					<div><code class="_selectableAtomic">{hour}</code> - {{ i18n.ts._imageEditing._vars.hour }}</div>
-					<div><code class="_selectableAtomic">{minute}</code> - {{ i18n.ts._imageEditing._vars.minute }}</div>
-					<div><code class="_selectableAtomic">{second}</code> - {{ i18n.ts._imageEditing._vars.second }}</div>
-					<div><code class="_selectableAtomic">{0month}</code> - {{ i18n.ts._imageEditing._vars.month }} ({{ i18n.ts.zeroPadding }})</div>
-					<div><code class="_selectableAtomic">{0day}</code> - {{ i18n.ts._imageEditing._vars.day }} ({{ i18n.ts.zeroPadding }})</div>
-					<div><code class="_selectableAtomic">{0hour}</code> - {{ i18n.ts._imageEditing._vars.hour }} ({{ i18n.ts.zeroPadding }})</div>
-					<div><code class="_selectableAtomic">{0minute}</code> - {{ i18n.ts._imageEditing._vars.minute }} ({{ i18n.ts.zeroPadding }})</div>
-					<div><code class="_selectableAtomic">{0second}</code> - {{ i18n.ts._imageEditing._vars.second }} ({{ i18n.ts.zeroPadding }})</div>
-					<div><code class="_selectableAtomic">{camera_model}</code> - {{ i18n.ts._imageEditing._vars.camera_model }}</div>
-					<div><code class="_selectableAtomic">{camera_lens_model}</code> - {{ i18n.ts._imageEditing._vars.camera_lens_model }}</div>
-					<div><code class="_selectableAtomic">{camera_mm}</code> - {{ i18n.ts._imageEditing._vars.camera_mm }}</div>
-					<div><code class="_selectableAtomic">{camera_mm_35}</code> - {{ i18n.ts._imageEditing._vars.camera_mm_35 }}</div>
-					<div><code class="_selectableAtomic">{camera_f}</code> - {{ i18n.ts._imageEditing._vars.camera_f }}</div>
-					<div><code class="_selectableAtomic">{camera_s}</code> - {{ i18n.ts._imageEditing._vars.camera_s }}</div>
-					<div><code class="_selectableAtomic">{camera_iso}</code> - {{ i18n.ts._imageEditing._vars.camera_iso }}</div>
-					<div><code class="_selectableAtomic">{gps_lat}</code> - {{ i18n.ts._imageEditing._vars.gps_lat }}</div>
-					<div><code class="_selectableAtomic">{gps_long}</code> - {{ i18n.ts._imageEditing._vars.gps_long }}</div>
+					<div>{{ $locale.env._imageFrameEditor.availableVariables }}:</div>
+					<div><code class="_selectableAtomic">{filename}</code> - {{ $locale.env._imageEditing._vars.filename }}</div>
+					<div><code class="_selectableAtomic">{filename_without_ext}</code> - {{ $locale.env._imageEditing._vars.filename_without_ext }}</div>
+					<div><code class="_selectableAtomic">{caption}</code> - {{ $locale.env._imageEditing._vars.caption }}</div>
+					<div><code class="_selectableAtomic">{year}</code> - {{ $locale.env._imageEditing._vars.year }}</div>
+					<div><code class="_selectableAtomic">{month}</code> - {{ $locale.env._imageEditing._vars.month }}</div>
+					<div><code class="_selectableAtomic">{day}</code> - {{ $locale.env._imageEditing._vars.day }}</div>
+					<div><code class="_selectableAtomic">{hour}</code> - {{ $locale.env._imageEditing._vars.hour }}</div>
+					<div><code class="_selectableAtomic">{minute}</code> - {{ $locale.env._imageEditing._vars.minute }}</div>
+					<div><code class="_selectableAtomic">{second}</code> - {{ $locale.env._imageEditing._vars.second }}</div>
+					<div><code class="_selectableAtomic">{0month}</code> - {{ $locale.env._imageEditing._vars.month }} ({{ $locale.env.zeroPadding }})</div>
+					<div><code class="_selectableAtomic">{0day}</code> - {{ $locale.env._imageEditing._vars.day }} ({{ $locale.env.zeroPadding }})</div>
+					<div><code class="_selectableAtomic">{0hour}</code> - {{ $locale.env._imageEditing._vars.hour }} ({{ $locale.env.zeroPadding }})</div>
+					<div><code class="_selectableAtomic">{0minute}</code> - {{ $locale.env._imageEditing._vars.minute }} ({{ $locale.env.zeroPadding }})</div>
+					<div><code class="_selectableAtomic">{0second}</code> - {{ $locale.env._imageEditing._vars.second }} ({{ $locale.env.zeroPadding }})</div>
+					<div><code class="_selectableAtomic">{camera_model}</code> - {{ $locale.env._imageEditing._vars.camera_model }}</div>
+					<div><code class="_selectableAtomic">{camera_lens_model}</code> - {{ $locale.env._imageEditing._vars.camera_lens_model }}</div>
+					<div><code class="_selectableAtomic">{camera_mm}</code> - {{ $locale.env._imageEditing._vars.camera_mm }}</div>
+					<div><code class="_selectableAtomic">{camera_mm_35}</code> - {{ $locale.env._imageEditing._vars.camera_mm_35 }}</div>
+					<div><code class="_selectableAtomic">{camera_f}</code> - {{ $locale.env._imageEditing._vars.camera_f }}</div>
+					<div><code class="_selectableAtomic">{camera_s}</code> - {{ $locale.env._imageEditing._vars.camera_s }}</div>
+					<div><code class="_selectableAtomic">{camera_iso}</code> - {{ $locale.env._imageEditing._vars.camera_iso }}</div>
+					<div><code class="_selectableAtomic">{gps_lat}</code> - {{ $locale.env._imageEditing._vars.gps_lat }}</div>
+					<div><code class="_selectableAtomic">{gps_long}</code> - {{ $locale.env._imageEditing._vars.gps_long }}</div>
 				</MkInfo>
 			</div>
 		</template>
@@ -153,13 +153,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script setup lang="ts">
+import { $locale as localeRef } from '@/i18n.js';
+
 import { ref, useTemplateRef, watch, onMounted, onUnmounted, reactive, nextTick } from 'vue';
 import ExifReader from 'exifreader';
 import { throttle } from 'throttle-debounce';
 import MkPreviewWithControls from './MkPreviewWithControls.vue';
 import type { ImageFrameParams, ImageFramePreset } from '@/utility/image-frame-renderer/ImageFrameRenderer.js';
 import { ImageFrameRenderer } from '@/utility/image-frame-renderer/ImageFrameRenderer.js';
-import { i18n } from '@/i18n.js';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import MkFolder from '@/components/MkFolder.vue';
@@ -228,7 +229,7 @@ async function cancel() {
 	if (props.presetEditMode) {
 		const { canceled } = await os.confirm({
 			type: 'question',
-			text: i18n.ts._imageFrameEditor.quitWithoutSaveConfirm,
+			text: localeRef.value.env._imageFrameEditor.quitWithoutSaveConfirm,
 		});
 		if (canceled) return;
 	}
@@ -340,7 +341,7 @@ onMounted(async () => {
 		console.error(err);
 		os.alert({
 			type: 'error',
-			text: i18n.ts._imageFrameEditor.failedToLoadImage,
+			text: localeRef.value.env._imageFrameEditor.failedToLoadImage,
 		});
 	}
 
@@ -361,7 +362,7 @@ onUnmounted(() => {
 async function save() {
 	if (props.presetEditMode) {
 		const { canceled, result: name } = await os.inputText({
-			title: i18n.ts.name,
+			title: localeRef.value.env.name,
 			default: preset.name,
 		});
 		if (canceled) return;

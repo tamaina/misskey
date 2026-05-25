@@ -35,18 +35,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div v-if="select === 'folder'">
 			<template v-if="folder == null">
 				<MkButton v-if="!isRootSelected" @click="isRootSelected = true">
-					<i class="ti ti-square"></i> {{ i18n.ts.selectFolder }}
+					<i class="ti ti-square"></i> {{ $locale.env.selectFolder }}
 				</MkButton>
 				<MkButton v-else @click="isRootSelected = false">
-					<i class="ti ti-checkbox"></i> {{ i18n.ts.unselectFolder }}
+					<i class="ti ti-checkbox"></i> {{ $locale.env.unselectFolder }}
 				</MkButton>
 			</template>
 			<template v-else>
 				<MkButton v-if="!selectedFolders.some(f => f.id === folder!.id)" @click="selectedFolders.push(folder)">
-					<i class="ti ti-square"></i> {{ i18n.ts.selectFolder }}
+					<i class="ti ti-square"></i> {{ $locale.env.selectFolder }}
 				</MkButton>
 				<MkButton v-else @click="selectedFolders = selectedFolders.filter(f => f.id !== folder!.id)">
-					<i class="ti ti-checkbox"></i> {{ i18n.ts.unselectFolder }}
+					<i class="ti ti-checkbox"></i> {{ $locale.env.unselectFolder }}
 				</MkButton>
 			</template>
 		</div>
@@ -61,7 +61,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			@contextmenu.stop="onContextmenu"
 		>
 			<div :class="$style.tipContainer">
-				<MkTip k="drive"><div v-html="i18n.ts.driveAboutTip"></div></MkTip>
+				<MkTip k="drive"><div v-html="$locale.env.driveAboutTip"></div></MkTip>
 			</div>
 
 			<div :class="$style.folders">
@@ -80,7 +80,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					@dragend="isDragSource = false"
 				/>
 			</div>
-			<MkButton v-if="foldersPaginator.canFetchOlder.value" :class="$style.loadMore" primary rounded @click="foldersPaginator.fetchOlder()">{{ i18n.ts.loadMore }}</MkButton>
+			<MkButton v-if="foldersPaginator.canFetchOlder.value" :class="$style.loadMore" primary rounded @click="foldersPaginator.fetchOlder()">{{ $locale.env.loadMore }}</MkButton>
 
 			<template v-if="shouldBeGroupedByDate">
 				<MkStickyContainer v-for="(item, i) in filesTimeline" :key="`${item.date.getFullYear()}/${item.date.getMonth() + 1}`">
@@ -140,13 +140,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 				rounded
 				@click="fetchMoreFiles"
 			>
-				{{ i18n.ts.loadMore }}
+				{{ $locale.env.loadMore }}
 			</MkButton>
 
 			<div v-if="filesPaginator.items.value.length == 0 && foldersPaginator.items.value.length == 0 && !fetching" :class="$style.empty">
-				<div v-if="draghover">{{ i18n.ts.dropHereToUpload }}</div>
-				<div v-if="!draghover && folder == null"><strong>{{ i18n.ts.emptyDrive }}</strong></div>
-				<div v-if="!draghover && folder != null">{{ i18n.ts.emptyFolder }}</div>
+				<div v-if="draghover">{{ $locale.env.dropHereToUpload }}</div>
+				<div v-if="!draghover && folder == null"><strong>{{ $locale.env.emptyDrive }}</strong></div>
+				<div v-if="!draghover && folder != null">{{ $locale.env.emptyFolder }}</div>
 			</div>
 		</div>
 		<MkLoading v-if="fetching"/>
@@ -155,13 +155,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 	<template #footer>
 		<div v-if="isEditMode" :class="$style.footer">
-			<MkButton primary rounded @click="moveFilesBulk()"><i class="ti ti-folder-symlink"></i> {{ i18n.ts.move }}...</MkButton>
+			<MkButton primary rounded @click="moveFilesBulk()"><i class="ti ti-folder-symlink"></i> {{ $locale.env.move }}...</MkButton>
 		</div>
 	</template>
 </MkStickyContainer>
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef } from '@/i18n.js';
+
 import { nextTick, onActivated, onBeforeUnmount, onMounted, ref, useTemplateRef, watch, computed, TransitionGroup, markRaw } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkButton from './MkButton.vue';
@@ -172,7 +174,6 @@ import XFile from '@/components/MkDrive.file.vue';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { useStream } from '@/stream.js';
-import { i18n } from '@/i18n.js';
 import { claimAchievement } from '@/utility/achievements.js';
 import { prefer } from '@/preferences.js';
 import { chooseFileFromPcAndUpload, selectDriveFolder } from '@/utility/drive.js';
@@ -396,14 +397,14 @@ function onDrop(ev: DragEvent): void | boolean {
 						claimAchievement('driveFolderCircularReference');
 						os.alert({
 							type: 'error',
-							title: i18n.ts.unableToProcess,
-							text: i18n.ts.circularReferenceFolder,
+							title: localeRef.value.env.unableToProcess,
+							text: localeRef.value.env.circularReferenceFolder,
 						});
 						break;
 					default:
 						os.alert({
 							type: 'error',
-							text: i18n.ts.somethingHappened,
+							text: localeRef.value.env.somethingHappened,
 						});
 				}
 			});
@@ -420,9 +421,9 @@ function onUploadRequested(files: File[], folder?: Misskey.entities.DriveFolder 
 
 async function urlUpload() {
 	const { canceled, result: url } = await os.inputText({
-		title: i18n.ts.uploadFromUrl,
+		title: localeRef.value.env.uploadFromUrl,
 		type: 'url',
-		placeholder: i18n.ts.uploadFromUrlDescription,
+		placeholder: localeRef.value.env.uploadFromUrlDescription,
 	});
 	if (canceled || !url) return;
 
@@ -432,15 +433,15 @@ async function urlUpload() {
 	});
 
 	os.alert({
-		title: i18n.ts.uploadFromUrlRequested,
-		text: i18n.ts.uploadFromUrlMayTakeTime,
+		title: localeRef.value.env.uploadFromUrlRequested,
+		text: localeRef.value.env.uploadFromUrlMayTakeTime,
 	});
 }
 
 async function createFolder() {
 	const { canceled, result: name } = await os.inputText({
-		title: i18n.ts.createFolder,
-		placeholder: i18n.ts.folderName,
+		title: localeRef.value.env.createFolder,
+		placeholder: localeRef.value.env.folderName,
 	});
 	if (canceled || name == null) return;
 
@@ -454,8 +455,8 @@ async function createFolder() {
 
 async function renameFolder(folderToRename: Misskey.entities.DriveFolder) {
 	const { canceled, result: name } = await os.inputText({
-		title: i18n.ts.renameFolder,
-		placeholder: i18n.ts.inputNewFolderName,
+		title: localeRef.value.env.renameFolder,
+		placeholder: localeRef.value.env.inputNewFolderName,
 		default: folderToRename.name,
 	});
 	if (canceled) return;
@@ -480,14 +481,14 @@ function deleteFolder(folderToDelete: Misskey.entities.DriveFolder) {
 			case 'b0fc8a17-963c-405d-bfbc-859a487295e1':
 				os.alert({
 					type: 'error',
-					title: i18n.ts.unableToDelete,
-					text: i18n.ts.hasChildFilesOrFolders,
+					title: localeRef.value.env.unableToDelete,
+					text: localeRef.value.env.hasChildFilesOrFolders,
 				});
 				break;
 			default:
 				os.alert({
 					type: 'error',
-					text: i18n.ts.unableToDelete,
+					text: localeRef.value.env.unableToDelete,
 				});
 		}
 	});
@@ -608,10 +609,10 @@ function getMenu() {
 	const menu: MenuItem[] = [];
 
 	menu.push({
-		text: i18n.ts.addFile,
+		text: localeRef.value.env.addFile,
 		type: 'label',
 	}, {
-		text: i18n.ts.upload,
+		text: localeRef.value.env.upload,
 		icon: 'ti ti-upload',
 		action: () => {
 			chooseFileFromPcAndUpload({
@@ -620,45 +621,45 @@ function getMenu() {
 			});
 		},
 	}, {
-		text: i18n.ts.fromUrl,
+		text: localeRef.value.env.fromUrl,
 		icon: 'ti ti-link',
 		action: () => { urlUpload(); },
 	}, { type: 'divider' }, {
-		text: folder.value ? folder.value.name : i18n.ts.drive,
+		text: folder.value ? folder.value.name : localeRef.value.env.drive,
 		type: 'label',
 	});
 
 	menu.push({
 		type: 'parent',
-		text: i18n.ts.sort,
+		text: localeRef.value.env.sort,
 		icon: 'ti ti-arrows-sort',
 		children: [{
-			text: `${i18n.ts.registeredDate} (${i18n.ts.descendingOrder})`,
+			text: `${localeRef.value.env.registeredDate} (${localeRef.value.env.descendingOrder})`,
 			icon: 'ti ti-sort-descending-letters',
 			action: () => { sortModeSelect.value = '+createdAt'; },
 			active: sortModeSelect.value === '+createdAt',
 		}, {
-			text: `${i18n.ts.registeredDate} (${i18n.ts.ascendingOrder})`,
+			text: `${localeRef.value.env.registeredDate} (${localeRef.value.env.ascendingOrder})`,
 			icon: 'ti ti-sort-ascending-letters',
 			action: () => { sortModeSelect.value = '-createdAt'; },
 			active: sortModeSelect.value === '-createdAt',
 		}, {
-			text: `${i18n.ts.size} (${i18n.ts.descendingOrder})`,
+			text: `${localeRef.value.env.size} (${localeRef.value.env.descendingOrder})`,
 			icon: 'ti ti-sort-descending-letters',
 			action: () => { sortModeSelect.value = '+size'; },
 			active: sortModeSelect.value === '+size',
 		}, {
-			text: `${i18n.ts.size} (${i18n.ts.ascendingOrder})`,
+			text: `${localeRef.value.env.size} (${localeRef.value.env.ascendingOrder})`,
 			icon: 'ti ti-sort-ascending-letters',
 			action: () => { sortModeSelect.value = '-size'; },
 			active: sortModeSelect.value === '-size',
 		}, {
-			text: `${i18n.ts.name} (${i18n.ts.descendingOrder})`,
+			text: `${localeRef.value.env.name} (${localeRef.value.env.descendingOrder})`,
 			icon: 'ti ti-sort-descending-letters',
 			action: () => { sortModeSelect.value = '+name'; },
 			active: sortModeSelect.value === '+name',
 		}, {
-			text: `${i18n.ts.name} (${i18n.ts.ascendingOrder})`,
+			text: `${localeRef.value.env.name} (${localeRef.value.env.ascendingOrder})`,
 			icon: 'ti ti-sort-ascending-letters',
 			action: () => { sortModeSelect.value = '-name'; },
 			active: sortModeSelect.value === '-name',
@@ -667,23 +668,23 @@ function getMenu() {
 
 	if (folder.value) {
 		menu.push({
-			text: i18n.ts.renameFolder,
+			text: localeRef.value.env.renameFolder,
 			icon: 'ti ti-forms',
 			action: () => { if (folder.value) renameFolder(folder.value); },
 		}, {
-			text: i18n.ts.deleteFolder,
+			text: localeRef.value.env.deleteFolder,
 			icon: 'ti ti-trash',
 			action: () => { deleteFolder(folder.value as Misskey.entities.DriveFolder); },
 		});
 	}
 
 	menu.push({
-		text: i18n.ts.createFolder,
+		text: localeRef.value.env.createFolder,
 		icon: 'ti ti-folder-plus',
 		action: () => { createFolder(); },
 	}, { type: 'divider' }, {
 		type: 'switch',
-		text: i18n.ts.edit,
+		text: localeRef.value.env.edit,
 		icon: 'ti ti-pointer',
 		ref: isEditMode,
 	});

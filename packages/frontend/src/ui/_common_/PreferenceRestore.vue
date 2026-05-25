@@ -8,14 +8,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<span :class="$style.icon">
 		<i class="ti ti-info-circle"></i>
 	</span>
-	<span :class="$style.title">{{ i18n.ts._preferencesBackup.backupFound }}</span>
-	<span :class="$style.body"><button class="_textButton" @click="restore">{{ i18n.ts.restore }}</button> | <button class="_textButton" @click="skip">{{ i18n.ts.skip }}</button></span>
+	<span :class="$style.title">{{ $locale.env._preferencesBackup.backupFound }}</span>
+	<span :class="$style.body"><button class="_textButton" @click="restore">{{ $locale.env.restore }}</button> | <button class="_textButton" @click="skip">{{ $locale.env.skip }}</button></span>
 </div>
 </template>
 
 <script lang="ts" setup>
+
 import { $i } from '@/i.js';
-import { i18n } from '@/i18n.js';
 import { hideRestoreBackupSuggestion, restoreFromCloudBackup } from '@/preferences/utility.js';
 
 function restore() {

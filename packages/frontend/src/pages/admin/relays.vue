@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <PageWithHeader :actions="headerActions" :tabs="headerTabs">
 	<div class="_spacer" style="--MI_SPACER-w: 800px;">
-		<SearchMarker path="/admin/relays" :label="i18n.ts.relays" :keywords="['relays']" icon="ti ti-planet">
+		<SearchMarker path="/admin/relays" :label="$locale.env.relays" :keywords="['relays']" icon="ti ti-planet">
 			<div class="_gaps">
 				<div v-for="relay in relays" :key="relay.inbox" class="relaycxt _panel" style="padding: 16px;">
 					<div>{{ relay.inbox }}</div>
@@ -14,9 +14,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<i v-if="relay.status === 'accepted'" class="ti ti-check" :class="$style.icon" style="color: var(--MI_THEME-success);"></i>
 						<i v-else-if="relay.status === 'rejected'" class="ti ti-ban" :class="$style.icon" style="color: var(--MI_THEME-error);"></i>
 						<i v-else class="ti ti-clock" :class="$style.icon"></i>
-						<span>{{ i18n.ts._relayStatus[relay.status] }}</span>
+						<span>{{ $locale.env._relayStatus[relay.status] }}</span>
 					</div>
-					<MkButton class="button" inline danger @click="remove(relay.inbox)"><i class="ti ti-trash"></i> {{ i18n.ts.remove }}</MkButton>
+					<MkButton class="button" inline danger @click="remove(relay.inbox)"><i class="ti ti-trash"></i> {{ $locale.env.remove }}</MkButton>
 				</div>
 			</div>
 		</SearchMarker>
@@ -25,21 +25,22 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef } from '@/i18n.js';
+
 import { ref, computed } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
-import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
 
 const relays = ref<Misskey.entities.AdminRelaysListResponse>([]);
 
 async function addRelay() {
 	const { canceled, result: inbox } = await os.inputText({
-		title: i18n.ts.addRelay,
+		title: localeRef.value.env.addRelay,
 		type: 'url',
-		placeholder: i18n.ts.inboxUrl,
+		placeholder: localeRef.value.env.inboxUrl,
 	});
 	if (canceled || inbox == null) return;
 	misskeyApi('admin/relays/add', {
@@ -78,14 +79,14 @@ refresh();
 const headerActions = computed(() => [{
 	asFullButton: true,
 	icon: 'ti ti-plus',
-	text: i18n.ts.addRelay,
+	text: localeRef.value.env.addRelay,
 	handler: addRelay,
 }]);
 
 const headerTabs = computed(() => []);
 
 definePage(() => ({
-	title: i18n.ts.relays,
+	title: localeRef.value.env.relays,
 	icon: 'ti ti-planet',
 }));
 </script>

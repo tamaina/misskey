@@ -14,18 +14,19 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</template>
 		</MkUserCardMini>
 	</MkA>
-	<button v-tooltip.noDelay="i18n.ts.note" class="_button" :class="$style.post" @click="os.post({initialText: `@${item.user.username}${item.user.host ? `@${item.user.host}` : ''} `})">
+	<button v-tooltip.noDelay="$locale.env.note" class="_button" :class="$style.post" @click="os.post({initialText: `@${item.user.username}${item.user.host ? `@${item.user.host}` : ''} `})">
 		<i class="ti-fw ti ti-confetti" :class="$style.postIcon"></i>
 	</button>
 </div>
 </template>
 
 <script setup lang="ts">
+import { $locale as localeRef, $l as localizerRef } from '@/i18n.js';
+
 import { computed } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
 import * as os from '@/os.js';
-import { i18n } from '@/i18n.js';
 import { useLowresTime } from '@/composables/use-lowres-time.js';
 import { userPage, acct } from '@/filters/user.js';
 
@@ -47,11 +48,11 @@ const birthdayDate = computed(() => {
 const countdownDate = computed(() => {
 	const days = Math.floor((birthdayDate.value.getTime() - nowDate.value.getTime()) / (1000 * 60 * 60 * 24));
 	if (days === 0) {
-		return i18n.ts.today;
+		return localeRef.value.env.today;
 	} else if (days > 0) {
-		return i18n.tsx._timeIn.days({ n: days });
+		return localizerRef.value.env._timeIn.days({ n: days });
 	} else {
-		return i18n.tsx._ago.daysAgo({ n: Math.abs(days) });
+		return localizerRef.value.env._ago.daysAgo({ n: Math.abs(days) });
 	}
 });
 </script>

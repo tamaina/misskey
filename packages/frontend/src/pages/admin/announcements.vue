@@ -7,11 +7,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 <PageWithHeader :actions="headerActions" :tabs="headerTabs">
 	<div class="_spacer" style="--MI_SPACER-w: 900px;">
 		<div class="_gaps">
-			<MkInfo>{{ i18n.ts._announcement.shouldNotBeUsedToPresentPermanentInfo }}</MkInfo>
-			<MkInfo v-if="announcementsStatus === 'active' && announcements.length > 5" warn>{{ i18n.ts._announcement.tooManyActiveAnnouncementDescription }}</MkInfo>
+			<MkInfo>{{ $locale.env._announcement.shouldNotBeUsedToPresentPermanentInfo }}</MkInfo>
+			<MkInfo v-if="announcementsStatus === 'active' && announcements.length > 5" warn>{{ $locale.env._announcement.tooManyActiveAnnouncementDescription }}</MkInfo>
 
 			<MkSelect v-model="announcementsStatus" :items="announcementsStatusDef">
-				<template #label>{{ i18n.ts.filter }}</template>
+				<template #label>{{ $locale.env.filter }}</template>
 			</MkSelect>
 
 			<MkLoading v-if="loading"/>
@@ -28,22 +28,22 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<template #caption>{{ announcement.text }}</template>
 					<template #footer>
 						<div class="_buttons">
-							<MkButton rounded primary @click="save(announcement)"><i class="ti ti-device-floppy"></i> {{ i18n.ts.save }}</MkButton>
-							<MkButton v-if="announcement.id != null && announcement.isActive" rounded @click="archive(announcement)"><i class="ti ti-check"></i> {{ i18n.ts._announcement.end }} ({{ i18n.ts.archive }})</MkButton>
-							<MkButton v-if="announcement.id != null && !announcement.isActive" rounded @click="unarchive(announcement)"><i class="ti ti-restore"></i> {{ i18n.ts.unarchive }}</MkButton>
-							<MkButton v-if="announcement.id != null" rounded danger @click="del(announcement)"><i class="ti ti-trash"></i> {{ i18n.ts.delete }}</MkButton>
+							<MkButton rounded primary @click="save(announcement)"><i class="ti ti-device-floppy"></i> {{ $locale.env.save }}</MkButton>
+							<MkButton v-if="announcement.id != null && announcement.isActive" rounded @click="archive(announcement)"><i class="ti ti-check"></i> {{ $locale.env._announcement.end }} ({{ $locale.env.archive }})</MkButton>
+							<MkButton v-if="announcement.id != null && !announcement.isActive" rounded @click="unarchive(announcement)"><i class="ti ti-restore"></i> {{ $locale.env.unarchive }}</MkButton>
+							<MkButton v-if="announcement.id != null" rounded danger @click="del(announcement)"><i class="ti ti-trash"></i> {{ $locale.env.delete }}</MkButton>
 						</div>
 					</template>
 
 					<div class="_gaps">
 						<MkInput v-model="announcement.title">
-							<template #label>{{ i18n.ts.title }}</template>
+							<template #label>{{ $locale.env.title }}</template>
 						</MkInput>
 						<MkTextarea v-model="announcement.text" mfmAutocomplete :mfmPreview="true">
-							<template #label>{{ i18n.ts.text }}</template>
+							<template #label>{{ $locale.env.text }}</template>
 						</MkTextarea>
 						<MkInput v-model="announcement.imageUrl" type="url">
-							<template #label>{{ i18n.ts.imageUrl }}</template>
+							<template #label>{{ $locale.env.imageUrl }}</template>
 						</MkInput>
 						<MkRadios
 							v-model="announcement.icon"
@@ -54,34 +54,34 @@ SPDX-License-Identifier: AGPL-3.0-only
 								{ value: 'success', icon: 'ti ti-check', iconStyle: 'color: var(--MI_THEME-success);' },
 							]"
 						>
-							<template #label>{{ i18n.ts.icon }}</template>
+							<template #label>{{ $locale.env.icon }}</template>
 						</MkRadios>
 						<MkRadios
 							v-model="announcement.display"
 							:options="[
-								{ value: 'normal', label: i18n.ts.normal },
-								{ value: 'banner', label: i18n.ts.banner },
-								{ value: 'dialog', label: i18n.ts.dialog },
+								{ value: 'normal', label: $locale.env.normal },
+								{ value: 'banner', label: $locale.env.banner },
+								{ value: 'dialog', label: $locale.env.dialog },
 							]"
 						>
-							<template #label>{{ i18n.ts.display }}</template>
+							<template #label>{{ $locale.env.display }}</template>
 						</MkRadios>
-						<MkInfo v-if="announcement.display === 'dialog'" warn>{{ i18n.ts._announcement.dialogAnnouncementUxWarn }}</MkInfo>
-						<MkSwitch v-model="announcement.forExistingUsers" :helpText="i18n.ts._announcement.forExistingUsersDescription">
-							{{ i18n.ts._announcement.forExistingUsers }}
+						<MkInfo v-if="announcement.display === 'dialog'" warn>{{ $locale.env._announcement.dialogAnnouncementUxWarn }}</MkInfo>
+						<MkSwitch v-model="announcement.forExistingUsers" :helpText="$locale.env._announcement.forExistingUsersDescription">
+							{{ $locale.env._announcement.forExistingUsers }}
 						</MkSwitch>
-						<MkSwitch v-model="announcement.silence" :helpText="i18n.ts._announcement.silenceDescription">
-							{{ i18n.ts._announcement.silence }}
+						<MkSwitch v-model="announcement.silence" :helpText="$locale.env._announcement.silenceDescription">
+							{{ $locale.env._announcement.silence }}
 						</MkSwitch>
-						<MkSwitch v-model="announcement.needConfirmationToRead" :helpText="i18n.ts._announcement.needConfirmationToReadDescription">
-							{{ i18n.ts._announcement.needConfirmationToRead }}
+						<MkSwitch v-model="announcement.needConfirmationToRead" :helpText="$locale.env._announcement.needConfirmationToReadDescription">
+							{{ $locale.env._announcement.needConfirmationToRead }}
 						</MkSwitch>
-						<p v-if="announcement.reads">{{ i18n.tsx.nUsersRead({ n: announcement.reads }) }}</p>
+						<p v-if="announcement.reads">{{ $l.env.nUsersRead({ n: announcement.reads }) }}</p>
 					</div>
 				</MkFolder>
 				<MkLoading v-if="loadingMore"/>
 				<MkButton @click="more()">
-					<i class="ti ti-reload"></i>{{ i18n.ts.more }}
+					<i class="ti ti-reload"></i>{{ $locale.env.more }}
 				</MkButton>
 			</template>
 		</div>
@@ -90,6 +90,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef, $l as localizerRef } from '@/i18n.js';
+
 import { ref, computed, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkButton from '@/components/MkButton.vue';
@@ -100,7 +102,6 @@ import MkRadios from '@/components/MkRadios.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
-import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
 import MkFolder from '@/components/MkFolder.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
@@ -112,8 +113,8 @@ const {
 	def: announcementsStatusDef,
 } = useMkSelect({
 	items: [
-		{ label: i18n.ts.active, value: 'active' },
-		{ label: i18n.ts.archived, value: 'archived' },
+		{ label: localeRef.value.env.active, value: 'active' },
+		{ label: localeRef.value.env.archived, value: 'archived' },
 	],
 	initialValue: 'active',
 });
@@ -158,7 +159,7 @@ async function del(announcement: (typeof announcements)['value'][number]) {
 	if (announcement.id == null) return;
 	const { canceled } = await os.confirm({
 		type: 'warning',
-		text: i18n.tsx.deleteAreYouSure({ x: announcement.title }),
+		text: localizerRef.value.env.deleteAreYouSure({ x: announcement.title }),
 	});
 	if (canceled) return;
 	announcements.value = announcements.value.filter(x => x !== announcement);
@@ -226,7 +227,7 @@ function refresh() {
 const headerActions = computed(() => [{
 	asFullButton: true,
 	icon: 'ti ti-plus',
-	text: i18n.ts.add,
+	text: localeRef.value.env.add,
 	handler: add,
 	disabled: announcementsStatus.value === 'archived',
 }]);
@@ -234,7 +235,7 @@ const headerActions = computed(() => [{
 const headerTabs = computed(() => []);
 
 definePage(() => ({
-	title: i18n.ts.announcements,
+	title: localeRef.value.env.announcements,
 	icon: 'ti ti-speakerphone',
 }));
 </script>

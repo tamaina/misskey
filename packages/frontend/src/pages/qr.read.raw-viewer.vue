@@ -12,12 +12,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 			:tabs="[
 				{
 					key: 'mfm',
-					title: i18n.ts._qr.mfm,
+					title: $locale.env._qr.mfm,
 					icon: 'ti ti-align-left',
 				},
 				{
 					key: 'raw',
-					title: i18n.ts._qr.raw,
+					title: $locale.env._qr.raw,
 					icon: 'ti ti-code',
 				},
 			]"
@@ -35,6 +35,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+
 import { ref, computed } from 'vue';
 import * as mfm from 'mfm-js';
 import MkFolder from '@/components/MkFolder.vue';
@@ -42,7 +43,6 @@ import MkTabs from '@/components/MkTabs.vue';
 import { extractUrlFromMfm } from '@/utility/extract-url-from-mfm';
 import MkCode from '@/components/MkCode.vue';
 import MkUrlPreview from '@/components/MkUrlPreview.vue';
-import { i18n } from '@/i18n.js';
 
 const props = defineProps<{
 	data: string;

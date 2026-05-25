@@ -20,9 +20,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div v-if="isBasicTimeline(widgetProps.src) && !isAvailableBasicTimeline(widgetProps.src)" :class="$style.disabled">
 		<p :class="$style.disabledTitle">
 			<i class="ti ti-minus"></i>
-			{{ i18n.ts._disabledTimeline.title }}
+			{{ $locale.env._disabledTimeline.title }}
 		</p>
-		<p :class="$style.disabledDescription">{{ i18n.ts._disabledTimeline.description }}</p>
+		<p :class="$style.disabledDescription">{{ $locale.env._disabledTimeline.description }}</p>
 	</div>
 	<div v-else>
 		<MkStreamingNotesTimeline
@@ -36,6 +36,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef } from '@/i18n.js';
+
 import { ref, computed } from 'vue';
 import * as Misskey from 'misskey-js';
 import { useWidgetPropsManager } from './widget.js';
@@ -46,7 +48,6 @@ import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import MkContainer from '@/components/MkContainer.vue';
 import MkStreamingNotesTimeline from '@/components/MkStreamingNotesTimeline.vue';
-import { i18n } from '@/i18n.js';
 import { availableBasicTimelines, isAvailableBasicTimeline, isBasicTimeline, basicTimelineIconClass, basicTimelineTypes } from '@/timelines.js';
 
 const name = 'timeline';
@@ -98,7 +99,7 @@ const headerTitle = computed<string>(() => {
 	} else if (widgetProps.src === 'antenna') {
 		return widgetProps.antenna != null ? widgetProps.antenna.name : '?';
 	} else {
-		return i18n.ts._timelines[widgetProps.src] ?? '?';
+		return localeRef.value.env._timelines[widgetProps.src] ?? '?';
 	}
 });
 
@@ -133,7 +134,7 @@ const choose = async (ev: PointerEvent) => {
 	const menuItems: MenuItem[] = [];
 
 	menuItems.push(...availableBasicTimelines().map(tl => ({
-		text: i18n.ts._timelines[tl],
+		text: localeRef.value.env._timelines[tl],
 		icon: basicTimelineIconClass(tl),
 		action: () => { setSrc(tl); },
 	})));

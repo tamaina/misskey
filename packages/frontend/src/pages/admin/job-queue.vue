@@ -142,7 +142,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<div class="_spacer">
 					<MkInput
 						v-model="searchQuery"
-						:placeholder="i18n.ts.search"
+						:placeholder="$locale.env.search"
 						type="search"
 						style="margin-bottom: 16px;"
 					>
@@ -172,6 +172,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef } from '@/i18n.js';
+
 import { ref, computed, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import { debounce } from 'throttle-debounce';
@@ -179,7 +181,6 @@ import { useInterval } from '@@/js/use-interval.js';
 import XChart from './job-queue.chart.vue';
 import XJob from './job-queue.job.vue';
 import * as os from '@/os.js';
-import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
 import MkButton from '@/components/MkButton.vue';
 import { misskeyApi } from '@/utility/misskey-api.js';
@@ -267,7 +268,7 @@ async function clearQueue() {
 
 	const { canceled } = await os.confirm({
 		type: 'warning',
-		title: i18n.ts.areYouSure,
+		title: localeRef.value.env.areYouSure,
 	});
 	if (canceled) return;
 
@@ -282,7 +283,7 @@ async function promoteAllJobs() {
 
 	const { canceled } = await os.confirm({
 		type: 'warning',
-		title: i18n.ts.areYouSure,
+		title: localeRef.value.env.areYouSure,
 	});
 	if (canceled) return;
 
@@ -297,7 +298,7 @@ async function pauseQueue() {
 
 	const { canceled } = await os.confirm({
 		type: 'warning',
-		title: i18n.ts.areYouSure,
+		title: localeRef.value.env.areYouSure,
 	});
 	if (canceled) return;
 
@@ -321,7 +322,7 @@ async function removeJobs() {
 
 	const { canceled } = await os.confirm({
 		type: 'warning',
-		title: i18n.ts.areYouSure,
+		title: localeRef.value.env.areYouSure,
 	});
 	if (canceled) return;
 
@@ -348,7 +349,7 @@ const headerTabs = computed<{
 	icon?: string;
 }[]>(() => [{
 	key: '-',
-	title: i18n.ts.jobQueue,
+	title: localeRef.value.env.jobQueue,
 	icon: 'ti ti-list-check',
 }, ...Misskey.queueTypes.map((q) => ({
 	key: q,
@@ -356,7 +357,7 @@ const headerTabs = computed<{
 }))]);
 
 definePage(() => ({
-	title: i18n.ts.jobQueue,
+	title: localeRef.value.env.jobQueue,
 	icon: 'ti ti-clock-play',
 	needWideArea: true,
 }));

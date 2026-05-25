@@ -12,7 +12,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	@closed="emit('closed')"
 >
 	<template #header>
-		<i class="ti ti-search" style="margin-right: 0.5em;"></i> {{ i18n.ts.search }}
+		<i class="ti ti-search" style="margin-right: 0.5em;"></i> {{ $locale.env.search }}
 	</template>
 	<div :class="$style.root">
 		<div class="_spacer">
@@ -103,7 +103,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 				<MkFolder :spacerMax="8" :spacerMin="8">
 					<template #icon><i class="ti ti-arrows-sort"></i></template>
-					<template #label>{{ i18n.ts._customEmojisManager._gridCommon.sortOrder }}</template>
+					<template #label>{{ $locale.env._customEmojisManager._gridCommon.sortOrder }}</template>
 					<MkSortOrderEditor
 						:baseOrderKeyNames="gridSortOrderKeys"
 						:currentOrders="sortOrders"
@@ -114,10 +114,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 		<div :class="$style.footerActions">
 			<MkButton primary @click="onSearchRequest">
-				{{ i18n.ts.search }}
+				{{ $locale.env.search }}
 			</MkButton>
 			<MkButton @click="onQueryResetButtonClicked">
-				{{ i18n.ts.reset }}
+				{{ $locale.env.reset }}
 			</MkButton>
 		</div>
 	</div>
@@ -125,6 +125,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script setup lang="ts">
+import { $locale as localeRef } from '@/i18n.js';
+
 import { computed, ref, watch } from 'vue';
 import MkWindow from '@/components/MkWindow.vue';
 import MkInput from '@/components/MkInput.vue';
@@ -137,7 +139,6 @@ import {
 	gridSortOrderKeys,
 } from './custom-emojis-manager.impl.js';
 
-import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
 
 import type { EmojiSearchQuery } from './custom-emojis-manager.local.list.vue';
@@ -189,7 +190,7 @@ function onQueryResetButtonClicked() {
 async function onQueryRolesEditClicked() {
 	const result = await os.selectRole({
 		initialRoleIds: model.value.roles.map(it => it.id),
-		title: i18n.ts._customEmojisManager._local._list.dialogSelectRoleTitle,
+		title: localeRef.value.env._customEmojisManager._local._list.dialogSelectRoleTitle,
 		publicOnly: true,
 	});
 	if (result.canceled) {

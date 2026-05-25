@@ -4,10 +4,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<SearchMarker path="/settings/accounts" :label="i18n.ts.accounts" :keywords="['accounts']" icon="ti ti-users">
+<SearchMarker path="/settings/accounts" :label="$locale.env.accounts" :keywords="['accounts']" icon="ti ti-users">
 	<div class="_gaps">
 		<div class="_buttons">
-			<MkButton primary @click="addAccount"><i class="ti ti-plus"></i> {{ i18n.ts.addAccount }}</MkButton>
+			<MkButton primary @click="addAccount"><i class="ti ti-plus"></i> {{ $locale.env.addAccount }}</MkButton>
 			<!--<MkButton @click="refreshAllAccounts"><i class="ti ti-refresh"></i></MkButton>-->
 		</div>
 
@@ -19,6 +19,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef } from '@/i18n.js';
+
 import { ref, computed } from 'vue';
 import * as Misskey from 'misskey-js';
 import type { MenuItem } from '@/types/menu.js';
@@ -27,7 +29,6 @@ import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { $i } from '@/i.js';
 import { switchAccount, removeAccount, login, getAccountWithSigninDialog, getAccountWithSignupDialog, getAccounts } from '@/accounts.js';
-import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
 import { prefer } from '@/preferences.js';
@@ -42,11 +43,11 @@ function showMenu(host: string, id: string, ev: PointerEvent) {
 	let menu: MenuItem[];
 
 	menu = [{
-		text: i18n.ts.switch,
+		text: localeRef.value.env.switch,
 		icon: 'ti ti-switch-horizontal',
 		action: () => switchAccount(host, id),
 	}, {
-		text: i18n.ts.remove,
+		text: localeRef.value.env.remove,
 		icon: 'ti ti-trash',
 		action: () => removeAccount(host, id),
 	}];
@@ -56,10 +57,10 @@ function showMenu(host: string, id: string, ev: PointerEvent) {
 
 function addAccount(ev: PointerEvent) {
 	os.popupMenu([{
-		text: i18n.ts.existingAccount,
+		text: localeRef.value.env.existingAccount,
 		action: () => { addExistingAccount(); },
 	}, {
-		text: i18n.ts.createAccount,
+		text: localeRef.value.env.createAccount,
 		action: () => { createAccount(); },
 	}], ev.currentTarget ?? ev.target);
 }
@@ -85,7 +86,7 @@ const headerActions = computed(() => []);
 const headerTabs = computed(() => []);
 
 definePage(() => ({
-	title: i18n.ts.accounts,
+	title: localeRef.value.env.accounts,
 	icon: 'ti ti-users',
 }));
 </script>

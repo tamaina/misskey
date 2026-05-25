@@ -6,6 +6,7 @@
 import { watch, version as vueVersion } from 'vue';
 import { compareVersions } from 'compare-versions';
 import { version, lang, apiUrl, isSafeMode } from '@@/js/config.js';
+import { locale as bootLocale } from '@@/js/locale.js';
 import defaultLightTheme from '@@/themes/l-light.json5';
 import defaultDarkTheme from '@@/themes/d-green-lime.json5';
 import { storeBootloaderErrors } from '@@/js/store-boot-errors';
@@ -15,7 +16,7 @@ import directives from '@/directives/index.js';
 import components from '@/components/index.js';
 import { themeManager } from '@/theme.js';
 import { isDeviceDarkmode } from '@/utility/is-device-darkmode.js';
-import { i18n } from '@/i18n.js';
+import { i18nReady, internationalization, $locale, $l } from '@/i18n.js';
 import { refreshCurrentAccount, login } from '@/accounts.js';
 import { store } from '@/store.js';
 import { fetchInstance, instance } from '@/instance.js';
@@ -78,7 +79,7 @@ export async function common(createVue: () => Promise<App<Element>>) {
 	//#endregion
 
 	//#region Detect language & fetch translations
-	storeBootloaderErrors({ ...i18n.ts._bootErrors, reload: i18n.ts.reload });
+	storeBootloaderErrors({ ...bootLocale._bootErrors, reload: bootLocale.reload });
 
 	if (import.meta.hot) {
 		import.meta.hot.on('locale-update', async (updatedLang: string) => {
@@ -259,6 +260,10 @@ export async function common(createVue: () => Promise<App<Element>>) {
 	});
 
 	const app = await createVue();
+	app.use(internationalization);
+	app.config.globalProperties.$locale = $locale.value;
+	app.config.globalProperties.$l = $l.value;
+	await i18nReady;
 
 	if (_DEV_) {
 		app.config.performance = true;
@@ -338,23 +343,23 @@ export async function common(createVue: () => Promise<App<Element>>) {
 	//#region Self-XSS 対策メッセージ
 	if (!_DEV_) {
 		console.log(
-			`%c${i18n.ts._selfXssPrevention.warning}`,
+			`%c${$locale.value.env._selfXssPrevention.warning}`,
 			'color: #f00; background-color: #ff0; font-size: 36px; padding: 4px;',
 		);
 		console.log(
-			`%c${i18n.ts._selfXssPrevention.title}`,
+			`%c${$locale.value.env._selfXssPrevention.title}`,
 			'color: #f00; font-weight: 900; font-family: "Hiragino Sans W9", "Hiragino Kaku Gothic ProN", sans-serif; font-size: 24px;',
 		);
 		console.log(
-			`%c${i18n.ts._selfXssPrevention.description1}`,
+			`%c${$locale.value.env._selfXssPrevention.description1}`,
 			'font-size: 16px; font-weight: 700;',
 		);
 		console.log(
-			`%c${i18n.ts._selfXssPrevention.description2}`,
+			`%c${$locale.value.env._selfXssPrevention.description2}`,
 			'font-size: 16px;',
 			'font-size: 20px; font-weight: 700; color: #f00;',
 		);
-		console.log(i18n.tsx._selfXssPrevention.description3({ link: 'https://misskey-hub.net/docs/for-users/resources/self-xss/' }));
+		console.log($l.value.env._selfXssPrevention.description3({ link: 'https://misskey-hub.net/docs/for-users/resources/self-xss/' }));
 	}
 	//#endregion
 

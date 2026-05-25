@@ -7,11 +7,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 <div :class="$style.root" class="_gaps">
 	<template v-if="layer.type === 'text'">
 		<MkInput v-model="layer.text">
-			<template #label>{{ i18n.ts._watermarkEditor.text }}</template>
+			<template #label>{{ $locale.env._watermarkEditor.text }}</template>
 		</MkInput>
 
 		<FormSlot>
-			<template #label>{{ i18n.ts._watermarkEditor.position }}</template>
+			<template #label>{{ $locale.env._watermarkEditor.position }}</template>
 			<MkPositionSelector
 				v-model:x="layer.align.x"
 				v-model:y="layer.align.y"
@@ -27,7 +27,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			continuousUpdate
 			@update:modelValue="(v) => (layer as Extract<WatermarkPreset['layers'][number], { type: 'text' }>).align.margin = v"
 		>
-			<template #label>{{ i18n.ts._watermarkEditor.margin }}</template>
+			<template #label>{{ $locale.env._watermarkEditor.margin }}</template>
 		</MkRange>
 
 		<MkRange
@@ -38,7 +38,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			:textConverter="(v) => (v * 100).toFixed(1) + '%'"
 			continuousUpdate
 		>
-			<template #label>{{ i18n.ts._watermarkEditor.scale }}</template>
+			<template #label>{{ $locale.env._watermarkEditor.scale }}</template>
 		</MkRange>
 
 		<MkRange
@@ -48,7 +48,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			:step="0.01"
 			continuousUpdate
 		>
-			<template #label>{{ i18n.ts._watermarkEditor.angle }}</template>
+			<template #label>{{ $locale.env._watermarkEditor.angle }}</template>
 		</MkRange>
 
 		<MkRange
@@ -59,23 +59,23 @@ SPDX-License-Identifier: AGPL-3.0-only
 			:textConverter="(v) => (v * 100).toFixed(1) + '%'"
 			continuousUpdate
 		>
-			<template #label>{{ i18n.ts._watermarkEditor.opacity }}</template>
+			<template #label>{{ $locale.env._watermarkEditor.opacity }}</template>
 		</MkRange>
 
 		<MkSwitch v-model="layer.repeat">
-			<template #label>{{ i18n.ts._watermarkEditor.repeat }}</template>
+			<template #label>{{ $locale.env._watermarkEditor.repeat }}</template>
 		</MkSwitch>
 
 		<MkSwitch v-model="layerPreserveBoundingRect">
-			<template #label>{{ i18n.ts._watermarkEditor.preserveBoundingRect }}</template>
+			<template #label>{{ $locale.env._watermarkEditor.preserveBoundingRect }}</template>
 		</MkSwitch>
 	</template>
 
 	<template v-else-if="layer.type === 'image'">
-		<MkButton inline rounded primary @click="chooseFile">{{ i18n.ts.selectFile }}</MkButton>
+		<MkButton inline rounded primary @click="chooseFile">{{ $locale.env.selectFile }}</MkButton>
 
 		<FormSlot>
-			<template #label>{{ i18n.ts._watermarkEditor.position }}</template>
+			<template #label>{{ $locale.env._watermarkEditor.position }}</template>
 			<MkPositionSelector
 				v-model:x="layer.align.x"
 				v-model:y="layer.align.y"
@@ -91,7 +91,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			continuousUpdate
 			@update:modelValue="(v) => (layer as Extract<WatermarkPreset['layers'][number], { type: 'image' }>).align.margin = v"
 		>
-			<template #label>{{ i18n.ts._watermarkEditor.margin }}</template>
+			<template #label>{{ $locale.env._watermarkEditor.margin }}</template>
 		</MkRange>
 
 		<MkRange
@@ -102,7 +102,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			:textConverter="(v) => (v * 100).toFixed(1) + '%'"
 			continuousUpdate
 		>
-			<template #label>{{ i18n.ts._watermarkEditor.scale }}</template>
+			<template #label>{{ $locale.env._watermarkEditor.scale }}</template>
 		</MkRange>
 
 		<MkRange
@@ -112,7 +112,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			:step="0.01"
 			continuousUpdate
 		>
-			<template #label>{{ i18n.ts._watermarkEditor.angle }}</template>
+			<template #label>{{ $locale.env._watermarkEditor.angle }}</template>
 		</MkRange>
 
 		<MkRange
@@ -123,30 +123,30 @@ SPDX-License-Identifier: AGPL-3.0-only
 			:textConverter="(v) => (v * 100).toFixed(1) + '%'"
 			continuousUpdate
 		>
-			<template #label>{{ i18n.ts._watermarkEditor.opacity }}</template>
+			<template #label>{{ $locale.env._watermarkEditor.opacity }}</template>
 		</MkRange>
 
 		<MkSwitch v-model="layer.repeat">
-			<template #label>{{ i18n.ts._watermarkEditor.repeat }}</template>
+			<template #label>{{ $locale.env._watermarkEditor.repeat }}</template>
 		</MkSwitch>
 
 		<MkSwitch v-model="layer.cover">
-			<template #label>{{ i18n.ts._watermarkEditor.cover }}</template>
+			<template #label>{{ $locale.env._watermarkEditor.cover }}</template>
 		</MkSwitch>
 
 		<MkSwitch v-model="layerPreserveBoundingRect">
-			<template #label>{{ i18n.ts._watermarkEditor.preserveBoundingRect }}</template>
+			<template #label>{{ $locale.env._watermarkEditor.preserveBoundingRect }}</template>
 		</MkSwitch>
 	</template>
 
 	<template v-else-if="layer.type === 'qr'">
 		<MkInput v-model="layer.data" debounce>
-			<template #label>{{ i18n.ts._watermarkEditor.text }}</template>
-			<template #caption>{{ i18n.ts._watermarkEditor.leaveBlankToAccountUrl }}</template>
+			<template #label>{{ $locale.env._watermarkEditor.text }}</template>
+			<template #caption>{{ $locale.env._watermarkEditor.leaveBlankToAccountUrl }}</template>
 		</MkInput>
 
 		<FormSlot>
-			<template #label>{{ i18n.ts._watermarkEditor.position }}</template>
+			<template #label>{{ $locale.env._watermarkEditor.position }}</template>
 			<MkPositionSelector
 				v-model:x="layer.align.x"
 				v-model:y="layer.align.y"
@@ -162,7 +162,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			continuousUpdate
 			@update:modelValue="(v) => (layer as Extract<WatermarkPreset['layers'][number], { type: 'qr' }>).align.margin = v"
 		>
-			<template #label>{{ i18n.ts._watermarkEditor.margin }}</template>
+			<template #label>{{ $locale.env._watermarkEditor.margin }}</template>
 		</MkRange>
 
 		<MkRange
@@ -173,7 +173,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			:textConverter="(v) => (v * 100).toFixed(1) + '%'"
 			continuousUpdate
 		>
-			<template #label>{{ i18n.ts._watermarkEditor.scale }}</template>
+			<template #label>{{ $locale.env._watermarkEditor.scale }}</template>
 		</MkRange>
 
 		<MkRange
@@ -184,7 +184,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			:textConverter="(v) => (v * 100).toFixed(1) + '%'"
 			continuousUpdate
 		>
-			<template #label>{{ i18n.ts._watermarkEditor.opacity }}</template>
+			<template #label>{{ $locale.env._watermarkEditor.opacity }}</template>
 		</MkRange>
 	</template>
 
@@ -196,7 +196,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			:step="0.01"
 			continuousUpdate
 		>
-			<template #label>{{ i18n.ts._watermarkEditor.stripeFrequency }}</template>
+			<template #label>{{ $locale.env._watermarkEditor.stripeFrequency }}</template>
 		</MkRange>
 
 		<MkRange
@@ -206,7 +206,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			:step="0.01"
 			continuousUpdate
 		>
-			<template #label>{{ i18n.ts._watermarkEditor.stripeWidth }}</template>
+			<template #label>{{ $locale.env._watermarkEditor.stripeWidth }}</template>
 		</MkRange>
 
 		<MkRange
@@ -216,7 +216,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			:step="0.01"
 			continuousUpdate
 		>
-			<template #label>{{ i18n.ts._watermarkEditor.angle }}</template>
+			<template #label>{{ $locale.env._watermarkEditor.angle }}</template>
 		</MkRange>
 
 		<MkRange
@@ -227,7 +227,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			:textConverter="(v) => (v * 100).toFixed(1) + '%'"
 			continuousUpdate
 		>
-			<template #label>{{ i18n.ts._watermarkEditor.opacity }}</template>
+			<template #label>{{ $locale.env._watermarkEditor.opacity }}</template>
 		</MkRange>
 	</template>
 
@@ -239,7 +239,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			:step="0.01"
 			continuousUpdate
 		>
-			<template #label>{{ i18n.ts._watermarkEditor.angle }}</template>
+			<template #label>{{ $locale.env._watermarkEditor.angle }}</template>
 		</MkRange>
 
 		<MkRange
@@ -249,7 +249,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			:step="0.01"
 			continuousUpdate
 		>
-			<template #label>{{ i18n.ts._watermarkEditor.scale }}</template>
+			<template #label>{{ $locale.env._watermarkEditor.scale }}</template>
 		</MkRange>
 
 		<MkRange
@@ -260,7 +260,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			:textConverter="(v) => (v * 100).toFixed(1) + '%'"
 			continuousUpdate
 		>
-			<template #label>{{ i18n.ts._watermarkEditor.polkadotMainDotRadius }}</template>
+			<template #label>{{ $locale.env._watermarkEditor.polkadotMainDotRadius }}</template>
 		</MkRange>
 
 		<MkRange
@@ -271,7 +271,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			:textConverter="(v) => (v * 100).toFixed(1) + '%'"
 			continuousUpdate
 		>
-			<template #label>{{ i18n.ts._watermarkEditor.polkadotMainDotOpacity }}</template>
+			<template #label>{{ $locale.env._watermarkEditor.polkadotMainDotOpacity }}</template>
 		</MkRange>
 
 		<MkRange
@@ -281,7 +281,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			:step="1"
 			continuousUpdate
 		>
-			<template #label>{{ i18n.ts._watermarkEditor.polkadotSubDotDivisions }}</template>
+			<template #label>{{ $locale.env._watermarkEditor.polkadotSubDotDivisions }}</template>
 		</MkRange>
 
 		<MkRange
@@ -292,7 +292,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			:textConverter="(v) => (v * 100).toFixed(1) + '%'"
 			continuousUpdate
 		>
-			<template #label>{{ i18n.ts._watermarkEditor.polkadotSubDotRadius }}</template>
+			<template #label>{{ $locale.env._watermarkEditor.polkadotSubDotRadius }}</template>
 		</MkRange>
 
 		<MkRange
@@ -303,7 +303,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			:textConverter="(v) => (v * 100).toFixed(1) + '%'"
 			continuousUpdate
 		>
-			<template #label>{{ i18n.ts._watermarkEditor.polkadotSubDotOpacity }}</template>
+			<template #label>{{ $locale.env._watermarkEditor.polkadotSubDotOpacity }}</template>
 		</MkRange>
 	</template>
 
@@ -315,7 +315,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			:step="0.01"
 			continuousUpdate
 		>
-			<template #label>{{ i18n.ts._watermarkEditor.angle }}</template>
+			<template #label>{{ $locale.env._watermarkEditor.angle }}</template>
 		</MkRange>
 
 		<MkRange
@@ -325,7 +325,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			:step="0.01"
 			continuousUpdate
 		>
-			<template #label>{{ i18n.ts._watermarkEditor.scale }}</template>
+			<template #label>{{ $locale.env._watermarkEditor.scale }}</template>
 		</MkRange>
 
 		<MkRange
@@ -336,17 +336,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 			:textConverter="(v) => (v * 100).toFixed(1) + '%'"
 			continuousUpdate
 		>
-			<template #label>{{ i18n.ts._watermarkEditor.opacity }}</template>
+			<template #label>{{ $locale.env._watermarkEditor.opacity }}</template>
 		</MkRange>
 	</template>
 </div>
 </template>
 
 <script setup lang="ts">
+import { $locale as localeRef } from '@/i18n.js';
+
 import { ref, onMounted, computed } from 'vue';
 import * as Misskey from 'misskey-js';
 import type { WatermarkPreset } from '@/utility/watermark/WatermarkRenderer.js';
-import { i18n } from '@/i18n.js';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
@@ -391,7 +392,7 @@ function chooseFile(ev: PointerEvent) {
 	selectFile({
 		anchorElement: ev.currentTarget ?? ev.target,
 		multiple: false,
-		label: i18n.ts.selectFile,
+		label: localeRef.value.env.selectFile,
 		features: {
 			watermark: false,
 		},
@@ -400,8 +401,8 @@ function chooseFile(ev: PointerEvent) {
 		if (!file.type.startsWith('image')) {
 			os.alert({
 				type: 'warning',
-				title: i18n.ts._watermarkEditor.driveFileTypeWarn,
-				text: i18n.ts._watermarkEditor.driveFileTypeWarnDescription,
+				title: localeRef.value.env._watermarkEditor.driveFileTypeWarn,
+				text: localeRef.value.env._watermarkEditor.driveFileTypeWarnDescription,
 			});
 			return;
 		}

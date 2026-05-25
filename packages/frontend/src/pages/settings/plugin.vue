@@ -4,18 +4,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<SearchMarker path="/settings/plugin" :label="i18n.ts.plugins" :keywords="['plugin', 'addon', 'extension']" icon="ti ti-plug">
+<SearchMarker path="/settings/plugin" :label="$locale.env.plugins" :keywords="['plugin', 'addon', 'extension']" icon="ti ti-plug">
 	<div class="_gaps_m">
 		<MkFeatureBanner icon="/client-assets/electric_plug_3d.png" color="#ffbb00">
-			<SearchText>{{ i18n.ts._settings.pluginBanner }}</SearchText>
+			<SearchText>{{ $locale.env._settings.pluginBanner }}</SearchText>
 		</MkFeatureBanner>
 
-		<MkInfo v-if="isSafeMode" warn>{{ i18n.ts.pluginsAreDisabledBecauseSafeMode }}</MkInfo>
+		<MkInfo v-if="isSafeMode" warn>{{ $locale.env.pluginsAreDisabledBecauseSafeMode }}</MkInfo>
 
-		<FormLink v-else to="/settings/plugin/install"><template #icon><i class="ti ti-download"></i></template>{{ i18n.ts._plugin.install }}</FormLink>
+		<FormLink v-else to="/settings/plugin/install"><template #icon><i class="ti ti-download"></i></template>{{ $locale.env._plugin.install }}</FormLink>
 
 		<FormSection>
-			<template #label>{{ i18n.ts.manage }}</template>
+			<template #label>{{ $locale.env.manage }}</template>
 			<div class="_gaps_s">
 				<MkFolder v-for="plugin in plugins" :key="plugin.installId">
 					<template #icon><i class="ti ti-plug"></i></template>
@@ -34,32 +34,32 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</template>
 					<template #footer>
 						<div class="_buttons">
-							<MkButton :disabled="!plugin.active" @click="reload(plugin)"><i class="ti ti-refresh"></i> {{ i18n.ts.reload }}</MkButton>
-							<MkButton danger @click="uninstall(plugin)"><i class="ti ti-trash"></i> {{ i18n.ts.uninstall }}</MkButton>
-							<MkButton v-if="plugin.config" style="margin-left: auto;" @click="config(plugin)"><i class="ti ti-settings"></i> {{ i18n.ts.settings }}</MkButton>
+							<MkButton :disabled="!plugin.active" @click="reload(plugin)"><i class="ti ti-refresh"></i> {{ $locale.env.reload }}</MkButton>
+							<MkButton danger @click="uninstall(plugin)"><i class="ti ti-trash"></i> {{ $locale.env.uninstall }}</MkButton>
+							<MkButton v-if="plugin.config" style="margin-left: auto;" @click="config(plugin)"><i class="ti ti-settings"></i> {{ $locale.env.settings }}</MkButton>
 						</div>
 					</template>
 
 					<div class="_gaps_m">
 						<div class="_gaps_s">
-							<MkSwitch :modelValue="plugin.active" @update:modelValue="changeActive(plugin, $event)">{{ i18n.ts.makeActive }}</MkSwitch>
+							<MkSwitch :modelValue="plugin.active" @update:modelValue="changeActive(plugin, $event)">{{ $locale.env.makeActive }}</MkSwitch>
 						</div>
 
 						<div class="_gaps_s">
 							<MkKeyValue>
-								<template #key>{{ i18n.ts.author }}</template>
+								<template #key>{{ $locale.env.author }}</template>
 								<template #value>{{ plugin.author }}</template>
 							</MkKeyValue>
 							<MkKeyValue>
-								<template #key>{{ i18n.ts.description }}</template>
+								<template #key>{{ $locale.env.description }}</template>
 								<template #value>{{ plugin.description }}</template>
 							</MkKeyValue>
 							<MkKeyValue>
-								<template #key>{{ i18n.ts.permission }}</template>
+								<template #key>{{ $locale.env.permission }}</template>
 								<template #value>
 									<ul style="margin-top: 0; margin-bottom: 0;">
-										<li v-for="permission in plugin.permissions" :key="permission">{{ i18n.ts._permissions[permission] ?? permission }}</li>
-										<li v-if="!plugin.permissions || plugin.permissions.length === 0">{{ i18n.ts.none }}</li>
+										<li v-for="permission in plugin.permissions" :key="permission">{{ $locale.env._permissions[permission] ?? permission }}</li>
+										<li v-if="!plugin.permissions || plugin.permissions.length === 0">{{ $locale.env.none }}</li>
 									</ul>
 								</template>
 							</MkKeyValue>
@@ -68,7 +68,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<div class="_gaps_s">
 							<MkFolder>
 								<template #icon><i class="ti ti-terminal-2"></i></template>
-								<template #label>{{ i18n.ts.logs }}</template>
+								<template #label>{{ $locale.env.logs }}</template>
 
 								<div>
 									<div v-for="log in pluginLogs.get(plugin.installId)" :class="[$style.log, { [$style.isSystemLog]: log.isSystem }]">
@@ -79,7 +79,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 							<MkFolder :withSpacer="false">
 								<template #icon><i class="ti ti-code"></i></template>
-								<template #label>{{ i18n.ts._plugin.viewSource }}</template>
+								<template #label>{{ $locale.env._plugin.viewSource }}</template>
 
 								<div class="_gaps_s">
 									<MkCode :code="plugin.src ?? ''" lang="ais"/>
@@ -95,6 +95,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef, $l as localizerRef } from '@/i18n.js';
+
 import { nextTick, ref, computed } from 'vue';
 import { isSafeMode } from '@@/js/config.js';
 import type { Plugin } from '@/plugin.js';
@@ -107,7 +109,6 @@ import MkFolder from '@/components/MkFolder.vue';
 import MkKeyValue from '@/components/MkKeyValue.vue';
 import MkFeatureBanner from '@/components/MkFeatureBanner.vue';
 import MkInfo from '@/components/MkInfo.vue';
-import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
 import { changePluginActive, configPlugin, pluginLogs, uninstallPlugin, reloadPlugin } from '@/plugin.js';
 import { prefer } from '@/preferences.js';
@@ -118,7 +119,7 @@ const plugins = prefer.r.plugins;
 async function uninstall(plugin: Plugin) {
 	const { canceled } = await os.confirm({
 		type: 'warning',
-		text: i18n.tsx.removeAreYouSure({ x: plugin.name }),
+		text: localizerRef.value.env.removeAreYouSure({ x: plugin.name }),
 	});
 	if (canceled) return;
 
@@ -148,7 +149,7 @@ const headerActions = computed(() => []);
 const headerTabs = computed(() => []);
 
 definePage(() => ({
-	title: i18n.ts.plugins,
+	title: localeRef.value.env.plugins,
 	icon: 'ti ti-plug',
 }));
 </script>

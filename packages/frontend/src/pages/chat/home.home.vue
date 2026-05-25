@@ -5,24 +5,24 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div class="_gaps">
-	<MkButton v-if="$i.policies.chatAvailability === 'available'" primary gradate rounded :class="$style.start" @click="start"><i class="ti ti-plus"></i> {{ i18n.ts.startChat }}</MkButton>
+	<MkButton v-if="$i.policies.chatAvailability === 'available'" primary gradate rounded :class="$style.start" @click="start"><i class="ti ti-plus"></i> {{ $locale.env.startChat }}</MkButton>
 
-	<MkInfo v-else>{{ $i.policies.chatAvailability === 'readonly' ? i18n.ts._chat.chatIsReadOnlyForThisAccountOrServer : i18n.ts._chat.chatNotAvailableForThisAccountOrServer }}</MkInfo>
+	<MkInfo v-else>{{ $i.policies.chatAvailability === 'readonly' ? $locale.env._chat.chatIsReadOnlyForThisAccountOrServer : $locale.env._chat.chatNotAvailableForThisAccountOrServer }}</MkInfo>
 
 	<MkAd :preferForms="['horizontal', 'horizontal-big']"/>
 
 	<MkInput
 		v-model="searchQuery"
-		:placeholder="i18n.ts._chat.searchMessages"
+		:placeholder="$locale.env._chat.searchMessages"
 		type="search"
 	>
 		<template #prefix><i class="ti ti-search"></i></template>
 	</MkInput>
 
-	<MkButton v-if="searchQuery.length > 0" primary rounded @click="search">{{ i18n.ts.search }}</MkButton>
+	<MkButton v-if="searchQuery.length > 0" primary rounded @click="search">{{ $locale.env.search }}</MkButton>
 
 	<MkFoldableSection v-if="searched">
-		<template #header>{{ i18n.ts.searchResult }}</template>
+		<template #header>{{ $locale.env.searchResult }}</template>
 
 		<div class="_gaps_s">
 			<div v-for="message in searchResults" :key="message.id" :class="$style.searchResultItem">
@@ -32,7 +32,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</MkFoldableSection>
 
 	<MkFoldableSection>
-		<template #header>{{ i18n.ts._chat.history }}</template>
+		<template #header>{{ $locale.env._chat.history }}</template>
 
 		<MkChatHistories/>
 	</MkFoldableSection>
@@ -40,12 +40,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef } from '@/i18n.js';
+
 import { onActivated, onDeactivated, onMounted, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import { useInterval } from '@@/js/use-interval.js';
 import XMessage from './XMessage.vue';
 import MkButton from '@/components/MkButton.vue';
-import { i18n } from '@/i18n.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { ensureSignin } from '@/i.js';
 import { useRouter } from '@/router.js';
@@ -66,17 +67,17 @@ const searchResults = ref<Misskey.entities.ChatMessage[]>([]);
 
 function start(ev: PointerEvent) {
 	os.popupMenu([{
-		text: i18n.ts._chat.individualChat,
-		caption: i18n.ts._chat.individualChat_description,
+		text: localeRef.value.env._chat.individualChat,
+		caption: localeRef.value.env._chat.individualChat_description,
 		icon: 'ti ti-user',
 		action: () => { startUser(); },
 	}, { type: 'divider' }, {
 		type: 'parent',
-		text: i18n.ts._chat.roomChat,
-		caption: i18n.ts._chat.roomChat_description,
+		text: localeRef.value.env._chat.roomChat,
+		caption: localeRef.value.env._chat.roomChat_description,
 		icon: 'ti ti-users-group',
 		children: [{
-			text: i18n.ts._chat.createRoom,
+			text: localeRef.value.env._chat.createRoom,
 			icon: 'ti ti-plus',
 			action: () => { createRoom(); },
 		}],
@@ -96,7 +97,7 @@ async function startUser() {
 
 async function createRoom() {
 	const { canceled, result } = await os.inputText({
-		title: i18n.ts.name,
+		title: localeRef.value.env.name,
 		minLength: 1,
 	});
 	if (canceled) return;

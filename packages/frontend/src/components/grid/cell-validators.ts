@@ -6,7 +6,7 @@
 import type { CellValue, GridCell } from '@/components/grid/cell.js';
 import type { GridColumn } from '@/components/grid/column.js';
 import type { GridRow } from '@/components/grid/row.js';
-import { i18n } from '@/i18n.js';
+import { $locale, $l } from '@/i18n.js';
 
 export type ValidatorParams = {
 	column: GridColumn;
@@ -72,7 +72,7 @@ class ValidatorPreset {
 			validate: ({ value }): ValidatorResult => {
 				return {
 					valid: value !== null && value !== undefined && value !== '',
-					message: i18n.ts._gridComponent._error.requiredValue,
+					message: $locale.value.env._gridComponent._error.requiredValue,
 				};
 			},
 		};
@@ -84,7 +84,7 @@ class ValidatorPreset {
 			validate: ({ value }): ValidatorResult => {
 				return {
 					valid: (typeof value !== 'string') || pattern.test(value.toString() ?? ''),
-					message: i18n.tsx._gridComponent._error.patternNotMatch({ pattern: pattern.source }),
+					message: $l.value.env._gridComponent._error.patternNotMatch({ pattern: pattern.source }),
 				};
 			},
 		};
@@ -100,7 +100,7 @@ class ValidatorPreset {
 					.every(cell => cell.value !== value);
 				return {
 					valid: isUnique,
-					message: i18n.ts._gridComponent._error.notUnique,
+					message: $locale.value.env._gridComponent._error.notUnique,
 				};
 			},
 		};

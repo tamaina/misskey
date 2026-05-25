@@ -5,7 +5,7 @@
 
 import * as os from '@/os.js';
 import { $i } from '@/i.js';
-import { i18n } from '@/i18n.js';
+import { $locale, $l } from '@/i18n.js';
 
 export function showMovedDialog() {
 	if (!$i) return;
@@ -13,8 +13,8 @@ export function showMovedDialog() {
 
 	os.alert({
 		type: 'error',
-		title: i18n.ts.accountMovedShort,
-		text: i18n.ts.operationForbidden,
+		title: $locale.value.env.accountMovedShort,
+		text: $locale.value.env.operationForbidden,
 	});
 
 	throw new Error('account moved');

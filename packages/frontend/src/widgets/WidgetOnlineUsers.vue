@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <div data-cy-mkw-onlineUsers :class="[$style.root, { _panel: !widgetProps.transparent, [$style.pad]: !widgetProps.transparent }]">
 	<span :class="$style.text">
-		<I18n v-if="onlineUsersCount" :src="i18n.ts.onlineUsersCount" textTag="span">
+		<I18n v-if="onlineUsersCount" :src="$locale.env.onlineUsersCount" textTag="span">
 			<template #n><b style="color: #41b781;">{{ number(onlineUsersCount) }}</b></template>
 		</I18n>
 	</span>
@@ -14,13 +14,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef } from '@/i18n.js';
+
 import { ref } from 'vue';
 import { useWidgetPropsManager } from './widget.js';
 import type { WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
 import type { FormWithDefault, GetFormResultType } from '@/utility/form.js';
 import { misskeyApiGet } from '@/utility/misskey-api.js';
 import { useInterval } from '@@/js/use-interval.js';
-import { i18n } from '@/i18n.js';
 import number from '@/filters/number.js';
 
 const name = 'onlineUsers';
@@ -28,7 +29,7 @@ const name = 'onlineUsers';
 const widgetPropsDef = {
 	transparent: {
 		type: 'boolean',
-		label: i18n.ts._widgetOptions.transparent,
+		label: localeRef.value.env._widgetOptions.transparent,
 		default: true,
 	},
 } satisfies FormWithDefault;

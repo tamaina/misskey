@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<MkInput
 		v-if="searchIndex && searchIndex.length > 0"
 		v-model="searchQuery"
-		:placeholder="i18n.ts.search"
+		:placeholder="$locale.env.search"
 		type="search"
 		style="margin-bottom: 16px;"
 		@input.passive="searchOnInput"
@@ -95,11 +95,11 @@ export type SuperMenuDef = {
 </script>
 
 <script lang="ts" setup>
+
 import { useTemplateRef, ref, watch, nextTick, computed } from 'vue';
 import { getScrollContainer } from '@@/js/scroll.js';
 import type { SearchIndexItem } from '@/utility/inapp-search.js';
 import MkInput from '@/components/MkInput.vue';
-import { i18n } from '@/i18n.js';
 import { useRouter } from '@/router.js';
 import { initIntlString, compareStringIncludes } from '@/utility/intl-string.js';
 

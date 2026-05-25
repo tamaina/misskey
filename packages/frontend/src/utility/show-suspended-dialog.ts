@@ -4,12 +4,12 @@
  */
 
 import * as os from '@/os.js';
-import { i18n } from '@/i18n.js';
+import { $locale, $l } from '@/i18n.js';
 
 export function showSuspendedDialog() {
 	return os.alert({
 		type: 'error',
-		title: i18n.ts.yourAccountSuspendedTitle,
-		text: i18n.ts.yourAccountSuspendedDescription,
+		title: $locale.value.env.yourAccountSuspendedTitle,
+		text: $locale.value.env.yourAccountSuspendedDescription,
 	});
 }

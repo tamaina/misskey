@@ -12,7 +12,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	@closed="emit('closed')"
 >
 	<template #header>
-		<i class="ti ti-upload"></i> {{ i18n.tsx.uploadNFiles({ n: files.length }) }}
+		<i class="ti ti-upload"></i> {{ $l.env.uploadNFiles({ n: files.length }) }}
 	</template>
 
 	<div :class="$style.root">
@@ -20,7 +20,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 		<div class="_gaps_s _spacer">
 			<MkTip k="uploader">
-				{{ i18n.ts._uploader.tip }}
+				{{ $locale.env._uploader.tip }}
 			</MkTip>
 
 			<MkUploaderItems :items="items" @showMenu="(item, ev) => showPerItemMenu(item, ev)" @showMenuViaContextmenu="(item, ev) => showPerItemMenuViaContextmenu(item, ev)"/>
@@ -29,33 +29,34 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkButton style="margin: auto;" :iconOnly="true" rounded @click="chooseFile($event)"><i class="ti ti-plus"></i></MkButton>
 			</div>
 
-			<div>{{ i18n.tsx._uploader.maxFileSizeIsX({ x: $i.policies.maxFileSizeMb + 'MB' }) }}</div>
+			<div>{{ $l.env._uploader.maxFileSizeIsX({ x: $i.policies.maxFileSizeMb + 'MB' }) }}</div>
 
 			<!-- クライアントで検出するMIME typeとサーバーで検出するMIME typeが異なる場合があり、混乱の元になるのでとりあえず隠しとく -->
 			<!-- https://github.com/misskey-dev/misskey/issues/16091 -->
 			<!-- https://github.com/misskey-dev/misskey/issues/16663 -->
-			<!--<div>{{ i18n.ts._uploader.allowedTypes }}: {{ $i.policies.uploadableFileTypes.join(', ') }}</div>-->
+			<!--<div>{{ $locale.env._uploader.allowedTypes }}: {{ $i.policies.uploadableFileTypes.join(', ') }}</div>-->
 		</div>
 	</div>
 
 	<template #footer>
 		<div class="_buttonsCenter">
-			<MkButton v-if="uploader.uploading.value" rounded @click="abortWithConfirm()"><i class="ti ti-x"></i> {{ i18n.ts.abort }}</MkButton>
-			<MkButton v-else-if="!firstUploadAttempted" primary rounded :disabled="!uploader.readyForUpload.value" @click="upload()"><i class="ti ti-upload"></i> {{ i18n.ts.upload }}</MkButton>
+			<MkButton v-if="uploader.uploading.value" rounded @click="abortWithConfirm()"><i class="ti ti-x"></i> {{ $locale.env.abort }}</MkButton>
+			<MkButton v-else-if="!firstUploadAttempted" primary rounded :disabled="!uploader.readyForUpload.value" @click="upload()"><i class="ti ti-upload"></i> {{ $locale.env.upload }}</MkButton>
 
-			<MkButton v-if="canRetry" rounded @click="upload()"><i class="ti ti-reload"></i> {{ i18n.ts.retry }}</MkButton>
-			<MkButton v-if="canDone" rounded @click="done()"><i class="ti ti-arrow-right"></i> {{ i18n.ts.done }}</MkButton>
+			<MkButton v-if="canRetry" rounded @click="upload()"><i class="ti ti-reload"></i> {{ $locale.env.retry }}</MkButton>
+			<MkButton v-if="canDone" rounded @click="done()"><i class="ti ti-arrow-right"></i> {{ $locale.env.done }}</MkButton>
 		</div>
 	</template>
 </MkModalWindow>
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef } from '@/i18n.js';
+
 import { computed, onMounted, ref, useTemplateRef, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import type { UploaderFeatures, UploaderItem } from '@/composables/use-uploader.js';
 import MkModalWindow from '@/components/MkModalWindow.vue';
-import { i18n } from '@/i18n.js';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os.js';
 import { ensureSignin } from '@/i.js';
@@ -123,9 +124,9 @@ watch(items, () => {
 async function cancel() {
 	const { canceled } = await os.confirm({
 		type: 'question',
-		text: i18n.ts._uploader.abortConfirm,
-		okText: i18n.ts.yes,
-		cancelText: i18n.ts.no,
+		text: localeRef.value.env._uploader.abortConfirm,
+		okText: localeRef.value.env.yes,
+		cancelText: localeRef.value.env.no,
 	});
 	if (canceled) return;
 
@@ -142,9 +143,9 @@ function upload() {
 async function abortWithConfirm() {
 	const { canceled } = await os.confirm({
 		type: 'question',
-		text: i18n.ts._uploader.abortConfirm,
-		okText: i18n.ts.yes,
-		cancelText: i18n.ts.no,
+		text: localeRef.value.env._uploader.abortConfirm,
+		okText: localeRef.value.env.yes,
+		cancelText: localeRef.value.env.no,
 	});
 	if (canceled) return;
 
@@ -155,9 +156,9 @@ async function done() {
 	if (!uploader.allItemsUploaded.value) {
 		const { canceled } = await os.confirm({
 			type: 'question',
-			text: i18n.ts._uploader.doneConfirm,
-			okText: i18n.ts.yes,
-			cancelText: i18n.ts.no,
+			text: localeRef.value.env._uploader.doneConfirm,
+			okText: localeRef.value.env.yes,
+			cancelText: localeRef.value.env.no,
 		});
 		if (canceled) return;
 	}

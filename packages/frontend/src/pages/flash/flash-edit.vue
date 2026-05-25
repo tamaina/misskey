@@ -8,18 +8,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div class="_spacer" style="--MI_SPACER-w: 700px;">
 		<div class="_gaps">
 			<MkInput v-model="title">
-				<template #label>{{ i18n.ts._play.title }}</template>
+				<template #label>{{ $locale.env._play.title }}</template>
 			</MkInput>
 			<MkSelect v-model="visibility" :items="visibilityDef">
-				<template #label>{{ i18n.ts.visibility }}</template>
-				<template #caption>{{ i18n.ts._play.visibilityDescription }}</template>
+				<template #label>{{ $locale.env.visibility }}</template>
+				<template #caption>{{ $locale.env._play.visibilityDescription }}</template>
 			</MkSelect>
 			<MkTextarea v-model="summary" :mfmAutocomplete="true" :mfmPreview="true">
-				<template #label>{{ i18n.ts._play.summary }}</template>
+				<template #label>{{ $locale.env._play.summary }}</template>
 			</MkTextarea>
-			<MkButton primary @click="selectPreset">{{ i18n.ts.selectFromPresets }}<i class="ti ti-chevron-down"></i></MkButton>
+			<MkButton primary @click="selectPreset">{{ $locale.env.selectFromPresets }}<i class="ti ti-chevron-down"></i></MkButton>
 			<MkCodeEditor v-model="script" lang="is">
-				<template #label>{{ i18n.ts._play.script }}</template>
+				<template #label>{{ $locale.env._play.script }}</template>
 			</MkCodeEditor>
 		</div>
 	</div>
@@ -27,9 +27,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div :class="$style.footer">
 			<div class="_spacer">
 				<div class="_buttons">
-					<MkButton primary @click="save"><i class="ti ti-check"></i> {{ i18n.ts.save }}</MkButton>
-					<MkButton @click="show"><i class="ti ti-eye"></i> {{ i18n.ts.show }}</MkButton>
-					<MkButton v-if="flash" danger @click="del"><i class="ti ti-trash"></i> {{ i18n.ts.delete }}</MkButton>
+					<MkButton primary @click="save"><i class="ti ti-check"></i> {{ $locale.env.save }}</MkButton>
+					<MkButton @click="show"><i class="ti ti-eye"></i> {{ $locale.env.show }}</MkButton>
+					<MkButton v-if="flash" danger @click="del"><i class="ti ti-trash"></i> {{ $locale.env.delete }}</MkButton>
 				</div>
 			</div>
 		</div>
@@ -38,13 +38,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef, $l as localizerRef } from '@/i18n.js';
+
 import { computed, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import { AISCRIPT_VERSION } from '@syuilo/aiscript';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
-import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
 import MkTextarea from '@/components/MkTextarea.vue';
 import MkCodeEditor from '@/components/MkCodeEditor.vue';
@@ -388,8 +389,8 @@ const {
 	def: visibilityDef,
 } = useMkSelect({
 	items: [
-		{ label: i18n.ts.public, value: 'public' },
-		{ label: i18n.ts.private, value: 'private' },
+		{ label: localeRef.value.env.public, value: 'public' },
+		{ label: localeRef.value.env.private, value: 'private' },
 	],
 	initialValue: flash.value?.visibility ?? 'public',
 });
@@ -460,7 +461,7 @@ async function del() {
 
 	const { canceled } = await os.confirm({
 		type: 'warning',
-		text: i18n.tsx.deleteAreYouSure({ x: flash.value.title }),
+		text: localizerRef.value.env.deleteAreYouSure({ x: flash.value.title }),
 	});
 	if (canceled) return;
 
@@ -475,7 +476,7 @@ const headerActions = computed(() => []);
 const headerTabs = computed(() => []);
 
 definePage(() => ({
-	title: flash.value ? `${i18n.ts._play.edit}: ${flash.value.title}` : i18n.ts._play.new,
+	title: flash.value ? `${localeRef.value.env._play.edit}: ${flash.value.title}` : localeRef.value.env._play.new,
 }));
 </script>
 

@@ -12,9 +12,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div><b>{{ title }}</b></div>
 			<div>{{ description }}</div>
 			<div class="_buttons">
-				<MkButton v-if="hasPrev" small @click="prev"><i class="ti ti-arrow-left"></i> {{ i18n.ts.goBack }}</MkButton>
-				<MkButton v-if="hasNext" small primary @click="next">{{ i18n.ts.next }} <i class="ti ti-arrow-right"></i></MkButton>
-				<MkButton v-else small primary @click="next">{{ i18n.ts.done }} <i class="ti ti-check"></i></MkButton>
+				<MkButton v-if="hasPrev" small @click="prev"><i class="ti ti-arrow-left"></i> {{ $locale.env.goBack }}</MkButton>
+				<MkButton v-if="hasNext" small primary @click="next">{{ $locale.env.next }} <i class="ti ti-arrow-right"></i></MkButton>
+				<MkButton v-else small primary @click="next">{{ $locale.env.done }} <i class="ti ti-check"></i></MkButton>
 			</div>
 		</div>
 	</div>
@@ -22,11 +22,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+
 import { nextTick, onMounted, onUnmounted, ref, useTemplateRef } from 'vue';
 import { calcPopupPosition } from '@/utility/popup-position.js';
 import * as os from '@/os.js';
 import MkButton from '@/components/MkButton.vue';
-import { i18n } from '@/i18n.js';
 
 const props = withDefaults(defineProps<{
 	title: string;

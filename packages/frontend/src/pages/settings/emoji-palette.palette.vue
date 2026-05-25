@@ -6,12 +6,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <MkFolder :defaultOpen="true">
 	<template #icon><i class="ti ti-palette"></i></template>
-	<template #label>{{ palette.name === '' ? '(' + i18n.ts.noName + ')' : palette.name }}</template>
+	<template #label>{{ palette.name === '' ? '(' + $locale.env.noName + ')' : palette.name }}</template>
 	<template #footer>
 		<div class="_buttons">
-			<MkButton @click="rename"><i class="ti ti-pencil"></i> {{ i18n.ts.rename }}</MkButton>
-			<MkButton @click="copy"><i class="ti ti-copy"></i> {{ i18n.ts.copy }}</MkButton>
-			<MkButton danger @click="paste"><i class="ti ti-clipboard"></i> {{ i18n.ts.paste }}</MkButton>
+			<MkButton @click="rename"><i class="ti ti-pencil"></i> {{ $locale.env.rename }}</MkButton>
+			<MkButton @click="copy"><i class="ti ti-copy"></i> {{ $locale.env.copy }}</MkButton>
+			<MkButton danger @click="paste"><i class="ti ti-clipboard"></i> {{ $locale.env.paste }}</MkButton>
 			<MkButton danger iconOnly style="margin-left: auto;" @click="del"><i class="ti ti-trash"></i></MkButton>
 		</div>
 	</template>
@@ -39,16 +39,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</template>
 			</MkDraggable>
 		</div>
-		<div :class="$style.editorCaption">{{ i18n.ts.reactionSettingDescription2 }}</div>
+		<div :class="$style.editorCaption">{{ $locale.env.reactionSettingDescription2 }}</div>
 	</div>
 </MkFolder>
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef } from '@/i18n.js';
+
 import { ref, watch } from 'vue';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os.js';
-import { i18n } from '@/i18n.js';
 import { deepClone } from '@/utility/clone.js';
 import MkCustomEmoji from '@/components/global/MkCustomEmoji.vue';
 import MkEmoji from '@/components/global/MkEmoji.vue';
@@ -78,7 +79,7 @@ watch(emojis, () => {
 
 function remove(reaction: string, ev: PointerEvent) {
 	os.popupMenu([{
-		text: i18n.ts.remove,
+		text: localeRef.value.env.remove,
 		action: () => {
 			emojis.value = emojis.value.filter(x => x !== reaction);
 		},
@@ -103,7 +104,7 @@ function getHTMLElement(ev: PointerEvent): HTMLElement {
 
 function rename() {
 	os.inputText({
-		title: i18n.ts.rename,
+		title: localeRef.value.env.rename,
 		default: props.palette.name,
 	}).then(({ canceled, result: name }) => {
 		if (canceled) return;
@@ -126,7 +127,7 @@ function paste() {
 
 function del(ev: PointerEvent) {
 	os.popupMenu([{
-		text: i18n.ts.delete,
+		text: localeRef.value.env.delete,
 		action: () => {
 			emit('del');
 		},

@@ -12,10 +12,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<div v-if="clip.description">
 						<Mfm :text="clip.description" :isNote="false"/>
 					</div>
-					<div v-else>({{ i18n.ts.noDescription }})</div>
+					<div v-else>({{ $locale.env.noDescription }})</div>
 					<div>
-						<MkButton v-if="favorited" v-tooltip="i18n.ts.unfavorite" asLike rounded primary @click="unfavorite()"><i class="ti ti-heart"></i><span v-if="clip.favoritedCount > 0" style="margin-left: 6px;">{{ clip.favoritedCount }}</span></MkButton>
-						<MkButton v-else v-tooltip="i18n.ts.favorite" asLike rounded @click="favorite()"><i class="ti ti-heart"></i><span v-if="clip.favoritedCount > 0" style="margin-left: 6px;">{{ clip.favoritedCount }}</span></MkButton>
+						<MkButton v-if="favorited" v-tooltip="$locale.env.unfavorite" asLike rounded primary @click="unfavorite()"><i class="ti ti-heart"></i><span v-if="clip.favoritedCount > 0" style="margin-left: 6px;">{{ clip.favoritedCount }}</span></MkButton>
+						<MkButton v-else v-tooltip="$locale.env.favorite" asLike rounded @click="favorite()"><i class="ti ti-heart"></i><span v-if="clip.favoritedCount > 0" style="margin-left: 6px;">{{ clip.favoritedCount }}</span></MkButton>
 					</div>
 				</div>
 				<div :class="$style.user">
@@ -30,6 +30,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef, $l as localizerRef } from '@/i18n.js';
+
 import { computed, watch, provide, ref, markRaw } from 'vue';
 import * as Misskey from 'misskey-js';
 import { url } from '@@/js/config.js';
@@ -37,7 +39,6 @@ import type { MenuItem } from '@/types/menu.js';
 import type { PageHeaderItem } from '@/types/page-header.js';
 import MkNotesTimeline from '@/components/MkNotesTimeline.vue';
 import { $i } from '@/i.js';
-import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { definePage } from '@/page.js';
@@ -96,7 +97,7 @@ function favorite() {
 async function unfavorite() {
 	const confirm = await os.confirm({
 		type: 'warning',
-		text: i18n.ts.unfavoriteConfirm,
+		text: localeRef.value.env.unfavoriteConfirm,
 	});
 	if (confirm.canceled) return;
 	os.apiWithDialog('clips/unfavorite', {
@@ -108,14 +109,14 @@ async function unfavorite() {
 
 const headerActions = computed<PageHeaderItem[] | null>(() => clip.value && isOwned.value ? [{
 	icon: 'ti ti-pencil',
-	text: i18n.ts.edit,
+	text: localeRef.value.env.edit,
 	handler: async (): Promise<void> => {
 		if (clip.value == null) return;
 
 		const { canceled, result } = await os.form(clip.value.name, {
 			name: {
 				type: 'string',
-				label: i18n.ts.name,
+				label: localeRef.value.env.name,
 				default: clip.value.name,
 			},
 			description: {
@@ -123,12 +124,12 @@ const headerActions = computed<PageHeaderItem[] | null>(() => clip.value && isOw
 				required: false,
 				multiline: true,
 				treatAsMfm: true,
-				label: i18n.ts.description,
+				label: localeRef.value.env.description,
 				default: clip.value.description,
 			},
 			isPublic: {
 				type: 'boolean',
-				label: i18n.ts.public,
+				label: localeRef.value.env.public,
 				default: clip.value.isPublic,
 			},
 		});
@@ -144,19 +145,19 @@ const headerActions = computed<PageHeaderItem[] | null>(() => clip.value && isOw
 	},
 }, ...(clip.value.isPublic ? [{
 	icon: 'ti ti-share',
-	text: i18n.ts.share,
+	text: localeRef.value.env.share,
 	handler: (ev): void => {
 		const menuItems: MenuItem[] = [];
 
 		menuItems.push({
 			icon: 'ti ti-link',
-			text: i18n.ts.copyUrl,
+			text: localeRef.value.env.copyUrl,
 			action: () => {
 				copyToClipboard(`${url}/clips/${clip.value!.id}`);
 			},
 		}, {
 			icon: 'ti ti-code',
-			text: i18n.ts.embed,
+			text: localeRef.value.env.embed,
 			action: () => {
 				genEmbedCode('clips', clip.value!.id);
 			},
@@ -165,7 +166,7 @@ const headerActions = computed<PageHeaderItem[] | null>(() => clip.value && isOw
 		if (isSupportShare()) {
 			menuItems.push({
 				icon: 'ti ti-share',
-				text: i18n.ts.share,
+				text: localeRef.value.env.share,
 				action: async () => {
 					navigator.share({
 						title: clip.value!.name,
@@ -180,14 +181,14 @@ const headerActions = computed<PageHeaderItem[] | null>(() => clip.value && isOw
 	},
 }] satisfies PageHeaderItem[] : []), {
 	icon: 'ti ti-trash',
-	text: i18n.ts.delete,
+	text: localeRef.value.env.delete,
 	danger: true,
 	handler: async (): Promise<void> => {
 		if (clip.value == null) return;
 
 		const { canceled } = await os.confirm({
 			type: 'warning',
-			text: i18n.tsx.deleteAreYouSure({ x: clip.value.name }),
+			text: localizerRef.value.env.deleteAreYouSure({ x: clip.value.name }),
 		});
 		if (canceled) return;
 
@@ -200,7 +201,7 @@ const headerActions = computed<PageHeaderItem[] | null>(() => clip.value && isOw
 }] satisfies PageHeaderItem[] : null);
 
 definePage(() => ({
-	title: clip.value ? clip.value.name : i18n.ts.clip,
+	title: clip.value ? clip.value.name : localeRef.value.env.clip,
 	icon: 'ti ti-paperclip',
 }));
 </script>

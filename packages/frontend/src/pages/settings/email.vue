@@ -4,19 +4,19 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<SearchMarker path="/settings/email" :label="i18n.ts.email" :keywords="['email']" icon="ti ti-mail">
+<SearchMarker path="/settings/email" :label="$locale.env.email" :keywords="['email']" icon="ti ti-mail">
 	<div class="_gaps_m">
-		<MkInfo v-if="!instance.enableEmail">{{ i18n.ts.emailNotSupported }}</MkInfo>
+		<MkInfo v-if="!instance.enableEmail">{{ $locale.env.emailNotSupported }}</MkInfo>
 
 		<MkDisableSection :disabled="!instance.enableEmail">
 			<div class="_gaps_m">
 				<SearchMarker :keywords="['email', 'address']">
 					<FormSection first>
-						<template #label><SearchLabel>{{ i18n.ts.emailAddress }}</SearchLabel></template>
+						<template #label><SearchLabel>{{ $locale.env.emailAddress }}</SearchLabel></template>
 						<MkInput v-model="emailAddress" type="email" manualSave>
 							<template #prefix><i class="ti ti-mail"></i></template>
-							<template v-if="$i.email && !$i.emailVerified" #caption>{{ i18n.ts.verificationEmailSent }}</template>
-							<template v-else-if="emailAddress === $i.email && $i.emailVerified" #caption><i class="ti ti-check" style="color: var(--MI_THEME-success);"></i> {{ i18n.ts.emailVerified }}</template>
+							<template v-if="$i.email && !$i.emailVerified" #caption>{{ $locale.env.verificationEmailSent }}</template>
+							<template v-else-if="emailAddress === $i.email && $i.emailVerified" #caption><i class="ti ti-check" style="color: var(--MI_THEME-success);"></i> {{ $locale.env.emailVerified }}</template>
 						</MkInput>
 					</FormSection>
 				</SearchMarker>
@@ -24,30 +24,30 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<FormSection>
 					<SearchMarker :keywords="['announcement', 'email']">
 						<MkSwitch :modelValue="$i.receiveAnnouncementEmail" @update:modelValue="onChangeReceiveAnnouncementEmail">
-							<template #label><SearchLabel>{{ i18n.ts.receiveAnnouncementFromInstance }}</SearchLabel></template>
+							<template #label><SearchLabel>{{ $locale.env.receiveAnnouncementFromInstance }}</SearchLabel></template>
 						</MkSwitch>
 					</SearchMarker>
 				</FormSection>
 
 				<SearchMarker :keywords="['notification', 'email']">
 					<FormSection>
-						<template #label><SearchLabel>{{ i18n.ts.emailNotification }}</SearchLabel></template>
+						<template #label><SearchLabel>{{ $locale.env.emailNotification }}</SearchLabel></template>
 
 						<div class="_gaps_s">
 							<MkSwitch v-model="emailNotification_mention">
-								{{ i18n.ts._notification._types.mention }}
+								{{ $locale.env._notification._types.mention }}
 							</MkSwitch>
 							<MkSwitch v-model="emailNotification_reply">
-								{{ i18n.ts._notification._types.reply }}
+								{{ $locale.env._notification._types.reply }}
 							</MkSwitch>
 							<MkSwitch v-model="emailNotification_quote">
-								{{ i18n.ts._notification._types.quote }}
+								{{ $locale.env._notification._types.quote }}
 							</MkSwitch>
 							<MkSwitch v-model="emailNotification_follow">
-								{{ i18n.ts._notification._types.follow }}
+								{{ $locale.env._notification._types.follow }}
 							</MkSwitch>
 							<MkSwitch v-model="emailNotification_receiveFollowRequest">
-								{{ i18n.ts._notification._types.receiveFollowRequest }}
+								{{ $locale.env._notification._types.receiveFollowRequest }}
 							</MkSwitch>
 						</div>
 					</FormSection>
@@ -59,6 +59,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef } from '@/i18n.js';
+
 import { onMounted, ref, watch, computed } from 'vue';
 import FormSection from '@/components/form/section.vue';
 import MkInfo from '@/components/MkInfo.vue';
@@ -68,7 +70,6 @@ import MkDisableSection from '@/components/MkDisableSection.vue';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { ensureSignin } from '@/i.js';
-import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
 import { instance } from '@/instance.js';
 
@@ -126,7 +127,7 @@ const headerActions = computed(() => []);
 const headerTabs = computed(() => []);
 
 definePage(() => ({
-	title: i18n.ts.email,
+	title: localeRef.value.env.email,
 	icon: 'ti ti-mail',
 }));
 </script>

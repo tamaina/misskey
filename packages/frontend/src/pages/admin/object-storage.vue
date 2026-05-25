@@ -6,46 +6,46 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <PageWithHeader :tabs="headerTabs">
 	<div class="_spacer" style="--MI_SPACER-w: 700px; --MI_SPACER-min: 16px; --MI_SPACER-max: 32px;">
-		<SearchMarker path="/admin/object-storage" :label="i18n.ts.objectStorage" :keywords="['objectStorage']" icon="ti ti-cloud">
+		<SearchMarker path="/admin/object-storage" :label="$locale.env.objectStorage" :keywords="['objectStorage']" icon="ti ti-cloud">
 			<div class="_gaps_m">
 				<SearchMarker>
-					<MkSwitch v-model="useObjectStorage"><SearchLabel>{{ i18n.ts.useObjectStorage }}</SearchLabel></MkSwitch>
+					<MkSwitch v-model="useObjectStorage"><SearchLabel>{{ $locale.env.useObjectStorage }}</SearchLabel></MkSwitch>
 				</SearchMarker>
 
 				<template v-if="useObjectStorage">
 					<SearchMarker>
 						<MkInput v-model="objectStorageBaseUrl" :placeholder="'https://example.com'" type="url">
-							<template #label><SearchLabel>{{ i18n.ts.objectStorageBaseUrl }}</SearchLabel></template>
-							<template #caption><SearchText>{{ i18n.ts.objectStorageBaseUrlDesc }}</SearchText></template>
+							<template #label><SearchLabel>{{ $locale.env.objectStorageBaseUrl }}</SearchLabel></template>
+							<template #caption><SearchText>{{ $locale.env.objectStorageBaseUrlDesc }}</SearchText></template>
 						</MkInput>
 					</SearchMarker>
 
 					<SearchMarker>
 						<MkInput v-model="objectStorageBucket">
-							<template #label><SearchLabel>{{ i18n.ts.objectStorageBucket }}</SearchLabel></template>
-							<template #caption><SearchText>{{ i18n.ts.objectStorageBucketDesc }}</SearchText></template>
+							<template #label><SearchLabel>{{ $locale.env.objectStorageBucket }}</SearchLabel></template>
+							<template #caption><SearchText>{{ $locale.env.objectStorageBucketDesc }}</SearchText></template>
 						</MkInput>
 					</SearchMarker>
 
 					<SearchMarker>
 						<MkInput v-model="objectStoragePrefix">
-							<template #label><SearchLabel>{{ i18n.ts.objectStoragePrefix }}</SearchLabel></template>
-							<template #caption><SearchText>{{ i18n.ts.objectStoragePrefixDesc }}</SearchText></template>
+							<template #label><SearchLabel>{{ $locale.env.objectStoragePrefix }}</SearchLabel></template>
+							<template #caption><SearchText>{{ $locale.env.objectStoragePrefixDesc }}</SearchText></template>
 						</MkInput>
 					</SearchMarker>
 
 					<SearchMarker>
 						<MkInput v-model="objectStorageEndpoint" :placeholder="'example.com'">
-							<template #label><SearchLabel>{{ i18n.ts.objectStorageEndpoint }}</SearchLabel></template>
+							<template #label><SearchLabel>{{ $locale.env.objectStorageEndpoint }}</SearchLabel></template>
 							<template #prefix>https://</template>
-							<template #caption><SearchText>{{ i18n.ts.objectStorageEndpointDesc }}</SearchText></template>
+							<template #caption><SearchText>{{ $locale.env.objectStorageEndpointDesc }}</SearchText></template>
 						</MkInput>
 					</SearchMarker>
 
 					<SearchMarker>
 						<MkInput v-model="objectStorageRegion">
-							<template #label><SearchLabel>{{ i18n.ts.objectStorageRegion }}</SearchLabel></template>
-							<template #caption><SearchText>{{ i18n.ts.objectStorageRegionDesc }}</SearchText></template>
+							<template #label><SearchLabel>{{ $locale.env.objectStorageRegion }}</SearchLabel></template>
+							<template #caption><SearchText>{{ $locale.env.objectStorageRegionDesc }}</SearchText></template>
 						</MkInput>
 					</SearchMarker>
 
@@ -67,28 +67,28 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 					<SearchMarker>
 						<MkSwitch v-model="objectStorageUseSSL">
-							<template #label><SearchLabel>{{ i18n.ts.objectStorageUseSSL }}</SearchLabel></template>
-							<template #caption><SearchText>{{ i18n.ts.objectStorageUseSSLDesc }}</SearchText></template>
+							<template #label><SearchLabel>{{ $locale.env.objectStorageUseSSL }}</SearchLabel></template>
+							<template #caption><SearchText>{{ $locale.env.objectStorageUseSSLDesc }}</SearchText></template>
 						</MkSwitch>
 					</SearchMarker>
 
 					<SearchMarker>
 						<MkSwitch v-model="objectStorageUseProxy">
-							<template #label><SearchLabel>{{ i18n.ts.objectStorageUseProxy }}</SearchLabel></template>
-							<template #caption><SearchText>{{ i18n.ts.objectStorageUseProxyDesc }}</SearchText></template>
+							<template #label><SearchLabel>{{ $locale.env.objectStorageUseProxy }}</SearchLabel></template>
+							<template #caption><SearchText>{{ $locale.env.objectStorageUseProxyDesc }}</SearchText></template>
 						</MkSwitch>
 					</SearchMarker>
 
 					<SearchMarker>
 						<MkSwitch v-model="objectStorageSetPublicRead">
-							<template #label><SearchLabel>{{ i18n.ts.objectStorageSetPublicRead }}</SearchLabel></template>
+							<template #label><SearchLabel>{{ $locale.env.objectStorageSetPublicRead }}</SearchLabel></template>
 						</MkSwitch>
 					</SearchMarker>
 
 					<SearchMarker>
 						<MkSwitch v-model="objectStorageS3ForcePathStyle">
 							<template #label><SearchLabel>s3ForcePathStyle</SearchLabel></template>
-							<template #caption><SearchText>{{ i18n.ts.s3ForcePathStyleDesc }}</SearchText></template>
+							<template #caption><SearchText>{{ $locale.env.s3ForcePathStyleDesc }}</SearchText></template>
 						</MkSwitch>
 					</SearchMarker>
 				</template>
@@ -98,7 +98,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<template #footer>
 		<div :class="$style.footer">
 			<div class="_spacer" style="--MI_SPACER-w: 700px; --MI_SPACER-min: 16px; --MI_SPACER-max: 16px;">
-				<MkButton primary rounded @click="save"><i class="ti ti-check"></i> {{ i18n.ts.save }}</MkButton>
+				<MkButton primary rounded @click="save"><i class="ti ti-check"></i> {{ $locale.env.save }}</MkButton>
 			</div>
 		</div>
 	</template>
@@ -106,6 +106,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef } from '@/i18n.js';
+
 import { ref, computed } from 'vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkInput from '@/components/MkInput.vue';
@@ -113,7 +115,6 @@ import FormSplit from '@/components/form/split.vue';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { fetchInstance } from '@/instance.js';
-import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
 import MkButton from '@/components/MkButton.vue';
 
@@ -156,7 +157,7 @@ function save() {
 const headerTabs = computed(() => []);
 
 definePage(() => ({
-	title: i18n.ts.objectStorage,
+	title: localeRef.value.env.objectStorage,
 	icon: 'ti ti-cloud',
 }));
 </script>

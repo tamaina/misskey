@@ -14,12 +14,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef } from '@/i18n.js';
+
 import * as Misskey from 'misskey-js';
 import type { MenuItem } from '@/types/menu.js';
 import * as os from '@/os.js';
 import { misskeyApiGet } from '@/utility/misskey-api.js';
 import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
-import { i18n } from '@/i18n.js';
 import MkCustomEmojiDetailedDialog from '@/components/MkCustomEmojiDetailedDialog.vue';
 import { $i } from '@/i.js';
 
@@ -33,13 +34,13 @@ function menu(ev: PointerEvent) {
 		type: 'label',
 		text: ':' + props.emoji.name + ':',
 	}, {
-		text: i18n.ts.copy,
+		text: localeRef.value.env.copy,
 		icon: 'ti ti-copy',
 		action: () => {
 			copyToClipboard(`:${props.emoji.name}:`);
 		},
 	}, {
-		text: i18n.ts.info,
+		text: localeRef.value.env.info,
 		icon: 'ti ti-info-circle',
 		action: async () => {
 			const { dispose } = os.popup(MkCustomEmojiDetailedDialog, {
@@ -54,7 +55,7 @@ function menu(ev: PointerEvent) {
 
 	if ($i?.isModerator ?? $i?.isAdmin) {
 		menuItems.push({
-			text: i18n.ts.edit,
+			text: localeRef.value.env.edit,
 			icon: 'ti ti-pencil',
 			action: async () => {
 				const detailedEmoji = await misskeyApiGet('emoji', {

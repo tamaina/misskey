@@ -28,6 +28,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef } from '@/i18n.js';
+
 import { computed, onMounted, onUnmounted, provide, ref, useTemplateRef, nextTick } from 'vue';
 import { url } from '@@/js/config.js';
 import type { PageMetadata } from '@/page.js';
@@ -35,7 +37,6 @@ import RouterView from '@/components/global/RouterView.vue';
 import MkWindow from '@/components/MkWindow.vue';
 import { popout as _popout } from '@/utility/popout.js';
 import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
-import { i18n } from '@/i18n.js';
 import { provideMetadataReceiver, provideReactiveMetadata } from '@/page.js';
 import { openingWindowsCount } from '@/os.js';
 import { claimAchievement } from '@/utility/achievements.js';
@@ -62,18 +63,18 @@ const _history_ = ref<{ path: string; }[]>([{
 const buttonsLeft = computed(() => {
 	return _history_.value.length > 1 ? [{
 		icon: 'ti ti-arrow-left',
-		title: i18n.ts.goBack,
+		title: localeRef.value.env.goBack,
 		onClick: back,
 	}] : [];
 });
 const buttonsRight = computed(() => {
 	const buttons = [{
 		icon: 'ti ti-reload',
-		title: i18n.ts.reload,
+		title: localeRef.value.env.reload,
 		onClick: reload,
 	}, {
 		icon: 'ti ti-player-eject',
-		title: i18n.ts.showInPage,
+		title: localeRef.value.env.showInPage,
 		onClick: expand,
 	}];
 
@@ -139,22 +140,22 @@ provide('shouldHeaderThin', true);
 
 const contextmenu = computed(() => ([{
 	icon: 'ti ti-player-eject',
-	text: i18n.ts.showInPage,
+	text: localeRef.value.env.showInPage,
 	action: expand,
 }, {
 	icon: 'ti ti-window-maximize',
-	text: i18n.ts.popout,
+	text: localeRef.value.env.popout,
 	action: popout,
 }, {
 	icon: 'ti ti-external-link',
-	text: i18n.ts.openInNewTab,
+	text: localeRef.value.env.openInNewTab,
 	action: () => {
 		window.open(url + windowRouter.getCurrentFullPath(), '_blank', 'noopener');
 		windowEl.value?.close();
 	},
 }, {
 	icon: 'ti ti-link',
-	text: i18n.ts.copyLink,
+	text: localeRef.value.env.copyLink,
 	action: () => {
 		copyToClipboard(url + windowRouter.getCurrentFullPath());
 	},

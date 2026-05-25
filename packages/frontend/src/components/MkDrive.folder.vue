@@ -23,7 +23,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</svg>
 	<div :class="$style.name">{{ folder.name }}</div>
 	<div v-if="prefer.s.uploadFolder == folder.id" :class="$style.upload">
-		{{ i18n.ts.uploadFolder }}
+		{{ $locale.env.uploadFolder }}
 	</div>
 	<button v-if="selectMode" class="_button" :class="$style.checkboxWrapper" @click.prevent.stop="checkboxClicked">
 		<div :class="[$style.checkbox, { [$style.checked]: isSelected, 'ti ti-check': isSelected }]"></div>
@@ -32,12 +32,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef } from '@/i18n.js';
+
 import { computed, defineAsyncComponent, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import type { MenuItem } from '@/types/menu.js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
-import { i18n } from '@/i18n.js';
 import { claimAchievement } from '@/utility/achievements.js';
 import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
 import { prefer } from '@/preferences.js';
@@ -178,14 +179,14 @@ function onDrop(ev: DragEvent) {
 						claimAchievement('driveFolderCircularReference');
 						os.alert({
 							type: 'error',
-							title: i18n.ts.unableToProcess,
-							text: i18n.ts.circularReferenceFolder,
+							title: localeRef.value.env.unableToProcess,
+							text: localeRef.value.env.circularReferenceFolder,
 						});
 						break;
 					default:
 						os.alert({
 							type: 'error',
-							text: i18n.ts.somethingHappened,
+							text: localeRef.value.env.somethingHappened,
 						});
 				}
 			});
@@ -213,8 +214,8 @@ function onDragend() {
 
 function rename() {
 	os.inputText({
-		title: i18n.ts.renameFolder,
-		placeholder: i18n.ts.inputNewFolderName,
+		title: localeRef.value.env.renameFolder,
+		placeholder: localeRef.value.env.inputNewFolderName,
 		default: props.folder.name,
 	}).then(({ canceled, result: name }) => {
 		if (canceled) return;
@@ -260,14 +261,14 @@ function deleteFolder() {
 			case 'b0fc8a17-963c-405d-bfbc-859a487295e1':
 				os.alert({
 					type: 'error',
-					title: i18n.ts.unableToDelete,
-					text: i18n.ts.hasChildFilesOrFolders,
+					title: localeRef.value.env.unableToDelete,
+					text: localeRef.value.env.hasChildFilesOrFolders,
 				});
 				break;
 			default:
 				os.alert({
 					type: 'error',
-					text: i18n.ts.unableToDelete,
+					text: localeRef.value.env.unableToDelete,
 				});
 		}
 	});
@@ -280,7 +281,7 @@ function setAsUploadFolder() {
 function onContextmenu(ev: PointerEvent) {
 	let menu: MenuItem[];
 	menu = [{
-		text: i18n.ts.openInWindow,
+		text: localeRef.value.env.openInWindow,
 		icon: 'ti ti-app-window',
 		action: async () => {
 			const { dispose } = await os.popupAsyncWithDialog(import('@/components/MkDriveWindow.vue').then(x => x.default), {
@@ -290,15 +291,15 @@ function onContextmenu(ev: PointerEvent) {
 			});
 		},
 	}, { type: 'divider' }, {
-		text: i18n.ts.rename,
+		text: localeRef.value.env.rename,
 		icon: 'ti ti-forms',
 		action: rename,
 	}, {
-		text: i18n.ts.move,
+		text: localeRef.value.env.move,
 		icon: 'ti ti ti-folder-symlink',
 		action: move,
 	}, { type: 'divider' }, {
-		text: i18n.ts.delete,
+		text: localeRef.value.env.delete,
 		icon: 'ti ti-trash',
 		danger: true,
 		action: deleteFolder,
@@ -306,7 +307,7 @@ function onContextmenu(ev: PointerEvent) {
 	if (prefer.s.devMode) {
 		menu = menu.concat([{ type: 'divider' }, {
 			icon: 'ti ti-hash',
-			text: i18n.ts.copyFolderId,
+			text: localeRef.value.env.copyFolderId,
 			action: () => {
 				copyToClipboard(props.folder.id);
 			},

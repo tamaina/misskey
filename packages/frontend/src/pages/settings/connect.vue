@@ -4,19 +4,19 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<SearchMarker path="/settings/connect" :label="i18n.ts._settings.serviceConnection" :keywords="['app', 'service', 'connect', 'webhook', 'api', 'token']" icon="ti ti-link">
+<SearchMarker path="/settings/connect" :label="$locale.env._settings.serviceConnection" :keywords="['app', 'service', 'connect', 'webhook', 'api', 'token']" icon="ti ti-link">
 	<div class="_gaps_m">
 		<MkFeatureBanner icon="/client-assets/link_3d.png" color="#ff0088">
-			<SearchText>{{ i18n.ts._settings.serviceConnectionBanner }}</SearchText>
+			<SearchText>{{ $locale.env._settings.serviceConnectionBanner }}</SearchText>
 		</MkFeatureBanner>
 
 		<SearchMarker :keywords="['api', 'app', 'token', 'accessToken']">
 			<FormSection>
-				<template #label><i class="ti ti-api"></i> <SearchLabel>{{ i18n.ts._settings.api }}</SearchLabel></template>
+				<template #label><i class="ti ti-api"></i> <SearchLabel>{{ $locale.env._settings.api }}</SearchLabel></template>
 
 				<div class="_gaps_m">
-					<MkButton primary @click="generateToken">{{ i18n.ts.generateAccessToken }}</MkButton>
-					<FormLink to="/settings/apps">{{ i18n.ts.manageAccessTokens }}</FormLink>
+					<MkButton primary @click="generateToken">{{ $locale.env.generateAccessToken }}</MkButton>
+					<FormLink to="/settings/apps">{{ $locale.env.manageAccessTokens }}</FormLink>
 					<FormLink to="/api-console" :behavior="isDesktop ? 'window' : null">API console</FormLink>
 				</div>
 			</FormSection>
@@ -24,15 +24,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 		<SearchMarker :keywords="['webhook']">
 			<FormSection>
-				<template #label><i class="ti ti-webhook"></i> <SearchLabel>{{ i18n.ts._settings.webhook }}</SearchLabel></template>
+				<template #label><i class="ti ti-webhook"></i> <SearchLabel>{{ $locale.env._settings.webhook }}</SearchLabel></template>
 
 				<div class="_gaps_m">
 					<FormLink :to="`/settings/webhook/new`">
-						{{ i18n.ts._webhookSettings.createWebhook }}
+						{{ $locale.env._webhookSettings.createWebhook }}
 					</FormLink>
 
 					<MkFolder :defaultOpen="true">
-						<template #label>{{ i18n.ts.manage }}</template>
+						<template #label>{{ $locale.env.manage }}</template>
 
 						<MkPagination :paginator="paginator" withControl>
 							<template #default="{items}">
@@ -61,12 +61,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef } from '@/i18n.js';
+
 import { computed, ref, defineAsyncComponent, markRaw } from 'vue';
 import MkPagination from '@/components/MkPagination.vue';
 import FormSection from '@/components/form/section.vue';
 import FormLink from '@/components/form/link.vue';
 import { definePage } from '@/page.js';
-import { i18n } from '@/i18n.js';
 import MkFeatureBanner from '@/components/MkFeatureBanner.vue';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
@@ -93,7 +94,7 @@ async function generateToken() {
 
 			os.alert({
 				type: 'success',
-				title: i18n.ts.token,
+				title: localeRef.value.env.token,
 				text: token,
 			});
 		},
@@ -106,7 +107,7 @@ const headerActions = computed(() => []);
 const headerTabs = computed(() => []);
 
 definePage(() => ({
-	title: i18n.ts._settings.serviceConnection,
+	title: localeRef.value.env._settings.serviceConnection,
 	icon: 'ti ti-link',
 }));
 </script>

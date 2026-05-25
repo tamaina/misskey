@@ -22,7 +22,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</div>
 	<div :class="$style.action">
 		<MkButton :small="true" inline @click="playerEnabled = false">
-			<i class="ti ti-x"></i> {{ i18n.ts.disablePlayer }}
+			<i class="ti ti-x"></i> {{ $locale.env.disablePlayer }}
 		</MkButton>
 	</div>
 </template>
@@ -39,7 +39,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</div>
 	<div :class="$style.action">
 		<MkButton :small="true" inline @click="tweetExpanded = false">
-			<i class="ti ti-x"></i> {{ i18n.ts.close }}
+			<i class="ti ti-x"></i> {{ $locale.env.close }}
 		</MkButton>
 	</div>
 </template>
@@ -53,7 +53,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<h1 v-else-if="fetching" :class="$style.title"><MkEllipsis/></h1>
 				<h1 v-else :class="$style.title" :title="title ?? undefined">{{ title }}</h1>
 			</header>
-			<p v-if="unknownUrl" :class="$style.text">{{ i18n.ts.failedToPreviewUrl }}</p>
+			<p v-if="unknownUrl" :class="$style.text">{{ $locale.env.failedToPreviewUrl }}</p>
 			<p v-else-if="fetching" :class="$style.text"><MkEllipsis/></p>
 			<p v-else-if="description" :class="$style.text" :title="description">{{ description.length > 85 ? description.slice(0, 85) + '…' : description }}</p>
 			<footer :class="$style.footer">
@@ -67,15 +67,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<template v-if="showActions">
 		<div v-if="tweetId" :class="$style.action">
 			<MkButton :small="true" inline @click="tweetExpanded = true">
-				<i class="ti ti-brand-x"></i> {{ i18n.ts.expandTweet }}
+				<i class="ti ti-brand-x"></i> {{ $locale.env.expandTweet }}
 			</MkButton>
 		</div>
 		<div v-if="!playerEnabled && player.url" :class="$style.action">
 			<MkButton :small="true" inline @click="playerEnabled = true">
-				<i class="ti ti-player-play"></i> {{ i18n.ts.enablePlayer }}
+				<i class="ti ti-player-play"></i> {{ $locale.env.enablePlayer }}
 			</MkButton>
 			<MkButton v-if="!isMobile" :small="true" inline @click="openPlayer()">
-				<i class="ti ti-picture-in-picture"></i> {{ i18n.ts.openInWindow }}
+				<i class="ti ti-picture-in-picture"></i> {{ $locale.env.openInWindow }}
 			</MkButton>
 		</div>
 	</template>
@@ -83,11 +83,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+
 import { defineAsyncComponent, onDeactivated, onUnmounted, ref } from 'vue';
 import { url as local } from '@@/js/config.js';
 import { versatileLang } from '@@/js/intl-const.js';
 import type { SummalyResult } from '@misskey-dev/summaly';
-import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
 import { deviceKind } from '@/utility/device-kind.js';
 import MkButton from '@/components/MkButton.vue';

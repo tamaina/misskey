@@ -34,7 +34,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<svg viewBox="0 0 16 16" version="1.1" :class="$style.grabber">
 			<path fill="currentColor" d="M10 13a1 1 0 1 1 0-2 1 1 0 0 1 0 2Zm0-4a1 1 0 1 1 0-2 1 1 0 0 1 0 2Zm-4 4a1 1 0 1 1 0-2 1 1 0 0 1 0 2Zm5-9a1 1 0 1 1-2 0 1 1 0 0 1 2 0ZM7 8a1 1 0 1 1-2 0 1 1 0 0 1 2 0ZM6 5a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"></path>
 		</svg>
-		<button v-tooltip="i18n.ts.settings" :class="$style.menu" class="_button" @click.stop="showSettingsMenu"><i class="ti ti-dots"></i></button>
+		<button v-tooltip="$locale.env.settings" :class="$style.menu" class="_button" @click.stop="showSettingsMenu"><i class="ti ti-dots"></i></button>
 	</header>
 	<div v-if="active" ref="body" :class="$style.body">
 		<slot></slot>
@@ -43,12 +43,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef } from '@/i18n.js';
+
 import { onBeforeUnmount, onMounted, provide, watch, useTemplateRef, ref, computed } from 'vue';
 import type { Column } from '@/deck.js';
 import type { MenuItem } from '@/types/menu.js';
 import { deckGlobalEvents, updateColumn, swapLeftColumn, swapRightColumn, swapUpColumn, swapDownColumn, stackLeftColumn, popRightColumn, removeColumn, swapColumn } from '@/deck.js';
 import * as os from '@/os.js';
-import { i18n } from '@/i18n.js';
 import { prefer } from '@/preferences.js';
 import { checkDragDataType, getDragData, setDragData } from '@/drag-and-drop.js';
 
@@ -121,7 +122,7 @@ function getMenu() {
 	if (props.refresher) {
 		menuItems.push({
 			icon: 'ti ti-refresh',
-			text: i18n.ts.reload,
+			text: localeRef.value.env.reload,
 			action: () => {
 				if (props.refresher) {
 					props.refresher();
@@ -138,24 +139,24 @@ function getMenu() {
 
 	menuItems.push({
 		icon: 'ti ti-settings',
-		text: i18n.ts._deck.configureColumn,
+		text: localeRef.value.env._deck.configureColumn,
 		action: async () => {
-			const name = props.column.name ?? i18n.ts._deck._columns[props.column.type];
+			const name = props.column.name ?? localeRef.value.env._deck._columns[props.column.type];
 			const { canceled, result } = await os.form(name, {
 				name: {
 					type: 'string',
-					label: i18n.ts.name,
+					label: localeRef.value.env.name,
 					default: props.column.name,
 				},
 				width: {
 					type: 'number',
-					label: i18n.ts.width,
-					description: i18n.ts._deck.usedAsMinWidthWhenFlexible,
+					label: localeRef.value.env.width,
+					description: localeRef.value.env._deck.usedAsMinWidthWhenFlexible,
 					default: props.column.width,
 				},
 				flexible: {
 					type: 'boolean',
-					label: i18n.ts._deck.flexible,
+					label: localeRef.value.env._deck.flexible,
 					default: props.column.flexible ?? null,
 				},
 			});
@@ -175,7 +176,7 @@ function getMenu() {
 	menuItems.push({
 		type: 'switch',
 		icon: 'ti ti-arrows-horizontal',
-		text: i18n.ts._deck.flexible,
+		text: localeRef.value.env._deck.flexible,
 		ref: flexibleRef,
 	});
 
@@ -183,13 +184,13 @@ function getMenu() {
 
 	moveToMenuItems.push({
 		icon: 'ti ti-arrow-left',
-		text: i18n.ts._deck.swapLeft,
+		text: localeRef.value.env._deck.swapLeft,
 		action: () => {
 			swapLeftColumn(props.column.id);
 		},
 	}, {
 		icon: 'ti ti-arrow-right',
-		text: i18n.ts._deck.swapRight,
+		text: localeRef.value.env._deck.swapRight,
 		action: () => {
 			swapRightColumn(props.column.id);
 		},
@@ -198,13 +199,13 @@ function getMenu() {
 	if (props.isStacked) {
 		moveToMenuItems.push({
 			icon: 'ti ti-arrow-up',
-			text: i18n.ts._deck.swapUp,
+			text: localeRef.value.env._deck.swapUp,
 			action: () => {
 				swapUpColumn(props.column.id);
 			},
 		}, {
 			icon: 'ti ti-arrow-down',
-			text: i18n.ts._deck.swapDown,
+			text: localeRef.value.env._deck.swapDown,
 			action: () => {
 				swapDownColumn(props.column.id);
 			},
@@ -213,12 +214,12 @@ function getMenu() {
 
 	menuItems.push({
 		type: 'parent',
-		text: i18n.ts.move + '...',
+		text: localeRef.value.env.move + '...',
 		icon: 'ti ti-arrows-move',
 		children: moveToMenuItems,
 	}, {
 		icon: 'ti ti-stack-2',
-		text: i18n.ts._deck.stackLeft,
+		text: localeRef.value.env._deck.stackLeft,
 		action: () => {
 			stackLeftColumn(props.column.id);
 		},
@@ -227,7 +228,7 @@ function getMenu() {
 	if (props.isStacked) {
 		menuItems.push({
 			icon: 'ti ti-window-maximize',
-			text: i18n.ts._deck.popRight,
+			text: localeRef.value.env._deck.popRight,
 			action: () => {
 				popRightColumn(props.column.id);
 			},
@@ -236,7 +237,7 @@ function getMenu() {
 
 	menuItems.push({ type: 'divider' }, {
 		icon: 'ti ti-trash',
-		text: i18n.ts.remove,
+		text: localeRef.value.env.remove,
 		danger: true,
 		action: () => {
 			removeColumn(props.column.id);

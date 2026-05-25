@@ -6,60 +6,60 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <PageWithHeader :actions="headerActions" :tabs="headerTabs">
 	<div class="_spacer" style="--MI_SPACER-w: 700px; --MI_SPACER-min: 16px; --MI_SPACER-max: 32px;">
-		<SearchMarker path="/admin/security" :label="i18n.ts.security" :keywords="['security']" icon="ti ti-lock" :inlining="['botProtection']">
+		<SearchMarker path="/admin/security" :label="$locale.env.security" :keywords="['security']" icon="ti ti-lock" :inlining="['botProtection']">
 			<div class="_gaps_m">
 				<XBotProtection/>
 
 				<SearchMarker v-slot="slotProps" :keywords="['sensitive', 'media', 'detection']">
 					<MkFolder :defaultOpen="slotProps.isParentOfTarget">
 						<template #icon><SearchIcon><i class="ti ti-eye-off"></i></SearchIcon></template>
-						<template #label><SearchLabel>{{ i18n.ts.sensitiveMediaDetection }}</SearchLabel></template>
-						<template v-if="sensitiveMediaDetectionForm.savedState.sensitiveMediaDetection === 'all'" #suffix>{{ i18n.ts.all }}</template>
-						<template v-else-if="sensitiveMediaDetectionForm.savedState.sensitiveMediaDetection === 'local'" #suffix>{{ i18n.ts.localOnly }}</template>
-						<template v-else-if="sensitiveMediaDetectionForm.savedState.sensitiveMediaDetection === 'remote'" #suffix>{{ i18n.ts.remoteOnly }}</template>
-						<template v-else #suffix>{{ i18n.ts.none }}</template>
+						<template #label><SearchLabel>{{ $locale.env.sensitiveMediaDetection }}</SearchLabel></template>
+						<template v-if="sensitiveMediaDetectionForm.savedState.sensitiveMediaDetection === 'all'" #suffix>{{ $locale.env.all }}</template>
+						<template v-else-if="sensitiveMediaDetectionForm.savedState.sensitiveMediaDetection === 'local'" #suffix>{{ $locale.env.localOnly }}</template>
+						<template v-else-if="sensitiveMediaDetectionForm.savedState.sensitiveMediaDetection === 'remote'" #suffix>{{ $locale.env.remoteOnly }}</template>
+						<template v-else #suffix>{{ $locale.env.none }}</template>
 						<template v-if="sensitiveMediaDetectionForm.modified.value" #footer>
 							<MkFormFooter :form="sensitiveMediaDetectionForm"/>
 						</template>
 
 						<div class="_gaps_m">
-							<div><SearchText>{{ i18n.ts._sensitiveMediaDetection.description }}</SearchText></div>
+							<div><SearchText>{{ $locale.env._sensitiveMediaDetection.description }}</SearchText></div>
 
 							<MkRadios
 								v-model="sensitiveMediaDetectionForm.state.sensitiveMediaDetection"
 								:options="[
-									{ value: 'none', label: i18n.ts.none },
-									{ value: 'all', label: i18n.ts.all },
-									{ value: 'local', label: i18n.ts.localOnly },
-									{ value: 'remote', label: i18n.ts.remoteOnly },
+									{ value: 'none', label: $locale.env.none },
+									{ value: 'all', label: $locale.env.all },
+									{ value: 'local', label: $locale.env.localOnly },
+									{ value: 'remote', label: $locale.env.remoteOnly },
 								]"
 							>
 							</MkRadios>
 
 							<SearchMarker :keywords="['sensitivity']">
 								<MkRange v-model="sensitiveMediaDetectionForm.state.sensitiveMediaDetectionSensitivity" :min="0" :max="4" :step="1" :textConverter="(v) => `${v + 1}`">
-									<template #label><SearchLabel>{{ i18n.ts._sensitiveMediaDetection.sensitivity }}</SearchLabel></template>
-									<template #caption><SearchText>{{ i18n.ts._sensitiveMediaDetection.sensitivityDescription }}</SearchText></template>
+									<template #label><SearchLabel>{{ $locale.env._sensitiveMediaDetection.sensitivity }}</SearchLabel></template>
+									<template #caption><SearchText>{{ $locale.env._sensitiveMediaDetection.sensitivityDescription }}</SearchText></template>
 								</MkRange>
 							</SearchMarker>
 
 							<SearchMarker :keywords="['video', 'analyze']">
 								<MkSwitch v-model="sensitiveMediaDetectionForm.state.enableSensitiveMediaDetectionForVideos">
-									<template #label><SearchLabel>{{ i18n.ts._sensitiveMediaDetection.analyzeVideos }}</SearchLabel><span class="_beta">{{ i18n.ts.beta }}</span></template>
-									<template #caption><SearchText>{{ i18n.ts._sensitiveMediaDetection.analyzeVideosDescription }}</SearchText></template>
+									<template #label><SearchLabel>{{ $locale.env._sensitiveMediaDetection.analyzeVideos }}</SearchLabel><span class="_beta">{{ $locale.env.beta }}</span></template>
+									<template #caption><SearchText>{{ $locale.env._sensitiveMediaDetection.analyzeVideosDescription }}</SearchText></template>
 								</MkSwitch>
 							</SearchMarker>
 
 							<SearchMarker :keywords="['flag', 'automatically']">
 								<MkSwitch v-model="sensitiveMediaDetectionForm.state.setSensitiveFlagAutomatically">
-									<template #label><SearchLabel>{{ i18n.ts._sensitiveMediaDetection.setSensitiveFlagAutomatically }}</SearchLabel> ({{ i18n.ts.notRecommended }})</template>
-									<template #caption><SearchText>{{ i18n.ts._sensitiveMediaDetection.setSensitiveFlagAutomaticallyDescription }}</SearchText></template>
+									<template #label><SearchLabel>{{ $locale.env._sensitiveMediaDetection.setSensitiveFlagAutomatically }}</SearchLabel> ({{ $locale.env.notRecommended }})</template>
+									<template #caption><SearchText>{{ $locale.env._sensitiveMediaDetection.setSensitiveFlagAutomaticallyDescription }}</SearchText></template>
 								</MkSwitch>
 							</SearchMarker>
 
 							<!-- 現状 false positive が多すぎて実用に耐えない
 					<MkSwitch v-model="disallowUploadWhenPredictedAsPorn">
-						<template #label>{{ i18n.ts._sensitiveMediaDetection.disallowUploadWhenPredictedAsPorn }}</template>
+						<template #label>{{ $locale.env._sensitiveMediaDetection.disallowUploadWhenPredictedAsPorn }}</template>
 					</MkSwitch>
 					-->
 						</div>
@@ -76,7 +76,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						</template>
 
 						<div class="_gaps_m">
-							<div><SearchText>{{ i18n.ts.activeEmailValidationDescription }}</SearchText></div>
+							<div><SearchText>{{ $locale.env.activeEmailValidationDescription }}</SearchText></div>
 
 							<SearchMarker>
 								<MkSwitch v-model="emailValidationForm.state.enableActiveEmailValidation">
@@ -162,6 +162,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef } from '@/i18n.js';
+
 import { ref, computed } from 'vue';
 import XBotProtection from './bot-protection.vue';
 import MkFolder from '@/components/MkFolder.vue';
@@ -173,7 +175,6 @@ import MkTextarea from '@/components/MkTextarea.vue';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { fetchInstance } from '@/instance.js';
-import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
 import { useForm } from '@/composables/use-form.js';
 import MkFormFooter from '@/components/MkFormFooter.vue';
@@ -247,7 +248,7 @@ const headerActions = computed(() => []);
 const headerTabs = computed(() => []);
 
 definePage(() => ({
-	title: i18n.ts.security,
+	title: localeRef.value.env.security,
 	icon: 'ti ti-lock',
 }));
 </script>

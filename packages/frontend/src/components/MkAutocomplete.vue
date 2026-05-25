@@ -13,7 +13,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</span>
 			<span>@{{ acct(user) }}</span>
 		</li>
-		<li tabindex="-1" :class="$style.item" @click="chooseUser()" @keydown="onKeydown">{{ i18n.ts.selectUser }}</li>
+		<li tabindex="-1" :class="$style.item" @click="chooseUser()" @keydown="onKeydown">{{ $locale.env.selectUser }}</li>
 	</ol>
 	<ol v-else-if="type === 'hashtag' && hashtags.length > 0" ref="suggests" :class="$style.list">
 		<li v-for="hashtag in hashtags" tabindex="-1" :class="$style.item" @click="complete(type, hashtag)" @keydown="onKeydown">
@@ -56,7 +56,6 @@ import { acct } from '@/filters/user.js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { store } from '@/store.js';
-import { i18n } from '@/i18n.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { customEmojis } from '@/custom-emojis.js';
 import { searchEmoji, searchEmojiExact } from '@/utility/search-emoji.js';
@@ -163,6 +162,7 @@ export default {
 </script>
 
 <script lang="ts" setup generic="T extends keyof CompleteInfo">
+
 type PropsType<T extends keyof CompleteInfo> = {
 	type: T;
 	q: CompleteInfo[T]['query'];

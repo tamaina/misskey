@@ -11,52 +11,52 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div class="_spacer" style="--MI_SPACER-min: 20px; --MI_SPACER-max: 28px;">
 		<div class="_gaps_m">
 			<div v-if="instance.disableRegistration || instance.federation !== 'all'" class="_gaps_s">
-				<MkInfo v-if="instance.disableRegistration" warn>{{ i18n.ts.invitationRequiredToRegister }}</MkInfo>
-				<MkInfo v-if="instance.federation === 'specified'" warn>{{ i18n.ts.federationSpecified }}</MkInfo>
-				<MkInfo v-else-if="instance.federation === 'none'" warn>{{ i18n.ts.federationDisabled }}</MkInfo>
+				<MkInfo v-if="instance.disableRegistration" warn>{{ $locale.env.invitationRequiredToRegister }}</MkInfo>
+				<MkInfo v-if="instance.federation === 'specified'" warn>{{ $locale.env.federationSpecified }}</MkInfo>
+				<MkInfo v-else-if="instance.federation === 'none'" warn>{{ $locale.env.federationDisabled }}</MkInfo>
 			</div>
 
 			<div style="text-align: center;">
-				<div>{{ i18n.ts.pleaseConfirmBelowBeforeSignup }}</div>
-				<div style="font-weight: bold; margin-top: 0.5em;">{{ i18n.ts.beSureToReadThisAsItIsImportant }}</div>
+				<div>{{ $locale.env.pleaseConfirmBelowBeforeSignup }}</div>
+				<div style="font-weight: bold; margin-top: 0.5em;">{{ $locale.env.beSureToReadThisAsItIsImportant }}</div>
 			</div>
 
 			<MkFolder v-if="availableServerRules" :defaultOpen="true">
-				<template #label>{{ i18n.ts.serverRules }}</template>
+				<template #label>{{ $locale.env.serverRules }}</template>
 				<template #suffix><i v-if="agreeServerRules" class="ti ti-check" style="color: var(--MI_THEME-success)"></i></template>
 
 				<ol class="_gaps_s" :class="$style.rules">
 					<li v-for="item in instance.serverRules" :class="$style.rule"><div :class="$style.ruleText" v-html="item"></div></li>
 				</ol>
 
-				<MkSwitch :modelValue="agreeServerRules" style="margin-top: 16px;" @update:modelValue="updateAgreeServerRules">{{ i18n.ts.agree }}</MkSwitch>
+				<MkSwitch :modelValue="agreeServerRules" style="margin-top: 16px;" @update:modelValue="updateAgreeServerRules">{{ $locale.env.agree }}</MkSwitch>
 			</MkFolder>
 
 			<MkFolder v-if="availableTos || availablePrivacyPolicy" :defaultOpen="true">
 				<template #label>{{ tosPrivacyPolicyLabel }}</template>
 				<template #suffix><i v-if="agreeTosAndPrivacyPolicy" class="ti ti-check" style="color: var(--MI_THEME-success)"></i></template>
 				<div class="_gaps_s">
-					<div v-if="availableTos"><a :href="instance.tosUrl ?? undefined" class="_link" target="_blank">{{ i18n.ts.termsOfService }} <i class="ti ti-external-link"></i></a></div>
-					<div v-if="availablePrivacyPolicy"><a :href="instance.privacyPolicyUrl ?? undefined" class="_link" target="_blank">{{ i18n.ts.privacyPolicy }} <i class="ti ti-external-link"></i></a></div>
+					<div v-if="availableTos"><a :href="instance.tosUrl ?? undefined" class="_link" target="_blank">{{ $locale.env.termsOfService }} <i class="ti ti-external-link"></i></a></div>
+					<div v-if="availablePrivacyPolicy"><a :href="instance.privacyPolicyUrl ?? undefined" class="_link" target="_blank">{{ $locale.env.privacyPolicy }} <i class="ti ti-external-link"></i></a></div>
 				</div>
 
-				<MkSwitch :modelValue="agreeTosAndPrivacyPolicy" style="margin-top: 16px;" @update:modelValue="updateAgreeTosAndPrivacyPolicy">{{ i18n.ts.agree }}</MkSwitch>
+				<MkSwitch :modelValue="agreeTosAndPrivacyPolicy" style="margin-top: 16px;" @update:modelValue="updateAgreeTosAndPrivacyPolicy">{{ $locale.env.agree }}</MkSwitch>
 			</MkFolder>
 
 			<MkFolder :defaultOpen="true">
-				<template #label>{{ i18n.ts.basicNotesBeforeCreateAccount }}</template>
+				<template #label>{{ $locale.env.basicNotesBeforeCreateAccount }}</template>
 				<template #suffix><i v-if="agreeNote" class="ti ti-check" style="color: var(--MI_THEME-success)"></i></template>
 
-				<a href="https://misskey-hub.net/docs/for-users/onboarding/warning/" class="_link" target="_blank">{{ i18n.ts.basicNotesBeforeCreateAccount }} <i class="ti ti-external-link"></i></a>
+				<a href="https://misskey-hub.net/docs/for-users/onboarding/warning/" class="_link" target="_blank">{{ $locale.env.basicNotesBeforeCreateAccount }} <i class="ti ti-external-link"></i></a>
 
-				<MkSwitch :modelValue="agreeNote" style="margin-top: 16px;" data-cy-signup-rules-notes-agree @update:modelValue="updateAgreeNote">{{ i18n.ts.agree }}</MkSwitch>
+				<MkSwitch :modelValue="agreeNote" style="margin-top: 16px;" data-cy-signup-rules-notes-agree @update:modelValue="updateAgreeNote">{{ $locale.env.agree }}</MkSwitch>
 			</MkFolder>
 
-			<div v-if="!agreed" style="text-align: center;">{{ i18n.ts.pleaseAgreeAllToContinue }}</div>
+			<div v-if="!agreed" style="text-align: center;">{{ $locale.env.pleaseAgreeAllToContinue }}</div>
 
 			<div class="_buttonsCenter">
-				<MkButton inline rounded @click="emit('cancel')">{{ i18n.ts.cancel }}</MkButton>
-				<MkButton inline primary rounded gradate :disabled="!agreed" data-cy-signup-rules-continue @click="emit('done')">{{ i18n.ts.continue }} <i class="ti ti-arrow-right"></i></MkButton>
+				<MkButton inline rounded @click="emit('cancel')">{{ $locale.env.cancel }}</MkButton>
+				<MkButton inline primary rounded gradate :disabled="!agreed" data-cy-signup-rules-continue @click="emit('done')">{{ $locale.env.continue }} <i class="ti ti-arrow-right"></i></MkButton>
 			</div>
 		</div>
 	</div>
@@ -64,9 +64,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef, $l as localizerRef } from '@/i18n.js';
+
 import { computed, ref } from 'vue';
 import { instance } from '@/instance.js';
-import { i18n } from '@/i18n.js';
 import MkButton from '@/components/MkButton.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
@@ -92,11 +93,11 @@ const emit = defineEmits<{
 
 const tosPrivacyPolicyLabel = computed(() => {
 	if (availableTos && availablePrivacyPolicy) {
-		return i18n.ts.tosAndPrivacyPolicy;
+		return localeRef.value.env.tosAndPrivacyPolicy;
 	} else if (availableTos) {
-		return i18n.ts.termsOfService;
+		return localeRef.value.env.termsOfService;
 	} else if (availablePrivacyPolicy) {
-		return i18n.ts.privacyPolicy;
+		return localeRef.value.env.privacyPolicy;
 	} else {
 		return '';
 	}
@@ -106,8 +107,8 @@ async function updateAgreeServerRules(v: boolean) {
 	if (v) {
 		const confirm = await os.confirm({
 			type: 'question',
-			title: i18n.ts.doYouAgree,
-			text: i18n.tsx.iHaveReadXCarefullyAndAgree({ x: i18n.ts.serverRules }),
+			title: localeRef.value.env.doYouAgree,
+			text: localizerRef.value.env.iHaveReadXCarefullyAndAgree({ x: localeRef.value.env.serverRules }),
 		});
 		if (confirm.canceled) return;
 		agreeServerRules.value = true;
@@ -120,8 +121,8 @@ async function updateAgreeTosAndPrivacyPolicy(v: boolean) {
 	if (v) {
 		const confirm = await os.confirm({
 			type: 'question',
-			title: i18n.ts.doYouAgree,
-			text: i18n.tsx.iHaveReadXCarefullyAndAgree({
+			title: localeRef.value.env.doYouAgree,
+			text: localizerRef.value.env.iHaveReadXCarefullyAndAgree({
 				x: tosPrivacyPolicyLabel.value,
 			}),
 		});
@@ -136,8 +137,8 @@ async function updateAgreeNote(v: boolean) {
 	if (v) {
 		const confirm = await os.confirm({
 			type: 'question',
-			title: i18n.ts.doYouAgree,
-			text: i18n.tsx.iHaveReadXCarefullyAndAgree({ x: i18n.ts.basicNotesBeforeCreateAccount }),
+			title: localeRef.value.env.doYouAgree,
+			text: localizerRef.value.env.iHaveReadXCarefullyAndAgree({ x: localeRef.value.env.basicNotesBeforeCreateAccount }),
 		});
 		if (confirm.canceled) return;
 		agreeNote.value = true;

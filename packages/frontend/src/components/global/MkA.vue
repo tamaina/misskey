@@ -10,15 +10,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts">
+
 export type MkABehavior = 'window' | 'browser' | null;
 </script>
 
 <script lang="ts" setup>
+import { $locale as localeRef } from '@/i18n.js';
+
 import { computed, inject, useTemplateRef } from 'vue';
 import { url } from '@@/js/config.js';
 import * as os from '@/os.js';
 import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
-import { i18n } from '@/i18n.js';
 import { useRouter } from '@/router.js';
 
 const props = withDefaults(defineProps<{
@@ -57,25 +59,25 @@ function onContextmenu(ev: PointerEvent) {
 		text: props.to,
 	}, {
 		icon: 'ti ti-app-window',
-		text: i18n.ts.openInWindow,
+		text: localeRef.value.env.openInWindow,
 		action: () => {
 			os.pageWindow(props.to);
 		},
 	}, {
 		icon: 'ti ti-player-eject',
-		text: i18n.ts.showInPage,
+		text: localeRef.value.env.showInPage,
 		action: () => {
 			router.pushByPath(props.to, 'forcePage');
 		},
 	}, { type: 'divider' }, {
 		icon: 'ti ti-external-link',
-		text: i18n.ts.openInNewTab,
+		text: localeRef.value.env.openInNewTab,
 		action: () => {
 			window.open(props.to, '_blank', 'noopener');
 		},
 	}, {
 		icon: 'ti ti-link',
-		text: i18n.ts.copyLink,
+		text: localeRef.value.env.copyLink,
 		action: () => {
 			copyToClipboard(`${url}${props.to}`);
 		},

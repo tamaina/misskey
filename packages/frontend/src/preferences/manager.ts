@@ -11,10 +11,10 @@ import type { Ref } from 'vue';
 import type { MenuItem } from '@/types/menu.js';
 import { genId } from '@/utility/id.js';
 import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
-import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
 import { deepEqual } from '@/utility/deep-equal.js';
 import { deepClone } from '@/utility/clone.js';
+import { $locale, $l } from '@/i18n.js';
 
 // NOTE: 明示的な設定値のひとつとして null もあり得るため、設定が存在しないかどうかを判定する目的で null で比較したり ?? を使ってはいけない
 
@@ -470,19 +470,19 @@ export class PreferencesManager extends EventEmitter<PreferencesManagerEvents> {
 				// nop
 			}
 			const { canceled, result: choice } = await os.select({
-				title: i18n.ts.preferenceSyncConflictTitle,
-				text: i18n.ts.preferenceSyncConflictText,
+				title: $locale.value.env.preferenceSyncConflictTitle,
+				text: $locale.value.env.preferenceSyncConflictText,
 				items: [...(mergedValue !== undefined ? [{
-					label: i18n.ts.preferenceSyncConflictChoiceMerge,
+					label: $locale.value.env.preferenceSyncConflictChoiceMerge,
 					value: 'merge' as const,
 				}] : []), {
-					label: i18n.ts.preferenceSyncConflictChoiceServer,
+					label: $locale.value.env.preferenceSyncConflictChoiceServer,
 					value: 'remote' as const,
 				}, {
-					label: i18n.ts.preferenceSyncConflictChoiceDevice,
+					label: $locale.value.env.preferenceSyncConflictChoiceDevice,
 					value: 'local' as const,
 				}, {
-					label: i18n.ts.preferenceSyncConflictChoiceCancel,
+					label: $locale.value.env.preferenceSyncConflictChoiceCancel,
 					value: null,
 				}],
 				default: mergedValue !== undefined ? 'merge' : 'remote',
@@ -522,7 +522,7 @@ export class PreferencesManager extends EventEmitter<PreferencesManagerEvents> {
 
 			os.alert({
 				type: 'error',
-				title: i18n.ts.somethingHappened,
+				title: $locale.value.env.somethingHappened,
 			});
 
 			console.error(err);
@@ -592,13 +592,13 @@ export class PreferencesManager extends EventEmitter<PreferencesManagerEvents> {
 
 		return [{
 			icon: 'ti ti-copy',
-			text: i18n.ts.copyPreferenceId,
+			text: $locale.value.env.copyPreferenceId,
 			action: () => {
 				copyToClipboard(key);
 			},
 		}, {
 			icon: 'ti ti-refresh',
-			text: i18n.ts.resetToDefaultValue,
+			text: $locale.value.env.resetToDefaultValue,
 			danger: true,
 			action: () => {
 				this.commit(key, getInitialPrefValue(key));
@@ -608,12 +608,12 @@ export class PreferencesManager extends EventEmitter<PreferencesManagerEvents> {
 		}, {
 			type: 'switch',
 			icon: 'ti ti-user-cog',
-			text: i18n.ts.overrideByAccount,
+			text: $locale.value.env.overrideByAccount,
 			ref: overrideByAccount,
 		}, {
 			type: 'switch',
 			icon: 'ti ti-cloud-cog',
-			text: i18n.ts.syncBetweenDevices,
+			text: $locale.value.env.syncBetweenDevices,
 			ref: sync,
 		}];
 	}

@@ -7,34 +7,36 @@ SPDX-License-Identifier: AGPL-3.0-only
 <PageWithHeader :actions="headerActions" :tabs="headerTabs">
 	<div class="_spacer" style="--MI_SPACER-w: 800px; --MI_SPACER-min: 16px; --MI_SPACER-max: 32px;">
 		<MkInput v-model="title">
-			<template #label>{{ i18n.ts.title }}</template>
+			<template #label>{{ $locale.env.title }}</template>
 		</MkInput>
 
 		<MkTextarea v-model="description" :max="500">
-			<template #label>{{ i18n.ts.description }}</template>
+			<template #label>{{ $locale.env.description }}</template>
 		</MkTextarea>
 
 		<div class="_gaps_s">
 			<div v-for="file in files" :key="file.id" class="wqugxsfx" :style="{ backgroundImage: file ? `url(${ file.thumbnailUrl })` : '' }">
 				<div class="name">{{ file.name }}</div>
-				<button v-tooltip="i18n.ts.remove" class="remove _button" @click="remove(file)"><i class="ti ti-x"></i></button>
+				<button v-tooltip="$locale.env.remove" class="remove _button" @click="remove(file)"><i class="ti ti-x"></i></button>
 			</div>
-			<MkButton primary @click="chooseFile"><i class="ti ti-plus"></i> {{ i18n.ts.attachFile }}</MkButton>
+			<MkButton primary @click="chooseFile"><i class="ti ti-plus"></i> {{ $locale.env.attachFile }}</MkButton>
 		</div>
 
-		<MkSwitch v-model="isSensitive">{{ i18n.ts.markAsSensitive }}</MkSwitch>
+		<MkSwitch v-model="isSensitive">{{ $locale.env.markAsSensitive }}</MkSwitch>
 
 		<div class="_buttons">
-			<MkButton v-if="props.post != null" primary @click="save"><i class="ti ti-device-floppy"></i> {{ i18n.ts.save }}</MkButton>
-			<MkButton v-else primary @click="save"><i class="ti ti-device-floppy"></i> {{ i18n.ts.publish }}</MkButton>
+			<MkButton v-if="props.post != null" primary @click="save"><i class="ti ti-device-floppy"></i> {{ $locale.env.save }}</MkButton>
+			<MkButton v-else primary @click="save"><i class="ti ti-device-floppy"></i> {{ $locale.env.publish }}</MkButton>
 
-			<MkButton v-if="props.post != null" danger @click="del"><i class="ti ti-trash"></i> {{ i18n.ts.delete }}</MkButton>
+			<MkButton v-if="props.post != null" danger @click="del"><i class="ti ti-trash"></i> {{ $locale.env.delete }}</MkButton>
 		</div>
 	</div>
 </PageWithHeader>
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef } from '@/i18n.js';
+
 import { computed, watch, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkButton from '@/components/MkButton.vue';
@@ -44,7 +46,6 @@ import MkSwitch from '@/components/MkSwitch.vue';
 import { selectFile } from '@/utility/drive.js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
-import { i18n } from '@/i18n.js';
 import { useRouter } from '@/router.js';
 
 const router = useRouter();
@@ -104,7 +105,7 @@ async function del() {
 	if (props.post == null) return;
 	const { canceled } = await os.confirm({
 		type: 'warning',
-		text: i18n.ts.deleteConfirm,
+		text: localeRef.value.env.deleteConfirm,
 	});
 	if (canceled) return;
 	await os.apiWithDialog('gallery/posts/delete', {

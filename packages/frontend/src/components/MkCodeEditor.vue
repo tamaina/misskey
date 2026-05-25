@@ -27,15 +27,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 	</div>
 	<div :class="$style.caption"><slot name="caption"></slot></div>
-	<MkButton v-if="manualSave && changed" primary :class="$style.save" @click="updated"><i class="ti ti-device-floppy"></i> {{ i18n.ts.save }}</MkButton>
+	<MkButton v-if="manualSave && changed" primary :class="$style.save" @click="updated"><i class="ti ti-device-floppy"></i> {{ $locale.env.save }}</MkButton>
 </div>
 </template>
 
 <script lang="ts" setup>
+
 import { ref, watch, toRefs, useTemplateRef, nextTick } from 'vue';
 import { debounce } from 'throttle-debounce';
 import MkButton from '@/components/MkButton.vue';
-import { i18n } from '@/i18n.js';
 import XCode from '@/components/MkCode.core.vue';
 
 const props = withDefaults(defineProps<{

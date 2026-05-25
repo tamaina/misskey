@@ -16,32 +16,32 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</h1>
 			<div :class="$style.mainAbout">
 				<!-- eslint-disable-next-line vue/no-v-html -->
-				<div v-html="instance.description || i18n.ts.headlineMisskey"></div>
+				<div v-html="instance.description || $locale.env.headlineMisskey"></div>
 			</div>
 			<div v-if="instance.disableRegistration || instance.federation !== 'all'" :class="$style.mainWarn" class="_gaps_s">
-				<MkInfo v-if="instance.disableRegistration" warn>{{ i18n.ts.invitationRequiredToRegister }}</MkInfo>
-				<MkInfo v-if="instance.federation === 'specified'" warn>{{ i18n.ts.federationSpecified }}</MkInfo>
-				<MkInfo v-else-if="instance.federation === 'none'" warn>{{ i18n.ts.federationDisabled }}</MkInfo>
+				<MkInfo v-if="instance.disableRegistration" warn>{{ $locale.env.invitationRequiredToRegister }}</MkInfo>
+				<MkInfo v-if="instance.federation === 'specified'" warn>{{ $locale.env.federationSpecified }}</MkInfo>
+				<MkInfo v-else-if="instance.federation === 'none'" warn>{{ $locale.env.federationDisabled }}</MkInfo>
 			</div>
 			<div class="_gaps_s" :class="$style.mainActions">
-				<MkButton :class="$style.mainAction" full rounded gradate data-cy-signup style="margin-right: 12px;" @click="signup()">{{ i18n.ts.joinThisServer }}</MkButton>
-				<MkButton :class="$style.mainAction" full rounded type="a" target="_blank" rel="noopener" href="https://misskey-hub.net/servers/">{{ i18n.ts.exploreOtherServers }}</MkButton>
-				<MkButton :class="$style.mainAction" full rounded data-cy-signin @click="signin()">{{ i18n.ts.login }}</MkButton>
+				<MkButton :class="$style.mainAction" full rounded gradate data-cy-signup style="margin-right: 12px;" @click="signup()">{{ $locale.env.joinThisServer }}</MkButton>
+				<MkButton :class="$style.mainAction" full rounded type="a" target="_blank" rel="noopener" href="https://misskey-hub.net/servers/">{{ $locale.env.exploreOtherServers }}</MkButton>
+				<MkButton :class="$style.mainAction" full rounded data-cy-signin @click="signin()">{{ $locale.env.login }}</MkButton>
 			</div>
 		</div>
 	</div>
 	<div v-if="stats && instance.clientOptions.showActivitiesForVisitor !== false" :class="$style.stats">
 		<div :class="[$style.statsItem, $style.panel]">
-			<div :class="$style.statsItemLabel">{{ i18n.ts.users }}</div>
+			<div :class="$style.statsItemLabel">{{ $locale.env.users }}</div>
 			<div :class="$style.statsItemCount"><MkNumber :value="stats.originalUsersCount"/></div>
 		</div>
 		<div :class="[$style.statsItem, $style.panel]">
-			<div :class="$style.statsItemLabel">{{ i18n.ts.notes }}</div>
+			<div :class="$style.statsItemLabel">{{ $locale.env.notes }}</div>
 			<div :class="$style.statsItemCount"><MkNumber :value="stats.originalNotesCount"/></div>
 		</div>
 	</div>
 	<div v-if="instance.policies.ltlAvailable && instance.clientOptions.showTimelineForVisitor !== false" :class="[$style.tl, $style.panel]">
-		<div :class="$style.tlHeader">{{ i18n.ts.letsLookAtTimeline }}</div>
+		<div :class="$style.tlHeader">{{ $locale.env.letsLookAtTimeline }}</div>
 		<div :class="$style.tlBody">
 			<MkStreamingNotesTimeline src="local"/>
 		</div>
@@ -53,6 +53,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+
 import { ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import { instanceName } from '@@/js/config.js';
@@ -64,7 +65,6 @@ import MkStreamingNotesTimeline from '@/components/MkStreamingNotesTimeline.vue'
 import MkInfo from '@/components/MkInfo.vue';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
-import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
 import MkNumber from '@/components/MkNumber.vue';
 import XActiveUsersChart from '@/components/MkVisitorDashboard.ActiveUsersChart.vue';

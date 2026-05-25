@@ -7,17 +7,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 <div class="_gaps">
 	<MkInput
 		v-model="searchQuery"
-		:placeholder="i18n.ts._chat.searchMessages"
+		:placeholder="$locale.env._chat.searchMessages"
 		type="search"
 		@enter="search()"
 	>
 		<template #prefix><i class="ti ti-search"></i></template>
 	</MkInput>
 
-	<MkButton primary rounded @click="search">{{ i18n.ts.search }}</MkButton>
+	<MkButton primary rounded @click="search">{{ $locale.env.search }}</MkButton>
 
 	<MkFoldableSection v-if="searched">
-		<template #header>{{ i18n.ts.searchResult }}</template>
+		<template #header>{{ $locale.env.searchResult }}</template>
 
 		<div v-if="searchResults.length > 0" class="_gaps_s">
 			<div v-for="message in searchResults" :key="message.id" :class="$style.searchResultItem">
@@ -30,11 +30,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+
 import { ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import XMessage from './XMessage.vue';
 import MkButton from '@/components/MkButton.vue';
-import { i18n } from '@/i18n.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import MkInput from '@/components/MkInput.vue';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';

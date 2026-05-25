@@ -12,15 +12,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 	@drop.stop="onDrop"
 >
 	<i v-if="folder == null" class="ti ti-cloud" style="margin-right: 4px;"></i>
-	<span>{{ folder == null ? i18n.ts.drive : folder.name }}</span>
+	<span>{{ folder == null ? $locale.env.drive : folder.name }}</span>
 </div>
 </template>
 
 <script lang="ts" setup>
+
 import { ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import { misskeyApi } from '@/utility/misskey-api.js';
-import { i18n } from '@/i18n.js';
 import { globalEvents } from '@/events.js';
 import { checkDragDataType, getDragData } from '@/drag-and-drop.js';
 

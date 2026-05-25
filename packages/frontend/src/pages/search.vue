@@ -10,7 +10,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<XNote v-bind="props"/>
 		</div>
 		<div v-else>
-			<MkInfo warn>{{ i18n.ts.notesSearchNotAvailable }}</MkInfo>
+			<MkInfo warn>{{ $locale.env.notesSearchNotAvailable }}</MkInfo>
 		</div>
 	</div>
 
@@ -19,16 +19,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<XUser v-bind="props"/>
 		</div>
 		<div v-else>
-			<MkInfo warn>{{ i18n.ts.usersSearchNotAvailable }}</MkInfo>
+			<MkInfo warn>{{ $locale.env.usersSearchNotAvailable }}</MkInfo>
 		</div>
 	</div>
 </PageWithHeader>
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef } from '@/i18n.js';
+
 import { computed, defineAsyncComponent, ref, toRef } from 'vue';
 import { $i } from '@/i.js';
-import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
 import { notesSearchAvailable, usersSearchAvailable } from '@/utility/check-permissions.js';
 import MkInfo from '@/components/MkInfo.vue';
@@ -61,16 +62,16 @@ const headerActions = computed(() => []);
 
 const headerTabs = computed(() => [{
 	key: 'note',
-	title: i18n.ts.notes,
+	title: localeRef.value.env.notes,
 	icon: 'ti ti-pencil',
 }, {
 	key: 'user',
-	title: i18n.ts.users,
+	title: localeRef.value.env.users,
 	icon: 'ti ti-users',
 }]);
 
 definePage(() => ({
-	title: i18n.ts.search,
+	title: localeRef.value.env.search,
 	icon: 'ti ti-search',
 }));
 </script>

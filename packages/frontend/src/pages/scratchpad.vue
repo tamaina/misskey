@@ -22,14 +22,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</MkContainer>
 
 			<MkContainer :foldable="true" class="">
-				<template #header>{{ i18n.ts.output }}</template>
+				<template #header>{{ $locale.env.output }}</template>
 				<div :class="$style.logs">
 					<div v-for="log in logs" :key="log.id" class="log" :class="{ print: log.print }">{{ log.text }}</div>
 				</div>
 			</MkContainer>
 
 			<MkContainer :foldable="true" :expanded="false">
-				<template #header>{{ i18n.ts.uiInspector }}</template>
+				<template #header>{{ $locale.env.uiInspector }}</template>
 				<div :class="$style.uiInspector">
 					<div v-for="c in components" :key="c.value.id" :class="{ [$style.uiInspectorUnShown]: !showns.has(c.value.id) }">
 						<div :class="$style.uiInspectorType">{{ c.value.type }}</div>
@@ -42,12 +42,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<MkTextarea :modelValue="stringifyUiProps(c.value)" code readonly></MkTextarea>
 						</div>
 					</div>
-					<div :class="$style.uiInspectorDescription">{{ i18n.ts.uiInspectorDescription }}</div>
+					<div :class="$style.uiInspectorDescription">{{ $locale.env.uiInspectorDescription }}</div>
 				</div>
 			</MkContainer>
 
 			<div class="">
-				{{ i18n.ts.scratchpadDescription }}
+				{{ $locale.env.scratchpadDescription }}
 			</div>
 		</div>
 	</div>
@@ -55,6 +55,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef } from '@/i18n.js';
+
 import { onDeactivated, onUnmounted, ref, watch, computed } from 'vue';
 import { Interpreter, Parser, utils } from '@syuilo/aiscript';
 import type { Ref } from 'vue';
@@ -68,7 +70,6 @@ import MkCodeEditor from '@/components/MkCodeEditor.vue';
 import { aiScriptReadline, createAiScriptEnv } from '@/aiscript/api.js';
 import * as os from '@/os.js';
 import { $i } from '@/i.js';
-import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
 import { registerAsUiLib } from '@/aiscript/ui.js';
 import MkAsUi from '@/components/MkAsUi.vue';
@@ -203,7 +204,7 @@ const showns = computed(() => {
 });
 
 definePage(() => ({
-	title: i18n.ts.scratchpad,
+	title: localeRef.value.env.scratchpad,
 	icon: 'ti ti-terminal-2',
 }));
 </script>

@@ -18,6 +18,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef } from '@/i18n.js';
+
 import { shallowRef, useTemplateRef } from 'vue';
 import * as Misskey from 'misskey-js';
 import { useInterval } from '@@/js/use-interval.js';
@@ -29,14 +31,13 @@ import MkTagCloud from '@/components/MkTagCloud.vue';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { getProxiedImageUrlNullable } from '@/utility/media-proxy.js';
-import { i18n } from '@/i18n.js';
 
 const name = 'instanceCloud';
 
 const widgetPropsDef = {
 	transparent: {
 		type: 'boolean',
-		label: i18n.ts._widgetOptions.transparent,
+		label: localeRef.value.env._widgetOptions.transparent,
 		default: false,
 	},
 } satisfies FormWithDefault;

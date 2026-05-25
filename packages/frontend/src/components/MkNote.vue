@@ -12,12 +12,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 	tabindex="0"
 >
 	<MkNoteSub v-if="appearNote.replyId && !renoteCollapsed" :note="appearNote?.reply ?? null" :class="$style.replyTo"/>
-	<div v-if="pinned" :class="$style.tip"><i class="ti ti-pin"></i> {{ i18n.ts.pinnedNote }}</div>
+	<div v-if="pinned" :class="$style.tip"><i class="ti ti-pin"></i> {{ $locale.env.pinnedNote }}</div>
 	<div v-if="isRenote" :class="$style.renote">
 		<div v-if="note.channel" :class="$style.colorBar" :style="{ background: note.channel.color }"></div>
 		<MkAvatar :class="$style.renoteAvatar" :user="note.user" link preview/>
 		<i class="ti ti-repeat" style="margin-right: 4px;"></i>
-		<I18n :src="i18n.ts.renotedBy" tag="span" :class="$style.renoteText">
+		<I18n :src="$locale.env.renotedBy" tag="span" :class="$style.renoteText">
 			<template #user>
 				<MkA v-user-preview="note.userId" :class="$style.renoteUserName" :to="userPage(note.user)">
 					<MkUserName :user="note.user"/>
@@ -29,17 +29,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<i class="ti ti-dots" :class="$style.renoteMenu"></i>
 				<MkTime :time="note.createdAt"/>
 			</button>
-			<span v-if="note.visibility !== 'public'" style="margin-left: 0.5em;" :title="i18n.ts._visibility[note.visibility]">
+			<span v-if="note.visibility !== 'public'" style="margin-left: 0.5em;" :title="$locale.env._visibility[note.visibility]">
 				<i v-if="note.visibility === 'home'" class="ti ti-home"></i>
 				<i v-else-if="note.visibility === 'followers'" class="ti ti-lock"></i>
 				<i v-else-if="note.visibility === 'specified'" ref="specified" class="ti ti-mail"></i>
 			</span>
-			<span v-if="note.localOnly" style="margin-left: 0.5em;" :title="i18n.ts._visibility['disableFederation']"><i class="ti ti-rocket-off"></i></span>
+			<span v-if="note.localOnly" style="margin-left: 0.5em;" :title="$locale.env._visibility['disableFederation']"><i class="ti ti-rocket-off"></i></span>
 			<span v-if="note.channel" style="margin-left: 0.5em;" :title="note.channel.name"><i class="ti ti-device-tv"></i></span>
 		</div>
 	</div>
 	<div v-if="isRenote && note.renote == null" :class="$style.deleted">
-		{{ i18n.ts.deletedNote }}
+		{{ $locale.env.deletedNote }}
 	</div>
 	<div v-else-if="renoteCollapsed" :class="$style.collapsedRenoteTarget">
 		<MkAvatar :class="$style.collapsedRenoteTargetAvatar" :user="appearNote.user" link preview/>
@@ -65,7 +65,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</p>
 				<div v-show="appearNote.cw == null || showContent" :class="[{ [$style.contentCollapsed]: collapsed }]">
 					<div :class="$style.text">
-						<span v-if="appearNote.isHidden" style="opacity: 0.5">({{ i18n.ts.private }})</span>
+						<span v-if="appearNote.isHidden" style="opacity: 0.5">({{ $locale.env.private }})</span>
 						<MkA v-if="appearNote.replyId" :class="$style.replyIcon" :to="`/notes/${appearNote.replyId}`"><i class="ti ti-arrow-back-up"></i></MkA>
 						<Mfm
 							v-if="appearNote.text"
@@ -81,7 +81,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<div v-if="translating || translation" :class="$style.translation">
 							<MkLoading v-if="translating" mini/>
 							<div v-else-if="translation">
-								<b>{{ i18n.tsx.translatedFrom({ x: translation.sourceLang }) }}: </b>
+								<b>{{ $l.env.translatedFrom({ x: translation.sourceLang }) }}: </b>
 								<Mfm :text="translation.text" :author="appearNote.user" :nyaize="'respect'" :emojiUrls="appearNote.emojis" class="_selectable"/>
 							</div>
 						</div>
@@ -104,10 +104,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</div>
 					<div v-if="appearNote.renoteId" :class="$style.quote"><MkNoteSimple :note="appearNote?.renote ?? null" :class="$style.quoteNote"/></div>
 					<button v-if="isLong && collapsed" :class="$style.collapsed" class="_button" @click="collapsed = false">
-						<span :class="$style.collapsedLabel">{{ i18n.ts.showMore }}</span>
+						<span :class="$style.collapsedLabel">{{ $locale.env.showMore }}</span>
 					</button>
 					<button v-else-if="isLong && !collapsed" :class="$style.showLess" class="_button" @click="collapsed = true">
-						<span :class="$style.showLessLabel">{{ i18n.ts.showLess }}</span>
+						<span :class="$style.showLessLabel">{{ $locale.env.showLess }}</span>
 					</button>
 				</div>
 				<MkA v-if="appearNote.channel && !inChannel" :class="$style.channel" :to="`/channels/${appearNote.channel.id}`"><i class="ti ti-device-tv"></i> {{ appearNote.channel.name }}</MkA>
@@ -123,7 +123,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				@mockUpdateMyReaction="emitUpdReaction"
 			>
 				<template #more>
-					<MkA :to="`/notes/${appearNote.id}/reactions`" :class="[$style.reactionOmitted]">{{ i18n.ts.more }}</MkA>
+					<MkA :to="`/notes/${appearNote.id}/reactions`" :class="[$style.reactionOmitted]">{{ $locale.env.more }}</MkA>
 				</template>
 			</MkReactionsViewer>
 			<footer :class="$style.footer">
@@ -162,21 +162,21 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</article>
 </div>
 <div v-else-if="!hardMuted && !hideByPlugin" :class="$style.muted" @click="muted = false">
-	<I18n v-if="muted === 'sensitiveMute'" :src="i18n.ts.userSaysSomethingSensitive" tag="small">
+	<I18n v-if="muted === 'sensitiveMute'" :src="$locale.env.userSaysSomethingSensitive" tag="small">
 		<template #name>
 			<MkA v-user-preview="appearNote.userId" :to="userPage(appearNote.user)">
 				<MkUserName :user="appearNote.user"/>
 			</MkA>
 		</template>
 	</I18n>
-	<I18n v-else-if="showSoftWordMutedWord !== true" :src="i18n.ts.userSaysSomething" tag="small">
+	<I18n v-else-if="showSoftWordMutedWord !== true" :src="$locale.env.userSaysSomething" tag="small">
 		<template #name>
 			<MkA v-user-preview="appearNote.userId" :to="userPage(appearNote.user)">
 				<MkUserName :user="appearNote.user"/>
 			</MkA>
 		</template>
 	</I18n>
-	<I18n v-else :src="i18n.ts.userSaysSomethingAbout" tag="small">
+	<I18n v-else :src="$locale.env.userSaysSomethingAbout" tag="small">
 		<template #name>
 			<MkA v-user-preview="appearNote.userId" :to="userPage(appearNote.user)">
 				<MkUserName :user="appearNote.user"/>
@@ -196,6 +196,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef, $l as localizerRef } from '@/i18n.js';
+
 import { computed, inject, onMounted, ref, useTemplateRef, provide } from 'vue';
 import * as mfm from 'mfm-js';
 import * as Misskey from 'misskey-js';
@@ -228,7 +230,6 @@ import { misskeyApi, misskeyApiGet } from '@/utility/misskey-api.js';
 import { reactionPicker } from '@/utility/reaction-picker.js';
 import { extractUrlFromMfm } from '@/utility/extract-url-from-mfm.js';
 import { $i } from '@/i.js';
-import { i18n } from '@/i18n.js';
 import { getAbuseNoteMenu, getCopyNoteLinkMenu, getNoteClipMenu, getNoteMenu, getRenoteMenu } from '@/utility/get-note-menu.js';
 import { noteEvents, useNoteCapture } from '@/composables/use-note-capture.js';
 import { deepClone } from '@/utility/clone.js';
@@ -532,7 +533,7 @@ async function react() {
 			if (prefer.s.confirmOnReact) {
 				const confirm = await os.confirm({
 					type: 'question',
-					text: i18n.tsx.reactAreYouSure({ emoji: reaction.replace('@.', '') }),
+					text: localizerRef.value.env.reactAreYouSure({ emoji: reaction.replace('@.', '') }),
 				});
 
 				if (confirm.canceled) return;
@@ -637,7 +638,7 @@ async function showRenoteMenu() {
 
 	function getUnrenote(): MenuItem {
 		return {
-			text: i18n.ts.unrenote,
+			text: localeRef.value.env.unrenote,
 			icon: 'ti ti-trash',
 			danger: true,
 			action: () => {
@@ -652,7 +653,7 @@ async function showRenoteMenu() {
 
 	const renoteDetailsMenu: MenuItem[] = [{
 		type: 'link',
-		text: i18n.ts.renoteDetails,
+		text: localeRef.value.env.renoteDetails,
 		icon: 'ti ti-info-circle',
 		to: notePage(note),
 	}];
@@ -663,7 +664,7 @@ async function showRenoteMenu() {
 	) {
 		renoteDetailsMenu.push({
 			type: 'link',
-			text: i18n.ts.viewRenotedChannel,
+			text: localeRef.value.env.viewRenotedChannel,
 			icon: 'ti ti-device-tv',
 			to: `/channels/${props.note.channelId}`,
 		});
@@ -672,16 +673,16 @@ async function showRenoteMenu() {
 	if (isMyRenote) {
 		os.popupMenu([
 			...renoteDetailsMenu,
-			getCopyNoteLinkMenu(note, i18n.ts.copyLinkRenote),
+			getCopyNoteLinkMenu(note, localeRef.value.env.copyLinkRenote),
 			{ type: 'divider' },
 			getUnrenote(),
 		], renoteTime.value);
 	} else {
 		os.popupMenu([
 			...renoteDetailsMenu,
-			getCopyNoteLinkMenu(note, i18n.ts.copyLinkRenote),
+			getCopyNoteLinkMenu(note, localeRef.value.env.copyLinkRenote),
 			{ type: 'divider' },
-			getAbuseNoteMenu(note, i18n.ts.reportAbuseRenote),
+			getAbuseNoteMenu(note, localeRef.value.env.reportAbuseRenote),
 			...(($i?.isModerator || $i?.isAdmin) ? [getUnrenote()] : []),
 		], renoteTime.value);
 	}

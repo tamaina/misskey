@@ -10,7 +10,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			デッキUIが設定されている場合はデッキUIに戻れるようにする (ただし?zenが明示された場合は表示しない)
 			See https://github.com/misskey-dev/misskey/issues/10905
 		-->
-		<button v-if="showDeckNav" class="_buttonPrimary" :class="$style.deckNav" @click="goToDeck">{{ i18n.ts.goToDeck }}</button>
+		<button v-if="showDeckNav" class="_buttonPrimary" :class="$style.deckNav" @click="goToDeck">{{ $locale.env.goToDeck }}</button>
 
 		<div style="flex: 1; min-height: 0;">
 			<RouterView/>
@@ -22,12 +22,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+
 import { computed, provide, ref } from 'vue';
 import { instanceName, ui } from '@@/js/config.js';
 import XCommon from './_common_/common.vue';
 import type { PageMetadata } from '@/page.js';
 import { provideMetadataReceiver, provideReactiveMetadata } from '@/page.js';
-import { i18n } from '@/i18n.js';
 import { mainRouter } from '@/router.js';
 import { DI } from '@/di.js';
 

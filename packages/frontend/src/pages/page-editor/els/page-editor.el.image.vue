@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <!-- eslint-disable vue/no-mutating-props -->
 <XContainer :draggable="true" :dragStartCallback="dragStartCallback" @remove="() => emit('remove')">
-	<template #header><i class="ti ti-photo"></i> {{ i18n.ts._pages.blocks.image }}</template>
+	<template #header><i class="ti ti-photo"></i> {{ $locale.env._pages.blocks.image }}</template>
 	<template #func>
 		<button @click="choose()">
 			<i class="ti ti-folder"></i>
@@ -21,12 +21,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 
+
 import { onMounted, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import XContainer from '../page-editor.container.vue';
 import MkDriveFileThumbnail from '@/components/MkDriveFileThumbnail.vue';
 import { misskeyApi } from '@/utility/misskey-api.js';
-import { i18n } from '@/i18n.js';
 import { chooseDriveFile } from '@/utility/drive.js';
 
 const props = defineProps<{

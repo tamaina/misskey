@@ -28,7 +28,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<template #value><span class="_monospace">{{ file.md5 }}</span></template>
 				</MkKeyValue>
 				<MkKeyValue oneline style="margin: 1em 0;">
-					<template #key>{{ i18n.ts.createdAt }}</template>
+					<template #key>{{ $locale.env.createdAt }}</template>
 					<template #value><span class="_monospace"><MkTime :time="file.createdAt" mode="detail" style="display: block;"/></span></template>
 				</MkKeyValue>
 			</div>
@@ -37,11 +37,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</MkA>
 
 			<div>
-				<MkSwitch :modelValue="isSensitive" @update:modelValue="toggleSensitive">{{ i18n.ts.sensitive }}</MkSwitch>
+				<MkSwitch :modelValue="isSensitive" @update:modelValue="toggleSensitive">{{ $locale.env.sensitive }}</MkSwitch>
 			</div>
 
 			<div>
-				<MkButton danger @click="del"><i class="ti ti-trash"></i> {{ i18n.ts.delete }}</MkButton>
+				<MkButton danger @click="del"><i class="ti ti-trash"></i> {{ $locale.env.delete }}</MkButton>
 			</div>
 		</div>
 		<div v-else-if="tab === 'usage' && info" class="_gaps_m">
@@ -59,7 +59,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<XChat v-else-if="usageTab === 'chat'" :fileId="props.file.id"/>
 		</div>
 		<div v-else-if="tab === 'ip' && info" class="_gaps_m">
-			<MkInfo v-if="!iAmAdmin" warn>{{ i18n.ts.requireAdminForView }}</MkInfo>
+			<MkInfo v-if="!iAmAdmin" warn>{{ $locale.env.requireAdminForView }}</MkInfo>
 			<MkKeyValue v-if="info.requestIp" class="_monospace" :copy="info.requestIp" oneline>
 				<template #key>IP</template>
 				<template #value>{{ info.requestIp }}</template>
@@ -81,6 +81,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef, $l as localizerRef } from '@/i18n.js';
+
 import { computed, defineAsyncComponent, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkButton from '@/components/MkButton.vue';
@@ -93,7 +95,6 @@ import MkUserCardMini from '@/components/MkUserCardMini.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import bytes from '@/filters/bytes.js';
 import * as os from '@/os.js';
-import { i18n } from '@/i18n.js';
 import { iAmAdmin, iAmModerator } from '@/i.js';
 import MkTabs from '@/components/MkTabs.vue';
 
@@ -111,7 +112,7 @@ const XChat = defineAsyncComponent(() => import('./admin-file.chat.vue'));
 async function del() {
 	const { canceled } = await os.confirm({
 		type: 'warning',
-		text: i18n.tsx.removeAreYouSure({ x: props.file.name }),
+		text: localizerRef.value.env.removeAreYouSure({ x: props.file.name }),
 	});
 	if (canceled) return;
 
@@ -123,7 +124,7 @@ async function del() {
 async function toggleSensitive() {
 	const { canceled } = await os.confirm({
 		type: 'warning',
-		text: isSensitive.value ? i18n.ts.unmarkAsSensitiveConfirm : i18n.ts.markAsSensitiveConfirm,
+		text: isSensitive.value ? localeRef.value.env.unmarkAsSensitiveConfirm : localeRef.value.env.markAsSensitiveConfirm,
 	});
 
 	if (canceled) return;
@@ -136,7 +137,7 @@ async function toggleSensitive() {
 }
 
 const headerActions = computed(() => [{
-	text: i18n.ts.openInNewTab,
+	text: localeRef.value.env.openInNewTab,
 	icon: 'ti ti-external-link',
 	handler: () => {
 		window.open(props.file.url, '_blank', 'noopener');
@@ -145,11 +146,11 @@ const headerActions = computed(() => [{
 
 const headerTabs = computed(() => [{
 	key: 'overview',
-	title: i18n.ts.overview,
+	title: localeRef.value.env.overview,
 	icon: 'ti ti-info-circle',
 }, iAmModerator ? {
 	key: 'usage',
-	title: i18n.ts._fileViewer.usage,
+	title: localeRef.value.env._fileViewer.usage,
 	icon: 'ti ti-plus',
 } : null, iAmModerator ? {
 	key: 'ip',

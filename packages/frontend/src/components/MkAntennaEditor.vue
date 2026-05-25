@@ -8,37 +8,37 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div>
 		<div class="_gaps_m">
 			<MkInput v-model="name">
-				<template #label>{{ i18n.ts.name }}</template>
+				<template #label>{{ $locale.env.name }}</template>
 			</MkInput>
 			<MkSelect v-model="src" :items="antennaSourcesSelectDef">
-				<template #label>{{ i18n.ts.antennaSource }}</template>
+				<template #label>{{ $locale.env.antennaSource }}</template>
 			</MkSelect>
 			<MkSelect v-if="src === 'list'" v-model="userListId" :items="userListsSelectDef">
-				<template #label>{{ i18n.ts.userList }}</template>
+				<template #label>{{ $locale.env.userList }}</template>
 			</MkSelect>
 			<MkTextarea v-else-if="src === 'users' || src === 'users_blacklist'" v-model="users">
-				<template #label>{{ i18n.ts.users }}</template>
-				<template #caption>{{ i18n.ts.antennaUsersDescription }} <button class="_textButton" @click="addUser">{{ i18n.ts.addUser }}</button></template>
+				<template #label>{{ $locale.env.users }}</template>
+				<template #caption>{{ $locale.env.antennaUsersDescription }} <button class="_textButton" @click="addUser">{{ $locale.env.addUser }}</button></template>
 			</MkTextarea>
-			<MkSwitch v-model="excludeBots">{{ i18n.ts.antennaExcludeBots }}</MkSwitch>
-			<MkSwitch v-model="withReplies">{{ i18n.ts.withReplies }}</MkSwitch>
+			<MkSwitch v-model="excludeBots">{{ $locale.env.antennaExcludeBots }}</MkSwitch>
+			<MkSwitch v-model="withReplies">{{ $locale.env.withReplies }}</MkSwitch>
 			<MkTextarea v-model="keywords">
-				<template #label>{{ i18n.ts.antennaKeywords }}</template>
-				<template #caption>{{ i18n.ts.antennaKeywordsDescription }}</template>
+				<template #label>{{ $locale.env.antennaKeywords }}</template>
+				<template #caption>{{ $locale.env.antennaKeywordsDescription }}</template>
 			</MkTextarea>
 			<MkTextarea v-model="excludeKeywords">
-				<template #label>{{ i18n.ts.antennaExcludeKeywords }}</template>
-				<template #caption>{{ i18n.ts.antennaKeywordsDescription }}</template>
+				<template #label>{{ $locale.env.antennaExcludeKeywords }}</template>
+				<template #caption>{{ $locale.env.antennaKeywordsDescription }}</template>
 			</MkTextarea>
-			<MkSwitch v-model="localOnly">{{ i18n.ts.localOnly }}</MkSwitch>
-			<MkSwitch v-model="caseSensitive">{{ i18n.ts.caseSensitive }}</MkSwitch>
-			<MkSwitch v-model="withFile">{{ i18n.ts.withFileAntenna }}</MkSwitch>
-			<MkSwitch v-model="excludeNotesInSensitiveChannel">{{ i18n.ts.excludeNotesInSensitiveChannel }}</MkSwitch>
+			<MkSwitch v-model="localOnly">{{ $locale.env.localOnly }}</MkSwitch>
+			<MkSwitch v-model="caseSensitive">{{ $locale.env.caseSensitive }}</MkSwitch>
+			<MkSwitch v-model="withFile">{{ $locale.env.withFileAntenna }}</MkSwitch>
+			<MkSwitch v-model="excludeNotesInSensitiveChannel">{{ $locale.env.excludeNotesInSensitiveChannel }}</MkSwitch>
 		</div>
 		<div :class="$style.actions">
 			<div class="_buttons">
-				<MkButton inline primary @click="saveAntenna()"><i class="ti ti-device-floppy"></i> {{ i18n.ts.save }}</MkButton>
-				<MkButton v-if="initialAntenna.id != null" inline danger @click="deleteAntenna()"><i class="ti ti-trash"></i> {{ i18n.ts.delete }}</MkButton>
+				<MkButton inline primary @click="saveAntenna()"><i class="ti ti-device-floppy"></i> {{ $locale.env.save }}</MkButton>
+				<MkButton v-if="initialAntenna.id != null" inline danger @click="deleteAntenna()"><i class="ti ti-trash"></i> {{ $locale.env.delete }}</MkButton>
 			</div>
 		</div>
 	</div>
@@ -46,6 +46,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef, $l as localizerRef } from '@/i18n.js';
+
 import { watch, ref, computed } from 'vue';
 import * as Misskey from 'misskey-js';
 import type { DeepPartial } from '@/utility/merge.js';
@@ -56,7 +58,6 @@ import MkSelect from '@/components/MkSelect.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
-import { i18n } from '@/i18n.js';
 import { deepMerge } from '@/utility/merge.js';
 import { useMkSelect } from '@/composables/use-mkselect.js';
 
@@ -99,11 +100,11 @@ const {
 	def: antennaSourcesSelectDef,
 } = useMkSelect({
 	items: [
-		{ value: 'all', label: i18n.ts._antennaSources.all },
-		//{ value: 'home', label: i18n.ts._antennaSources.homeTimeline },
-		{ value: 'users', label: i18n.ts._antennaSources.users },
-		//{ value: 'list', label: i18n.ts._antennaSources.userList },
-		{ value: 'users_blacklist', label: i18n.ts._antennaSources.userBlacklist },
+		{ value: 'all', label: localeRef.value.env._antennaSources.all },
+		//{ value: 'home', label: localeRef.value.env._antennaSources.homeTimeline },
+		{ value: 'users', label: localeRef.value.env._antennaSources.users },
+		//{ value: 'list', label: localeRef.value.env._antennaSources.userList },
+		{ value: 'users_blacklist', label: localeRef.value.env._antennaSources.userBlacklist },
 	],
 	initialValue: initialAntenna.src,
 });
@@ -170,7 +171,7 @@ async function deleteAntenna() {
 
 	const { canceled } = await os.confirm({
 		type: 'warning',
-		text: i18n.tsx.removeAreYouSure({ x: initialAntenna.name }),
+		text: localizerRef.value.env.removeAreYouSure({ x: initialAntenna.name }),
 	});
 	if (canceled) return;
 

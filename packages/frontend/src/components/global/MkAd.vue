@@ -31,17 +31,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</div>
 	<div v-else :class="$style.menu">
 		<div>Ads by {{ host }}</div>
-		<!--<MkButton class="button" primary>{{ i18n.ts._ad.like }}</MkButton>-->
-		<MkButton v-if="chosen.ratio !== 0" :class="$style.menuButton" @click="reduceFrequency">{{ i18n.ts._ad.reduceFrequencyOfThisAd }}</MkButton>
-		<button class="_textButton" @click="toggleMenu">{{ i18n.ts._ad.back }}</button>
+		<!--<MkButton class="button" primary>{{ $locale.env._ad.like }}</MkButton>-->
+		<MkButton v-if="chosen.ratio !== 0" :class="$style.menuButton" @click="reduceFrequency">{{ $locale.env._ad.reduceFrequencyOfThisAd }}</MkButton>
+		<button class="_textButton" @click="toggleMenu">{{ $locale.env._ad.back }}</button>
 	</div>
 </div>
 </template>
 
 <script lang="ts" setup>
+
 import { ref, computed } from 'vue';
 import { url as local, host } from '@@/js/config.js';
-import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
 import MkButton from '@/components/MkButton.vue';
 import { store } from '@/store.js';

@@ -6,7 +6,7 @@
 import shader from './distort.glsl';
 import type { ImageEffectorUiDefinition } from '../image-effector/ImageEffector.js';
 import { defineImageCompositorFunction } from '@/lib/ImageCompositor.js';
-import { i18n } from '@/i18n.js';
+import { $locale, $l } from '@/i18n.js';
 
 export const fn = defineImageCompositorFunction<{
 	direction: number;
@@ -24,19 +24,19 @@ export const fn = defineImageCompositorFunction<{
 });
 
 export const uiDefinition = {
-	name: i18n.ts._imageEffector._fxs.distort,
+	name: $locale.value.env._imageEffector._fxs.distort,
 	params: {
 		direction: {
-			label: i18n.ts._imageEffector._fxProps.direction,
+			label: $locale.value.env._imageEffector._fxProps.direction,
 			type: 'number:enum',
 			enum: [
-				{ value: 0 as const, label: i18n.ts.horizontal },
-				{ value: 1 as const, label: i18n.ts.vertical },
+				{ value: 0 as const, label: $locale.value.env.horizontal },
+				{ value: 1 as const, label: $locale.value.env.vertical },
 			],
 			default: 1,
 		},
 		phase: {
-			label: i18n.ts._imageEffector._fxProps.phase,
+			label: $locale.value.env._imageEffector._fxProps.phase,
 			type: 'number',
 			default: 0.0,
 			min: -1.0,
@@ -45,7 +45,7 @@ export const uiDefinition = {
 			toViewValue: v => Math.round(v * 100) + '%',
 		},
 		frequency: {
-			label: i18n.ts._imageEffector._fxProps.frequency,
+			label: $locale.value.env._imageEffector._fxProps.frequency,
 			type: 'number',
 			default: 30,
 			min: 0,
@@ -53,7 +53,7 @@ export const uiDefinition = {
 			step: 0.1,
 		},
 		strength: {
-			label: i18n.ts._imageEffector._fxProps.strength,
+			label: $locale.value.env._imageEffector._fxProps.strength,
 			type: 'number',
 			default: 0.05,
 			min: 0,

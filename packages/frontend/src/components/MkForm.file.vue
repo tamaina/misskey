@@ -5,15 +5,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div>
-	<MkButton inline rounded primary @click="selectButton($event)">{{ i18n.ts.selectFile }}</MkButton>
+	<MkButton inline rounded primary @click="selectButton($event)">{{ $locale.env.selectFile }}</MkButton>
 	<div :class="['_nowrap', !fileName && $style.fileNotSelected]">{{ friendlyFileName }}</div>
 </div>
 </template>
 
 <script setup lang="ts">
+import { $locale as localeRef } from '@/i18n.js';
+
 import * as Misskey from 'misskey-js';
 import { computed, ref } from 'vue';
-import { i18n } from '@/i18n.js';
 import MkButton from '@/components/MkButton.vue';
 import { selectFile } from '@/utility/drive.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
@@ -38,7 +39,7 @@ const friendlyFileName = computed<string>(() => {
 		return fileUrl.value;
 	}
 
-	return i18n.ts.fileNotSelected;
+	return localeRef.value.env.fileNotSelected;
 });
 
 if (props.fileId) {

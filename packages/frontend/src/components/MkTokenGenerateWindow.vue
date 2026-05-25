@@ -15,7 +15,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	@closed="emit('closed')"
 	@ok="ok()"
 >
-	<template #header>{{ title || i18n.ts.generateAccessToken }}</template>
+	<template #header>{{ title || $locale.env.generateAccessToken }}</template>
 
 	<div class="_spacer" style="--MI_SPACER-min: 20px; --MI_SPACER-max: 28px;">
 		<div class="_gaps_m">
@@ -24,21 +24,21 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 			<div>
 				<MkInput v-model="name">
-					<template #label>{{ i18n.ts.name }}</template>
+					<template #label>{{ $locale.env.name }}</template>
 				</MkInput>
 			</div>
-			<div><b>{{ i18n.ts.permission }}</b></div>
+			<div><b>{{ $locale.env.permission }}</b></div>
 			<div class="_buttons">
-				<MkButton inline @click="disableAll">{{ i18n.ts.disableAll }}</MkButton>
-				<MkButton inline @click="enableAll">{{ i18n.ts.enableAll }}</MkButton>
+				<MkButton inline @click="disableAll">{{ $locale.env.disableAll }}</MkButton>
+				<MkButton inline @click="enableAll">{{ $locale.env.enableAll }}</MkButton>
 			</div>
 			<div class="_gaps_s">
-				<MkSwitch v-for="kind in Object.keys(permissionSwitches)" :key="kind" v-model="permissionSwitches[kind as keyof typeof permissionSwitches]">{{ i18n.ts._permissions[kind as keyof typeof permissionSwitches] }}</MkSwitch>
+				<MkSwitch v-for="kind in Object.keys(permissionSwitches)" :key="kind" v-model="permissionSwitches[kind as keyof typeof permissionSwitches]">{{ $locale.env._permissions[kind as keyof typeof permissionSwitches] }}</MkSwitch>
 			</div>
 			<div v-if="iAmAdmin" :class="$style.adminPermissions">
-				<div :class="$style.adminPermissionsHeader"><b>{{ i18n.ts.adminPermission }}</b></div>
+				<div :class="$style.adminPermissionsHeader"><b>{{ $locale.env.adminPermission }}</b></div>
 				<div class="_gaps_s">
-					<MkSwitch v-for="kind in Object.keys(permissionSwitchesForAdmin)" :key="kind" v-model="permissionSwitchesForAdmin[kind as keyof typeof permissionSwitchesForAdmin]">{{ i18n.ts._permissions[kind as keyof typeof permissionSwitchesForAdmin] }}</MkSwitch>
+					<MkSwitch v-for="kind in Object.keys(permissionSwitchesForAdmin)" :key="kind" v-model="permissionSwitchesForAdmin[kind as keyof typeof permissionSwitchesForAdmin]">{{ $locale.env._permissions[kind as keyof typeof permissionSwitchesForAdmin] }}</MkSwitch>
 				</div>
 			</div>
 		</div>
@@ -47,6 +47,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+
 import { useTemplateRef, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkInput from './MkInput.vue';
@@ -54,7 +55,6 @@ import MkSwitch from './MkSwitch.vue';
 import MkButton from './MkButton.vue';
 import MkInfo from './MkInfo.vue';
 import MkModalWindow from '@/components/MkModalWindow.vue';
-import { i18n } from '@/i18n.js';
 import { iAmAdmin } from '@/i.js';
 
 const props = withDefaults(defineProps<{

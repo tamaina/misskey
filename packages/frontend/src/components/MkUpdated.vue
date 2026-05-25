@@ -6,22 +6,22 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <MkModal ref="modal" preferType="dialog" :zPriority="'middle'" @click="modal?.close()" @closed="emit('closed')">
 	<div :class="$style.root">
-		<div :class="$style.title"><MkSparkle>{{ i18n.ts.misskeyUpdated }}</MkSparkle></div>
+		<div :class="$style.title"><MkSparkle>{{ $locale.env.misskeyUpdated }}</MkSparkle></div>
 		<div :class="$style.version">✨{{ version }}🚀</div>
-		<div v-if="isBeta" :class="$style.beta">{{ i18n.ts.thankYouForTestingBeta }}</div>
-		<MkButton full @click="whatIsNew">{{ i18n.ts.whatIsNew }}</MkButton>
-		<MkButton :class="$style.gotIt" primary full @click="modal?.close()">{{ i18n.ts.gotIt }}</MkButton>
+		<div v-if="isBeta" :class="$style.beta">{{ $locale.env.thankYouForTestingBeta }}</div>
+		<MkButton full @click="whatIsNew">{{ $locale.env.whatIsNew }}</MkButton>
+		<MkButton :class="$style.gotIt" primary full @click="modal?.close()">{{ $locale.env.gotIt }}</MkButton>
 	</div>
 </MkModal>
 </template>
 
 <script lang="ts" setup>
+
 import { onMounted, useTemplateRef } from 'vue';
 import { version } from '@@/js/config.js';
 import MkModal from '@/components/MkModal.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkSparkle from '@/components/MkSparkle.vue';
-import { i18n } from '@/i18n.js';
 import { confetti } from '@/utility/confetti.js';
 
 const modal = useTemplateRef('modal');

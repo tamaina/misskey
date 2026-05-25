@@ -9,7 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div>
 			<MkResult v-if="antennas.length === 0" type="empty"/>
 
-			<MkButton type="routerLink" to="/my/antennas/create" primary :class="$style.add"><i class="ti ti-plus"></i> {{ i18n.ts.add }}</MkButton>
+			<MkButton type="routerLink" to="/my/antennas/create" primary :class="$style.add"><i class="ti ti-plus"></i> {{ $locale.env.add }}</MkButton>
 
 			<div v-if="antennas.length > 0" class="_gaps">
 				<MkA v-for="antenna in antennas" :key="antenna.id" :class="$style.antenna" :to="`/timeline/antenna/${antenna.id}`">
@@ -22,9 +22,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef } from '@/i18n.js';
+
 import { onActivated, computed } from 'vue';
 import MkButton from '@/components/MkButton.vue';
-import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
 import { antennasCache } from '@/cache.js';
 
@@ -39,7 +40,7 @@ _fetch_();
 const headerActions = computed(() => [{
 	asFullButton: true,
 	icon: 'ti ti-refresh',
-	text: i18n.ts.reload,
+	text: localeRef.value.env.reload,
 	handler: () => {
 		antennasCache.delete();
 		_fetch_();
@@ -49,7 +50,7 @@ const headerActions = computed(() => [{
 const headerTabs = computed(() => []);
 
 definePage(() => ({
-	title: i18n.ts.manageAntennas,
+	title: localeRef.value.env.manageAntennas,
 	icon: 'ti ti-antenna',
 }));
 

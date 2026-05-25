@@ -15,20 +15,20 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div v-if="user.description" :class="$style.mfm">
 			<Mfm :text="user.description" :author="user"/>
 		</div>
-		<span v-else style="opacity: 0.7;">{{ i18n.ts.noAccountDescription }}</span>
+		<span v-else style="opacity: 0.7;">{{ $locale.env.noAccountDescription }}</span>
 	</div>
 	<div :class="$style.footer">
-		<MkButton v-if="!isFollowing" primary gradate rounded full @click="follow"><i class="ti ti-plus"></i> {{ i18n.ts.follow }}</MkButton>
-		<div v-else style="opacity: 0.7; text-align: center;">{{ i18n.ts.youFollowing }} <i class="ti ti-check"></i></div>
+		<MkButton v-if="!isFollowing" primary gradate rounded full @click="follow"><i class="ti ti-plus"></i> {{ $locale.env.follow }}</MkButton>
+		<div v-else style="opacity: 0.7; text-align: center;">{{ $locale.env.youFollowing }} <i class="ti ti-check"></i></div>
 	</div>
 </div>
 </template>
 
 <script lang="ts" setup>
+
 import * as Misskey from 'misskey-js';
 import { ref } from 'vue';
 import MkButton from '@/components/MkButton.vue';
-import { i18n } from '@/i18n.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 
 const props = defineProps<{

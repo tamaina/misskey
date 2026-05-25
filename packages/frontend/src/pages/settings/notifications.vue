@@ -4,26 +4,26 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<SearchMarker path="/settings/notifications" :label="i18n.ts.notifications" :keywords="['notifications']" icon="ti ti-bell">
+<SearchMarker path="/settings/notifications" :label="$locale.env.notifications" :keywords="['notifications']" icon="ti ti-bell">
 	<div class="_gaps_m">
 		<MkFeatureBanner icon="/client-assets/bell_3d.png" color="#ffff00">
-			<SearchText>{{ i18n.ts._settings.notificationsBanner }}</SearchText>
+			<SearchText>{{ $locale.env._settings.notificationsBanner }}</SearchText>
 		</MkFeatureBanner>
 
 		<FormSection first>
-			<template #label>{{ i18n.ts.notificationRecieveConfig }}</template>
+			<template #label>{{ $locale.env.notificationRecieveConfig }}</template>
 			<div class="_gaps_s">
 				<MkFolder v-for="type in configurableNotificationTypes" :key="type">
-					<template #label>{{ i18n.ts._notification._types[type] }}</template>
+					<template #label>{{ $locale.env._notification._types[type] }}</template>
 					<template #suffix>
 						{{
-							$i.notificationRecieveConfig[type as (typeof configurableNotificationTypes)[number]]?.type === 'never' ? i18n.ts.none :
-							$i.notificationRecieveConfig[type as (typeof configurableNotificationTypes)[number]]?.type === 'following' ? i18n.ts.following :
-							$i.notificationRecieveConfig[type as (typeof configurableNotificationTypes)[number]]?.type === 'follower' ? i18n.ts.followers :
-							$i.notificationRecieveConfig[type as (typeof configurableNotificationTypes)[number]]?.type === 'mutualFollow' ? i18n.ts.mutualFollow :
-							$i.notificationRecieveConfig[type as (typeof configurableNotificationTypes)[number]]?.type === 'followingOrFollower' ? i18n.ts.followingOrFollower :
-							$i.notificationRecieveConfig[type as (typeof configurableNotificationTypes)[number]]?.type === 'list' ? i18n.ts.userList :
-							i18n.ts.all
+							$i.notificationRecieveConfig[type as (typeof configurableNotificationTypes)[number]]?.type === 'never' ? $locale.env.none :
+							$i.notificationRecieveConfig[type as (typeof configurableNotificationTypes)[number]]?.type === 'following' ? $locale.env.following :
+							$i.notificationRecieveConfig[type as (typeof configurableNotificationTypes)[number]]?.type === 'follower' ? $locale.env.followers :
+							$i.notificationRecieveConfig[type as (typeof configurableNotificationTypes)[number]]?.type === 'mutualFollow' ? $locale.env.mutualFollow :
+							$i.notificationRecieveConfig[type as (typeof configurableNotificationTypes)[number]]?.type === 'followingOrFollower' ? $locale.env.followingOrFollower :
+							$i.notificationRecieveConfig[type as (typeof configurableNotificationTypes)[number]]?.type === 'list' ? $locale.env.userList :
+							$locale.env.all
 						}}
 					</template>
 
@@ -42,7 +42,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				:keywords="['notify', 'hide', 'user']"
 			>
 				<MkFolder>
-					<template #label><SearchLabel>{{ i18n.ts.notifyUsers }}</SearchLabel></template>
+					<template #label><SearchLabel>{{ $locale.env.notifyUsers }}</SearchLabel></template>
 					<MkPagination v-slot="{items}" :paginator="notifyUserPaginator" withControl>
 						<div class="_gaps_s">
 							<div v-for="item in items" :key="item.id" :class="[$style.userItem ]">
@@ -60,24 +60,24 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</FormSection>
 		<FormSection>
 			<div class="_gaps_m">
-				<FormLink to="/settings/sounds">{{ i18n.ts.notificationSoundSettings }}</FormLink>
+				<FormLink to="/settings/sounds">{{ $locale.env.notificationSoundSettings }}</FormLink>
 			</div>
 		</FormSection>
 		<FormSection>
 			<div class="_gaps_s">
-				<MkButton @click="readAllNotifications">{{ i18n.ts.markAsReadAllNotifications }}</MkButton>
-				<MkButton @click="testNotification">{{ i18n.ts._notification.sendTestNotification }}</MkButton>
-				<MkButton @click="flushNotification">{{ i18n.ts._notification.flushNotification }}</MkButton>
+				<MkButton @click="readAllNotifications">{{ $locale.env.markAsReadAllNotifications }}</MkButton>
+				<MkButton @click="testNotification">{{ $locale.env._notification.sendTestNotification }}</MkButton>
+				<MkButton @click="flushNotification">{{ $locale.env._notification.flushNotification }}</MkButton>
 			</div>
 		</FormSection>
 		<FormSection>
-			<template #label>{{ i18n.ts.pushNotification }}</template>
+			<template #label>{{ $locale.env.pushNotification }}</template>
 
 			<div class="_gaps_m">
 				<MkPushNotificationAllowButton ref="allowButton"/>
 				<MkSwitch :disabled="!pushRegistrationInServer" :modelValue="sendReadMessage" @update:modelValue="onChangeSendReadMessage">
-					<template #label>{{ i18n.ts.sendPushNotificationReadMessage }}</template>
-					<template #caption>{{ i18n.ts.sendPushNotificationReadMessageCaption }}</template>
+					<template #label>{{ $locale.env.sendPushNotificationReadMessage }}</template>
+					<template #caption>{{ $locale.env.sendPushNotificationReadMessageCaption }}</template>
 				</MkSwitch>
 			</div>
 		</FormSection>
@@ -86,6 +86,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef } from '@/i18n.js';
+
 import { useTemplateRef, computed, ref, markRaw } from 'vue';
 import { notificationTypes } from 'misskey-js';
 import * as Misskey from 'misskey-js';
@@ -99,7 +101,6 @@ import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os.js';
 import { ensureSignin } from '@/i.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
-import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
 import MkPushNotificationAllowButton from '@/components/MkPushNotificationAllowButton.vue';
 import MkFeatureBanner from '@/components/MkFeatureBanner.vue';
@@ -112,7 +113,7 @@ const $i = ensureSignin();
 
 async function showNotifyMenu(user: Misskey.entities.UserDetailed, ev: PointerEvent) {
 	os.popupMenu([{
-		text: (user.notify === 'normal') ? i18n.ts.unnotifyNotes : i18n.ts.notifyNotes,
+		text: (user.notify === 'normal') ? localeRef.value.env.unnotifyNotes : localeRef.value.env.notifyNotes,
 		icon: (user.notify === 'normal') ? 'ti ti-x' : 'ti ti-plus',
 		action: async () => {
 			await os.apiWithDialog('following/update', {
@@ -177,7 +178,7 @@ function testNotification(): void {
 async function flushNotification() {
 	const { canceled } = await os.confirm({
 		type: 'warning',
-		text: i18n.ts.resetAreYouSure,
+		text: localeRef.value.env.resetAreYouSure,
 	});
 
 	if (canceled) return;
@@ -190,7 +191,7 @@ const headerActions = computed(() => []);
 const headerTabs = computed(() => []);
 
 definePage(() => ({
-	title: i18n.ts.notifications,
+	title: localeRef.value.env.notifications,
 	icon: 'ti ti-bell',
 }));
 </script>

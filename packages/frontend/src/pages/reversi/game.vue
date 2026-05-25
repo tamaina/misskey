@@ -10,6 +10,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef } from '@/i18n.js';
+
 import { computed, watch, ref, onMounted, shallowRef, onUnmounted } from 'vue';
 import * as Misskey from 'misskey-js';
 import GameSetting from './game.setting.vue';
@@ -21,7 +23,6 @@ import { $i } from '@/i.js';
 import { useRouter } from '@/router.js';
 import * as os from '@/os.js';
 import { url } from '@@/js/config.js';
-import { i18n } from '@/i18n.js';
 import { useInterval } from '@@/js/use-interval.js';
 
 const router = useRouter();
@@ -43,7 +44,7 @@ function start(_game: Misskey.entities.ReversiGameDetailed) {
 
 	if (shareWhenStart.value) {
 		misskeyApi('notes/create', {
-			text: `${i18n.ts._reversi.iStartedAGame}\n${url}/reversi/g/${props.gameId}`,
+			text: `${localeRef.value.env._reversi.iStartedAGame}\n${url}/reversi/g/${props.gameId}`,
 			visibility: 'home',
 		});
 	}
@@ -75,7 +76,7 @@ async function fetchGame() {
 			if (x.userId !== $i?.id) {
 				os.alert({
 					type: 'warning',
-					text: i18n.ts._reversi.gameCanceled,
+					text: localeRef.value.env._reversi.gameCanceled,
 				});
 				router.push('/reversi');
 			}

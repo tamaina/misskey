@@ -11,12 +11,12 @@ import { misskeyApi } from '@/utility/misskey-api.js';
 import { deckStore } from '@/ui/deck/deck-store.js';
 import { unisonReload } from '@/utility/unison-reload.js';
 import * as os from '@/os.js';
-import { i18n } from '@/i18n.js';
 import type { SoundStore } from '@/preferences/def.js';
+import { $locale, $l } from '@/i18n.js';
 
 // TODO: そのうち消す
 export function migrateOldSettings() {
-	os.waiting({ text: i18n.ts.settingsMigrating });
+	os.waiting({ text: $locale.value.env.settingsMigrating });
 
 	store.loaded.then(async () => {
 		misskeyApi('i/registry/get', { scope: ['client'], key: 'themes' }).catch(() => []).then((themes: any) => {

@@ -13,31 +13,32 @@ SPDX-License-Identifier: AGPL-3.0-only
 			v-if="instance.federation !== 'none'"
 			v-model="searchOrigin"
 			:options="[
-				{ value: 'combined', label: i18n.ts.all },
-				{ value: 'local', label: i18n.ts.local },
-				{ value: 'remote', label: i18n.ts.remote },
+				{ value: 'combined', label: $locale.env.all },
+				{ value: 'local', label: $locale.env.local },
+				{ value: 'remote', label: $locale.env.remote },
 			]"
 			@update:modelValue="search()"
 		>
 		</MkRadios>
-		<MkButton large primary gradate rounded @click="search">{{ i18n.ts.search }}</MkButton>
+		<MkButton large primary gradate rounded @click="search">{{ $locale.env.search }}</MkButton>
 	</div>
 
 	<MkFoldableSection v-if="paginator">
-		<template #header>{{ i18n.ts.searchResult }}</template>
+		<template #header>{{ $locale.env.searchResult }}</template>
 		<MkUserList :key="`searchUsers:${key}`" :paginator="paginator"/>
 	</MkFoldableSection>
 </div>
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef } from '@/i18n.js';
+
 import { markRaw, ref, shallowRef, toRef } from 'vue';
 import type { Endpoints } from 'misskey-js';
 import MkUserList from '@/components/MkUserList.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkRadios from '@/components/MkRadios.vue';
 import MkButton from '@/components/MkButton.vue';
-import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
 import * as os from '@/os.js';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';
@@ -71,14 +72,14 @@ async function search() {
 	if (query.startsWith('https://') && !query.includes(' ')) {
 		const confirm = await os.confirm({
 			type: 'info',
-			text: i18n.ts.lookupConfirm,
+			text: localeRef.value.env.lookupConfirm,
 		});
 		if (!confirm.canceled) {
 			const promise = misskeyApi('ap/show', {
 				uri: query,
 			});
 
-			os.promiseDialog(promise, null, null, i18n.ts.fetchingAsApObject);
+			os.promiseDialog(promise, null, null, localeRef.value.env.fetchingAsApObject);
 
 			const res = await promise;
 
@@ -106,7 +107,7 @@ async function search() {
 		if (query.startsWith('@')) {
 			const confirm = await os.confirm({
 				type: 'info',
-				text: i18n.ts.lookupConfirm,
+				text: localeRef.value.env.lookupConfirm,
 			});
 			if (!confirm.canceled) {
 				router.pushByPath(`/${query}`);
@@ -117,7 +118,7 @@ async function search() {
 		if (query.startsWith('#')) {
 			const confirm = await os.confirm({
 				type: 'info',
-				text: i18n.ts.openTagPageConfirm,
+				text: localeRef.value.env.openTagPageConfirm,
 			});
 			if (!confirm.canceled) {
 				router.push('/user-tags/:tag', {

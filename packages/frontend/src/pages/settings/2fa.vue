@@ -6,35 +6,35 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <SearchMarker markerId="2fa" :keywords="['2fa']">
 	<FormSection :first="first">
-		<template #label><SearchLabel>{{ i18n.ts['2fa'] }}</SearchLabel></template>
+		<template #label><SearchLabel>{{ $locale.env['2fa'] }}</SearchLabel></template>
 
 		<div v-if="$i" class="_gaps_s">
 			<MkInfo v-if="$i.twoFactorEnabled && $i.twoFactorBackupCodesStock === 'partial'" warn>
-				{{ i18n.ts._2fa.backupCodeUsedWarning }}
+				{{ $locale.env._2fa.backupCodeUsedWarning }}
 			</MkInfo>
 			<MkInfo v-if="$i.twoFactorEnabled && $i.twoFactorBackupCodesStock === 'none'" warn>
-				{{ i18n.ts._2fa.backupCodesExhaustedWarning }}
+				{{ $locale.env._2fa.backupCodesExhaustedWarning }}
 			</MkInfo>
 
 			<SearchMarker :keywords="['totp', 'app']">
 				<MkFolder :defaultOpen="true">
 					<template #icon><i class="ti ti-shield-lock"></i></template>
-					<template #label><SearchLabel>{{ i18n.ts.totp }}</SearchLabel></template>
-					<template #caption><SearchText>{{ i18n.ts.totpDescription }}</SearchText></template>
+					<template #label><SearchLabel>{{ $locale.env.totp }}</SearchLabel></template>
+					<template #caption><SearchText>{{ $locale.env.totpDescription }}</SearchText></template>
 					<template #suffix><i v-if="$i.twoFactorEnabled" class="ti ti-check" style="color: var(--MI_THEME-success)"></i></template>
 
 					<div v-if="$i.twoFactorEnabled" class="_gaps_s">
-						<div>{{ i18n.ts._2fa.alreadyRegistered }}</div>
+						<div>{{ $locale.env._2fa.alreadyRegistered }}</div>
 						<template v-if="$i.securityKeysList!.length > 0">
-							<MkButton @click="renewTOTP">{{ i18n.ts._2fa.renewTOTP }}</MkButton>
-							<MkInfo>{{ i18n.ts._2fa.whyTOTPOnlyRenew }}</MkInfo>
+							<MkButton @click="renewTOTP">{{ $locale.env._2fa.renewTOTP }}</MkButton>
+							<MkInfo>{{ $locale.env._2fa.whyTOTPOnlyRenew }}</MkInfo>
 						</template>
-						<MkButton v-else danger @click="unregisterTOTP">{{ i18n.ts.unregister }}</MkButton>
+						<MkButton v-else danger @click="unregisterTOTP">{{ $locale.env.unregister }}</MkButton>
 					</div>
 
 					<div v-else-if="!$i.twoFactorEnabled" class="_gaps_s">
-						<MkButton primary gradate @click="registerTOTP">{{ i18n.ts._2fa.registerTOTP }}</MkButton>
-						<MkLink url="https://misskey-hub.net/docs/for-users/stepped-guides/how-to-enable-2fa/" target="_blank"><i class="ti ti-help-circle"></i> {{ i18n.ts.learnMore }}</MkLink>
+						<MkButton primary gradate @click="registerTOTP">{{ $locale.env._2fa.registerTOTP }}</MkButton>
+						<MkLink url="https://misskey-hub.net/docs/for-users/stepped-guides/how-to-enable-2fa/" target="_blank"><i class="ti ti-help-circle"></i> {{ $locale.env.learnMore }}</MkLink>
 					</div>
 				</MkFolder>
 			</SearchMarker>
@@ -42,28 +42,28 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<SearchMarker :keywords="['security', 'key', 'passkey']">
 				<MkFolder>
 					<template #icon><i class="ti ti-key"></i></template>
-					<template #label><SearchLabel>{{ i18n.ts.securityKeyAndPasskey }}</SearchLabel></template>
+					<template #label><SearchLabel>{{ $locale.env.securityKeyAndPasskey }}</SearchLabel></template>
 					<div class="_gaps_s">
 						<MkInfo>
-							{{ i18n.ts._2fa.securityKeyInfo }}
+							{{ $locale.env._2fa.securityKeyInfo }}
 						</MkInfo>
 
 						<MkInfo v-if="!browserSupportsWebAuthn()" warn>
-							{{ i18n.ts._2fa.securityKeyNotSupported }}
+							{{ $locale.env._2fa.securityKeyNotSupported }}
 						</MkInfo>
 
 						<MkInfo v-else-if="browserSupportsWebAuthn() && !$i.twoFactorEnabled" warn>
-							{{ i18n.ts._2fa.registerTOTPBeforeKey }}
+							{{ $locale.env._2fa.registerTOTPBeforeKey }}
 						</MkInfo>
 
 						<template v-else>
-							<MkButton primary @click="addSecurityKey">{{ i18n.ts._2fa.registerSecurityKey }}</MkButton>
+							<MkButton primary @click="addSecurityKey">{{ $locale.env._2fa.registerSecurityKey }}</MkButton>
 							<MkFolder v-for="key in $i.securityKeysList!" :key="key.id">
 								<template #label>{{ key.name }}</template>
-								<template #suffix><I18n :src="i18n.ts.lastUsedAt"><template #t><MkTime :time="key.lastUsed"/></template></I18n></template>
+								<template #suffix><I18n :src="$locale.env.lastUsedAt"><template #t><MkTime :time="key.lastUsed"/></template></I18n></template>
 								<div class="_buttons">
-									<MkButton @click="renameKey(key)"><i class="ti ti-forms"></i> {{ i18n.ts.rename }}</MkButton>
-									<MkButton danger @click="unregisterKey(key)"><i class="ti ti-trash"></i> {{ i18n.ts.unregister }}</MkButton>
+									<MkButton @click="renameKey(key)"><i class="ti ti-forms"></i> {{ $locale.env.rename }}</MkButton>
+									<MkButton danger @click="unregisterKey(key)"><i class="ti ti-trash"></i> {{ $locale.env.unregister }}</MkButton>
 								</div>
 							</MkFolder>
 						</template>
@@ -73,8 +73,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 			<SearchMarker :keywords="['password', 'less', 'key', 'passkey', 'login', 'signin']">
 				<MkSwitch :disabled="!$i.twoFactorEnabled || $i.securityKeysList!.length === 0" :modelValue="usePasswordLessLogin" @update:modelValue="v => updatePasswordLessLogin(v)">
-					<template #label><SearchLabel>{{ i18n.ts.passwordLessLogin }}</SearchLabel></template>
-					<template #caption><SearchText>{{ i18n.ts.passwordLessLoginDescription }}</SearchText></template>
+					<template #label><SearchLabel>{{ $locale.env.passwordLessLogin }}</SearchLabel></template>
+					<template #caption><SearchText>{{ $locale.env.passwordLessLoginDescription }}</SearchText></template>
 				</MkSwitch>
 			</SearchMarker>
 		</div>
@@ -83,6 +83,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef, $l as localizerRef } from '@/i18n.js';
+
 import { computed } from 'vue';
 import { browserSupportsWebAuthn, startRegistration } from '@simplewebauthn/browser';
 import * as Misskey from 'misskey-js';
@@ -94,7 +96,6 @@ import MkFolder from '@/components/MkFolder.vue';
 import MkLink from '@/components/MkLink.vue';
 import * as os from '@/os.js';
 import { ensureSignin } from '@/i.js';
-import { i18n } from '@/i18n.js';
 import { updateCurrentAccountPartial } from '@/accounts.js';
 
 const $i = ensureSignin();
@@ -147,10 +148,10 @@ async function unregisterTOTP(): Promise<void> {
 function renewTOTP(): void {
 	os.confirm({
 		type: 'question',
-		title: i18n.ts._2fa.renewTOTP,
-		text: i18n.ts._2fa.renewTOTPConfirm,
-		okText: i18n.ts._2fa.renewTOTPOk,
-		cancelText: i18n.ts._2fa.renewTOTPCancel,
+		title: localeRef.value.env._2fa.renewTOTP,
+		text: localeRef.value.env._2fa.renewTOTPConfirm,
+		okText: localeRef.value.env._2fa.renewTOTPOk,
+		cancelText: localeRef.value.env._2fa.renewTOTPCancel,
 	}).then(({ canceled }) => {
 		if (canceled) return;
 		registerTOTP();
@@ -160,8 +161,8 @@ function renewTOTP(): void {
 async function unregisterKey(key: NonNullable<Misskey.entities.MeDetailedOnly['securityKeysList']>[number]) {
 	const confirm = await os.confirm({
 		type: 'question',
-		title: i18n.ts._2fa.removeKey,
-		text: i18n.tsx._2fa.removeKeyConfirm({ name: key.name }),
+		title: localeRef.value.env._2fa.removeKey,
+		text: localizerRef.value.env._2fa.removeKeyConfirm({ name: key.name }),
 	});
 	if (confirm.canceled) return;
 
@@ -178,7 +179,7 @@ async function unregisterKey(key: NonNullable<Misskey.entities.MeDetailedOnly['s
 
 async function renameKey(key: NonNullable<Misskey.entities.MeDetailedOnly['securityKeysList']>[number]) {
 	const name = await os.inputText({
-		title: i18n.ts.rename,
+		title: localeRef.value.env.rename,
 		default: key.name,
 		type: 'text',
 		minLength: 1,
@@ -202,8 +203,8 @@ async function addSecurityKey() {
 	});
 
 	const name = await os.inputText({
-		title: i18n.ts._2fa.registerSecurityKey,
-		text: i18n.ts._2fa.securityKeyName,
+		title: localeRef.value.env._2fa.registerSecurityKey,
+		text: localeRef.value.env._2fa.securityKeyName,
 		type: 'text',
 		minLength: 1,
 		maxLength: 30,
@@ -214,7 +215,7 @@ async function addSecurityKey() {
 		startRegistration({ optionsJSON: registrationOptions }),
 		null,
 		() => {}, // ユーザーのキャンセルはrejectなのでエラーダイアログを出さない
-		i18n.ts._2fa.tapSecurityKey,
+		localeRef.value.env._2fa.tapSecurityKey,
 	);
 	if (!credential) return;
 

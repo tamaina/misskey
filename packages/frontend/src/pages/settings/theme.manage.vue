@@ -6,25 +6,27 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <div class="_gaps_m">
 	<MkSelect v-model="selectedThemeId" :items="selectedThemeIdDef">
-		<template #label>{{ i18n.ts.theme }}</template>
+		<template #label>{{ $locale.env.theme }}</template>
 	</MkSelect>
 	<template v-if="selectedTheme != null">
 		<MkInput readonly :modelValue="selectedTheme.author">
-			<template #label>{{ i18n.ts.author }}</template>
+			<template #label>{{ $locale.env.author }}</template>
 		</MkInput>
 		<MkTextarea v-if="selectedTheme.desc" readonly :modelValue="selectedTheme.desc">
-			<template #label>{{ i18n.ts._theme.description }}</template>
+			<template #label>{{ $locale.env._theme.description }}</template>
 		</MkTextarea>
 		<MkTextarea readonly tall :modelValue="selectedThemeCode">
-			<template #label>{{ i18n.ts._theme.code }}</template>
-			<template #caption><button class="_textButton" @click="copyThemeCode()">{{ i18n.ts.copy }}</button></template>
+			<template #label>{{ $locale.env._theme.code }}</template>
+			<template #caption><button class="_textButton" @click="copyThemeCode()">{{ $locale.env.copy }}</button></template>
 		</MkTextarea>
-		<MkButton v-if="!builtinThemes.some(t => t.id == selectedTheme!.id)" danger @click="uninstall()"><i class="ti ti-trash"></i> {{ i18n.ts.uninstall }}</MkButton>
+		<MkButton v-if="!builtinThemes.some(t => t.id == selectedTheme!.id)" danger @click="uninstall()"><i class="ti ti-trash"></i> {{ $locale.env.uninstall }}</MkButton>
 	</template>
 </div>
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef } from '@/i18n.js';
+
 import { computed, ref } from 'vue';
 import JSON5 from 'json5';
 import type { Theme } from '@@/js/theme.js';
@@ -36,7 +38,6 @@ import { removeTheme } from '@/theme.js';
 import { getBuiltinThemes } from '@@/js/theme.js';
 import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
 import * as os from '@/os.js';
-import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
 import { useMkSelect } from '@/composables/use-mkselect.js';
 import type { MkSelectItem } from '@/components/MkSelect.vue';
@@ -54,11 +55,11 @@ const {
 } = useMkSelect({
 	items: computed<MkSelectItem<string | null>[]>(() => [{
 		type: 'group',
-		label: i18n.ts._theme.installedThemes,
+		label: localeRef.value.env._theme.installedThemes,
 		items: installedThemes.value.map(x => ({ label: x.name, value: x.id })),
 	}, {
 		type: 'group',
-		label: i18n.ts._theme.builtinThemes,
+		label: localeRef.value.env._theme.builtinThemes,
 		items: builtinThemes.value.map(x => ({ label: x.name, value: x.id })),
 	}]),
 	initialValue: null,
@@ -92,7 +93,7 @@ const headerActions = computed(() => []);
 const headerTabs = computed(() => []);
 
 definePage(() => ({
-	title: i18n.ts._theme.manage,
+	title: localeRef.value.env._theme.manage,
 	icon: 'ti ti-tool',
 }));
 </script>

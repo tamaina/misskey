@@ -14,13 +14,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 	@ok="save()"
 	@closed="emit('closed')"
 >
-	<template #header><i class="ti ti-sparkles"></i> {{ i18n.ts._imageEffector.title }}</template>
+	<template #header><i class="ti ti-sparkles"></i> {{ $locale.env._imageEffector.title }}</template>
 
 	<MkPreviewWithControls>
 		<template #preview>
 			<canvas ref="canvasEl" :class="$style.previewCanvas" @pointerdown.prevent.stop="onImagePointerdown"></canvas>
 			<div :class="$style.previewContainer">
-				<div class="_acrylic" :class="$style.previewTitle">{{ i18n.ts.preview }}</div>
+				<div class="_acrylic" :class="$style.previewTitle">{{ $locale.env.preview }}</div>
 				<div class="_acrylic" :class="$style.editControls">
 					<button class="_button" :class="[$style.previewControlsButton, penMode != null ? $style.active : null]" @click="showPenMenu"><i class="ti ti-pencil"></i></button>
 				</div>
@@ -42,7 +42,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					@swapDown="onLayerSwapDown(layer)"
 				></XLayer>
 
-				<MkButton rounded primary style="margin: 0 auto;" @click="addEffect"><i class="ti ti-plus"></i> {{ i18n.ts._imageEffector.addEffect }}</MkButton>
+				<MkButton rounded primary style="margin: 0 auto;" @click="addEffect"><i class="ti ti-plus"></i> {{ $locale.env._imageEffector.addEffect }}</MkButton>
 			</div>
 		</template>
 	</MkPreviewWithControls>
@@ -50,9 +50,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script setup lang="ts">
+import { $locale as localeRef } from '@/i18n.js';
+
 import { ref, useTemplateRef, watch, onMounted, onUnmounted, reactive, nextTick } from 'vue';
 import type { ImageEffectorLayer } from '@/utility/image-effector/ImageEffector.js';
-import { i18n } from '@/i18n.js';
 import { ImageEffector } from '@/utility/image-effector/ImageEffector.js';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import MkPreviewWithControls from '@/components/MkPreviewWithControls.vue';
@@ -78,7 +79,7 @@ async function cancel() {
 	if (layers.length > 0) {
 		const { canceled } = await os.confirm({
 			type: 'warning',
-			text: i18n.ts._imageEffector.discardChangesConfirm,
+			text: localeRef.value.env._imageEffector.discardChangesConfirm,
 		});
 		if (canceled) return;
 	}
@@ -169,7 +170,7 @@ onMounted(async () => {
 		console.error(err);
 		os.alert({
 			type: 'error',
-			text: i18n.ts._imageEffector.failedToLoadImage,
+			text: localeRef.value.env._imageEffector.failedToLoadImage,
 		});
 	}
 
@@ -221,17 +222,17 @@ const penMode = ref<'fill' | 'blur' | 'pixelate' | null>(null);
 
 function showPenMenu(ev: PointerEvent) {
 	os.popupMenu([{
-		text: i18n.ts._imageEffector._fxs.fill,
+		text: localeRef.value.env._imageEffector._fxs.fill,
 		action: () => {
 			penMode.value = 'fill';
 		},
 	}, {
-		text: i18n.ts._imageEffector._fxs.blur,
+		text: localeRef.value.env._imageEffector._fxs.blur,
 		action: () => {
 			penMode.value = 'blur';
 		},
 	}, {
-		text: i18n.ts._imageEffector._fxs.pixelate,
+		text: localeRef.value.env._imageEffector._fxs.pixelate,
 		action: () => {
 			penMode.value = 'pixelate';
 		},

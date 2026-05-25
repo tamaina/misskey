@@ -4,15 +4,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<SearchMarker path="/settings/avatar-decoration" :label="i18n.ts.avatarDecorations" :keywords="['avatar', 'icon', 'decoration']" icon="ti ti-sparkles">
+<SearchMarker path="/settings/avatar-decoration" :label="$locale.env.avatarDecorations" :keywords="['avatar', 'icon', 'decoration']" icon="ti ti-sparkles">
 	<div>
 		<div v-if="!loading" class="_gaps">
-			<MkInfo>{{ i18n.tsx._profile.avatarDecorationMax({ max: $i.policies.avatarDecorationLimit }) }} ({{ i18n.tsx.remainingN({ n: $i.policies.avatarDecorationLimit - $i.avatarDecorations.length }) }})</MkInfo>
+			<MkInfo>{{ $l.env._profile.avatarDecorationMax({ max: $i.policies.avatarDecorationLimit }) }} ({{ $l.env.remainingN({ n: $i.policies.avatarDecorationLimit - $i.avatarDecorations.length }) }})</MkInfo>
 
 			<MkAvatar :class="$style.avatar" :user="$i" forceShowDecoration/>
 
 			<div v-if="$i.avatarDecorations.length > 0" v-panel :class="$style.current" class="_gaps_s">
-				<div>{{ i18n.ts.inUse }}</div>
+				<div>{{ $locale.env.inUse }}</div>
 
 				<div :class="$style.decorations">
 					<XDecoration
@@ -27,10 +27,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 					/>
 				</div>
 
-				<MkButton danger @click="detachAllDecorations">{{ i18n.ts.detachAll }}</MkButton>
+				<MkButton danger @click="detachAllDecorations">{{ $locale.env.detachAll }}</MkButton>
 			</div>
 			<MkFoldableSection v-for="category in Object.keys(groupedDecorations)" :key="category" :expanded="true">
-				<template #header>{{ category || i18n.ts.other }}</template>
+				<template #header>{{ category || $locale.env.other }}</template>
 				<div :class="$style.decorations">
 					<XDecoration
 						v-for="avatarDecoration in groupedDecorations[category]"
@@ -49,6 +49,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef } from '@/i18n.js';
+
 import { ref, defineAsyncComponent, computed } from 'vue';
 import * as Misskey from 'misskey-js';
 import XDecoration from './avatar-decoration.decoration.vue';
@@ -57,7 +59,6 @@ import MkButton from '@/components/MkButton.vue';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
-import { i18n } from '@/i18n.js';
 import { ensureSignin } from '@/i.js';
 import MkInfo from '@/components/MkInfo.vue';
 import { definePage } from '@/page.js';
@@ -134,7 +135,7 @@ async function openDecoration(avatarDecoration: {
 function detachAllDecorations() {
 	os.confirm({
 		type: 'warning',
-		text: i18n.ts.areYouSure,
+		text: localeRef.value.env.areYouSure,
 	}).then(async ({ canceled }) => {
 		if (canceled) return;
 		await os.apiWithDialog('i/update', {
@@ -149,7 +150,7 @@ const headerActions = computed(() => []);
 const headerTabs = computed(() => []);
 
 definePage(() => ({
-	title: i18n.ts.avatarDecorations,
+	title: localeRef.value.env.avatarDecorations,
 	icon: 'ti ti-sparkles',
 }));
 </script>

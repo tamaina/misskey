@@ -27,23 +27,23 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</div>
 				</div>
 				<MkInput v-model="name">
-					<template #label>{{ i18n.ts.name }}</template>
+					<template #label>{{ $locale.env.name }}</template>
 				</MkInput>
 				<MkInput v-model="url">
-					<template #label>{{ i18n.ts.imageUrl }}</template>
+					<template #label>{{ $locale.env.imageUrl }}</template>
 				</MkInput>
 				<MkInput v-model="category" :datalist="props.categories || []">
-					<template #label>{{ i18n.ts.category }}</template>
+					<template #label>{{ $locale.env.category }}</template>
 				</MkInput>
 				<MkTextarea v-model="description">
-					<template #label>{{ i18n.ts.description }}</template>
+					<template #label>{{ $locale.env.description }}</template>
 				</MkTextarea>
 				<MkFolder>
-					<template #label>{{ i18n.ts.availableRoles }}</template>
-					<template #suffix>{{ rolesThatCanBeUsedThisDecoration.length === 0 ? i18n.ts.all : rolesThatCanBeUsedThisDecoration.length }}</template>
+					<template #label>{{ $locale.env.availableRoles }}</template>
+					<template #suffix>{{ rolesThatCanBeUsedThisDecoration.length === 0 ? $locale.env.all : rolesThatCanBeUsedThisDecoration.length }}</template>
 
 					<div class="_gaps">
-						<MkButton rounded @click="addRole"><i class="ti ti-plus"></i> {{ i18n.ts.add }}</MkButton>
+						<MkButton rounded @click="addRole"><i class="ti ti-plus"></i> {{ $locale.env.add }}</MkButton>
 
 						<div v-for="role in rolesThatCanBeUsedThisDecoration" :key="role.id" :class="$style.roleItem">
 							<MkRolePreview :class="$style.role" :role="role" :forModeration="true" :detailed="false" style="pointer-events: none;"/>
@@ -52,17 +52,19 @@ SPDX-License-Identifier: AGPL-3.0-only
 						</div>
 					</div>
 				</MkFolder>
-				<MkButton v-if="avatarDecoration" danger @click="del()"><i class="ti ti-trash"></i> {{ i18n.ts.delete }}</MkButton>
+				<MkButton v-if="avatarDecoration" danger @click="del()"><i class="ti ti-trash"></i> {{ $locale.env.delete }}</MkButton>
 			</div>
 		</div>
 		<div :class="$style.footer">
-			<MkButton primary rounded style="margin: 0 auto;" @click="done"><i class="ti ti-check"></i> {{ props.avatarDecoration ? i18n.ts.update : i18n.ts.create }}</MkButton>
+			<MkButton primary rounded style="margin: 0 auto;" @click="done"><i class="ti ti-check"></i> {{ props.avatarDecoration ? $locale.env.update : $locale.env.create }}</MkButton>
 		</div>
 	</div>
 </MkWindow>
 </template>
 
 <script lang="ts" setup>
+import { $l as localizerRef } from '@/i18n.js';
+
 import { computed, watch, ref, useTemplateRef } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkWindow from '@/components/MkWindow.vue';
@@ -72,7 +74,6 @@ import MkInfo from '@/components/MkInfo.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
-import { i18n } from '@/i18n.js';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkRolePreview from '@/components/MkRolePreview.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
@@ -157,7 +158,7 @@ async function del() {
 
 	const { canceled } = await os.confirm({
 		type: 'warning',
-		text: i18n.tsx.removeAreYouSure({ x: name.value }),
+		text: localizerRef.value.env.removeAreYouSure({ x: name.value }),
 	});
 	if (canceled) return;
 

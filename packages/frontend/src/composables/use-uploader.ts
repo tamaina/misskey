@@ -12,12 +12,12 @@ import type { MenuItem } from '@/types/menu.js';
 import type { WatermarkLayers, WatermarkPreset } from '@/utility/watermark/WatermarkRenderer.js';
 import type { ImageFrameParams, ImageFramePreset } from '@/utility/image-frame-renderer/ImageFrameRenderer.js';
 import { genId } from '@/utility/id.js';
-import { i18n } from '@/i18n.js';
 import { prefer } from '@/preferences.js';
 import { isWebpSupported } from '@/utility/isWebpSupported.js';
 import { uploadFile, UploadAbortedError } from '@/utility/drive.js';
 import * as os from '@/os.js';
 import { ensureSignin } from '@/i.js';
+import { $locale, $l } from '@/i18n.js';
 
 export type UploaderFeatures = {
 	imageEditing?: boolean;
@@ -178,11 +178,11 @@ export function useUploader(options: {
 		) {
 			menu.push({
 				icon: 'ti ti-forms',
-				text: i18n.ts.rename,
+				text: $locale.value.env.rename,
 				action: async () => {
 					const { result, canceled } = await os.inputText({
 						type: 'text',
-						title: i18n.ts.rename,
+						title: $locale.value.env.rename,
 						placeholder: item.name,
 						default: item.name,
 					});
@@ -193,14 +193,14 @@ export function useUploader(options: {
 				},
 			}, {
 				type: 'switch',
-				text: i18n.ts.sensitive,
+				text: $locale.value.env.sensitive,
 				icon: 'ti ti-eye-exclamation',
 				ref: computed({
 					get: () => item.isSensitive ?? false,
 					set: (value) => item.isSensitive = value,
 				}),
 			}, {
-				text: i18n.ts.describeFile,
+				text: $locale.value.env.describeFile,
 				icon: 'ti ti-text-caption',
 				action: async () => {
 					const { dispose } = await os.popupAsyncWithDialog(import('@/components/MkFileCaptionEditWindow.vue').then(x => x.default), {
@@ -229,10 +229,10 @@ export function useUploader(options: {
 			menu.push({
 				type: 'parent',
 				icon: 'ti ti-photo-edit',
-				text: i18n.ts._uploader.editImage,
+				text: $locale.value.env._uploader.editImage,
 				children: [{
 					icon: 'ti ti-crop',
-					text: i18n.ts.cropImage,
+					text: $locale.value.env.cropImage,
 					action: async () => {
 						const cropped = await os.cropImageFile(item.file, { aspectRatio: null });
 						if (item.thumbnail != null) URL.revokeObjectURL(item.thumbnail);
@@ -248,13 +248,13 @@ export function useUploader(options: {
 					},
 				}, /*{
 					icon: 'ti ti-resize',
-					text: i18n.ts.resize,
+					text: $locale.value.env.resize,
 					action: async () => {
 						// TODO
 					},
 				},*/ {
 					icon: 'ti ti-sparkles',
-					text: i18n.ts._imageEffector.title,
+					text: $locale.value.env._imageEffector.title,
 					action: async () => {
 						const { dispose } = await os.popupAsyncWithDialog(import('@/components/MkImageEffectorDialog.vue').then(x => x.default), {
 							image: item.file,
@@ -296,13 +296,13 @@ export function useUploader(options: {
 
 			menu.push({
 				icon: 'ti ti-copyright',
-				text: i18n.ts.watermark,
-				caption: computed(() => item.watermarkPreset != null ? item.watermarkPreset.name : item.watermarkLayers != null ? i18n.ts.custom : null),
+				text: $locale.value.env.watermark,
+				caption: computed(() => item.watermarkPreset != null ? item.watermarkPreset.name : item.watermarkLayers != null ? $locale.value.env.custom : null),
 				type: 'parent',
 				children: [{
 					type: 'button' as const,
 					icon: 'ti ti-pencil',
-					text: i18n.ts.edit,
+					text: $locale.value.env.edit,
 					action: async () => {
 						const { dispose } = await os.popupAsyncWithDialog(import('@/components/MkWatermarkEditorDialog.vue').then(x => x.default), {
 							layers: item.watermarkLayers,
@@ -317,13 +317,13 @@ export function useUploader(options: {
 				}, {
 					type: 'button' as const,
 					icon: 'ti ti-x',
-					text: i18n.ts.remove,
+					text: $locale.value.env.remove,
 					action: () => change(null),
 				}, {
 					type: 'divider',
 				}, {
 					type: 'label',
-					text: i18n.ts.presets,
+					text: $locale.value.env.presets,
 				}, ...prefer.s.watermarkPresets.map(preset => ({
 					type: 'radioOption' as const,
 					text: preset.name,
@@ -349,12 +349,12 @@ export function useUploader(options: {
 
 			menu.push({
 				icon: 'ti ti-device-ipad-horizontal',
-				text: i18n.ts.frame,
+				text: $locale.value.env.frame,
 				type: 'parent' as const,
 				children: [{
 					type: 'button' as const,
 					icon: 'ti ti-pencil',
-					text: i18n.ts.edit,
+					text: $locale.value.env.edit,
 					action: async () => {
 						const { dispose } = await os.popupAsyncWithDialog(import('@/components/MkImageFrameEditorDialog.vue').then(x => x.default), {
 							params: item.imageFrameParams,
@@ -371,13 +371,13 @@ export function useUploader(options: {
 				}, ...(item.imageFrameParams != null ? [{
 					type: 'button' as const,
 					icon: 'ti ti-x',
-					text: i18n.ts.remove,
+					text: $locale.value.env.remove,
 					action: () => change(null),
 				}] : []), {
 					type: 'divider' as const,
 				}, {
 					type: 'label' as const,
-					text: i18n.ts.presets,
+					text: $locale.value.env.presets,
 				}, ...prefer.s.imageFramePresets.map(preset => ({
 					type: 'button' as const,
 					text: preset.name,
@@ -414,16 +414,16 @@ export function useUploader(options: {
 			menu.push({
 				icon: 'ti ti-leaf',
 				text: computed(() => {
-					let text = i18n.ts.compress;
+					let text = $locale.value.env.compress;
 
 					if (item.compressionLevel === 0 || item.compressionLevel == null) {
-						text += `: ${i18n.ts.none}`;
+						text += `: ${$locale.value.env.none}`;
 					} else if (item.compressionLevel === 1) {
-						text += `: ${i18n.ts.low}`;
+						text += `: ${$locale.value.env.low}`;
 					} else if (item.compressionLevel === 2) {
-						text += `: ${i18n.ts.medium}`;
+						text += `: ${$locale.value.env.medium}`;
 					} else if (item.compressionLevel === 3) {
-						text += `: ${i18n.ts.high}`;
+						text += `: ${$locale.value.env.high}`;
 					}
 
 					return text;
@@ -431,24 +431,24 @@ export function useUploader(options: {
 				type: 'parent',
 				children: [{
 					type: 'radioOption',
-					text: i18n.ts.none,
+					text: $locale.value.env.none,
 					active: computed(() => item.compressionLevel === 0 || item.compressionLevel == null),
 					action: () => changeCompressionLevel(0),
 				}, {
 					type: 'divider',
 				}, {
 					type: 'radioOption',
-					text: i18n.ts.low,
+					text: $locale.value.env.low,
 					active: computed(() => item.compressionLevel === 1),
 					action: () => changeCompressionLevel(1),
 				}, {
 					type: 'radioOption',
-					text: i18n.ts.medium,
+					text: $locale.value.env.medium,
 					active: computed(() => item.compressionLevel === 2),
 					action: () => changeCompressionLevel(2),
 				}, {
 					type: 'radioOption',
-					text: i18n.ts.high,
+					text: $locale.value.env.high,
 					active: computed(() => item.compressionLevel === 3),
 					action: () => changeCompressionLevel(3),
 				}],
@@ -460,13 +460,13 @@ export function useUploader(options: {
 				type: 'divider',
 			}, {
 				icon: 'ti ti-upload',
-				text: i18n.ts.upload,
+				text: $locale.value.env.upload,
 				action: () => {
 					uploadOne(item);
 				},
 			}, {
 				icon: 'ti ti-x',
-				text: i18n.ts.remove,
+				text: $locale.value.env.remove,
 				danger: true,
 				action: () => {
 					removeItem(item);
@@ -477,7 +477,7 @@ export function useUploader(options: {
 				type: 'divider',
 			}, {
 				icon: 'ti ti-player-stop',
-				text: i18n.ts.abort,
+				text: $locale.value.env.abort,
 				danger: true,
 				action: () => {
 					if (item.abortPreprocess != null) {
@@ -490,7 +490,7 @@ export function useUploader(options: {
 				type: 'divider',
 			}, {
 				icon: 'ti ti-cloud-pause',
-				text: i18n.ts.abort,
+				text: $locale.value.env.abort,
 				danger: true,
 				action: () => {
 					if (item.abort != null) {

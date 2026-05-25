@@ -14,13 +14,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 	@ok="save()"
 	@closed="emit('closed')"
 >
-	<template #header><i class="ti ti-copyright"></i> {{ i18n.ts._watermarkEditor.title }}</template>
+	<template #header><i class="ti ti-copyright"></i> {{ $locale.env._watermarkEditor.title }}</template>
 
 	<MkPreviewWithControls>
 		<template #preview>
 			<canvas ref="canvasEl" :class="$style.previewCanvas"></canvas>
 			<div :class="$style.previewContainer">
-				<div class="_acrylic" :class="$style.previewTitle">{{ i18n.ts.preview }}</div>
+				<div class="_acrylic" :class="$style.previewTitle">{{ $locale.env.preview }}</div>
 				<div v-if="props.image == null" class="_acrylic" :class="$style.previewControls">
 					<button class="_button" :class="[$style.previewControlsButton, sampleImageType === '3_2' ? $style.active : null]" @click="sampleImageType = '3_2'"><i class="ti ti-crop-landscape"></i></button>
 					<button class="_button" :class="[$style.previewControlsButton, sampleImageType === '2_3' ? $style.active : null]" @click="sampleImageType = '2_3'"><i class="ti ti-crop-portrait"></i></button>
@@ -34,12 +34,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<div class="_gaps_s">
 					<MkFolder v-for="(layer, i) in layers" :key="layer.id" :defaultOpen="false" :canPage="false">
 						<template #label>
-							<div v-if="layer.type === 'text'">{{ i18n.ts._watermarkEditor.text }}</div>
-							<div v-if="layer.type === 'image'">{{ i18n.ts._watermarkEditor.image }}</div>
-							<div v-if="layer.type === 'qr'">{{ i18n.ts._watermarkEditor.qr }}</div>
-							<div v-if="layer.type === 'stripe'">{{ i18n.ts._watermarkEditor.stripe }}</div>
-							<div v-if="layer.type === 'polkadot'">{{ i18n.ts._watermarkEditor.polkadot }}</div>
-							<div v-if="layer.type === 'checker'">{{ i18n.ts._watermarkEditor.checker }}</div>
+							<div v-if="layer.type === 'text'">{{ $locale.env._watermarkEditor.text }}</div>
+							<div v-if="layer.type === 'image'">{{ $locale.env._watermarkEditor.image }}</div>
+							<div v-if="layer.type === 'qr'">{{ $locale.env._watermarkEditor.qr }}</div>
+							<div v-if="layer.type === 'stripe'">{{ $locale.env._watermarkEditor.stripe }}</div>
+							<div v-if="layer.type === 'polkadot'">{{ $locale.env._watermarkEditor.polkadot }}</div>
+							<div v-if="layer.type === 'checker'">{{ $locale.env._watermarkEditor.checker }}</div>
 						</template>
 						<template #footer>
 							<div class="_buttons">
@@ -63,10 +63,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script setup lang="ts">
+import { $locale as localeRef } from '@/i18n.js';
+
 import { ref, useTemplateRef, watch, onMounted, onUnmounted, reactive, nextTick } from 'vue';
 import type { WatermarkLayers, WatermarkPreset } from '@/utility/watermark/WatermarkRenderer.js';
 import { WatermarkRenderer } from '@/utility/watermark/WatermarkRenderer.js';
-import { i18n } from '@/i18n.js';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import MkPreviewWithControls from '@/components/MkPreviewWithControls.vue';
 import MkSelect from '@/components/MkSelect.vue';
@@ -189,7 +190,7 @@ async function cancel() {
 	if (props.presetEditMode) {
 		const { canceled } = await os.confirm({
 			type: 'question',
-			text: i18n.ts._watermarkEditor.quitWithoutSaveConfirm,
+			text: localeRef.value.env._watermarkEditor.quitWithoutSaveConfirm,
 		});
 		if (canceled) return;
 	}
@@ -301,7 +302,7 @@ onMounted(async () => {
 		console.error(err);
 		os.alert({
 			type: 'error',
-			text: i18n.ts._watermarkEditor.failedToLoadImage,
+			text: localeRef.value.env._watermarkEditor.failedToLoadImage,
 		});
 	}
 
@@ -322,7 +323,7 @@ onUnmounted(() => {
 async function save() {
 	if (props.presetEditMode) {
 		const { canceled, result: name } = await os.inputText({
-			title: i18n.ts.name,
+			title: localeRef.value.env.name,
 			default: preset.name,
 		});
 		if (canceled) return;
@@ -352,32 +353,32 @@ async function save() {
 
 function addLayer(ev: PointerEvent) {
 	os.popupMenu([{
-		text: i18n.ts._watermarkEditor.text,
+		text: localeRef.value.env._watermarkEditor.text,
 		action: () => {
 			layers.push(createTextLayer());
 		},
 	}, {
-		text: i18n.ts._watermarkEditor.image,
+		text: localeRef.value.env._watermarkEditor.image,
 		action: () => {
 			layers.push(createImageLayer());
 		},
 	}, {
-		text: i18n.ts._watermarkEditor.qr,
+		text: localeRef.value.env._watermarkEditor.qr,
 		action: () => {
 			layers.push(createQrLayer());
 		},
 	}, {
-		text: i18n.ts._watermarkEditor.stripe,
+		text: localeRef.value.env._watermarkEditor.stripe,
 		action: () => {
 			layers.push(createStripeLayer());
 		},
 	}, {
-		text: i18n.ts._watermarkEditor.polkadot,
+		text: localeRef.value.env._watermarkEditor.polkadot,
 		action: () => {
 			layers.push(createPolkadotLayer());
 		},
 	}, {
-		text: i18n.ts._watermarkEditor.checker,
+		text: localeRef.value.env._watermarkEditor.checker,
 		action: () => {
 			layers.push(createCheckerLayer());
 		},

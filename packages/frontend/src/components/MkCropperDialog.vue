@@ -14,7 +14,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	@ok="ok()"
 	@closed="emit('closed')"
 >
-	<template #header>{{ i18n.ts.cropImage }}</template>
+	<template #header>{{ $locale.env.cropImage }}</template>
 	<div class="mk-cropper-dialog" :style="`--vw: 100%; --vh: 100%;`">
 		<Transition name="fade">
 			<div v-if="loading" class="loading">
@@ -29,13 +29,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup generic="F extends File | Blob">
+
 import { onMounted, useTemplateRef, ref, onUnmounted } from 'vue';
 import * as Misskey from 'misskey-js';
 import Cropper from 'cropperjs';
 import tinycolor from 'tinycolor2';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import { themeManager } from '@/theme.js';
-import { i18n } from '@/i18n.js';
 
 const props = defineProps<{
 	imageFile: F;

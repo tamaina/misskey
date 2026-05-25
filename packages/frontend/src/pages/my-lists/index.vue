@@ -8,16 +8,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div class="_spacer" style="--MI_SPACER-w: 700px;">
 		<div class="_gaps">
 			<MkTip k="userLists">
-				{{ i18n.ts._userLists.tip }}
+				{{ $locale.env._userLists.tip }}
 			</MkTip>
 
 			<MkResult v-if="items.length === 0" type="empty"/>
 
-			<MkButton primary rounded style="margin: 0 auto;" @click="create"><i class="ti ti-plus"></i> {{ i18n.ts.createList }}</MkButton>
+			<MkButton primary rounded style="margin: 0 auto;" @click="create"><i class="ti ti-plus"></i> {{ $locale.env.createList }}</MkButton>
 
 			<div v-if="items.length > 0" class="_gaps">
 				<MkA v-for="list in items" :key="list.id" class="_panel" :class="$style.list" :to="`/timeline/list/${list.id}`">
-					<div style="margin-bottom: 4px;">{{ list.name }} <span :class="$style.nUsers">({{ i18n.tsx.nUsers({ n: `${list.userIds!.length}/${$i.policies['userEachUserListsLimit']}` }) }})</span></div>
+					<div style="margin-bottom: 4px;">{{ list.name }} <span :class="$style.nUsers">({{ $l.env.nUsers({ n: `${list.userIds!.length}/${$i.policies['userEachUserListsLimit']}` }) }})</span></div>
 					<MkAvatars :userIds="list.userIds!" :limit="10"/>
 				</MkA>
 			</div>
@@ -27,11 +27,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef } from '@/i18n.js';
+
 import { onActivated, computed } from 'vue';
 import MkButton from '@/components/MkButton.vue';
 import MkAvatars from '@/components/MkAvatars.vue';
 import * as os from '@/os.js';
-import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
 import { userListsCache } from '@/cache.js';
 import { ensureSignin } from '@/i.js';
@@ -48,7 +49,7 @@ _fetch_();
 
 async function create() {
 	const { canceled, result: name } = await os.inputText({
-		title: i18n.ts.enterListName,
+		title: localeRef.value.env.enterListName,
 	});
 	if (canceled || name == null) return;
 	await os.apiWithDialog('users/lists/create', { name: name });
@@ -59,7 +60,7 @@ async function create() {
 const headerActions = computed(() => [{
 	asFullButton: true,
 	icon: 'ti ti-refresh',
-	text: i18n.ts.reload,
+	text: localeRef.value.env.reload,
 	handler: () => {
 		userListsCache.delete();
 		_fetch_();
@@ -69,7 +70,7 @@ const headerActions = computed(() => [{
 const headerTabs = computed(() => []);
 
 definePage(() => ({
-	title: i18n.ts.manageLists,
+	title: localeRef.value.env.manageLists,
 	icon: 'ti ti-list',
 }));
 

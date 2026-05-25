@@ -20,9 +20,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 		/>
 		<div :class="$style.sensitive">
 			<div>
-				<div v-if="file.isSensitive"><i class="ti ti-eye-exclamation"></i> {{ i18n.ts.sensitive }}{{ prefer.s.dataSaver.media && file.size ? ` (${bytes(file.size)})` : '' }}</div>
-				<div v-else><i class="ti ti-photo"></i> {{ prefer.s.dataSaver.media && file.size ? bytes(file.size) : i18n.ts.image }}</div>
-				<div>{{ i18n.ts.clickToShow }}</div>
+				<div v-if="file.isSensitive"><i class="ti ti-eye-exclamation"></i> {{ $locale.env.sensitive }}{{ prefer.s.dataSaver.media && file.size ? ` (${bytes(file.size)})` : '' }}</div>
+				<div v-else><i class="ti ti-photo"></i> {{ prefer.s.dataSaver.media && file.size ? bytes(file.size) : $locale.env.image }}</div>
+				<div>{{ $locale.env.clickToShow }}</div>
 			</div>
 		</div>
 	</div>
@@ -39,10 +39,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+
 import { ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import { notePage } from '@/filters/note.js';
-import { i18n } from '@/i18n.js';
 import { prefer } from '@/preferences.js';
 import { shouldHideFileByDefault, canRevealFile } from '@/utility/sensitive-file.js';
 import bytes from '@/filters/bytes.js';

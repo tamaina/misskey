@@ -20,12 +20,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef } from '@/i18n.js';
+
 import { ref, watch, computed } from 'vue';
 import * as Misskey from 'misskey-js';
 import { url as base } from '@@/js/config.js';
 import { useInterval } from '@@/js/use-interval.js';
 import { useWidgetPropsManager } from './widget.js';
-import { i18n } from '@/i18n.js';
 import type { WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
 import type { FormWithDefault, GetFormResultType } from '@/utility/form.js';
 import MkContainer from '@/components/MkContainer.vue';
@@ -35,23 +36,23 @@ const name = 'rss';
 const widgetPropsDef = {
 	url: {
 		type: 'string',
-		label: i18n.ts._widgetOptions._rss.url,
+		label: localeRef.value.env._widgetOptions._rss.url,
 		default: 'http://feeds.afpbb.com/rss/afpbb/afpbbnews',
 		manualSave: true,
 	},
 	refreshIntervalSec: {
 		type: 'number',
-		label: i18n.ts._widgetOptions._rss.refreshIntervalSec,
+		label: localeRef.value.env._widgetOptions._rss.refreshIntervalSec,
 		default: 60,
 	},
 	maxEntries: {
 		type: 'number',
-		label: i18n.ts._widgetOptions._rss.maxEntries,
+		label: localeRef.value.env._widgetOptions._rss.maxEntries,
 		default: 15,
 	},
 	showHeader: {
 		type: 'boolean',
-		label: i18n.ts._widgetOptions.showHeader,
+		label: localeRef.value.env._widgetOptions.showHeader,
 		default: true,
 	},
 } satisfies FormWithDefault;

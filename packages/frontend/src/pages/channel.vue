@@ -9,15 +9,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div v-if="channel && tab === 'overview'" class="_gaps">
 			<div class="_panel" :class="$style.bannerContainer">
 				<XChannelFollowButton :channel="channel" :full="true" :class="$style.subscribe"/>
-				<MkButton v-if="favorited" v-tooltip="i18n.ts.unfavorite" asLike class="button" rounded primary :class="$style.favorite" @click="unfavorite()"><i class="ti ti-star"></i></MkButton>
-				<MkButton v-else v-tooltip="i18n.ts.favorite" asLike class="button" rounded :class="$style.favorite" @click="favorite()"><i class="ti ti-star"></i></MkButton>
+				<MkButton v-if="favorited" v-tooltip="$locale.env.unfavorite" asLike class="button" rounded primary :class="$style.favorite" @click="unfavorite()"><i class="ti ti-star"></i></MkButton>
+				<MkButton v-else v-tooltip="$locale.env.favorite" asLike class="button" rounded :class="$style.favorite" @click="favorite()"><i class="ti ti-star"></i></MkButton>
 				<div :style="{ backgroundImage: channel.bannerUrl ? `url(${channel.bannerUrl})` : undefined }" :class="$style.banner">
 					<div :class="$style.bannerStatus">
-						<div><i class="ti ti-users ti-fw"></i><I18n :src="i18n.ts._channel.usersCount" tag="span" style="margin-left: 4px;"><template #n><b>{{ channel.usersCount }}</b></template></I18n></div>
-						<div><i class="ti ti-pencil ti-fw"></i><I18n :src="i18n.ts._channel.notesCount" tag="span" style="margin-left: 4px;"><template #n><b>{{ channel.notesCount }}</b></template></I18n></div>
-						<div v-if="$i != null && channel != null && $i.id === channel.userId" style="color: var(--MI_THEME-warn)"><i class="ti ti-user-star ti-fw"></i><span style="margin-left: 4px;">{{ i18n.ts.youAreAdmin }}</span></div>
+						<div><i class="ti ti-users ti-fw"></i><I18n :src="$locale.env._channel.usersCount" tag="span" style="margin-left: 4px;"><template #n><b>{{ channel.usersCount }}</b></template></I18n></div>
+						<div><i class="ti ti-pencil ti-fw"></i><I18n :src="$locale.env._channel.notesCount" tag="span" style="margin-left: 4px;"><template #n><b>{{ channel.notesCount }}</b></template></I18n></div>
+						<div v-if="$i != null && channel != null && $i.id === channel.userId" style="color: var(--MI_THEME-warn)"><i class="ti ti-user-star ti-fw"></i><span style="margin-left: 4px;">{{ $locale.env.youAreAdmin }}</span></div>
 					</div>
-					<div v-if="channel.isSensitive" :class="$style.sensitiveIndicator">{{ i18n.ts.sensitive }}</div>
+					<div v-if="channel.isSensitive" :class="$style.sensitiveIndicator">{{ $locale.env.sensitive }}</div>
 					<div :class="$style.bannerFade"></div>
 				</div>
 				<div v-if="channel.description" :class="$style.description">
@@ -26,14 +26,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 
 			<MkFoldableSection>
-				<template #header><i class="ti ti-pin ti-fw" style="margin-right: 0.5em;"></i>{{ i18n.ts.pinnedNotes }}</template>
+				<template #header><i class="ti ti-pin ti-fw" style="margin-right: 0.5em;"></i>{{ $locale.env.pinnedNotes }}</template>
 				<div v-if="channel.pinnedNotes && channel.pinnedNotes.length > 0" class="_gaps">
 					<MkNote v-for="note in channel.pinnedNotes" :key="note.id" class="_panel" :note="note"/>
 				</div>
 			</MkFoldableSection>
 		</div>
 		<div v-if="channel && tab === 'timeline'" class="_gaps">
-			<MkInfo v-if="channel.isArchived" warn>{{ i18n.ts.thisChannelArchived }}</MkInfo>
+			<MkInfo v-if="channel.isArchived" warn>{{ $locale.env.thisChannelArchived }}</MkInfo>
 
 			<!-- スマホ・タブレットの場合、キーボードが表示されると投稿が見づらくなるので、デスクトップ場合のみ自動でフォーカスを当てる -->
 			<MkPostForm v-if="$i && prefer.r.showFixedPostFormInChannel.value" :channel="channel" class="post-form _panel" fixed :autofocus="deviceKind === 'desktop'"/>
@@ -49,12 +49,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<MkInput v-model="searchQuery" @enter="search()">
 						<template #prefix><i class="ti ti-search"></i></template>
 					</MkInput>
-					<MkButton primary rounded style="margin-top: 8px;" @click="search()">{{ i18n.ts.search }}</MkButton>
+					<MkButton primary rounded style="margin-top: 8px;" @click="search()">{{ $locale.env.search }}</MkButton>
 				</div>
 				<MkNotesTimeline v-if="searchPaginator" :key="searchKey" :paginator="searchPaginator"/>
 			</div>
 			<div v-else>
-				<MkInfo warn>{{ i18n.ts.notesSearchNotAvailable }}</MkInfo>
+				<MkInfo warn>{{ $locale.env.notesSearchNotAvailable }}</MkInfo>
 			</div>
 		</div>
 	</div>
@@ -62,7 +62,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div :class="$style.footer">
 			<div class="_spacer" style="--MI_SPACER-w: 700px; --MI_SPACER-min: 16px; --MI_SPACER-max: 16px;">
 				<div class="_buttonsCenter">
-					<MkButton inline rounded primary gradate @click="openPostForm()"><i class="ti ti-pencil"></i> {{ i18n.ts.postToTheChannel }}</MkButton>
+					<MkButton inline rounded primary gradate @click="openPostForm()"><i class="ti ti-pencil"></i> {{ $locale.env.postToTheChannel }}</MkButton>
 				</div>
 			</div>
 		</div>
@@ -71,6 +71,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef } from '@/i18n.js';
+
 import { computed, watch, ref, markRaw, shallowRef } from 'vue';
 import * as Misskey from 'misskey-js';
 import { url } from '@@/js/config.js';
@@ -82,7 +84,6 @@ import XChannelFollowButton from '@/components/MkChannelFollowButton.vue';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { $i, iAmModerator } from '@/i.js';
-import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
 import { deviceKind } from '@/utility/device-kind.js';
 import MkNotesTimeline from '@/components/MkNotesTimeline.vue';
@@ -180,7 +181,7 @@ async function unfavorite() {
 
 	const confirm = await os.confirm({
 		type: 'warning',
-		text: i18n.ts.unfavoriteConfirm,
+		text: localeRef.value.env.unfavoriteConfirm,
 	});
 	if (confirm.canceled) return;
 	os.apiWithDialog('channels/unfavorite', {
@@ -196,17 +197,17 @@ async function mute() {
 	const _channel = channel.value;
 
 	const { canceled, result: period } = await os.select({
-		title: i18n.ts.mutePeriod,
+		title: localeRef.value.env.mutePeriod,
 		items: [{
-			value: 'indefinitely', label: i18n.ts.indefinitely,
+			value: 'indefinitely', label: localeRef.value.env.indefinitely,
 		}, {
-			value: 'tenMinutes', label: i18n.ts.tenMinutes,
+			value: 'tenMinutes', label: localeRef.value.env.tenMinutes,
 		}, {
-			value: 'oneHour', label: i18n.ts.oneHour,
+			value: 'oneHour', label: localeRef.value.env.oneHour,
 		}, {
-			value: 'oneDay', label: i18n.ts.oneDay,
+			value: 'oneDay', label: localeRef.value.env.oneDay,
 		}, {
-			value: 'oneWeek', label: i18n.ts.oneWeek,
+			value: 'oneWeek', label: localeRef.value.env.oneWeek,
 		}],
 		default: 'indefinitely',
 	});
@@ -262,7 +263,7 @@ const headerActions = computed(() => {
 
 		headerItems.push({
 			icon: 'ti ti-link',
-			text: i18n.ts.copyUrl,
+			text: localeRef.value.env.copyUrl,
 			handler: async (): Promise<void> => {
 				if (!channel.value) {
 					console.warn('failed to copy channel URL. channel.value is null.');
@@ -275,7 +276,7 @@ const headerActions = computed(() => {
 		if (isSupportShare()) {
 			headerItems.push({
 				icon: 'ti ti-share',
-				text: i18n.ts.share,
+				text: localeRef.value.env.share,
 				handler: async (): Promise<void> => {
 					if (!channel.value) {
 						console.warn('failed to share channel. channel.value is null.');
@@ -294,7 +295,7 @@ const headerActions = computed(() => {
 		if (!channel.value.isMuting) {
 			headerItems.push({
 				icon: 'ti ti-volume',
-				text: i18n.ts.mute,
+				text: localeRef.value.env.mute,
 				handler: async (): Promise<void> => {
 					await mute();
 				},
@@ -302,7 +303,7 @@ const headerActions = computed(() => {
 		} else {
 			headerItems.push({
 				icon: 'ti ti-volume-off',
-				text: i18n.ts.unmute,
+				text: localeRef.value.env.unmute,
 				handler: async (): Promise<void> => {
 					await unmute();
 				},
@@ -312,7 +313,7 @@ const headerActions = computed(() => {
 		if (($i && $i.id === channel.value.userId) || iAmModerator) {
 			headerItems.push({
 				icon: 'ti ti-settings',
-				text: i18n.ts.edit,
+				text: localeRef.value.env.edit,
 				handler: edit,
 			});
 		}
@@ -325,24 +326,24 @@ const headerActions = computed(() => {
 
 const headerTabs = computed(() => [{
 	key: 'overview',
-	title: i18n.ts.overview,
+	title: localeRef.value.env.overview,
 	icon: 'ti ti-info-circle',
 }, {
 	key: 'timeline',
-	title: i18n.ts.timeline,
+	title: localeRef.value.env.timeline,
 	icon: 'ti ti-home',
 }, {
 	key: 'featured',
-	title: i18n.ts.featured,
+	title: localeRef.value.env.featured,
 	icon: 'ti ti-bolt',
 }, {
 	key: 'search',
-	title: i18n.ts.search,
+	title: localeRef.value.env.search,
 	icon: 'ti ti-search',
 }]);
 
 definePage(() => ({
-	title: channel.value ? channel.value.name : i18n.ts.channel,
+	title: channel.value ? channel.value.name : localeRef.value.env.channel,
 	icon: 'ti ti-device-tv',
 }));
 </script>

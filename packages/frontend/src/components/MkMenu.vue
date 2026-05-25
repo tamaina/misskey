@@ -208,7 +208,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</template>
 
 		<span v-if="items2 == null || items2.length === 0" tabindex="-1" :class="[$style.none, $style.item]">
-			<span>{{ i18n.ts.none }}</span>
+			<span>{{ $locale.env.none }}</span>
 		</span>
 
 		<div
@@ -238,7 +238,6 @@ import type { MenuItem, InnerMenuItem, MenuPending, MenuAction, MenuSwitch, Menu
 import type { Keymap } from '@/utility/hotkey.js';
 import MkSwitchButton from '@/components/MkSwitch.button.vue';
 import * as os from '@/os.js';
-import { i18n } from '@/i18n.js';
 import { isTouchUsing } from '@/utility/touch.js';
 import { isFocusable } from '@/utility/focus.js';
 import { getNodeOrNull } from '@/utility/get-dom-node-or-null.js';
@@ -247,6 +246,7 @@ const childrenCache = new WeakMap<MenuParent, MenuItem[]>();
 </script>
 
 <script lang="ts" setup>
+
 const XChild = defineAsyncComponent(() => import('./MkMenu.child.vue'));
 
 const props = defineProps<{

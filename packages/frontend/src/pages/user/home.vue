@@ -9,13 +9,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div ref="rootEl" class="ftskorzw" :class="{ wide: !narrow }" style="container-type: inline-size;">
 			<div class="main _gaps">
 				<!-- TODO -->
-				<!-- <div class="punished" v-if="user.isSuspended"><i class="ti ti-alert-triangle" style="margin-right: 8px;"></i> {{ i18n.ts.userSuspended }}</div> -->
-				<!-- <div class="punished" v-if="user.isSilenced"><i class="ti ti-alert-triangle" style="margin-right: 8px;"></i> {{ i18n.ts.userSilenced }}</div> -->
+				<!-- <div class="punished" v-if="user.isSuspended"><i class="ti ti-alert-triangle" style="margin-right: 8px;"></i> {{ $locale.env.userSuspended }}</div> -->
+				<!-- <div class="punished" v-if="user.isSilenced"><i class="ti ti-alert-triangle" style="margin-right: 8px;"></i> {{ $locale.env.userSilenced }}</div> -->
 
 				<div class="profile _gaps">
 					<MkAccountMoved v-if="user.movedTo" :movedTo="user.movedTo"/>
 					<MkRemoteCaution v-if="user.host != null" :href="user.url ?? user.uri!"/>
-					<MkInfo v-if="user.host == null && user.username.includes('.')">{{ i18n.ts.isSystemAccount }}</MkInfo>
+					<MkInfo v-if="user.host == null && user.username.includes('.')">{{ $locale.env.isSystemAccount }}</MkInfo>
 
 					<div :key="user.id" class="main _panel">
 						<div ref="bannerEl" class="banner-container">
@@ -28,11 +28,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 									<span v-if="user.isLocked"><i class="ti ti-lock"></i></span>
 									<span v-if="user.isBot"><i class="ti ti-robot"></i></span>
 									<button v-if="$i && !isEditingMemo && !memoDraft" class="_button add-note-button" @click="showMemoTextarea">
-										<i class="ti ti-edit"></i> {{ i18n.ts.addMemo }}
+										<i class="ti ti-edit"></i> {{ $locale.env.addMemo }}
 									</button>
 								</div>
 							</div>
-							<span v-if="$i && $i.id != user.id && user.isFollowed" class="followed">{{ i18n.ts.followsYou }}</span>
+							<span v-if="$i && $i.id != user.id && user.isFollowed" class="followed">{{ $locale.env.followsYou }}</span>
 							<div class="actions">
 								<button class="menu _button" @click="menu"><i class="ti ti-dots"></i></button>
 								<MkFollowButton v-if="$i?.id != user.id" v-model:user="user" :inline="true" :transparent="false" :full="true" class="koudoku"/>
@@ -49,7 +49,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						</div>
 						<div v-if="user.followedMessage != null" class="followedMessage">
 							<MkFukidashi class="fukidashi" :tail="narrow ? 'none' : 'left'" negativeMargin>
-								<div class="messageHeader">{{ i18n.ts.messageToFollower }}</div>
+								<div class="messageHeader">{{ $locale.env.messageToFollower }}</div>
 								<div><MkSparkle><Mfm :plain="true" :text="user.followedMessage" :author="user" class="_selectable"/></MkSparkle></div>
 							</MkFukidashi>
 						</div>
@@ -63,15 +63,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 						</div>
 						<div v-if="iAmModerator" class="moderationNote">
 							<MkTextarea v-if="editModerationNote || (moderationNote != null && moderationNote !== '')" v-model="moderationNote" manualSave>
-								<template #label>{{ i18n.ts.moderationNote }}</template>
-								<template #caption>{{ i18n.ts.moderationNoteDescription }}</template>
+								<template #label>{{ $locale.env.moderationNote }}</template>
+								<template #caption>{{ $locale.env.moderationNoteDescription }}</template>
 							</MkTextarea>
 							<div v-else>
-								<MkButton small @click="editModerationNote = true">{{ i18n.ts.addModerationNote }}</MkButton>
+								<MkButton small @click="editModerationNote = true">{{ $locale.env.addModerationNote }}</MkButton>
 							</div>
 						</div>
 						<div v-if="isEditingMemo || memoDraft" class="memo" :class="{'no-memo': !memoDraft}">
-							<div class="heading">{{ i18n.ts.memo }}</div>
+							<div class="heading">{{ $locale.env.memo }}</div>
 							<textarea
 								ref="memoTextareaEl"
 								v-model="memoDraft"
@@ -84,20 +84,20 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<div class="description">
 							<MkOmit>
 								<Mfm v-if="user.description" :text="user.description" :isNote="false" :author="user" class="_selectable"/>
-								<p v-else class="empty">{{ i18n.ts.noAccountDescription }}</p>
+								<p v-else class="empty">{{ $locale.env.noAccountDescription }}</p>
 							</MkOmit>
 						</div>
 						<div class="fields system">
 							<dl v-if="user.location" class="field">
-								<dt class="name"><i class="ti ti-map-pin ti-fw"></i> {{ i18n.ts.location }}</dt>
+								<dt class="name"><i class="ti ti-map-pin ti-fw"></i> {{ $locale.env.location }}</dt>
 								<dd class="value">{{ user.location }}</dd>
 							</dl>
 							<dl v-if="user.birthday" class="field">
-								<dt class="name"><i class="ti ti-cake ti-fw"></i> {{ i18n.ts.birthday }}</dt>
-								<dd class="value">{{ user.birthday.replace('-', '/').replace('-', '/') }} ({{ i18n.tsx.yearsOld({ age }) }})</dd>
+								<dt class="name"><i class="ti ti-cake ti-fw"></i> {{ $locale.env.birthday }}</dt>
+								<dd class="value">{{ user.birthday.replace('-', '/').replace('-', '/') }} ({{ $l.env.yearsOld({ age }) }})</dd>
 							</dl>
 							<dl class="field">
-								<dt class="name"><i class="ti ti-calendar ti-fw"></i> {{ i18n.ts.registeredDate }}</dt>
+								<dt class="name"><i class="ti ti-calendar ti-fw"></i> {{ $locale.env.registeredDate }}</dt>
 								<dd class="value">{{ dateString(user.createdAt) }} (<MkTime :time="user.createdAt"/>)</dd>
 							</dl>
 						</div>
@@ -108,22 +108,22 @@ SPDX-License-Identifier: AGPL-3.0-only
 								</dt>
 								<dd class="value">
 									<Mfm :text="field.value" :author="user" :colored="false" class="_selectable"/>
-									<i v-if="user.verifiedLinks.includes(field.value)" v-tooltip:dialog="i18n.ts.verifiedLink" class="ti ti-circle-check" :class="$style.verifiedLink"></i>
+									<i v-if="user.verifiedLinks.includes(field.value)" v-tooltip:dialog="$locale.env.verifiedLink" class="ti ti-circle-check" :class="$style.verifiedLink"></i>
 								</dd>
 							</dl>
 						</div>
 						<div class="status">
 							<MkA :to="userPage(user, 'notes')">
 								<b>{{ number(user.notesCount) }}</b>
-								<span>{{ i18n.ts.notes }}</span>
+								<span>{{ $locale.env.notes }}</span>
 							</MkA>
 							<MkA v-if="isFollowingVisibleForMe(user)" :to="userPage(user, 'following')">
 								<b>{{ number(user.followingCount) }}</b>
-								<span>{{ i18n.ts.following }}</span>
+								<span>{{ $locale.env.following }}</span>
 							</MkA>
 							<MkA v-if="isFollowersVisibleForMe(user)" :to="userPage(user, 'followers')">
 								<b>{{ number(user.followersCount) }}</b>
-								<span>{{ i18n.ts.followers }}</span>
+								<span>{{ $locale.env.followers }}</span>
 							</MkA>
 						</div>
 					</div>
@@ -133,7 +133,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<div v-if="user.pinnedNotes.length > 0" class="_gaps">
 						<MkNote v-for="note in user.pinnedNotes" :key="note.id" class="note _panel" :note="note" :pinned="true"/>
 					</div>
-					<MkInfo v-else-if="$i && $i.id === user.id">{{ i18n.ts.userPagePinTip }}</MkInfo>
+					<MkInfo v-else-if="$i && $i.id === user.id">{{ $locale.env.userPagePinTip }}</MkInfo>
 					<template v-if="narrow">
 						<MkLazy>
 							<XFiles :key="user.id" :user="user" @showMore="emit('showMoreFiles')"/>
@@ -159,6 +159,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+
 import { defineAsyncComponent, computed, onMounted, onUnmounted, onActivated, onDeactivated, nextTick, watch, ref, useTemplateRef } from 'vue';
 import * as Misskey from 'misskey-js';
 import { getScrollContainer } from '@@/js/scroll.js';
@@ -175,7 +176,6 @@ import { getUserMenu } from '@/utility/get-user-menu.js';
 import number from '@/filters/number.js';
 import { userPage } from '@/filters/user.js';
 import * as os from '@/os.js';
-import { i18n } from '@/i18n.js';
 import { $i, iAmModerator } from '@/i.js';
 import { dateString } from '@/filters/date.js';
 import { confetti } from '@/utility/confetti.js';

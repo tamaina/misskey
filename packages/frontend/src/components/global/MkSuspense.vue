@@ -13,18 +13,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 <div v-else>
 	<div :class="$style.error">
 		<slot name="error" :error="error">
-			<div><i class="ti ti-alert-triangle"></i> {{ i18n.ts.somethingHappened }}</div>
+			<div><i class="ti ti-alert-triangle"></i> {{ $locale.env.somethingHappened }}</div>
 			<div v-if="error">{{ JSON.stringify(error) }}</div>
-			<MkButton inline style="margin-top: 16px;" @click="retry"><i class="ti ti-reload"></i> {{ i18n.ts.retry }}</MkButton>
+			<MkButton inline style="margin-top: 16px;" @click="retry"><i class="ti ti-reload"></i> {{ $locale.env.retry }}</MkButton>
 		</slot>
 	</div>
 </div>
 </template>
 
 <script lang="ts" setup generic="T extends unknown">
+
 import { ref, watch } from 'vue';
 import MkButton from '@/components/MkButton.vue';
-import { i18n } from '@/i18n.js';
 
 const props = defineProps<{
 	p: () => Promise<T>;

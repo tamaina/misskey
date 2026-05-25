@@ -9,10 +9,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<MkTab
 			v-model="tab"
 			:tabs="[
-				{ key: 'featured', label: i18n.ts.featured },
-				{ key: 'notes', label: i18n.ts.notes },
-				{ key: 'all', label: i18n.ts.all },
-				{ key: 'files', label: i18n.ts.withFiles },
+				{ key: 'featured', label: $locale.env.featured },
+				{ key: 'notes', label: $locale.env.notes },
+				{ key: 'all', label: $locale.env.all },
+				{ key: 'files', label: $locale.env.withFiles },
 			]"
 			:class="$style.tab"
 		>
@@ -24,11 +24,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+
 import { ref, computed, markRaw } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkNotesTimeline from '@/components/MkNotesTimeline.vue';
 import MkTab from '@/components/MkTab.vue';
-import { i18n } from '@/i18n.js';
 import { Paginator } from '@/utility/paginator.js';
 
 const props = defineProps<{

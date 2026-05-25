@@ -11,31 +11,32 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<span><slot name="valueText"></slot></span>
 			</template>
 			<template v-else-if="policyMeta != null">
-				<span v-if="policyMeta.useDefault" :class="$style.useDefaultLabel">{{ i18n.ts._role.useBaseValue }}</span>
+				<span v-if="policyMeta.useDefault" :class="$style.useDefaultLabel">{{ $locale.env._role.useBaseValue }}</span>
 				<span v-else><slot name="valueText"></slot></span>
 				<span :class="$style.priorityIndicator"><i :class="getPriorityIcon(policyMeta.priority)"></i></span>
 			</template>
 		</template>
 		<div class="_gaps">
 			<MkSwitch v-if="!isBaseRole && policyMeta != null" v-model="useDefaultModel" :disabled="readonly">
-				<template #label>{{ i18n.ts._role.useBaseValue }}</template>
+				<template #label>{{ $locale.env._role.useBaseValue }}</template>
 			</MkSwitch>
 			<div>
 				<slot :disabled="readonly || (!isBaseRole && policyMeta?.useDefault)"></slot>
 			</div>
 			<MkRange v-if="!isBaseRole && policyMeta != null" v-model="priorityModel" :min="0" :max="2" :step="1" easing :textConverter="priroityRangeTextConverter" :disabled="readonly">
-				<template #label>{{ i18n.ts._role.priority }}</template>
+				<template #label>{{ $locale.env._role.priority }}</template>
 			</MkRange>
 		</div>
 	</MkFolder>
 </template>
 
 <script setup lang="ts">
+import { $locale as localeRef } from '@/i18n.js';
+
 import { computed } from 'vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkRange from '@/components/MkRange.vue';
-import { i18n } from '@/i18n.js';
 import type { PolicyMeta } from './roles.policy-editor.vue';
 
 const props = defineProps<{
@@ -75,9 +76,9 @@ function getPriorityIcon(priority: number): string {
 }
 
 function priroityRangeTextConverter(v: number): string {
-	if (v === 0) return i18n.ts._role._priority.low;
-	if (v === 1) return i18n.ts._role._priority.middle;
-	if (v === 2) return i18n.ts._role._priority.high;
+	if (v === 0) return localeRef.value.env._role._priority.low;
+	if (v === 1) return localeRef.value.env._role._priority.middle;
+	if (v === 2) return localeRef.value.env._role._priority.high;
 	return '';
 }
 </script>

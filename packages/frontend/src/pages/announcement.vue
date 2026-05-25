@@ -14,7 +14,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			mode="out-in"
 		>
 			<div v-if="announcement" :key="announcement.id" class="_panel" :class="$style.announcement">
-				<div v-if="announcement.forYou" :class="$style.forYou"><i class="ti ti-pin"></i> {{ i18n.ts.forYou }}</div>
+				<div v-if="announcement.forYou" :class="$style.forYou"><i class="ti ti-pin"></i> {{ $locale.env.forYou }}</div>
 				<div :class="$style.header">
 					<span v-if="$i && !announcement.silence && !announcement.isRead" style="margin-right: 0.5em;">🆕</span>
 					<span style="margin-right: 0.5em;">
@@ -29,14 +29,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<Mfm :text="announcement.text" class="_selectable"/>
 					<img v-if="announcement.imageUrl" :src="announcement.imageUrl"/>
 					<div style="margin-top: 8px; opacity: 0.7; font-size: 85%;">
-						{{ i18n.ts.createdAt }}: <MkTime :time="announcement.createdAt" mode="detail"/>
+						{{ $locale.env.createdAt }}: <MkTime :time="announcement.createdAt" mode="detail"/>
 					</div>
 					<div v-if="announcement.updatedAt" style="opacity: 0.7; font-size: 85%;">
-						{{ i18n.ts.updatedAt }}: <MkTime :time="announcement.updatedAt" mode="detail"/>
+						{{ $locale.env.updatedAt }}: <MkTime :time="announcement.updatedAt" mode="detail"/>
 					</div>
 				</div>
 				<div v-if="$i && !announcement.silence && !announcement.isRead" :class="$style.footer">
-					<MkButton primary @click="read(announcement)"><i class="ti ti-check"></i> {{ i18n.ts.gotIt }}</MkButton>
+					<MkButton primary @click="read(announcement)"><i class="ti ti-check"></i> {{ $locale.env.gotIt }}</MkButton>
 				</div>
 			</div>
 			<MkError v-else-if="error" @retry="_fetch_()"/>
@@ -47,12 +47,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef, $l as localizerRef } from '@/i18n.js';
+
 import { ref, computed, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
-import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
 import { $i } from '@/i.js';
 import { prefer } from '@/preferences.js';
@@ -81,8 +82,8 @@ async function read(target: Misskey.entities.Announcement): Promise<void> {
 	if (target.needConfirmationToRead) {
 		const confirm = await os.confirm({
 			type: 'question',
-			title: i18n.ts._announcement.readConfirmTitle,
-			text: i18n.tsx._announcement.readConfirmText({ title: target.title }),
+			title: localeRef.value.env._announcement.readConfirmTitle,
+			text: localizerRef.value.env._announcement.readConfirmText({ title: target.title }),
 		});
 		if (confirm.canceled) return;
 	}
@@ -103,7 +104,7 @@ const headerActions = computed(() => []);
 const headerTabs = computed(() => []);
 
 definePage(() => ({
-	title: announcement.value ? announcement.value.title : i18n.ts.announcements,
+	title: announcement.value ? announcement.value.title : localeRef.value.env.announcements,
 	icon: 'ti ti-speakerphone',
 }));
 </script>

@@ -14,6 +14,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef } from '@/i18n.js';
+
 import { onMounted, ref, watch } from 'vue';
 import { Interpreter, Parser } from '@syuilo/aiscript';
 import { useWidgetPropsManager } from './widget.js';
@@ -24,7 +26,6 @@ import type { AsUiComponent, AsUiRoot } from '@/aiscript/ui.js';
 import * as os from '@/os.js';
 import { aiScriptReadline, createAiScriptEnv } from '@/aiscript/api.js';
 import { $i } from '@/i.js';
-import { i18n } from '@/i18n.js';
 import MkAsUi from '@/components/MkAsUi.vue';
 import MkContainer from '@/components/MkContainer.vue';
 import { registerAsUiLib } from '@/aiscript/ui.js';
@@ -34,14 +35,14 @@ const name = 'aiscriptApp';
 const widgetPropsDef = {
 	script: {
 		type: 'string',
-		label: i18n.ts.script,
+		label: localeRef.value.env.script,
 		multiline: true,
 		manualSave: true,
 		default: '',
 	},
 	showHeader: {
 		type: 'boolean',
-		label: i18n.ts._widgetOptions.showHeader,
+		label: localeRef.value.env._widgetOptions.showHeader,
 		default: true,
 	},
 } satisfies FormWithDefault;

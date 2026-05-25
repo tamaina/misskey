@@ -10,7 +10,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<MkError v-else-if="paginator.error.value" @retry="paginator.init()"/>
 
 	<div v-else-if="paginator.items.value.length === 0" key="_empty_">
-		<slot name="empty"><MkResult type="empty" :text="i18n.ts.noNotifications"/></slot>
+		<slot name="empty"><MkResult type="empty" :text="$locale.env.noNotifications"/></slot>
 	</div>
 
 	<div v-else ref="rootEl">
@@ -34,7 +34,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 		</component>
 		<button v-show="paginator.canFetchOlder.value" key="_more_" v-appear="prefer.s.enableInfiniteScroll ? paginator.fetchOlder : null" :disabled="paginator.fetchingOlder.value" class="_button" :class="$style.more" @click="paginator.fetchOlder">
-			<div v-if="!paginator.fetchingOlder.value">{{ i18n.ts.loadMore }}</div>
+			<div v-if="!paginator.fetchingOlder.value">{{ $locale.env.loadMore }}</div>
 			<MkLoading v-else/>
 		</button>
 	</div>
@@ -42,6 +42,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+
 import { onUnmounted, onMounted, computed, useTemplateRef, TransitionGroup, markRaw, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import { notificationTypes } from 'misskey-js';
@@ -51,7 +52,6 @@ import { getScrollContainer, scrollToTop } from '@@/js/scroll.js';
 import XNotification from '@/components/MkNotification.vue';
 import MkNote from '@/components/MkNote.vue';
 import { useStream } from '@/stream.js';
-import { i18n } from '@/i18n.js';
 import MkPullToRefresh from '@/components/MkPullToRefresh.vue';
 import { prefer } from '@/preferences.js';
 import { store } from '@/store.js';

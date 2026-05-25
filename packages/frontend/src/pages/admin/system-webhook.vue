@@ -10,7 +10,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div class="_gaps_m">
 				<SearchMarker>
 					<MkButton primary @click="onCreateWebhookClicked">
-						<i class="ti ti-plus"></i> <SearchLabel>{{ i18n.ts._webhookSettings.createWebhook }}</SearchLabel>
+						<i class="ti ti-plus"></i> <SearchLabel>{{ $locale.env._webhookSettings.createWebhook }}</SearchLabel>
 					</MkButton>
 				</SearchMarker>
 
@@ -26,12 +26,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef } from '@/i18n.js';
+
 import { computed, onMounted, ref } from 'vue';
 import { entities } from 'misskey-js';
 import XItem from './system-webhook.item.vue';
 import FormSection from '@/components/form/section.vue';
 import { definePage } from '@/page.js';
-import { i18n } from '@/i18n.js';
 import MkButton from '@/components/MkButton.vue';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { showSystemWebhookEditorDialog } from '@/components/MkSystemWebhookEditor.impl.js';
@@ -62,7 +63,7 @@ async function onEditButtonClicked(webhook: entities.SystemWebhook) {
 async function onDeleteButtonClicked(webhook: entities.SystemWebhook) {
 	const result = await os.confirm({
 		type: 'warning',
-		title: i18n.ts._webhookSettings.deleteConfirm,
+		title: localeRef.value.env._webhookSettings.deleteConfirm,
 	});
 	if (!result.canceled) {
 		await misskeyApi('admin/system-webhook/delete', {

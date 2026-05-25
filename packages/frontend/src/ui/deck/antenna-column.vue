@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <XColumn :menu="menu" :column="column" :isStacked="isStacked" :refresher="async () => { await timeline?.reloadTimeline() }">
 	<template #header>
-		<i class="ti ti-antenna"></i><span style="margin-left: 8px;">{{ column.name || column.timelineNameCache || i18n.ts._deck._columns.antenna }}</span>
+		<i class="ti ti-antenna"></i><span style="margin-left: 8px;">{{ column.name || column.timelineNameCache || $locale.env._deck._columns.antenna }}</span>
 	</template>
 
 	<MkStreamingNotesTimeline v-if="column.antennaId" ref="timeline" src="antenna" :antenna="column.antennaId"/>
@@ -14,6 +14,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef } from '@/i18n.js';
+
 import { onMounted, ref, useTemplateRef, watch, defineAsyncComponent } from 'vue';
 import XColumn from './column.vue';
 import type { entities as MisskeyEntities } from 'misskey-js';
@@ -24,7 +26,6 @@ import { updateColumn } from '@/deck.js';
 import MkStreamingNotesTimeline from '@/components/MkStreamingNotesTimeline.vue';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
-import { i18n } from '@/i18n.js';
 import { antennasCache } from '@/cache.js';
 import { soundSettingsButton } from '@/ui/deck/tl-note-notification.js';
 
@@ -52,12 +53,12 @@ watch(soundSetting, v => {
 async function setAntenna() {
 	const antennas = await misskeyApi('antennas/list');
 	const { canceled, result: antennaIdOrOperation } = await os.select({
-		title: i18n.ts.selectAntenna,
+		title: localeRef.value.env.selectAntenna,
 		items: [
-			{ value: '_CREATE_', label: i18n.ts.createNew },
+			{ value: '_CREATE_', label: localeRef.value.env.createNew },
 			(antennas.length > 0 ? {
 				type: 'group' as const,
-				label: i18n.ts.createdAntennas,
+				label: localeRef.value.env.createdAntennas,
 				items: antennas.map(x => ({
 					value: x.id, label: x.name,
 				})),
@@ -99,17 +100,17 @@ function editAntenna() {
 const menu: MenuItem[] = [
 	{
 		icon: 'ti ti-pencil',
-		text: i18n.ts.selectAntenna,
+		text: localeRef.value.env.selectAntenna,
 		action: setAntenna,
 	},
 	{
 		icon: 'ti ti-settings',
-		text: i18n.ts.editAntenna,
+		text: localeRef.value.env.editAntenna,
 		action: editAntenna,
 	},
 	{
 		icon: 'ti ti-bell',
-		text: i18n.ts._deck.newNoteNotificationSettings,
+		text: localeRef.value.env._deck.newNoteNotificationSettings,
 		action: () => soundSettingsButton(soundSetting),
 	},
 ];

@@ -11,27 +11,27 @@ SPDX-License-Identifier: AGPL-3.0-only
 	@close="onClose"
 	@closed="emit('closed')"
 >
-	<template #header>{{ i18n.ts.authentication }}</template>
+	<template #header>{{ $locale.env.authentication }}</template>
 
 	<div class="_spacer" style="--MI_SPACER-min: 20px; --MI_SPACER-max: 28px;">
 		<div style="padding: 0 0 16px 0; text-align: center;">
 			<img src="/client-assets/locked_with_key_3d.png" alt="🔐" style="display: block; margin: 0 auto; width: 48px;">
-			<div style="margin-top: 16px;">{{ i18n.ts.authenticationRequiredToContinue }}</div>
+			<div style="margin-top: 16px;">{{ $locale.env.authenticationRequiredToContinue }}</div>
 		</div>
 
 		<form @submit.prevent="done">
 			<div class="_gaps">
-				<MkInput ref="passwordInput" v-model="password" :placeholder="i18n.ts.password" type="password" autocomplete="current-password webauthn" required :withPasswordToggle="true">
+				<MkInput ref="passwordInput" v-model="password" :placeholder="$locale.env.password" type="password" autocomplete="current-password webauthn" required :withPasswordToggle="true">
 					<template #prefix><i class="ti ti-password"></i></template>
 				</MkInput>
 
 				<MkInput v-if="$i.twoFactorEnabled" v-model="token" type="text" :pattern="isBackupCode ? '^[A-Z0-9]{32}$' :'^[0-9]{6}$'" autocomplete="one-time-code" required :spellcheck="false" :inputmode="isBackupCode ? undefined : 'numeric'">
-					<template #label>{{ i18n.ts.token }} ({{ i18n.ts['2fa'] }})</template>
+					<template #label>{{ $locale.env.token }} ({{ $locale.env['2fa'] }})</template>
 					<template #prefix><i v-if="isBackupCode" class="ti ti-key"></i><i v-else class="ti ti-123"></i></template>
-					<template #caption><button class="_textButton" type="button" @click="isBackupCode = !isBackupCode">{{ isBackupCode ? i18n.ts.useTotp : i18n.ts.useBackupCode }}</button></template>
+					<template #caption><button class="_textButton" type="button" @click="isBackupCode = !isBackupCode">{{ isBackupCode ? $locale.env.useTotp : $locale.env.useBackupCode }}</button></template>
 				</MkInput>
 
-				<MkButton :disabled="(password ?? '') == '' || ($i.twoFactorEnabled && (token ?? '') == '')" type="submit" primary rounded style="margin: 0 auto;"><i class="ti ti-lock-open"></i> {{ i18n.ts.continue }}</MkButton>
+				<MkButton :disabled="(password ?? '') == '' || ($i.twoFactorEnabled && (token ?? '') == '')" type="submit" primary rounded style="margin: 0 auto;"><i class="ti ti-lock-open"></i> {{ $locale.env.continue }}</MkButton>
 			</div>
 		</form>
 	</div>
@@ -39,11 +39,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+
 import { onMounted, useTemplateRef, ref } from 'vue';
 import MkInput from '@/components/MkInput.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkModalWindow from '@/components/MkModalWindow.vue';
-import { i18n } from '@/i18n.js';
 import { ensureSignin } from '@/i.js';
 
 const $i = ensureSignin();

@@ -6,13 +6,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <PageWithHeader :actions="headerActions" :tabs="headerTabs">
 	<div class="_spacer" style="--MI_SPACER-w: 700px; --MI_SPACER-min: 16px; --MI_SPACER-max: 32px;">
-		<SearchMarker path="/admin/performance" :label="i18n.ts.performance" :keywords="['performance']" icon="ti ti-bolt">
+		<SearchMarker path="/admin/performance" :label="$locale.env.performance" :keywords="['performance']" icon="ti ti-bolt">
 			<div class="_gaps">
 				<SearchMarker>
 					<div class="_panel" style="padding: 16px;">
 						<MkSwitch v-model="enableServerMachineStats" @change="onChange_enableServerMachineStats">
-							<template #label><SearchLabel>{{ i18n.ts.enableServerMachineStats }}</SearchLabel></template>
-							<template #caption>{{ i18n.ts.turnOffToImprovePerformance }}</template>
+							<template #label><SearchLabel>{{ $locale.env.enableServerMachineStats }}</SearchLabel></template>
+							<template #caption>{{ $locale.env.turnOffToImprovePerformance }}</template>
 						</MkSwitch>
 					</div>
 				</SearchMarker>
@@ -20,8 +20,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<SearchMarker>
 					<div class="_panel" style="padding: 16px;">
 						<MkSwitch v-model="enableIdenticonGeneration" @change="onChange_enableIdenticonGeneration">
-							<template #label><SearchLabel>{{ i18n.ts.enableIdenticonGeneration }}</SearchLabel></template>
-							<template #caption>{{ i18n.ts.turnOffToImprovePerformance }}</template>
+							<template #label><SearchLabel>{{ $locale.env.enableIdenticonGeneration }}</SearchLabel></template>
+							<template #caption>{{ $locale.env.turnOffToImprovePerformance }}</template>
 						</MkSwitch>
 					</div>
 				</SearchMarker>
@@ -29,8 +29,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<SearchMarker>
 					<div class="_panel" style="padding: 16px;">
 						<MkSwitch v-model="enableChartsForRemoteUser" @change="onChange_enableChartsForRemoteUser">
-							<template #label><SearchLabel>{{ i18n.ts.enableChartsForRemoteUser }}</SearchLabel></template>
-							<template #caption>{{ i18n.ts.turnOffToImprovePerformance }}</template>
+							<template #label><SearchLabel>{{ $locale.env.enableChartsForRemoteUser }}</SearchLabel></template>
+							<template #caption>{{ $locale.env.turnOffToImprovePerformance }}</template>
 						</MkSwitch>
 					</div>
 				</SearchMarker>
@@ -38,8 +38,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<SearchMarker>
 					<div class="_panel" style="padding: 16px;">
 						<MkSwitch v-model="enableStatsForFederatedInstances" @change="onChange_enableStatsForFederatedInstances">
-							<template #label><SearchLabel>{{ i18n.ts.enableStatsForFederatedInstances }}</SearchLabel></template>
-							<template #caption>{{ i18n.ts.turnOffToImprovePerformance }}</template>
+							<template #label><SearchLabel>{{ $locale.env.enableStatsForFederatedInstances }}</SearchLabel></template>
+							<template #caption>{{ $locale.env.turnOffToImprovePerformance }}</template>
 						</MkSwitch>
 					</div>
 				</SearchMarker>
@@ -47,8 +47,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<SearchMarker>
 					<div class="_panel" style="padding: 16px;">
 						<MkSwitch v-model="enableChartsForFederatedInstances" @change="onChange_enableChartsForFederatedInstances">
-							<template #label><SearchLabel>{{ i18n.ts.enableChartsForFederatedInstances }}</SearchLabel></template>
-							<template #caption>{{ i18n.ts.turnOffToImprovePerformance }}</template>
+							<template #label><SearchLabel>{{ $locale.env.enableChartsForFederatedInstances }}</SearchLabel></template>
+							<template #caption>{{ $locale.env.turnOffToImprovePerformance }}</template>
 						</MkSwitch>
 					</div>
 				</SearchMarker>
@@ -56,8 +56,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<SearchMarker>
 					<div class="_panel" style="padding: 16px;">
 						<MkSwitch v-model="showRoleBadgesOfRemoteUsers" @change="onChange_showRoleBadgesOfRemoteUsers">
-							<template #label><SearchLabel>{{ i18n.ts.showRoleBadgesOfRemoteUsers }}</SearchLabel></template>
-							<template #caption>{{ i18n.ts.turnOffToImprovePerformance }}</template>
+							<template #label><SearchLabel>{{ $locale.env.showRoleBadgesOfRemoteUsers }}</SearchLabel></template>
+							<template #caption>{{ $locale.env.turnOffToImprovePerformance }}</template>
 						</MkSwitch>
 					</div>
 				</SearchMarker>
@@ -75,10 +75,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<div class="_gaps">
 							<SearchMarker>
 								<MkSwitch v-model="fttForm.state.enableFanoutTimeline">
-									<template #label><SearchLabel>{{ i18n.ts.enable }}</SearchLabel><span v-if="fttForm.modifiedStates.enableFanoutTimeline" class="_modified">{{ i18n.ts.modified }}</span></template>
+									<template #label><SearchLabel>{{ $locale.env.enable }}</SearchLabel><span v-if="fttForm.modifiedStates.enableFanoutTimeline" class="_modified">{{ $locale.env.modified }}</span></template>
 									<template #caption>
-										<div><SearchText>{{ i18n.ts._serverSettings.fanoutTimelineDescription }}</SearchText></div>
-										<div><MkLink target="_blank" url="https://misskey-hub.net/docs/for-admin/features/ftt/">{{ i18n.ts.details }}</MkLink></div>
+										<div><SearchText>{{ $locale.env._serverSettings.fanoutTimelineDescription }}</SearchText></div>
+										<div><MkLink target="_blank" url="https://misskey-hub.net/docs/for-admin/features/ftt/">{{ $locale.env.details }}</MkLink></div>
 									</template>
 								</MkSwitch>
 							</SearchMarker>
@@ -86,32 +86,32 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<template v-if="fttForm.state.enableFanoutTimeline">
 								<SearchMarker :keywords="['db', 'database', 'fallback']">
 									<MkSwitch v-model="fttForm.state.enableFanoutTimelineDbFallback">
-										<template #label><SearchLabel>{{ i18n.ts._serverSettings.fanoutTimelineDbFallback }}</SearchLabel><span v-if="fttForm.modifiedStates.enableFanoutTimelineDbFallback" class="_modified">{{ i18n.ts.modified }}</span></template>
-										<template #caption><SearchText>{{ i18n.ts._serverSettings.fanoutTimelineDbFallbackDescription }}</SearchText></template>
+										<template #label><SearchLabel>{{ $locale.env._serverSettings.fanoutTimelineDbFallback }}</SearchLabel><span v-if="fttForm.modifiedStates.enableFanoutTimelineDbFallback" class="_modified">{{ $locale.env.modified }}</span></template>
+										<template #caption><SearchText>{{ $locale.env._serverSettings.fanoutTimelineDbFallbackDescription }}</SearchText></template>
 									</MkSwitch>
 								</SearchMarker>
 
 								<SearchMarker>
 									<MkInput v-model="fttForm.state.perLocalUserUserTimelineCacheMax" type="number">
-										<template #label><SearchLabel>perLocalUserUserTimelineCacheMax</SearchLabel><span v-if="fttForm.modifiedStates.perLocalUserUserTimelineCacheMax" class="_modified">{{ i18n.ts.modified }}</span></template>
+										<template #label><SearchLabel>perLocalUserUserTimelineCacheMax</SearchLabel><span v-if="fttForm.modifiedStates.perLocalUserUserTimelineCacheMax" class="_modified">{{ $locale.env.modified }}</span></template>
 									</MkInput>
 								</SearchMarker>
 
 								<SearchMarker>
 									<MkInput v-model="fttForm.state.perRemoteUserUserTimelineCacheMax" type="number">
-										<template #label><SearchLabel>perRemoteUserUserTimelineCacheMax</SearchLabel><span v-if="fttForm.modifiedStates.perRemoteUserUserTimelineCacheMax" class="_modified">{{ i18n.ts.modified }}</span></template>
+										<template #label><SearchLabel>perRemoteUserUserTimelineCacheMax</SearchLabel><span v-if="fttForm.modifiedStates.perRemoteUserUserTimelineCacheMax" class="_modified">{{ $locale.env.modified }}</span></template>
 									</MkInput>
 								</SearchMarker>
 
 								<SearchMarker>
 									<MkInput v-model="fttForm.state.perUserHomeTimelineCacheMax" type="number">
-										<template #label><SearchLabel>perUserHomeTimelineCacheMax</SearchLabel><span v-if="fttForm.modifiedStates.perUserHomeTimelineCacheMax" class="_modified">{{ i18n.ts.modified }}</span></template>
+										<template #label><SearchLabel>perUserHomeTimelineCacheMax</SearchLabel><span v-if="fttForm.modifiedStates.perUserHomeTimelineCacheMax" class="_modified">{{ $locale.env.modified }}</span></template>
 									</MkInput>
 								</SearchMarker>
 
 								<SearchMarker>
 									<MkInput v-model="fttForm.state.perUserListTimelineCacheMax" type="number">
-										<template #label><SearchLabel>perUserListTimelineCacheMax</SearchLabel><span v-if="fttForm.modifiedStates.perUserListTimelineCacheMax" class="_modified">{{ i18n.ts.modified }}</span></template>
+										<template #label><SearchLabel>perUserListTimelineCacheMax</SearchLabel><span v-if="fttForm.modifiedStates.perUserListTimelineCacheMax" class="_modified">{{ $locale.env.modified }}</span></template>
 									</MkInput>
 								</SearchMarker>
 							</template>
@@ -132,8 +132,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<div class="_gaps_m">
 							<SearchMarker>
 								<MkSwitch v-model="rbtForm.state.enableReactionsBuffering">
-									<template #label><SearchLabel>{{ i18n.ts.enable }}</SearchLabel><span v-if="rbtForm.modifiedStates.enableReactionsBuffering" class="_modified">{{ i18n.ts.modified }}</span></template>
-									<template #caption><SearchText>{{ i18n.ts._serverSettings.reactionsBufferingDescription }}</SearchText></template>
+									<template #label><SearchLabel>{{ $locale.env.enable }}</SearchLabel><span v-if="rbtForm.modifiedStates.enableReactionsBuffering" class="_modified">{{ $locale.env.modified }}</span></template>
+									<template #caption><SearchText>{{ $locale.env._serverSettings.reactionsBufferingDescription }}</SearchText></template>
 								</MkSwitch>
 							</SearchMarker>
 						</div>
@@ -152,19 +152,19 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 						<div class="_gaps_m">
 							<MkSwitch v-model="remoteNotesCleaningForm.state.enableRemoteNotesCleaning">
-								<template #label><SearchLabel>{{ i18n.ts.enable }}</SearchLabel><span v-if="remoteNotesCleaningForm.modifiedStates.enableRemoteNotesCleaning" class="_modified">{{ i18n.ts.modified }}</span></template>
-								<template #caption><SearchText>{{ i18n.ts._serverSettings.remoteNotesCleaning_description }}</SearchText></template>
+								<template #label><SearchLabel>{{ $locale.env.enable }}</SearchLabel><span v-if="remoteNotesCleaningForm.modifiedStates.enableRemoteNotesCleaning" class="_modified">{{ $locale.env.modified }}</span></template>
+								<template #caption><SearchText>{{ $locale.env._serverSettings.remoteNotesCleaning_description }}</SearchText></template>
 							</MkSwitch>
 
 							<template v-if="remoteNotesCleaningForm.state.enableRemoteNotesCleaning">
 								<MkInput v-model="remoteNotesCleaningForm.state.remoteNotesCleaningExpiryDaysForEachNotes" type="number">
-									<template #label><SearchLabel>{{ i18n.ts._serverSettings.remoteNotesCleaningExpiryDaysForEachNotes }}</SearchLabel> ({{ i18n.ts.inDays }})<span v-if="remoteNotesCleaningForm.modifiedStates.remoteNotesCleaningExpiryDaysForEachNotes" class="_modified">{{ i18n.ts.modified }}</span></template>
-									<template #suffix>{{ i18n.ts._time.day }}</template>
+									<template #label><SearchLabel>{{ $locale.env._serverSettings.remoteNotesCleaningExpiryDaysForEachNotes }}</SearchLabel> ({{ $locale.env.inDays }})<span v-if="remoteNotesCleaningForm.modifiedStates.remoteNotesCleaningExpiryDaysForEachNotes" class="_modified">{{ $locale.env.modified }}</span></template>
+									<template #suffix>{{ $locale.env._time.day }}</template>
 								</MkInput>
 
 								<MkInput v-model="remoteNotesCleaningForm.state.remoteNotesCleaningMaxProcessingDurationInMinutes" type="number">
-									<template #label><SearchLabel>{{ i18n.ts._serverSettings.remoteNotesCleaningMaxProcessingDuration }}</SearchLabel> ({{ i18n.ts.inMinutes }})<span v-if="remoteNotesCleaningForm.modifiedStates.remoteNotesCleaningMaxProcessingDurationInMinutes" class="_modified">{{ i18n.ts.modified }}</span></template>
-									<template #suffix>{{ i18n.ts._time.minute }}</template>
+									<template #label><SearchLabel>{{ $locale.env._serverSettings.remoteNotesCleaningMaxProcessingDuration }}</SearchLabel> ({{ $locale.env.inMinutes }})<span v-if="remoteNotesCleaningForm.modifiedStates.remoteNotesCleaningMaxProcessingDurationInMinutes" class="_modified">{{ $locale.env.modified }}</span></template>
+									<template #suffix>{{ $locale.env._time.minute }}</template>
 								</MkInput>
 							</template>
 						</div>
@@ -177,11 +177,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef } from '@/i18n.js';
+
 import { ref, computed } from 'vue';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { fetchInstance } from '@/instance.js';
-import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkFolder from '@/components/MkFolder.vue';
@@ -293,7 +294,7 @@ const headerActions = computed(() => []);
 const headerTabs = computed(() => []);
 
 definePage(() => ({
-	title: i18n.ts.performance,
+	title: localeRef.value.env.performance,
 	icon: 'ti ti-bolt',
 }));
 </script>

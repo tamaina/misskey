@@ -10,15 +10,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div class="body">
 				<div v-if="!narrow || currentPage?.route.name == null" class="nav">
 					<div class="_gaps_s">
-						<MkInfo v-if="emailNotConfigured" warn class="info">{{ i18n.ts.emailNotConfiguredWarning }} <MkA to="/settings/email" class="_link">{{ i18n.ts.configure }}</MkA></MkInfo>
+						<MkInfo v-if="emailNotConfigured" warn class="info">{{ $locale.env.emailNotConfiguredWarning }} <MkA to="/settings/email" class="_link">{{ $locale.env.configure }}</MkA></MkInfo>
 						<MkInfo v-if="storagePersistenceSupported && !storagePersisted && store.r.showStoragePersistenceSuggestion.value" class="info">
-							<div>{{ i18n.ts._settings.settingsPersistence_description1 }}</div>
-							<div>{{ i18n.ts._settings.settingsPersistence_description2 }}</div>
-							<div><button class="_textButton" @click="enableStoragePersistence">{{ i18n.ts.enable }}</button> | <button class="_textButton" @click="skipStoragePersistence">{{ i18n.ts.skip }}</button></div>
+							<div>{{ $locale.env._settings.settingsPersistence_description1 }}</div>
+							<div>{{ $locale.env._settings.settingsPersistence_description2 }}</div>
+							<div><button class="_textButton" @click="enableStoragePersistence">{{ $locale.env.enable }}</button> | <button class="_textButton" @click="skipStoragePersistence">{{ $locale.env.skip }}</button></div>
 						</MkInfo>
 						<MkInfo v-if="!store.r.enablePreferencesAutoCloudBackup.value && store.r.showPreferencesAutoCloudBackupSuggestion.value" class="info">
-							<div>{{ i18n.ts._preferencesBackup.autoPreferencesBackupIsNotEnabledForThisDevice }}</div>
-							<div><button class="_textButton" @click="enableAutoBackup">{{ i18n.ts.enable }}</button> | <button class="_textButton" @click="skipAutoBackup">{{ i18n.ts.skip }}</button></div>
+							<div>{{ $locale.env._preferencesBackup.autoPreferencesBackupIsNotEnabledForThisDevice }}</div>
+							<div><button class="_textButton" @click="enableAutoBackup">{{ $locale.env.enable }}</button> | <button class="_textButton" @click="skipAutoBackup">{{ $locale.env.skip }}</button></div>
 						</MkInfo>
 						<MkSuperMenu :def="menuDef" :grid="narrow" :searchIndex="searchIndex"></MkSuperMenu>
 					</div>
@@ -35,10 +35,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script setup lang="ts">
+import { $locale as localeRef } from '@/i18n.js';
+
 import { computed, onActivated, onMounted, onUnmounted, ref, useTemplateRef, watch } from 'vue';
 import type { PageMetadata } from '@/page.js';
 import type { SuperMenuDef } from '@/components/MkSuperMenu.vue';
-import { i18n } from '@/i18n.js';
 import MkInfo from '@/components/MkInfo.vue';
 import MkSuperMenu from '@/components/MkSuperMenu.vue';
 import { $i } from '@/i.js';
@@ -58,7 +59,7 @@ const searchIndex = await import('search-index:settings').then(({ searchIndexes 
 const storagePersisted = await getStoragePersistenceStatusRef();
 
 const indexInfo = {
-	title: i18n.ts.settings,
+	title: localeRef.value.env.settings,
 	icon: 'ti ti-settings',
 	hideHeader: true,
 };
@@ -85,81 +86,81 @@ function skipAutoBackup() {
 const menuDef = computed<SuperMenuDef[]>(() => [{
 	items: [{
 		icon: 'ti ti-user',
-		text: i18n.ts.profile,
+		text: localeRef.value.env.profile,
 		to: '/settings/profile',
 		active: currentPage.value?.route.name === 'profile',
 	}, {
 		icon: 'ti ti-lock-open',
-		text: i18n.ts.privacy,
+		text: localeRef.value.env.privacy,
 		to: '/settings/privacy',
 		active: currentPage.value?.route.name === 'privacy',
 	}, {
 		icon: 'ti ti-bell',
-		text: i18n.ts.notifications,
+		text: localeRef.value.env.notifications,
 		to: '/settings/notifications',
 		active: currentPage.value?.route.name === 'notifications',
 	}, {
 		icon: 'ti ti-mail',
-		text: i18n.ts.email,
+		text: localeRef.value.env.email,
 		to: '/settings/email',
 		active: currentPage.value?.route.name === 'email',
 	}, {
 		icon: 'ti ti-lock',
-		text: i18n.ts.security,
+		text: localeRef.value.env.security,
 		to: '/settings/security',
 		active: currentPage.value?.route.name === 'security',
 	}],
 }, {
 	items: [{
 		icon: 'ti ti-adjustments',
-		text: i18n.ts.preferences,
+		text: localeRef.value.env.preferences,
 		to: '/settings/preferences',
 		active: currentPage.value?.route.name === 'preferences',
 	}, {
 		icon: 'ti ti-palette',
-		text: i18n.ts.theme,
+		text: localeRef.value.env.theme,
 		to: '/settings/theme',
 		active: currentPage.value?.route.name === 'theme',
 	}, {
 		icon: 'ti ti-mood-happy',
-		text: i18n.ts.emojiPalette,
+		text: localeRef.value.env.emojiPalette,
 		to: '/settings/emoji-palette',
 		active: currentPage.value?.route.name === 'emoji-palette',
 	}, {
 		icon: 'ti ti-music',
-		text: i18n.ts.sounds,
+		text: localeRef.value.env.sounds,
 		to: '/settings/sounds',
 		active: currentPage.value?.route.name === 'sounds',
 	}, {
 		icon: 'ti ti-plug',
-		text: i18n.ts.plugins,
+		text: localeRef.value.env.plugins,
 		to: '/settings/plugin',
 		active: currentPage.value?.route.name === 'plugin',
 	}],
 }, {
 	items: [{
 		icon: 'ti ti-cloud',
-		text: i18n.ts.drive,
+		text: localeRef.value.env.drive,
 		to: '/settings/drive',
 		active: currentPage.value?.route.name === 'drive',
 	}, {
 		icon: 'ti ti-ban',
-		text: i18n.ts.muteAndBlock,
+		text: localeRef.value.env.muteAndBlock,
 		to: '/settings/mute-block',
 		active: currentPage.value?.route.name === 'mute-block',
 	}, {
 		icon: 'ti ti-link',
-		text: i18n.ts._settings.serviceConnection,
+		text: localeRef.value.env._settings.serviceConnection,
 		to: '/settings/connect',
 		active: currentPage.value?.route.name === 'connect',
 	}, {
 		icon: 'ti ti-package',
-		text: i18n.ts._settings.accountData,
+		text: localeRef.value.env._settings.accountData,
 		to: '/settings/account-data',
 		active: currentPage.value?.route.name === 'account-data',
 	}, {
 		icon: 'ti ti-dots',
-		text: i18n.ts.other,
+		text: localeRef.value.env.other,
 		to: '/settings/other',
 		active: currentPage.value?.route.name === 'other',
 	}],
@@ -167,26 +168,26 @@ const menuDef = computed<SuperMenuDef[]>(() => [{
 	items: [{
 		type: 'button',
 		icon: 'ti ti-settings-2',
-		text: i18n.ts.preferencesProfile,
+		text: localeRef.value.env.preferencesProfile,
 		action: async (ev) => {
 			os.popupMenu(getPreferencesProfileMenu(), ev.currentTarget ?? ev.target);
 		},
 	}, {
 		type: 'button',
 		icon: 'ti ti-trash',
-		text: i18n.ts.clearCache,
+		text: localeRef.value.env.clearCache,
 		action: async () => {
 			await clearCache();
 		},
 	}, {
 		type: 'button',
 		icon: 'ti ti-power',
-		text: i18n.ts.logout,
+		text: localeRef.value.env.logout,
 		action: async () => {
 			const { canceled } = await os.confirm({
 				type: 'warning',
-				title: i18n.ts.logoutConfirm,
-				text: i18n.ts.logoutWillClearClientData,
+				title: localeRef.value.env.logoutConfirm,
+				text: localeRef.value.env.logoutWillClearClientData,
 			});
 			if (canceled) return;
 			signout();

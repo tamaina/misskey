@@ -29,6 +29,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef } from '@/i18n.js';
+
 import { computed } from 'vue';
 import { useWidgetPropsManager } from './widget.js';
 import type { WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
@@ -37,116 +39,115 @@ import MkContainer from '@/components/MkContainer.vue';
 import MkAnalogClock from '@/components/MkAnalogClock.vue';
 import MkDigitalClock from '@/components/MkDigitalClock.vue';
 import { timezones } from '@/utility/timezones.js';
-import { i18n } from '@/i18n.js';
 
 const name = 'clock';
 
 const widgetPropsDef = {
 	transparent: {
 		type: 'boolean',
-		label: i18n.ts._widgetOptions.transparent,
+		label: localeRef.value.env._widgetOptions.transparent,
 		default: false,
 	},
 	size: {
 		type: 'radio',
-		label: i18n.ts._widgetOptions._clock.size,
+		label: localeRef.value.env._widgetOptions._clock.size,
 		default: 'medium',
 		options: [{
 			value: 'small' as const,
-			label: i18n.ts.small,
+			label: localeRef.value.env.small,
 		}, {
 			value: 'medium' as const,
-			label: i18n.ts.medium,
+			label: localeRef.value.env.medium,
 		}, {
 			value: 'large' as const,
-			label: i18n.ts.large,
+			label: localeRef.value.env.large,
 		}],
 	},
 	thickness: {
 		type: 'radio',
-		label: i18n.ts._widgetOptions._clock.thickness,
+		label: localeRef.value.env._widgetOptions._clock.thickness,
 		default: 0.2,
 		options: [{
 			value: 0.1 as const,
-			label: i18n.ts._widgetOptions._clock.thicknessThin,
+			label: localeRef.value.env._widgetOptions._clock.thicknessThin,
 		}, {
 			value: 0.2 as const,
-			label: i18n.ts._widgetOptions._clock.thicknessMedium,
+			label: localeRef.value.env._widgetOptions._clock.thicknessMedium,
 		}, {
 			value: 0.3 as const,
-			label: i18n.ts._widgetOptions._clock.thicknessThick,
+			label: localeRef.value.env._widgetOptions._clock.thicknessThick,
 		}],
 	},
 	graduations: {
 		type: 'radio',
-		label: i18n.ts._widgetOptions._clock.graduations,
+		label: localeRef.value.env._widgetOptions._clock.graduations,
 		default: 'numbers',
 		options: [{
 			value: 'none' as const,
-			label: i18n.ts.none,
+			label: localeRef.value.env.none,
 		}, {
 			value: 'dots' as const,
-			label: i18n.ts._widgetOptions._clock.graduationDots,
+			label: localeRef.value.env._widgetOptions._clock.graduationDots,
 		}, {
 			value: 'numbers' as const,
-			label: i18n.ts._widgetOptions._clock.graduationArabic,
+			label: localeRef.value.env._widgetOptions._clock.graduationArabic,
 		}, /*, {
 			value: 'roman' as const,
-			label: i18n.ts._widgetOptions._clock.graduationRoman,
+			label: localeRef.value.env._widgetOptions._clock.graduationRoman,
 		}*/],
 	},
 	fadeGraduations: {
 		type: 'boolean',
-		label: i18n.ts._widgetOptions._clock.fadeGraduations,
+		label: localeRef.value.env._widgetOptions._clock.fadeGraduations,
 		default: true,
 	},
 	sAnimation: {
 		type: 'radio',
-		label: i18n.ts._widgetOptions._clock.sAnimation,
+		label: localeRef.value.env._widgetOptions._clock.sAnimation,
 		default: 'elastic',
 		options: [{
 			value: 'none' as const,
-			label: i18n.ts.none,
+			label: localeRef.value.env.none,
 		}, {
 			value: 'elastic' as const,
-			label: i18n.ts._widgetOptions._clock.sAnimationElastic,
+			label: localeRef.value.env._widgetOptions._clock.sAnimationElastic,
 		}, {
 			value: 'easeOut' as const,
-			label: i18n.ts._widgetOptions._clock.sAnimationEaseOut,
+			label: localeRef.value.env._widgetOptions._clock.sAnimationEaseOut,
 		}],
 	},
 	twentyFour: {
 		type: 'boolean',
-		label: i18n.ts._widgetOptions._clock.twentyFour,
+		label: localeRef.value.env._widgetOptions._clock.twentyFour,
 		default: false,
 	},
 	label: {
 		type: 'radio',
-		label: i18n.ts.label,
+		label: localeRef.value.env.label,
 		default: 'none',
 		options: [{
 			value: 'none' as const,
-			label: i18n.ts.none,
+			label: localeRef.value.env.none,
 		}, {
 			value: 'time' as const,
-			label: i18n.ts._widgetOptions._clock.labelTime,
+			label: localeRef.value.env._widgetOptions._clock.labelTime,
 		}, {
 			value: 'tz' as const,
-			label: i18n.ts._widgetOptions._clock.labelTz,
+			label: localeRef.value.env._widgetOptions._clock.labelTz,
 		}, {
 			value: 'timeAndTz' as const,
-			label: i18n.ts._widgetOptions._clock.labelTimeAndTz,
+			label: localeRef.value.env._widgetOptions._clock.labelTimeAndTz,
 		}],
 	},
 	timezone: {
 		type: 'enum',
-		label: i18n.ts._widgetOptions._clock.timezone,
+		label: localeRef.value.env._widgetOptions._clock.timezone,
 		default: null,
 		enum: [...timezones.map((tz) => ({
 			label: tz.name,
 			value: tz.name.toLowerCase(),
 		})), {
-			label: i18n.ts.auto,
+			label: localeRef.value.env.auto,
 			value: null,
 		}],
 	},

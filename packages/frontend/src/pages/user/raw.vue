@@ -25,7 +25,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<template #value><span class="_monospace">{{ user.id }}</span></template>
 			</MkKeyValue>
 			<MkKeyValue oneline>
-				<template #key>{{ i18n.ts.createdAt }}</template>
+				<template #key>{{ $locale.env.createdAt }}</template>
 				<template #value><span class="_monospace"><MkTime :time="user.createdAt" :mode="'detail'"/></span></template>
 			</MkKeyValue>
 		</div>
@@ -39,10 +39,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+
 import { computed } from 'vue';
 import * as Misskey from 'misskey-js';
 import { acct } from '@/filters/user.js';
-import { i18n } from '@/i18n.js';
 import MkKeyValue from '@/components/MkKeyValue.vue';
 import FormSection from '@/components/form/section.vue';
 import MkObjectView from '@/components/MkObjectView.vue';

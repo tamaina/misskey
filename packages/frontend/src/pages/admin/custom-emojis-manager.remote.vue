@@ -9,9 +9,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div :class="$style.root" class="_gaps">
 			<MkFolder>
 				<template #icon><i class="ti ti-search"></i></template>
-				<template #label>{{ i18n.ts._customEmojisManager._gridCommon.searchSettings }}</template>
+				<template #label>{{ $locale.env._customEmojisManager._gridCommon.searchSettings }}</template>
 				<template #caption>
-					{{ i18n.ts._customEmojisManager._gridCommon.searchSettingCaption }}
+					{{ $locale.env._customEmojisManager._gridCommon.searchSettingCaption }}
 				</template>
 
 				<div class="_gaps">
@@ -68,7 +68,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 					<MkFolder :spacerMax="8" :spacerMin="8">
 						<template #icon><i class="ti ti-arrows-sort"></i></template>
-						<template #label>{{ i18n.ts._customEmojisManager._gridCommon.sortOrder }}</template>
+						<template #label>{{ $locale.env._customEmojisManager._gridCommon.sortOrder }}</template>
 						<MkSortOrderEditor
 							:baseOrderKeyNames="gridSortOrderKeys"
 							:currentOrders="sortOrders"
@@ -81,15 +81,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 						type="number"
 						:max="100"
 					>
-						<template #label>{{ i18n.ts._customEmojisManager._gridCommon.searchLimit }}</template>
+						<template #label>{{ $locale.env._customEmojisManager._gridCommon.searchLimit }}</template>
 					</MkInput>
 
 					<div :class="[[spMode ? $style.searchButtonsSp : $style.searchButtons]]">
 						<MkButton primary @click="onSearchRequest">
-							{{ i18n.ts.search }}
+							{{ $locale.env.search }}
 						</MkButton>
 						<MkButton @click="onQueryResetButtonClicked">
-							{{ i18n.ts.reset }}
+							{{ $locale.env.reset }}
 						</MkButton>
 					</div>
 				</div>
@@ -97,9 +97,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 			<MkFolder>
 				<template #icon><i class="ti ti-notes"></i></template>
-				<template #label>{{ i18n.ts._customEmojisManager._gridCommon.registrationLogs }}</template>
+				<template #label>{{ $locale.env._customEmojisManager._gridCommon.registrationLogs }}</template>
 				<template #caption>
-					{{ i18n.ts._customEmojisManager._gridCommon.registrationLogsCaption }}
+					{{ $locale.env._customEmojisManager._gridCommon.registrationLogsCaption }}
 				</template>
 				<XRegisterLogs :logs="requestLogs"/>
 			</MkFolder>
@@ -107,7 +107,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<component :is="loadingHandler.component.value" v-if="loadingHandler.showing.value"/>
 			<template v-else>
 				<div v-if="gridItems.length === 0" style="text-align: center">
-					{{ i18n.ts._customEmojisManager._local._list.emojisNothing }}
+					{{ $locale.env._customEmojisManager._local._list.emojisNothing }}
 				</div>
 
 				<template v-else>
@@ -127,7 +127,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<div :class="$style.right">
 							<MkButton primary @click="onImportClicked">
 								{{
-									i18n.ts._customEmojisManager._remote.importEmojisButton
+									$locale.env._customEmojisManager._remote.importEmojisButton
 								}} ({{ checkedItemsCount }})
 							</MkButton>
 						</div>
@@ -140,6 +140,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script setup lang="ts">
+import { $locale as localeRef, $l as localizerRef } from '@/i18n.js';
+
 import { computed, onMounted, ref, useCssModule } from 'vue';
 import * as Misskey from 'misskey-js';
 import type { GridSortOrderKey, RequestLogItem } from '@/pages/admin/custom-emojis-manager.impl.js';
@@ -148,7 +150,6 @@ import type { GridSetting } from '@/components/grid/grid.js';
 import type { SortOrder } from '@/components/MkSortOrderEditor.define.js';
 import MkRemoteEmojiEditDialog from '@/components/MkRemoteEmojiEditDialog.vue';
 import { misskeyApi } from '@/utility/misskey-api.js';
-import { i18n } from '@/i18n.js';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkGrid from '@/components/grid/MkGrid.vue';
@@ -187,7 +188,7 @@ function setupGrid(): GridSetting {
 				return [
 					{
 						type: 'button',
-						text: i18n.ts._customEmojisManager._remote.importSelectionRows,
+						text: localeRef.value.env._customEmojisManager._remote.importSelectionRows,
 						icon: 'ti ti-download',
 						action: async () => {
 							const targets = context.rangedRows.map(it => gridItems.value[it.index]);
@@ -211,7 +212,7 @@ function setupGrid(): GridSetting {
 				return [
 					{
 						type: 'button',
-						text: i18n.ts._customEmojisManager._remote.selectionRowDetail,
+						text: localeRef.value.env._customEmojisManager._remote.selectionRowDetail,
 						icon: 'ti ti-info-circle',
 						action: async () => {
 							const target = customEmojis.value[row.index];
@@ -235,7 +236,7 @@ function setupGrid(): GridSetting {
 					},
 					{
 						type: 'button',
-						text: i18n.ts._customEmojisManager._remote.importSelectionRangesRows,
+						text: localeRef.value.env._customEmojisManager._remote.importSelectionRangesRows,
 						icon: 'ti ti-download',
 						action: async () => {
 							const targets = context.rangedCells.map(it => gridItems.value[it.row.index]);
@@ -313,8 +314,8 @@ function onGridCellValueChange(event: GridCellValueChangeEvent) {
 async function importEmojis(targets: GridItem[]) {
 	const confirm = await os.confirm({
 		type: 'info',
-		title: i18n.ts._customEmojisManager._remote.confirmImportEmojisTitle,
-		text: i18n.tsx._customEmojisManager._remote.confirmImportEmojisDescription({ count: targets.length }),
+		title: localeRef.value.env._customEmojisManager._remote.confirmImportEmojisTitle,
+		text: localizerRef.value.env._customEmojisManager._remote.confirmImportEmojisDescription({ count: targets.length }),
 	});
 
 	if (confirm.canceled) {
@@ -339,8 +340,8 @@ async function importEmojis(targets: GridItem[]) {
 	if (failedItems.length > 0) {
 		await os.alert({
 			type: 'error',
-			title: i18n.ts.somethingHappened,
-			text: i18n.ts._customEmojisManager._gridCommon.alertEmojisRegisterFailedDescription,
+			title: localeRef.value.env.somethingHappened,
+			text: localeRef.value.env._customEmojisManager._gridCommon.alertEmojisRegisterFailedDescription,
 		});
 	}
 

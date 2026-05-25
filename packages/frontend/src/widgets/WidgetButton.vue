@@ -12,6 +12,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef } from '@/i18n.js';
+
 import { Interpreter, Parser } from '@syuilo/aiscript';
 import { useWidgetPropsManager } from './widget.js';
 import type { WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
@@ -20,24 +22,23 @@ import * as os from '@/os.js';
 import { aiScriptReadline, createAiScriptEnv } from '@/aiscript/api.js';
 import { $i } from '@/i.js';
 import MkButton from '@/components/MkButton.vue';
-import { i18n } from '@/i18n.js';
 
 const name = 'button';
 
 const widgetPropsDef = {
 	label: {
 		type: 'string',
-		label: i18n.ts.label,
+		label: localeRef.value.env.label,
 		default: 'BUTTON',
 	},
 	colored: {
 		type: 'boolean',
-		label: i18n.ts._widgetOptions._button.colored,
+		label: localeRef.value.env._widgetOptions._button.colored,
 		default: true,
 	},
 	script: {
 		type: 'string',
-		label: i18n.ts.script,
+		label: localeRef.value.env.script,
 		multiline: true,
 		default: 'Mk:dialog("hello", "world")',
 	},

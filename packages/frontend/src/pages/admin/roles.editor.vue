@@ -10,70 +10,70 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</MkInput>
 
 	<MkInput v-model="role.name" :readonly="readonly">
-		<template #label>{{ i18n.ts._role.name }}</template>
+		<template #label>{{ $locale.env._role.name }}</template>
 	</MkInput>
 
 	<MkTextarea v-model="role.description" :readonly="readonly">
-		<template #label>{{ i18n.ts._role.description }}</template>
+		<template #label>{{ $locale.env._role.description }}</template>
 	</MkTextarea>
 
 	<MkColorInput v-model="role.color">
-		<template #label>{{ i18n.ts.color }}</template>
+		<template #label>{{ $locale.env.color }}</template>
 	</MkColorInput>
 
 	<MkInput v-model="role.iconUrl" type="url">
-		<template #label>{{ i18n.ts._role.iconUrl }}</template>
+		<template #label>{{ $locale.env._role.iconUrl }}</template>
 	</MkInput>
 
 	<MkInput v-model="role.displayOrder" type="number">
-		<template #label>{{ i18n.ts._role.displayOrder }}</template>
-		<template #caption>{{ i18n.ts._role.descriptionOfDisplayOrder }}</template>
+		<template #label>{{ $locale.env._role.displayOrder }}</template>
+		<template #caption>{{ $locale.env._role.descriptionOfDisplayOrder }}</template>
 	</MkInput>
 
 	<MkSelect v-model="rolePermission" :items="rolePermissionDef" :readonly="readonly">
-		<template #label><i class="ti ti-shield-lock"></i> {{ i18n.ts._role.permission }}</template>
-		<template #caption><div v-html="i18n.ts._role.descriptionOfPermission.replaceAll('\n', '<br>')"></div></template>
+		<template #label><i class="ti ti-shield-lock"></i> {{ $locale.env._role.permission }}</template>
+		<template #caption><div v-html="$locale.env._role.descriptionOfPermission.replaceAll('\n', '<br>')"></div></template>
 	</MkSelect>
 
-	<MkSelect v-model="role.target" :items="[{ label: i18n.ts._role.manual, value: 'manual' }, { label: i18n.ts._role.conditional, value: 'conditional' }]" :readonly="readonly">
-		<template #label><i class="ti ti-users"></i> {{ i18n.ts._role.assignTarget }}</template>
-		<template #caption><div v-html="i18n.ts._role.descriptionOfAssignTarget.replaceAll('\n', '<br>')"></div></template>
+	<MkSelect v-model="role.target" :items="[{ label: $locale.env._role.manual, value: 'manual' }, { label: $locale.env._role.conditional, value: 'conditional' }]" :readonly="readonly">
+		<template #label><i class="ti ti-users"></i> {{ $locale.env._role.assignTarget }}</template>
+		<template #caption><div v-html="$locale.env._role.descriptionOfAssignTarget.replaceAll('\n', '<br>')"></div></template>
 	</MkSelect>
 
 	<MkFolder v-if="role.target === 'conditional'" defaultOpen>
-		<template #label>{{ i18n.ts._role.condition }}</template>
+		<template #label>{{ $locale.env._role.condition }}</template>
 		<div class="_gaps">
 			<RolesEditorFormula v-model="role.condFormula"/>
 		</div>
 	</MkFolder>
 
 	<MkSwitch v-model="role.preserveAssignmentOnMoveAccount" :readonly="readonly">
-		<template #label>{{ i18n.ts._role.preserveAssignmentOnMoveAccount }}</template>
-		<template #caption>{{ i18n.ts._role.preserveAssignmentOnMoveAccount_description }}</template>
+		<template #label>{{ $locale.env._role.preserveAssignmentOnMoveAccount }}</template>
+		<template #caption>{{ $locale.env._role.preserveAssignmentOnMoveAccount_description }}</template>
 	</MkSwitch>
 
 	<MkSwitch v-model="role.canEditMembersByModerator" :readonly="readonly">
-		<template #label>{{ i18n.ts._role.canEditMembersByModerator }}</template>
-		<template #caption>{{ i18n.ts._role.descriptionOfCanEditMembersByModerator }}</template>
+		<template #label>{{ $locale.env._role.canEditMembersByModerator }}</template>
+		<template #caption>{{ $locale.env._role.descriptionOfCanEditMembersByModerator }}</template>
 	</MkSwitch>
 
 	<MkSwitch v-model="role.isPublic" :readonly="readonly">
-		<template #label>{{ i18n.ts._role.isPublic }}</template>
-		<template #caption>{{ i18n.ts._role.descriptionOfIsPublic }}</template>
+		<template #label>{{ $locale.env._role.isPublic }}</template>
+		<template #caption>{{ $locale.env._role.descriptionOfIsPublic }}</template>
 	</MkSwitch>
 
 	<MkSwitch v-model="role.asBadge" :readonly="readonly">
-		<template #label>{{ i18n.ts._role.asBadge }}</template>
-		<template #caption>{{ i18n.ts._role.descriptionOfAsBadge }}</template>
+		<template #label>{{ $locale.env._role.asBadge }}</template>
+		<template #caption>{{ $locale.env._role.descriptionOfAsBadge }}</template>
 	</MkSwitch>
 
 	<MkSwitch v-model="role.isExplorable" :readonly="readonly">
-		<template #label>{{ i18n.ts._role.isExplorable }}</template>
-		<template #caption>{{ i18n.ts._role.descriptionOfIsExplorable }}</template>
+		<template #label>{{ $locale.env._role.isExplorable }}</template>
+		<template #caption>{{ $locale.env._role.descriptionOfIsExplorable }}</template>
 	</MkSwitch>
 
 	<FormSlot>
-		<template #label><i class="ti ti-license"></i> {{ i18n.ts._role.policies }}</template>
+		<template #label><i class="ti ti-license"></i> {{ $locale.env._role.policies }}</template>
 		<div class="_gaps_s">
 			<MkInput v-model="q" type="search">
 				<template #prefix><i class="ti ti-search"></i></template>
@@ -92,6 +92,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef } from '@/i18n.js';
+
 import { watch, ref, computed } from 'vue';
 import { throttle } from 'throttle-debounce';
 import * as Misskey from 'misskey-js';
@@ -105,7 +107,6 @@ import MkFolder from '@/components/MkFolder.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import FormSlot from '@/components/form/slot.vue';
 import XPolicyEditor from './roles.policy-editor.vue';
-import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
 import { deepClone } from '@/utility/clone.js';
 import type { PolicyMeta } from './roles.policy-editor.vue';
@@ -173,9 +174,9 @@ const rolePolicyMeta = computed<any>({
 });
 
 const rolePermissionDef = [
-	{ label: i18n.ts.normalUser, value: 'normal' },
-	{ label: i18n.ts.moderator, value: 'moderator' },
-	{ label: i18n.ts.administrator, value: 'administrator' },
+	{ label: localeRef.value.env.normalUser, value: 'normal' },
+	{ label: localeRef.value.env.moderator, value: 'moderator' },
+	{ label: localeRef.value.env.administrator, value: 'administrator' },
 ] as const satisfies MkSelectItem[];
 
 const rolePermission = computed<GetMkSelectValueTypesFromDef<typeof rolePermissionDef>>({

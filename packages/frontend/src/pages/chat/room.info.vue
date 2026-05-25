@@ -6,30 +6,31 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <div class="_gaps">
 	<MkInput v-model="name_" :disabled="!isOwner">
-		<template #label>{{ i18n.ts.name }}</template>
+		<template #label>{{ $locale.env.name }}</template>
 	</MkInput>
 
 	<MkTextarea v-model="description_" :disabled="!isOwner">
-		<template #label>{{ i18n.ts.description }}</template>
+		<template #label>{{ $locale.env.description }}</template>
 	</MkTextarea>
 
-	<MkButton v-if="isOwner" primary @click="save">{{ i18n.ts.save }}</MkButton>
+	<MkButton v-if="isOwner" primary @click="save">{{ $locale.env.save }}</MkButton>
 
 	<hr>
 
-	<MkButton v-if="isOwner || ($i.isAdmin || $i.isModerator)" danger @click="del">{{ i18n.ts._chat.deleteRoom }}</MkButton>
+	<MkButton v-if="isOwner || ($i.isAdmin || $i.isModerator)" danger @click="del">{{ $locale.env._chat.deleteRoom }}</MkButton>
 
 	<MkSwitch v-if="!isOwner" v-model="isMuted">
-		<template #label>{{ i18n.ts._chat.muteThisRoom }}</template>
+		<template #label>{{ $locale.env._chat.muteThisRoom }}</template>
 	</MkSwitch>
 </div>
 </template>
 
 <script lang="ts" setup>
+import { $l as localizerRef } from '@/i18n.js';
+
 import { computed, ref, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkButton from '@/components/MkButton.vue';
-import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
 import { ensureSignin } from '@/i.js';
 import MkInput from '@/components/MkInput.vue';
@@ -62,7 +63,7 @@ function save() {
 async function del() {
 	const { canceled } = await os.confirm({
 		type: 'warning',
-		text: i18n.tsx.deleteAreYouSure({ x: name_.value }),
+		text: localizerRef.value.env.deleteAreYouSure({ x: name_.value }),
 	});
 	if (canceled) return;
 

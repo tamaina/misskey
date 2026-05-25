@@ -8,33 +8,33 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div class="_gaps">
 		<MkFolder>
 			<template #icon><i class="ti ti-settings"></i></template>
-			<template #label>{{ i18n.ts._customEmojisManager._local._register.uploadSettingTitle }}</template>
-			<template #caption>{{ i18n.ts._customEmojisManager._local._register.uploadSettingDescription }}</template>
+			<template #label>{{ $locale.env._customEmojisManager._local._register.uploadSettingTitle }}</template>
+			<template #caption>{{ $locale.env._customEmojisManager._local._register.uploadSettingDescription }}</template>
 
 			<div class="_gaps">
 				<MkSelect v-model="selectedFolderId" :items="selectedFolderIdDef">
-					<template #label>{{ i18n.ts.uploadFolder }}</template>
+					<template #label>{{ $locale.env.uploadFolder }}</template>
 				</MkSelect>
 
 				<MkSwitch v-model="directoryToCategory">
-					<template #label>{{ i18n.ts._customEmojisManager._local._register.directoryToCategoryLabel }}</template>
-					<template #caption>{{ i18n.ts._customEmojisManager._local._register.directoryToCategoryCaption }}</template>
+					<template #label>{{ $locale.env._customEmojisManager._local._register.directoryToCategoryLabel }}</template>
+					<template #caption>{{ $locale.env._customEmojisManager._local._register.directoryToCategoryCaption }}</template>
 				</MkSwitch>
 			</div>
 		</MkFolder>
 
 		<MkFolder>
 			<template #icon><i class="ti ti-notes"></i></template>
-			<template #label>{{ i18n.ts._customEmojisManager._gridCommon.registrationLogs }}</template>
+			<template #label>{{ $locale.env._customEmojisManager._gridCommon.registrationLogs }}</template>
 			<template #caption>
-				{{ i18n.ts._customEmojisManager._gridCommon.registrationLogsCaption }}
+				{{ $locale.env._customEmojisManager._gridCommon.registrationLogsCaption }}
 			</template>
 			<XRegisterLogs :logs="requestLogs"/>
 		</MkFolder>
 
 		<div class="_buttonsCenter">
-			<MkButton primary rounded @click="onFileSelectClicked">{{ i18n.ts.upload }}</MkButton>
-			<MkButton primary rounded @click="onDriveSelectClicked">{{ i18n.ts.fromDrive }}</MkButton>
+			<MkButton primary rounded @click="onFileSelectClicked">{{ $locale.env.upload }}</MkButton>
+			<MkButton primary rounded @click="onDriveSelectClicked">{{ $locale.env.fromDrive }}</MkButton>
 		</div>
 
 		<div v-if="gridItems.length > 0" :class="$style.gridArea">
@@ -47,10 +47,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 		<div v-if="gridItems.length > 0" :class="$style.footer">
 			<MkButton primary :disabled="registerButtonDisabled" @click="onRegistryClicked">
-				{{ i18n.ts.registration }}
+				{{ $locale.env.registration }}
 			</MkButton>
 			<MkButton @click="onClearClicked">
-				{{ i18n.ts.clear }}
+				{{ $locale.env.clear }}
 			</MkButton>
 		</div>
 	</div>
@@ -58,6 +58,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script setup lang="ts">
+import { $locale as localeRef, $l as localizerRef } from '@/i18n.js';
+
 import * as Misskey from 'misskey-js';
 import { computed, onMounted, ref, useCssModule } from 'vue';
 import type { RequestLogItem } from '@/pages/admin/custom-emojis-manager.impl.js';
@@ -72,7 +74,6 @@ import {
 	roleIdsParser,
 } from '@/pages/admin/custom-emojis-manager.impl.js';
 import MkGrid from '@/components/grid/MkGrid.vue';
-import { i18n } from '@/i18n.js';
 import MkSelect from '@/components/MkSelect.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkFolder from '@/components/MkFolder.vue';
@@ -137,13 +138,13 @@ function setupGrid(): GridSetting {
 				return [
 					{
 						type: 'button',
-						text: i18n.ts._customEmojisManager._gridCommon.copySelectionRows,
+						text: localeRef.value.env._customEmojisManager._gridCommon.copySelectionRows,
 						icon: 'ti ti-copy',
 						action: () => copyGridDataToClipboard(gridItems, context),
 					},
 					{
 						type: 'button',
-						text: i18n.ts._customEmojisManager._gridCommon.deleteSelectionRows,
+						text: localeRef.value.env._customEmojisManager._gridCommon.deleteSelectionRows,
 						icon: 'ti ti-trash',
 						action: () => removeRows(context.rangedRows),
 					},
@@ -179,8 +180,8 @@ function setupGrid(): GridSetting {
 					const current = gridItems.value[row.index].roleIdsThatCanBeUsedThisEmojiAsReaction;
 					const result = await os.selectRole({
 						initialRoleIds: current.map(it => it.id),
-						title: i18n.ts.rolesThatCanBeUsedThisEmojiAsReaction,
-						infoMessage: i18n.ts.rolesThatCanBeUsedThisEmojiAsReactionEmptyDescription,
+						title: localeRef.value.env.rolesThatCanBeUsedThisEmojiAsReaction,
+						infoMessage: localeRef.value.env.rolesThatCanBeUsedThisEmojiAsReactionEmptyDescription,
 						publicOnly: true,
 					});
 					if (result.canceled) {
@@ -208,13 +209,13 @@ function setupGrid(): GridSetting {
 				return [
 					{
 						type: 'button',
-						text: i18n.ts._customEmojisManager._gridCommon.copySelectionRanges,
+						text: localeRef.value.env._customEmojisManager._gridCommon.copySelectionRanges,
 						icon: 'ti ti-copy',
 						action: () => copyGridDataToClipboard(gridItems, context),
 					},
 					{
 						type: 'button',
-						text: i18n.ts._customEmojisManager._gridCommon.deleteSelectionRanges,
+						text: localeRef.value.env._customEmojisManager._gridCommon.deleteSelectionRanges,
 						icon: 'ti ti-trash',
 						action: () => removeRows(context.rangedCells.map(it => it.row)),
 					},
@@ -241,7 +242,7 @@ const isDragOver = ref<boolean>(false);
 async function onRegistryClicked() {
 	const dialogSelection = await os.confirm({
 		type: 'info',
-		text: i18n.tsx._customEmojisManager._local._register.confirmRegisterEmojisDescription({ count: MAXIMUM_EMOJI_REGISTER_COUNT }),
+		text: localizerRef.value.env._customEmojisManager._local._register.confirmRegisterEmojisDescription({ count: MAXIMUM_EMOJI_REGISTER_COUNT }),
 	});
 
 	if (dialogSelection.canceled) {
@@ -274,8 +275,8 @@ async function onRegistryClicked() {
 	if (failedItems.length > 0) {
 		await os.alert({
 			type: 'error',
-			title: i18n.ts.somethingHappened,
-			text: i18n.ts._customEmojisManager._gridCommon.alertEmojisRegisterFailedDescription,
+			title: localeRef.value.env.somethingHappened,
+			text: localeRef.value.env._customEmojisManager._gridCommon.alertEmojisRegisterFailedDescription,
 		});
 	}
 
@@ -294,7 +295,7 @@ async function onRegistryClicked() {
 async function onClearClicked() {
 	const result = await os.confirm({
 		type: 'warning',
-		text: i18n.ts._customEmojisManager._local._register.confirmClearEmojisDescription,
+		text: localeRef.value.env._customEmojisManager._local._register.confirmClearEmojisDescription,
 	});
 
 	if (!result.canceled) {

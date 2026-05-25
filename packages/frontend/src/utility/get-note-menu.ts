@@ -9,7 +9,6 @@ import { claimAchievement } from './achievements.js';
 import type { Ref, ShallowRef } from 'vue';
 import type { MenuItem } from '@/types/menu.js';
 import { $i } from '@/i.js';
-import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
@@ -25,6 +24,7 @@ import { genEmbedCode } from '@/utility/get-embed-code.js';
 import { prefer } from '@/preferences.js';
 import { getPluginHandlers } from '@/plugin.js';
 import { globalEvents } from '@/events.js';
+import { $locale, $l } from '@/i18n.js';
 
 const isInBrowserTranslationAvailable = (
 	'LanguageDetector' in window &&
@@ -57,7 +57,7 @@ export async function getNoteClipMenu(props: {
 					if (err.id === '734806c4-542c-463a-9311-15c512803965') {
 						const confirm = await os.confirm({
 							type: 'warning',
-							text: i18n.tsx.confirmToUnclipAlreadyClippedNote({ name: clip.name }),
+							text: $l.value.env.confirmToUnclipAlreadyClippedNote({ name: clip.name }),
 						});
 						if (!confirm.canceled) {
 							os.apiWithDialog('clips/remove-note', { clipId: clip.id, noteId: appearNote.id }).then(() => {
@@ -76,7 +76,7 @@ export async function getNoteClipMenu(props: {
 					} else if (err.id === 'f0dba960-ff73-4615-8df4-d6ac5d9dc118') {
 						os.alert({
 							type: 'error',
-							text: i18n.ts.clipNoteLimitExceeded,
+							text: $locale.value.env.clipNoteLimitExceeded,
 						});
 					} else {
 						os.alert({
@@ -100,24 +100,24 @@ export async function getNoteClipMenu(props: {
 		},
 	})), { type: 'divider' }, {
 		icon: 'ti ti-plus',
-		text: i18n.ts.createNew,
+		text: $locale.value.env.createNew,
 		action: async () => {
-			const { canceled, result } = await os.form(i18n.ts.createNewClip, {
+			const { canceled, result } = await os.form($locale.value.env.createNewClip, {
 				name: {
 					type: 'string',
 					default: null as string | null,
-					label: i18n.ts.name,
+					label: $locale.value.env.name,
 				},
 				description: {
 					type: 'string',
 					required: false,
 					default: null,
 					multiline: true,
-					label: i18n.ts.description,
+					label: $locale.value.env.description,
 				},
 				isPublic: {
 					type: 'boolean',
-					label: i18n.ts.public,
+					label: $locale.value.env.public,
 					default: false,
 				},
 			});
@@ -191,7 +191,7 @@ export function getNoteMenu(props: {
 	function del(): void {
 		os.confirm({
 			type: 'warning',
-			text: i18n.ts.noteDeleteConfirm,
+			text: $locale.value.env.noteDeleteConfirm,
 		}).then(({ canceled }) => {
 			if (canceled) return;
 			if ($i == null) return;
@@ -211,7 +211,7 @@ export function getNoteMenu(props: {
 	function delEdit(): void {
 		os.confirm({
 			type: 'warning',
-			text: i18n.ts.deleteAndEditConfirm,
+			text: $locale.value.env.deleteAndEditConfirm,
 		}).then(({ canceled }) => {
 			if (canceled) return;
 			if ($i == null) return;
@@ -252,7 +252,7 @@ export function getNoteMenu(props: {
 			noteId: appearNote.id,
 		}, undefined, {
 			'72dab508-c64d-498f-8740-a8eec1ba385a': {
-				text: i18n.ts.pinLimitExceeded,
+				text: $locale.value.env.pinLimitExceeded,
 			},
 		});
 	}
@@ -264,7 +264,7 @@ export function getNoteMenu(props: {
 
 	async function _promote(): Promise<void> {
 		const { canceled, result: days } = await os.inputNumber({
-			title: i18n.ts.numberOfDays,
+			title: $locale.value.env.numberOfDays,
 		});
 
 		if (canceled || days == null) return;
@@ -277,7 +277,7 @@ export function getNoteMenu(props: {
 
 	function share(): void {
 		navigator.share({
-			title: i18n.tsx.noteOf({ user: appearNote.user.name ?? appearNote.user.username }),
+			title: $l.value.env.noteOf({ user: appearNote.user.name ?? appearNote.user.username }),
 			text: appearNote.text ?? '',
 			url: `${url}/notes/${appearNote.id}`,
 		});
@@ -343,7 +343,7 @@ export function getNoteMenu(props: {
 		if (props.currentClip?.userId === $i.id) {
 			menuItems.push({
 				icon: 'ti ti-backspace',
-				text: i18n.ts.unclip,
+				text: $locale.value.env.unclip,
 				danger: true,
 				action: unclip,
 			}, { type: 'divider' });
@@ -351,30 +351,30 @@ export function getNoteMenu(props: {
 
 		menuItems.push({
 			icon: 'ti ti-info-circle',
-			text: i18n.ts.details,
+			text: $locale.value.env.details,
 			action: openDetail,
 		}, {
 			icon: 'ti ti-copy',
-			text: i18n.ts.copyContent,
+			text: $locale.value.env.copyContent,
 			action: copyContent,
-		}, getCopyNoteLinkMenu(appearNote, i18n.ts.copyLink));
+		}, getCopyNoteLinkMenu(appearNote, $locale.value.env.copyLink));
 
 		if (link) {
 			menuItems.push({
 				icon: 'ti ti-link',
-				text: i18n.ts.copyRemoteLink,
+				text: $locale.value.env.copyRemoteLink,
 				action: () => {
 					copyToClipboard(link);
 				},
 			}, {
 				icon: 'ti ti-external-link',
-				text: i18n.ts.showOnRemote,
+				text: $locale.value.env.showOnRemote,
 				action: () => {
 					window.open(link, '_blank', 'noopener');
 				},
 			});
 		} else {
-			const embedMenu = getNoteEmbedCodeMenu(appearNote, i18n.ts.embed);
+			const embedMenu = getNoteEmbedCodeMenu(appearNote, $locale.value.env.embed);
 			if (embedMenu != null) {
 				menuItems.push(embedMenu);
 			}
@@ -383,7 +383,7 @@ export function getNoteMenu(props: {
 		if (isSupportShare()) {
 			menuItems.push({
 				icon: 'ti ti-share',
-				text: i18n.ts.share,
+				text: $locale.value.env.share,
 				action: share,
 			});
 		}
@@ -391,7 +391,7 @@ export function getNoteMenu(props: {
 		if ((prefer.s['experimental.enableWebTranslatorApi'] && isInBrowserTranslationAvailable) || ($i.policies.canUseTranslator && instance.translatorAvailable)) {
 			menuItems.push({
 				icon: 'ti ti-language-hiragana',
-				text: i18n.ts.translate,
+				text: $locale.value.env.translate,
 				action: translate,
 			});
 		}
@@ -400,28 +400,28 @@ export function getNoteMenu(props: {
 
 		menuItems.push(statePromise.then(state => state.isFavorited ? {
 			icon: 'ti ti-star-off',
-			text: i18n.ts.unfavorite,
+			text: $locale.value.env.unfavorite,
 			action: () => toggleFavorite(false),
 		} : {
 			icon: 'ti ti-star',
-			text: i18n.ts.favorite,
+			text: $locale.value.env.favorite,
 			action: () => toggleFavorite(true),
 		}));
 
 		menuItems.push({
 			type: 'parent',
 			icon: 'ti ti-paperclip',
-			text: i18n.ts.clip,
+			text: $locale.value.env.clip,
 			children: () => getNoteClipMenu(props),
 		});
 
 		menuItems.push(statePromise.then(state => state.isMutedThread ? {
 			icon: 'ti ti-message-off',
-			text: i18n.ts.unmuteThread,
+			text: $locale.value.env.unmuteThread,
 			action: () => toggleThreadMute(false),
 		} : {
 			icon: 'ti ti-message-off',
-			text: i18n.ts.muteThread,
+			text: $locale.value.env.muteThread,
 			action: () => toggleThreadMute(true),
 		}));
 
@@ -429,13 +429,13 @@ export function getNoteMenu(props: {
 			if (($i.pinnedNoteIds ?? []).includes(appearNote.id)) {
 				menuItems.push({
 					icon: 'ti ti-pinned-off',
-					text: i18n.ts.unpin,
+					text: $locale.value.env.unpin,
 					action: () => togglePin(false),
 				});
 			} else {
 				menuItems.push({
 					icon: 'ti ti-pin',
-					text: i18n.ts.pin,
+					text: $locale.value.env.pin,
 					action: () => togglePin(true),
 				});
 			}
@@ -444,7 +444,7 @@ export function getNoteMenu(props: {
 		menuItems.push({
 			type: 'parent',
 			icon: 'ti ti-user',
-			text: i18n.ts.user,
+			text: $locale.value.env.user,
 			children: async () => {
 				const user = appearNote.userId === $i?.id ? $i : await misskeyApi('users/show', { userId: appearNote.userId });
 				const { menu, cleanup } = getUserMenu(user);
@@ -455,7 +455,7 @@ export function getNoteMenu(props: {
 
 		if (appearNote.userId !== $i.id) {
 			menuItems.push({ type: 'divider' });
-			menuItems.push(getAbuseNoteMenu(appearNote, i18n.ts.reportAbuse));
+			menuItems.push(getAbuseNoteMenu(appearNote, $locale.value.env.reportAbuse));
 		}
 
 		if (appearNote.channel && (appearNote.channel.userId === $i.id || $i.isModerator || $i.isAdmin)) {
@@ -463,7 +463,7 @@ export function getNoteMenu(props: {
 			menuItems.push({
 				type: 'parent',
 				icon: 'ti ti-device-tv',
-				text: i18n.ts.channel,
+				text: $locale.value.env.channel,
 				children: async () => {
 					const channelChildMenu = [] as MenuItem[];
 
@@ -472,7 +472,7 @@ export function getNoteMenu(props: {
 					if (channel.pinnedNoteIds.includes(appearNote.id)) {
 						channelChildMenu.push({
 							icon: 'ti ti-pinned-off',
-							text: i18n.ts.unpin,
+							text: $locale.value.env.unpin,
 							action: () => os.apiWithDialog('channels/update', {
 								channelId: appearNote.channel!.id,
 								pinnedNoteIds: channel.pinnedNoteIds.filter(id => id !== appearNote.id),
@@ -481,7 +481,7 @@ export function getNoteMenu(props: {
 					} else {
 						channelChildMenu.push({
 							icon: 'ti ti-pin',
-							text: i18n.ts.pin,
+							text: $locale.value.env.pin,
 							action: () => os.apiWithDialog('channels/update', {
 								channelId: appearNote.channel!.id,
 								pinnedNoteIds: [...channel.pinnedNoteIds, appearNote.id],
@@ -498,13 +498,13 @@ export function getNoteMenu(props: {
 			if (appearNote.userId === $i.id) {
 				menuItems.push({
 					icon: 'ti ti-edit',
-					text: i18n.ts.deleteAndEdit,
+					text: $locale.value.env.deleteAndEdit,
 					action: delEdit,
 				});
 			}
 			menuItems.push({
 				icon: 'ti ti-trash',
-				text: i18n.ts.delete,
+				text: $locale.value.env.delete,
 				danger: true,
 				action: del,
 			});
@@ -512,30 +512,30 @@ export function getNoteMenu(props: {
 	} else {
 		menuItems.push({
 			icon: 'ti ti-info-circle',
-			text: i18n.ts.details,
+			text: $locale.value.env.details,
 			action: openDetail,
 		}, {
 			icon: 'ti ti-copy',
-			text: i18n.ts.copyContent,
+			text: $locale.value.env.copyContent,
 			action: copyContent,
-		}, getCopyNoteLinkMenu(appearNote, i18n.ts.copyLink));
+		}, getCopyNoteLinkMenu(appearNote, $locale.value.env.copyLink));
 
 		if (link != null) {
 			menuItems.push({
 				icon: 'ti ti-link',
-				text: i18n.ts.copyRemoteLink,
+				text: $locale.value.env.copyRemoteLink,
 				action: () => {
 					copyToClipboard(link);
 				},
 			}, {
 				icon: 'ti ti-external-link',
-				text: i18n.ts.showOnRemote,
+				text: $locale.value.env.showOnRemote,
 				action: () => {
 					window.open(link, '_blank', 'noopener');
 				},
 			});
 		} else {
-			const embedMenu = getNoteEmbedCodeMenu(appearNote, i18n.ts.embed);
+			const embedMenu = getNoteEmbedCodeMenu(appearNote, $locale.value.env.embed);
 			if (embedMenu != null) {
 				menuItems.push(embedMenu);
 			}
@@ -558,7 +558,7 @@ export function getNoteMenu(props: {
 	if (prefer.s.devMode) {
 		menuItems.push({ type: 'divider' }, {
 			icon: 'ti ti-hash',
-			text: i18n.ts.copyNoteId,
+			text: $locale.value.env.copyNoteId,
 			action: () => {
 				copyToClipboard(appearNote.id);
 			},
@@ -601,7 +601,7 @@ export function getRenoteMenu(props: {
 
 	if (appearNote.channel) {
 		channelRenoteItems.push(...[{
-			text: i18n.ts.inChannelRenote,
+			text: $locale.value.env.inChannelRenote,
 			icon: 'ti ti-repeat',
 			action: () => {
 				const el = props.renoteButton.value;
@@ -619,13 +619,13 @@ export function getRenoteMenu(props: {
 						renoteId: appearNote.id,
 						channelId: appearNote.channelId,
 					}).then((res) => {
-						os.toast(i18n.ts.renoted);
+						os.toast($locale.value.env.renoted);
 						globalEvents.emit('notePosted', res.createdNote);
 					});
 				}
 			},
 		}, {
-			text: i18n.ts.inChannelQuote,
+			text: $locale.value.env.inChannelQuote,
 			icon: 'ti ti-quote',
 			action: () => {
 				if (!props.mock) {
@@ -640,7 +640,7 @@ export function getRenoteMenu(props: {
 
 	if (!appearNote.channel || appearNote.channel.allowRenoteToExternal) {
 		normalRenoteItems.push(...[{
-			text: i18n.ts.renote,
+			text: $locale.value.env.renote,
 			icon: 'ti ti-repeat',
 			action: () => {
 				const el = props.renoteButton.value;
@@ -668,13 +668,13 @@ export function getRenoteMenu(props: {
 						visibility,
 						renoteId: appearNote.id,
 					}).then((res) => {
-						os.toast(i18n.ts.renoted);
+						os.toast($locale.value.env.renoted);
 						globalEvents.emit('notePosted', res.createdNote);
 					});
 				}
 			},
 		}, ...(props.mock ? [] : [{
-			text: i18n.ts.quote,
+			text: $locale.value.env.quote,
 			icon: 'ti ti-quote',
 			action: () => {
 				os.post({
@@ -686,7 +686,7 @@ export function getRenoteMenu(props: {
 		normalExternalChannelRenoteItems.push({
 			type: 'parent',
 			icon: 'ti ti-repeat',
-			text: appearNote.channel ? i18n.ts.renoteToOtherChannel : i18n.ts.renoteToChannel,
+			text: appearNote.channel ? $locale.value.env.renoteToOtherChannel : $locale.value.env.renoteToChannel,
 			children: async () => {
 				const channels = await favoritedChannelsCache.fetch();
 				return channels.filter((channel) => {
@@ -710,7 +710,7 @@ export function getRenoteMenu(props: {
 								renoteId: appearNote.id,
 								channelId: channel.id,
 							}).then((res) => {
-								os.toast(i18n.tsx.renotedToX({ name: channel.name }));
+								os.toast($l.value.env.renotedToX({ name: channel.name }));
 								globalEvents.emit('notePosted', res.createdNote);
 							});
 						}

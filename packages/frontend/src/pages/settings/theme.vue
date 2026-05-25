@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<SearchMarker path="/settings/theme" :label="i18n.ts.theme" :keywords="['theme']" icon="ti ti-palette">
+<SearchMarker path="/settings/theme" :label="$locale.env.theme" :keywords="['theme']" icon="ti ti-palette">
 	<div
 		class="_gaps_m"
 		@dragover.prevent.stop="onDragover"
@@ -14,8 +14,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div class="toggle">
 				<div class="toggleWrapper">
 					<div class="toggle" :class="store.r.darkMode.value ? 'checked' : null" @click="toggleDarkMode()">
-						<span class="before">{{ i18n.ts.light }}</span>
-						<span class="after">{{ i18n.ts.dark }}</span>
+						<span class="before">{{ $locale.env.light }}</span>
+						<span class="after">{{ $locale.env.dark }}</span>
 						<span class="toggle__handler">
 							<span class="crater crater--1"></span>
 							<span class="crater crater--2"></span>
@@ -33,25 +33,25 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div class="sync">
 				<SearchMarker :keywords="['sync', 'device', 'dark', 'light', 'mode']">
 					<MkSwitch v-model="syncDeviceDarkMode">
-						<template #label><SearchLabel>{{ i18n.ts.syncDeviceDarkMode }}</SearchLabel></template>
+						<template #label><SearchLabel>{{ $locale.env.syncDeviceDarkMode }}</SearchLabel></template>
 					</MkSwitch>
 				</SearchMarker>
 			</div>
 		</div>
 
-		<MkInfo v-if="isSafeMode" warn>{{ i18n.ts.themeIsDefaultBecauseSafeMode }}</MkInfo>
+		<MkInfo v-if="isSafeMode" warn>{{ $locale.env.themeIsDefaultBecauseSafeMode }}</MkInfo>
 
 		<div v-else class="_gaps">
 			<template v-if="!store.r.darkMode.value">
 				<SearchMarker :keywords="['light', 'theme']">
 					<MkFolder :defaultOpen="true" :max-height="500">
 						<template #icon><i class="ti ti-sun"></i></template>
-						<template #label><SearchLabel>{{ i18n.ts.themeForLightMode }}</SearchLabel></template>
+						<template #label><SearchLabel>{{ $locale.env.themeForLightMode }}</SearchLabel></template>
 						<template #caption>{{ lightThemeName }}</template>
 
 						<div class="_gaps_m">
 							<FormSection v-if="instanceLightTheme != null" first>
-								<template #label>{{ i18n.ts._theme.instanceTheme }}</template>
+								<template #label>{{ $locale.env._theme.instanceTheme }}</template>
 								<div :class="$style.themeSelect">
 									<div :class="$style.themeItemOuter">
 										<input
@@ -71,7 +71,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 							</FormSection>
 
 							<FormSection v-if="installedLightThemes.length > 0" :first="instanceLightTheme == null">
-								<template #label>{{ i18n.ts._theme.installedThemes }}</template>
+								<template #label>{{ $locale.env._theme.installedThemes }}</template>
 								<div :class="$style.themeSelect">
 									<div v-for="theme in installedLightThemes" :class="$style.themeItemOuter">
 										<input
@@ -91,7 +91,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 							</FormSection>
 
 							<FormSection :first="installedLightThemes.length === 0 && instanceLightTheme == null">
-								<template #label>{{ i18n.ts._theme.builtinThemes }}</template>
+								<template #label>{{ $locale.env._theme.builtinThemes }}</template>
 								<div :class="$style.themeSelect">
 									<div v-for="theme in builtinLightThemes" :class="$style.themeItemOuter">
 										<input
@@ -117,12 +117,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<SearchMarker :keywords="['dark', 'theme']">
 					<MkFolder :defaultOpen="true" :max-height="500">
 						<template #icon><i class="ti ti-moon"></i></template>
-						<template #label><SearchLabel>{{ i18n.ts.themeForDarkMode }}</SearchLabel></template>
+						<template #label><SearchLabel>{{ $locale.env.themeForDarkMode }}</SearchLabel></template>
 						<template #caption>{{ darkThemeName }}</template>
 
 						<div class="_gaps_m">
 							<FormSection v-if="instanceDarkTheme != null" first>
-								<template #label>{{ i18n.ts._theme.instanceTheme }}</template>
+								<template #label>{{ $locale.env._theme.instanceTheme }}</template>
 								<div :class="$style.themeSelect">
 									<div :class="$style.themeItemOuter">
 										<input
@@ -142,7 +142,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 							</FormSection>
 
 							<FormSection v-if="installedDarkThemes.length > 0" :first="instanceDarkTheme == null">
-								<template #label>{{ i18n.ts._theme.installedThemes }}</template>
+								<template #label>{{ $locale.env._theme.installedThemes }}</template>
 								<div :class="$style.themeSelect">
 									<div v-for="theme in installedDarkThemes" :class="$style.themeItemOuter">
 										<input
@@ -162,7 +162,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 							</FormSection>
 
 							<FormSection :first="installedDarkThemes.length === 0 && instanceDarkTheme == null">
-								<template #label>{{ i18n.ts._theme.builtinThemes }}</template>
+								<template #label>{{ $locale.env._theme.builtinThemes }}</template>
 								<div :class="$style.themeSelect">
 									<div v-for="theme in builtinDarkThemes" :class="$style.themeItemOuter">
 										<input
@@ -188,16 +188,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 		<SearchMarker :keywords="['sync', 'themes', 'devices']">
 			<MkSwitch :modelValue="themesSyncEnabled" @update:modelValue="changeThemesSyncEnabled">
-				<template #label><i class="ti ti-cloud-cog"></i> <SearchLabel>{{ i18n.ts._settings.enableSyncThemesBetweenDevices }}</SearchLabel></template>
+				<template #label><i class="ti ti-cloud-cog"></i> <SearchLabel>{{ $locale.env._settings.enableSyncThemesBetweenDevices }}</SearchLabel></template>
 			</MkSwitch>
 		</SearchMarker>
 
 		<FormSection>
 			<div class="_formLinksGrid">
-				<FormLink to="/settings/theme/manage"><template #icon><i class="ti ti-tool"></i></template>{{ i18n.ts._theme.manage }}<template #suffix>{{ themesCount }}</template></FormLink>
-				<FormLink to="https://assets.misskey.io/theme/list" external><template #icon><i class="ti ti-world"></i></template>{{ i18n.ts._theme.explore }}</FormLink>
-				<FormLink to="/settings/theme/install"><template #icon><i class="ti ti-download"></i></template>{{ i18n.ts._theme.install }}</FormLink>
-				<FormLink to="/theme-editor"><template #icon><i class="ti ti-paint"></i></template>{{ i18n.ts._theme.make }}</FormLink>
+				<FormLink to="/settings/theme/manage"><template #icon><i class="ti ti-tool"></i></template>{{ $locale.env._theme.manage }}<template #suffix>{{ themesCount }}</template></FormLink>
+				<FormLink to="https://assets.misskey.io/theme/list" external><template #icon><i class="ti ti-world"></i></template>{{ $locale.env._theme.explore }}</FormLink>
+				<FormLink to="/settings/theme/install"><template #icon><i class="ti ti-download"></i></template>{{ $locale.env._theme.install }}</FormLink>
+				<FormLink to="/theme-editor"><template #icon><i class="ti ti-paint"></i></template>{{ $locale.env._theme.make }}</FormLink>
 			</div>
 		</FormSection>
 	</div>
@@ -205,6 +205,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef, $l as localizerRef } from '@/i18n.js';
+
 import { computed, ref, watch } from 'vue';
 import JSON5 from 'json5';
 import defaultLightTheme from '@@/themes/l-light.json5';
@@ -222,7 +224,6 @@ import { handleThemeInstallError, installTheme, removeTheme } from '@/theme.js';
 import { getBuiltinThemes } from '@@/js/theme.js';
 import { isDeviceDarkmode } from '@/utility/is-device-darkmode.js';
 import { store } from '@/store.js';
-import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
 import { uniqueBy } from '@/utility/array.js';
 import { definePage } from '@/page.js';
@@ -285,7 +286,7 @@ async function toggleDarkMode() {
 	if (syncDeviceDarkMode.value) {
 		const { canceled } = await os.confirm({
 			type: 'question',
-			text: i18n.tsx.switchDarkModeManuallyWhenSyncEnabledConfirm({ x: i18n.ts.syncDeviceDarkMode }),
+			text: localizerRef.value.env.switchDarkModeManuallyWhenSyncEnabledConfirm({ x: localeRef.value.env.syncDeviceDarkMode }),
 		});
 		if (canceled) return;
 
@@ -316,13 +317,13 @@ function onThemeContextmenu(theme: Theme, ev: PointerEvent) {
 		text: theme.name,
 	}, {
 		icon: 'ti ti-clipboard',
-		text: i18n.ts._theme.copyThemeCode,
+		text: localeRef.value.env._theme.copyThemeCode,
 		action: () => {
 			copyToClipboard(JSON5.stringify(theme, null, '\t'));
 		},
 	}, {
 		icon: 'ti ti-trash',
-		text: i18n.ts.delete,
+		text: localeRef.value.env.delete,
 		danger: true,
 		action: () => {
 			removeTheme(theme);
@@ -367,7 +368,7 @@ const headerActions = computed(() => []);
 const headerTabs = computed(() => []);
 
 definePage(() => ({
-	title: i18n.ts.theme,
+	title: localeRef.value.env.theme,
 	icon: 'ti ti-palette',
 }));
 </script>

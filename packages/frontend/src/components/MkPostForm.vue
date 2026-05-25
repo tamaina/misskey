@@ -14,29 +14,29 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<header :class="$style.header">
 		<div :class="$style.headerLeft">
 			<button v-if="!fixed" :class="$style.cancel" class="_button" @click="cancel"><i class="ti ti-x"></i></button>
-			<button ref="accountMenuEl" v-click-anime v-tooltip="i18n.ts.account" class="_button" @click="openAccountMenu">
+			<button ref="accountMenuEl" v-click-anime v-tooltip="$locale.env.account" class="_button" @click="openAccountMenu">
 				<img :class="$style.avatar" :src="(postAccount ?? $i).avatarUrl" style="border-radius: 100%;"/>
 			</button>
 		</div>
 		<div :class="$style.headerRight">
 			<template v-if="!(targetChannel != null && fixed)">
-				<button v-if="targetChannel == null" ref="visibilityButton" v-tooltip="i18n.ts.visibility" :class="['_button', $style.headerRightItem, $style.visibility]" @click="setVisibility">
+				<button v-if="targetChannel == null" ref="visibilityButton" v-tooltip="$locale.env.visibility" :class="['_button', $style.headerRightItem, $style.visibility]" @click="setVisibility">
 					<span v-if="visibility === 'public'"><i class="ti ti-world"></i></span>
 					<span v-if="visibility === 'home'"><i class="ti ti-home"></i></span>
 					<span v-if="visibility === 'followers'"><i class="ti ti-lock"></i></span>
 					<span v-if="visibility === 'specified'"><i class="ti ti-mail"></i></span>
-					<span :class="$style.headerRightButtonText">{{ i18n.ts._visibility[visibility] }}</span>
+					<span :class="$style.headerRightButtonText">{{ $locale.env._visibility[visibility] }}</span>
 				</button>
 				<button v-else class="_button" :class="[$style.headerRightItem, $style.visibility]" disabled>
 					<span><i class="ti ti-device-tv"></i></span>
 					<span :class="$style.headerRightButtonText">{{ targetChannel.name }}</span>
 				</button>
 			</template>
-			<button v-if="visibility !== 'specified'" v-tooltip="i18n.ts._visibility.disableFederation" class="_button" :class="[$style.headerRightItem, { [$style.danger]: localOnly }]" :disabled="targetChannel != null" @click="toggleLocalOnly">
+			<button v-if="visibility !== 'specified'" v-tooltip="$locale.env._visibility.disableFederation" class="_button" :class="[$style.headerRightItem, { [$style.danger]: localOnly }]" :disabled="targetChannel != null" @click="toggleLocalOnly">
 				<span v-if="!localOnly"><i class="ti ti-rocket"></i></span>
 				<span v-else><i class="ti ti-rocket-off"></i></span>
 			</button>
-			<button ref="otherSettingsButton" v-tooltip="i18n.ts.other" class="_button" :class="$style.headerRightItem" @click="showOtherSettings"><i class="ti ti-dots"></i></button>
+			<button ref="otherSettingsButton" v-tooltip="$locale.env.other" class="_button" :class="$style.headerRightItem" @click="showOtherSettings"><i class="ti ti-dots"></i></button>
 			<button ref="submitButtonEl" v-click-anime class="_button" :class="$style.submit" :disabled="!canPost" data-cy-open-post-form-submit @click="post">
 				<div :class="$style.submitInner">
 					<template v-if="posted"></template>
@@ -49,9 +49,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</header>
 	<MkNoteSimple v-if="replyTargetNote" :class="$style.targetNote" :note="replyTargetNote"/>
 	<MkNoteSimple v-if="renoteTargetNote" :class="$style.targetNote" :note="renoteTargetNote"/>
-	<div v-if="quoteId" :class="$style.withQuote"><i class="ti ti-quote"></i> {{ i18n.ts.quoteAttached }}<button @click="quoteId = null; renoteTargetNote = null;"><i class="ti ti-x"></i></button></div>
+	<div v-if="quoteId" :class="$style.withQuote"><i class="ti ti-quote"></i> {{ $locale.env.quoteAttached }}<button @click="quoteId = null; renoteTargetNote = null;"><i class="ti ti-x"></i></button></div>
 	<div v-if="visibility === 'specified'" :class="$style.toSpecified">
-		<span style="margin-right: 8px;">{{ i18n.ts.recipient }}</span>
+		<span style="margin-right: 8px;">{{ $locale.env.recipient }}</span>
 		<div :class="$style.visibleUsers">
 			<span v-for="u in visibleUsers" :key="u.id" :class="$style.visibleUser">
 				<MkAcct :user="u"/>
@@ -61,18 +61,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 	</div>
 	<MkInfo v-if="!store.r.tips.value.postForm" :class="$style.showHowToUse" closable @close="closeTip('postForm')">
-		<button class="_textButton" @click="showTour">{{ i18n.ts._postForm.showHowToUse }}</button>
+		<button class="_textButton" @click="showTour">{{ $locale.env._postForm.showHowToUse }}</button>
 	</MkInfo>
 	<MkInfo v-if="scheduledAt != null" :class="$style.scheduledAt">
-		<I18n :src="i18n.ts.scheduleToPostOnX" tag="span">
+		<I18n :src="$locale.env.scheduleToPostOnX" tag="span">
 			<template #x>
 				<MkTime :time="scheduledAt" :mode="'detail'" style="font-weight: bold;"/>
 			</template>
-		</I18n> - <button class="_textButton" @click="cancelSchedule()">{{ i18n.ts.cancel }}</button>
+		</I18n> - <button class="_textButton" @click="cancelSchedule()">{{ $locale.env.cancel }}</button>
 	</MkInfo>
-	<MkInfo v-if="hasNotSpecifiedMentions" warn :class="$style.hasNotSpecifiedMentions">{{ i18n.ts.notSpecifiedMentionWarning }} - <button class="_textButton" @click="addMissingMention()">{{ i18n.ts.add }}</button></MkInfo>
+	<MkInfo v-if="hasNotSpecifiedMentions" warn :class="$style.hasNotSpecifiedMentions">{{ $locale.env.notSpecifiedMentionWarning }} - <button class="_textButton" @click="addMissingMention()">{{ $locale.env.add }}</button></MkInfo>
 	<div v-show="useCw" :class="$style.cwOuter">
-		<input ref="cwInputEl" v-model="cw" :class="$style.cw" :placeholder="i18n.ts.annotation" @keydown="onKeydown" @keyup="onKeyup" @compositionend="onCompositionEnd">
+		<input ref="cwInputEl" v-model="cw" :class="$style.cw" :placeholder="$locale.env.annotation" @keydown="onKeydown" @keyup="onKeyup" @compositionend="onCompositionEnd">
 		<div v-if="maxCwTextLength - cwTextLength < 20" :class="['_acrylic', $style.cwTextCount, { [$style.cwTextOver]: cwTextLength > maxCwTextLength }]">{{ maxCwTextLength - cwTextLength }}</div>
 	</div>
 	<div :class="[$style.textOuter, { [$style.withCw]: useCw }]">
@@ -80,11 +80,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<textarea ref="textareaEl" v-model="text" :class="[$style.text]" :disabled="posting || posted" :readonly="textAreaReadOnly" :placeholder="placeholder" data-cy-post-form-text @keydown="onKeydown" @keyup="onKeyup" @paste="onPaste" @compositionupdate="onCompositionUpdate" @compositionend="onCompositionEnd"></textarea>
 		<div v-if="maxTextLength - textLength < 100" :class="['_acrylic', $style.textCount, { [$style.textOver]: textLength > maxTextLength }]">{{ maxTextLength - textLength }}</div>
 	</div>
-	<input v-show="withHashtags" ref="hashtagsInputEl" v-model="hashtags" :class="$style.hashtags" :placeholder="i18n.ts.hashtags" list="hashtags">
+	<input v-show="withHashtags" ref="hashtagsInputEl" v-model="hashtags" :class="$style.hashtags" :placeholder="$locale.env.hashtags" list="hashtags">
 	<XPostFormAttaches v-model="files" @detach="detachFile" @changeSensitive="updateFileSensitive" @changeName="updateFileName"/>
 	<div v-if="uploader.items.value.length > 0" style="padding: 12px;">
 		<MkTip k="postFormUploader">
-			{{ i18n.ts._postForm.uploaderTip }}
+			{{ $locale.env._postForm.uploaderTip }}
 		</MkTip>
 		<MkUploaderItems :items="uploader.items.value" @showMenu="(item, ev) => showPerUploadItemMenu(item, ev)" @showMenuViaContextmenu="(item, ev) => showPerUploadItemMenuViaContextmenu(item, ev)"/>
 	</div>
@@ -94,17 +94,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</div>
 	<footer ref="footerEl" :class="$style.footer">
 		<div :class="$style.footerLeft">
-			<button v-tooltip="i18n.ts.attachFile + ' (' + i18n.ts.upload + ')'" class="_button" :class="$style.footerButton" @click="chooseFileFromPc"><i class="ti ti-photo-plus"></i></button>
-			<button v-tooltip="i18n.ts.attachFile + ' (' + i18n.ts.fromDrive + ')'" class="_button" :class="$style.footerButton" @click="chooseFileFromDrive"><i class="ti ti-cloud-download"></i></button>
-			<button v-tooltip="i18n.ts.poll" class="_button" :class="[$style.footerButton, { [$style.footerButtonActive]: poll }]" @click="togglePoll"><i class="ti ti-chart-arrows"></i></button>
-			<button v-tooltip="i18n.ts.useCw" class="_button" :class="[$style.footerButton, { [$style.footerButtonActive]: useCw }]" @click="useCw = !useCw"><i class="ti ti-eye-off"></i></button>
-			<button v-tooltip="i18n.ts.hashtags" class="_button" :class="[$style.footerButton, { [$style.footerButtonActive]: withHashtags }]" @click="withHashtags = !withHashtags"><i class="ti ti-hash"></i></button>
-			<button v-tooltip="i18n.ts.mention" class="_button" :class="$style.footerButton" @click="insertMention"><i class="ti ti-at"></i></button>
-			<button v-if="showAddMfmFunction" v-tooltip="i18n.ts.addMfmFunction" :class="['_button', $style.footerButton]" @click="insertMfmFunction"><i class="ti ti-palette"></i></button>
-			<button v-if="postFormActions.length > 0" v-tooltip="i18n.ts.plugins" class="_button" :class="$style.footerButton" @click="showActions"><i class="ti ti-plug"></i></button>
+			<button v-tooltip="$locale.env.attachFile + ' (' + $locale.env.upload + ')'" class="_button" :class="$style.footerButton" @click="chooseFileFromPc"><i class="ti ti-photo-plus"></i></button>
+			<button v-tooltip="$locale.env.attachFile + ' (' + $locale.env.fromDrive + ')'" class="_button" :class="$style.footerButton" @click="chooseFileFromDrive"><i class="ti ti-cloud-download"></i></button>
+			<button v-tooltip="$locale.env.poll" class="_button" :class="[$style.footerButton, { [$style.footerButtonActive]: poll }]" @click="togglePoll"><i class="ti ti-chart-arrows"></i></button>
+			<button v-tooltip="$locale.env.useCw" class="_button" :class="[$style.footerButton, { [$style.footerButtonActive]: useCw }]" @click="useCw = !useCw"><i class="ti ti-eye-off"></i></button>
+			<button v-tooltip="$locale.env.hashtags" class="_button" :class="[$style.footerButton, { [$style.footerButtonActive]: withHashtags }]" @click="withHashtags = !withHashtags"><i class="ti ti-hash"></i></button>
+			<button v-tooltip="$locale.env.mention" class="_button" :class="$style.footerButton" @click="insertMention"><i class="ti ti-at"></i></button>
+			<button v-if="showAddMfmFunction" v-tooltip="$locale.env.addMfmFunction" :class="['_button', $style.footerButton]" @click="insertMfmFunction"><i class="ti ti-palette"></i></button>
+			<button v-if="postFormActions.length > 0" v-tooltip="$locale.env.plugins" class="_button" :class="$style.footerButton" @click="showActions"><i class="ti ti-plug"></i></button>
 		</div>
 		<div :class="$style.footerRight">
-			<button v-tooltip="i18n.ts.emoji" :class="['_button', $style.footerButton]" @click="insertEmoji"><i class="ti ti-mood-happy"></i></button>
+			<button v-tooltip="$locale.env.emoji" :class="['_button', $style.footerButton]" @click="insertEmoji"><i class="ti ti-mood-happy"></i></button>
 		</div>
 	</footer>
 	<datalist id="hashtags">
@@ -114,6 +114,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef } from '@/i18n.js';
+
 import { watch, nextTick, onMounted, defineAsyncComponent, provide, shallowRef, ref, computed, useTemplateRef, onUnmounted, onBeforeUnmount } from 'vue';
 import * as mfm from 'mfm-js';
 import * as Misskey from 'misskey-js';
@@ -140,7 +142,6 @@ import { misskeyApi } from '@/utility/misskey-api.js';
 import { chooseDriveFile } from '@/utility/drive.js';
 import { store } from '@/store.js';
 import MkInfo from '@/components/MkInfo.vue';
-import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
 import { ensureSignin, notesCount, incNotesCount } from '@/i.js';
 import { getAccounts, getAccountMenu } from '@/accounts.js';
@@ -260,19 +261,19 @@ const draftKey = computed((): string => {
 
 const placeholder = computed((): string => {
 	if (renoteTargetNote.value) {
-		return i18n.ts._postForm.quotePlaceholder;
+		return localeRef.value.env._postForm.quotePlaceholder;
 	} else if (replyTargetNote.value) {
-		return i18n.ts._postForm.replyPlaceholder;
+		return localeRef.value.env._postForm.replyPlaceholder;
 	} else if (targetChannel.value) {
-		return i18n.ts._postForm.channelPlaceholder;
+		return localeRef.value.env._postForm.channelPlaceholder;
 	} else {
 		const xs = [
-			i18n.ts._postForm._placeholders.a,
-			i18n.ts._postForm._placeholders.b,
-			i18n.ts._postForm._placeholders.c,
-			i18n.ts._postForm._placeholders.d,
-			i18n.ts._postForm._placeholders.e,
-			i18n.ts._postForm._placeholders.f,
+			localeRef.value.env._postForm._placeholders.a,
+			localeRef.value.env._postForm._placeholders.b,
+			localeRef.value.env._postForm._placeholders.c,
+			localeRef.value.env._postForm._placeholders.d,
+			localeRef.value.env._postForm._placeholders.e,
+			localeRef.value.env._postForm._placeholders.f,
 		];
 		return xs[Math.floor(Math.random() * xs.length)];
 	}
@@ -280,12 +281,12 @@ const placeholder = computed((): string => {
 
 const submitText = computed((): string => {
 	return scheduledAt.value != null
-		? i18n.ts.schedule
+		? localeRef.value.env.schedule
 		: renoteTargetNote.value
-			? i18n.ts.quote
+			? localeRef.value.env.quote
 			: replyTargetNote.value
-				? i18n.ts.reply
-				: i18n.ts.note;
+				? localeRef.value.env.reply
+				: localeRef.value.env.note;
 });
 
 const submitIcon = computed((): string => {
@@ -558,22 +559,22 @@ async function toggleLocalOnly() {
 	if (!localOnly.value && neverShowInfo !== 'true') {
 		const confirm = await os.actions({
 			type: 'question',
-			title: i18n.ts.disableFederationConfirm,
-			text: i18n.ts.disableFederationConfirmWarn,
+			title: localeRef.value.env.disableFederationConfirm,
+			text: localeRef.value.env.disableFederationConfirmWarn,
 			actions: [
 				{
 					value: 'yes' as const,
-					text: i18n.ts.disableFederationOk,
+					text: localeRef.value.env.disableFederationOk,
 					primary: true,
 				},
 				{
 					value: 'neverShow' as const,
-					text: `${i18n.ts.disableFederationOk} (${i18n.ts.neverShow})`,
+					text: `${localeRef.value.env.disableFederationOk} (${localeRef.value.env.neverShow})`,
 					danger: true,
 				},
 				{
 					value: 'no' as const,
-					text: i18n.ts.cancel,
+					text: localeRef.value.env.cancel,
 				},
 			],
 		});
@@ -593,13 +594,13 @@ async function toggleLocalOnly() {
 
 async function toggleReactionAcceptance() {
 	const select = await os.select({
-		title: i18n.ts.reactionAcceptance,
+		title: localeRef.value.env.reactionAcceptance,
 		items: [
-			{ value: null, label: i18n.ts.all },
-			{ value: 'likeOnlyForRemote' as const, label: i18n.ts.likeOnlyForRemote },
-			{ value: 'nonSensitiveOnly' as const, label: i18n.ts.nonSensitiveOnly },
-			{ value: 'nonSensitiveOnlyForLocalLikeOnlyForRemote' as const, label: i18n.ts.nonSensitiveOnlyForLocalLikeOnlyForRemote },
-			{ value: 'likeOnly' as const, label: i18n.ts.likeOnly },
+			{ value: null, label: localeRef.value.env.all },
+			{ value: 'likeOnlyForRemote' as const, label: localeRef.value.env.likeOnlyForRemote },
+			{ value: 'nonSensitiveOnly' as const, label: localeRef.value.env.nonSensitiveOnly },
+			{ value: 'nonSensitiveOnlyForLocalLikeOnlyForRemote' as const, label: localeRef.value.env.nonSensitiveOnlyForLocalLikeOnlyForRemote },
+			{ value: 'likeOnly' as const, label: localeRef.value.env.likeOnly },
 		],
 		default: reactionAcceptance.value,
 	});
@@ -615,24 +616,24 @@ function showOtherSettings() {
 	switch (reactionAcceptance.value) {
 		case 'likeOnly':
 			reactionAcceptanceIcon = 'ti ti-heart _love';
-			reactionAcceptanceCaption = i18n.ts.likeOnly;
+			reactionAcceptanceCaption = localeRef.value.env.likeOnly;
 			break;
 
 		case 'likeOnlyForRemote':
 			reactionAcceptanceIcon = 'ti ti-heart-plus';
-			reactionAcceptanceCaption = i18n.ts.likeOnlyForRemote;
+			reactionAcceptanceCaption = localeRef.value.env.likeOnlyForRemote;
 			break;
 
 		case 'nonSensitiveOnly':
-			reactionAcceptanceCaption = i18n.ts.nonSensitiveOnly;
+			reactionAcceptanceCaption = localeRef.value.env.nonSensitiveOnly;
 			break;
 
 		case 'nonSensitiveOnlyForLocalLikeOnlyForRemote':
-			reactionAcceptanceCaption = i18n.ts.nonSensitiveOnlyForLocalLikeOnlyForRemote;
+			reactionAcceptanceCaption = localeRef.value.env.nonSensitiveOnlyForLocalLikeOnlyForRemote;
 			break;
 
 		default:
-			reactionAcceptanceCaption = i18n.ts.all;
+			reactionAcceptanceCaption = localeRef.value.env.all;
 			break;
 	}
 
@@ -644,44 +645,44 @@ function showOtherSettings() {
 		},
 	}, { type: 'divider' }, {
 		icon: reactionAcceptanceIcon,
-		text: i18n.ts.reactionAcceptance,
+		text: localeRef.value.env.reactionAcceptance,
 		caption: reactionAcceptanceCaption,
 		action: () => {
 			toggleReactionAcceptance();
 		},
 	}, { type: 'divider' }, {
 		type: 'button',
-		text: i18n.ts._drafts.saveToDraft,
+		text: localeRef.value.env._drafts.saveToDraft,
 		icon: 'ti ti-cloud-upload',
 		action: async () => {
 			if (!canSaveAsServerDraft.value) {
 				return os.alert({
 					type: 'error',
-					text: i18n.ts._drafts.cannotCreateDraft,
+					text: localeRef.value.env._drafts.cannotCreateDraft,
 				});
 			}
 			saveServerDraft();
 		},
 	}, ...($i.policies.scheduledNoteLimit > 0 ? [{
 		icon: 'ti ti-calendar-time',
-		text: i18n.ts.schedulePost + '...',
+		text: localeRef.value.env.schedulePost + '...',
 		action: () => {
 			schedule();
 		},
 	}] : []), { type: 'divider' }, {
 		type: 'switch',
 		icon: 'ti ti-eye',
-		text: i18n.ts.preview,
+		text: localeRef.value.env.preview,
 		ref: showPreview,
 	}, {
 		icon: 'ti ti-trash',
-		text: i18n.ts.reset,
+		text: localeRef.value.env.reset,
 		danger: true,
 		action: async () => {
 			if (props.mock) return;
 			const { canceled } = await os.confirm({
 				type: 'question',
-				text: i18n.ts.resetAreYouSure,
+				text: localeRef.value.env.resetAreYouSure,
 			});
 			if (canceled) return;
 			clear();
@@ -774,7 +775,7 @@ async function onPaste(ev: ClipboardEvent) {
 
 		const { canceled } = await os.confirm({
 			type: 'info',
-			text: i18n.ts.quoteQuestion,
+			text: localeRef.value.env.quoteQuestion,
 		});
 
 		if (canceled) {
@@ -790,7 +791,7 @@ async function onPaste(ev: ClipboardEvent) {
 
 		const { canceled } = await os.confirm({
 			type: 'info',
-			text: i18n.ts.attachAsFileQuestion,
+			text: localeRef.value.env.attachAsFileQuestion,
 		});
 
 		if (canceled) {
@@ -988,17 +989,17 @@ async function post(ev?: PointerEvent) {
 	)) {
 		const { canceled, result } = await os.actions({
 			type: 'warning',
-			text: i18n.ts.thisPostMayBeAnnoying,
+			text: localeRef.value.env.thisPostMayBeAnnoying,
 			actions: [{
 				value: 'home',
-				text: i18n.ts.thisPostMayBeAnnoyingHome,
+				text: localeRef.value.env.thisPostMayBeAnnoyingHome,
 				primary: true,
 			}, {
 				value: 'cancel',
-				text: i18n.ts.thisPostMayBeAnnoyingCancel,
+				text: localeRef.value.env.thisPostMayBeAnnoyingCancel,
 			}, {
 				value: 'ignore',
-				text: i18n.ts.thisPostMayBeAnnoyingIgnore,
+				text: localeRef.value.env.thisPostMayBeAnnoyingIgnore,
 			}],
 		});
 
@@ -1325,14 +1326,14 @@ async function openAccountMenu(ev: PointerEvent) {
 
 	os.popupMenu([{
 		type: 'button',
-		text: i18n.ts._drafts.listDrafts,
+		text: localeRef.value.env._drafts.listDrafts,
 		icon: 'ti ti-cloud-download',
 		action: () => {
 			showDraftsDialog(false);
 		},
 	}, {
 		type: 'button',
-		text: i18n.ts._drafts.listScheduledNotes,
+		text: localeRef.value.env._drafts.listScheduledNotes,
 		icon: 'ti ti-clock-down',
 		action: () => {
 			showDraftsDialog(true);
@@ -1352,7 +1353,7 @@ function showPerUploadItemMenuViaContextmenu(item: UploaderItem, ev: PointerEven
 
 async function schedule() {
 	const { canceled, result } = await os.inputDatetime({
-		title: i18n.ts.schedulePost,
+		title: localeRef.value.env.schedulePost,
 	});
 	if (canceled) return;
 	if (result.getTime() <= Date.now()) return;
@@ -1376,28 +1377,28 @@ function showTour() {
 
 	startTour([{
 		element: textareaEl.value,
-		title: i18n.ts._postForm._howToUse.content_title,
-		description: i18n.ts._postForm._howToUse.content_description,
+		title: localeRef.value.env._postForm._howToUse.content_title,
+		description: localeRef.value.env._postForm._howToUse.content_description,
 	}, {
 		element: footerEl.value,
-		title: i18n.ts._postForm._howToUse.toolbar_title,
-		description: i18n.ts._postForm._howToUse.toolbar_description,
+		title: localeRef.value.env._postForm._howToUse.toolbar_title,
+		description: localeRef.value.env._postForm._howToUse.toolbar_description,
 	}, {
 		element: accountMenuEl.value,
-		title: i18n.ts._postForm._howToUse.account_title,
-		description: i18n.ts._postForm._howToUse.account_description,
+		title: localeRef.value.env._postForm._howToUse.account_title,
+		description: localeRef.value.env._postForm._howToUse.account_description,
 	}, {
 		element: visibilityButton.value,
-		title: i18n.ts._postForm._howToUse.visibility_title,
-		description: i18n.ts._postForm._howToUse.visibility_description,
+		title: localeRef.value.env._postForm._howToUse.visibility_title,
+		description: localeRef.value.env._postForm._howToUse.visibility_description,
 	}, {
 		element: otherSettingsButton.value,
-		title: i18n.ts._postForm._howToUse.menu_title,
-		description: i18n.ts._postForm._howToUse.menu_description,
+		title: localeRef.value.env._postForm._howToUse.menu_title,
+		description: localeRef.value.env._postForm._howToUse.menu_description,
 	}, {
 		element: submitButtonEl.value,
-		title: i18n.ts._postForm._howToUse.submit_title,
-		description: i18n.ts._postForm._howToUse.submit_description,
+		title: localeRef.value.env._postForm._howToUse.submit_title,
+		description: localeRef.value.env._postForm._howToUse.submit_description,
 	}]).then(() => {
 		closeTip('postForm');
 	});
@@ -1488,9 +1489,9 @@ async function canClose() {
 	if (!uploader.allItemsUploaded.value) {
 		const { canceled } = await os.confirm({
 			type: 'question',
-			text: i18n.ts._postForm.quitInspiteOfThereAreUnuploadedFilesConfirm,
-			okText: i18n.ts.yes,
-			cancelText: i18n.ts.no,
+			text: localeRef.value.env._postForm.quitInspiteOfThereAreUnuploadedFilesConfirm,
+			okText: localeRef.value.env.yes,
+			cancelText: localeRef.value.env.no,
 		});
 		if (canceled) return false;
 	}

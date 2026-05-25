@@ -10,8 +10,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef } from '@/i18n.js';
+
 import { computed } from 'vue';
-import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
 import { antennasCache } from '@/cache.js';
 import { useRouter } from '@/router.js';
@@ -28,7 +29,7 @@ const headerActions = computed(() => []);
 const headerTabs = computed(() => []);
 
 definePage(() => ({
-	title: i18n.ts.createAntenna,
+	title: localeRef.value.env.createAntenna,
 	icon: 'ti ti-antenna',
 }));
 </script>

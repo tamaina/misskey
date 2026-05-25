@@ -11,7 +11,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	@close="onClose"
 	@closed="emit('closed')"
 >
-	<template #header>{{ i18n.ts.signup }}</template>
+	<template #header>{{ $locale.env.signup }}</template>
 
 	<div style="overflow-x: clip;">
 		<Transition
@@ -33,12 +33,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+
 import { useTemplateRef, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import XSignup from '@/components/MkSignupDialog.form.vue';
 import XServerRules from '@/components/MkSignupDialog.rules.vue';
 import MkModalWindow from '@/components/MkModalWindow.vue';
-import { i18n } from '@/i18n.js';
 
 const props = withDefaults(defineProps<{
 	autoSet?: boolean;

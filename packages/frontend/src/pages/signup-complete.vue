@@ -11,10 +11,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<i class="ti ti-user-check"></i>
 			</div>
 			<div class="_gaps_m" style="padding: 32px;">
-				<div>{{ i18n.tsx.clickToFinishEmailVerification({ ok: i18n.ts.gotIt }) }}</div>
+				<div>{{ $l.env.clickToFinishEmailVerification({ ok: $locale.env.gotIt }) }}</div>
 				<div>
 					<MkButton gradate large rounded type="submit" :disabled="submitting" data-cy-admin-ok style="margin: 0 auto;">
-						{{ submitting ? i18n.ts.processing : i18n.ts.gotIt }}<MkEllipsis v-if="submitting"/>
+						{{ submitting ? $locale.env.processing : $locale.env.gotIt }}<MkEllipsis v-if="submitting"/>
 					</MkButton>
 				</div>
 			</div>
@@ -24,9 +24,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef } from '@/i18n.js';
+
 import { ref } from 'vue';
 import MkButton from '@/components/MkButton.vue';
-import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { login } from '@/accounts.js';
@@ -50,8 +51,8 @@ function submit() {
 
 		os.alert({
 			type: 'error',
-			title: i18n.ts.somethingHappened,
-			text: i18n.ts.emailVerificationFailedError,
+			title: localeRef.value.env.somethingHappened,
+			text: localeRef.value.env.emailVerificationFailedError,
 		});
 	});
 }

@@ -9,7 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div v-if="tab === 'overview'" class="_gaps_m">
 			<div :class="$style.faviconAndName">
 				<img v-if="faviconUrl" :src="faviconUrl" alt="" :class="$style.icon"/>
-				<span :class="$style.name">{{ instance.name || `(${i18n.ts.unknown})` }}</span>
+				<span :class="$style.name">{{ instance.name || `(${$locale.env.unknown})` }}</span>
 			</div>
 			<div style="display: flex; flex-direction: column; gap: 1em;">
 				<MkKeyValue :copy="host" oneline>
@@ -17,16 +17,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<template #value><span class="_monospace"><MkLink :url="`https://${host}`">{{ host }}</MkLink></span></template>
 				</MkKeyValue>
 				<MkKeyValue oneline>
-					<template #key>{{ i18n.ts.software }}</template>
-					<template #value><span class="_monospace">{{ instance.softwareName || `(${i18n.ts.unknown})` }} / {{ instance.softwareVersion || `(${i18n.ts.unknown})` }}</span></template>
+					<template #key>{{ $locale.env.software }}</template>
+					<template #value><span class="_monospace">{{ instance.softwareName || `(${$locale.env.unknown})` }} / {{ instance.softwareVersion || `(${$locale.env.unknown})` }}</span></template>
 				</MkKeyValue>
 				<MkKeyValue oneline>
-					<template #key>{{ i18n.ts.administrator }}</template>
-					<template #value>{{ instance.maintainerName || `(${i18n.ts.unknown})` }} ({{ instance.maintainerEmail || `(${i18n.ts.unknown})` }})</template>
+					<template #key>{{ $locale.env.administrator }}</template>
+					<template #value>{{ instance.maintainerName || `(${$locale.env.unknown})` }} ({{ instance.maintainerEmail || `(${$locale.env.unknown})` }})</template>
 				</MkKeyValue>
 			</div>
 			<MkKeyValue>
-				<template #key>{{ i18n.ts.description }}</template>
+				<template #key>{{ $locale.env.description }}</template>
 				<template #value>{{ instance.description }}</template>
 			</MkKeyValue>
 
@@ -35,36 +35,36 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<div class="_gaps_s">
 					<MkKeyValue>
 						<template #key>
-							{{ i18n.ts._delivery.status }}
+							{{ $locale.env._delivery.status }}
 						</template>
 						<template #value>
-							{{ i18n.ts._delivery._type[suspensionState] }}
+							{{ $locale.env._delivery._type[suspensionState] }}
 						</template>
 					</MkKeyValue>
-					<MkButton v-if="suspensionState === 'none'" :disabled="!instance" danger @click="stopDelivery">{{ i18n.ts._delivery.stop }}</MkButton>
-					<MkButton v-if="suspensionState !== 'none'" :disabled="!instance || suspensionState == 'softwareSuspended'" @click="resumeDelivery">{{ i18n.ts._delivery.resume }}</MkButton>
-					<MkSwitch v-model="isBlocked" :disabled="!meta || !instance" @update:modelValue="toggleBlock">{{ i18n.ts.blockThisInstance }}</MkSwitch>
-					<MkSwitch v-model="isSilenced" :disabled="!meta || !instance" @update:modelValue="toggleSilenced">{{ i18n.ts.silenceThisInstance }}</MkSwitch>
-					<MkSwitch v-model="isMediaSilenced" :disabled="!meta || !instance" @update:modelValue="toggleMediaSilenced">{{ i18n.ts.mediaSilenceThisInstance }}</MkSwitch>
+					<MkButton v-if="suspensionState === 'none'" :disabled="!instance" danger @click="stopDelivery">{{ $locale.env._delivery.stop }}</MkButton>
+					<MkButton v-if="suspensionState !== 'none'" :disabled="!instance || suspensionState == 'softwareSuspended'" @click="resumeDelivery">{{ $locale.env._delivery.resume }}</MkButton>
+					<MkSwitch v-model="isBlocked" :disabled="!meta || !instance" @update:modelValue="toggleBlock">{{ $locale.env.blockThisInstance }}</MkSwitch>
+					<MkSwitch v-model="isSilenced" :disabled="!meta || !instance" @update:modelValue="toggleSilenced">{{ $locale.env.silenceThisInstance }}</MkSwitch>
+					<MkSwitch v-model="isMediaSilenced" :disabled="!meta || !instance" @update:modelValue="toggleMediaSilenced">{{ $locale.env.mediaSilenceThisInstance }}</MkSwitch>
 					<MkButton @click="refreshMetadata"><i class="ti ti-refresh"></i> Refresh metadata</MkButton>
 					<MkTextarea v-model="moderationNote" manualSave>
-						<template #label>{{ i18n.ts.moderationNote }}</template>
-						<template #caption>{{ i18n.ts.moderationNoteDescription }}</template>
+						<template #label>{{ $locale.env.moderationNote }}</template>
+						<template #caption>{{ $locale.env.moderationNoteDescription }}</template>
 					</MkTextarea>
 				</div>
 			</FormSection>
 
 			<FormSection>
 				<MkKeyValue oneline style="margin: 1em 0;">
-					<template #key>{{ i18n.ts.registeredAt }}</template>
+					<template #key>{{ $locale.env.registeredAt }}</template>
 					<template #value><MkTime mode="detail" :time="instance.firstRetrievedAt"/></template>
 				</MkKeyValue>
 				<MkKeyValue oneline style="margin: 1em 0;">
-					<template #key>{{ i18n.ts.updatedAt }}</template>
+					<template #key>{{ $locale.env.updatedAt }}</template>
 					<template #value><MkTime mode="detail" :time="instance.infoUpdatedAt"/></template>
 				</MkKeyValue>
 				<MkKeyValue oneline style="margin: 1em 0;">
-					<template #key>{{ i18n.ts.latestRequestReceivedAt }}</template>
+					<template #key>{{ $locale.env.latestRequestReceivedAt }}</template>
 					<template #value><MkTime v-if="instance.latestRequestReceivedAt" :time="instance.latestRequestReceivedAt"/><span v-else>N/A</span></template>
 				</MkKeyValue>
 			</FormSection>
@@ -96,9 +96,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</MkSelect>
 				</div>
 				<div>
-					<div :class="$style.label">{{ i18n.tsx.recentNHours({ n: 90 }) }}</div>
+					<div :class="$style.label">{{ $l.env.recentNHours({ n: 90 }) }}</div>
 					<MkChart :src="chartSrc" span="hour" :limit="90" :args="{ host: host }" :detailed="true"></MkChart>
-					<div :class="$style.label">{{ i18n.tsx.recentNDays({ n: 90 }) }}</div>
+					<div :class="$style.label">{{ $l.env.recentNDays({ n: 90 }) }}</div>
 					<MkChart :src="chartSrc" span="day" :limit="90" :args="{ host: host }" :detailed="true"></MkChart>
 				</div>
 			</div>
@@ -121,6 +121,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef } from '@/i18n.js';
+
 import { ref, computed, watch, markRaw } from 'vue';
 import * as Misskey from 'misskey-js';
 import type { ChartSrc } from '@/components/MkChart.vue';
@@ -138,7 +140,6 @@ import { misskeyApi } from '@/utility/misskey-api.js';
 import number from '@/filters/number.js';
 import { iAmModerator, iAmAdmin } from '@/i.js';
 import { definePage } from '@/page.js';
-import { i18n } from '@/i18n.js';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
 import MkPagination from '@/components/MkPagination.vue';
 import { getProxiedImageUrlNullable } from '@/utility/media-proxy.js';
@@ -158,17 +159,17 @@ const {
 	def: chartSrcDef,
 } = useMkSelect({
 	items: [
-		{ label: i18n.ts._instanceCharts.requests, value: 'instance-requests' },
-		{ label: i18n.ts._instanceCharts.users, value: 'instance-users' },
-		{ label: i18n.ts._instanceCharts.usersTotal, value: 'instance-users-total' },
-		{ label: i18n.ts._instanceCharts.notes, value: 'instance-notes' },
-		{ label: i18n.ts._instanceCharts.notesTotal, value: 'instance-notes-total' },
-		{ label: i18n.ts._instanceCharts.ff, value: 'instance-ff' },
-		{ label: i18n.ts._instanceCharts.ffTotal, value: 'instance-ff-total' },
-		{ label: i18n.ts._instanceCharts.cacheSize, value: 'instance-drive-usage' },
-		{ label: i18n.ts._instanceCharts.cacheSizeTotal, value: 'instance-drive-usage-total' },
-		{ label: i18n.ts._instanceCharts.files, value: 'instance-drive-files' },
-		{ label: i18n.ts._instanceCharts.filesTotal, value: 'instance-drive-files-total' },
+		{ label: localeRef.value.env._instanceCharts.requests, value: 'instance-requests' },
+		{ label: localeRef.value.env._instanceCharts.users, value: 'instance-users' },
+		{ label: localeRef.value.env._instanceCharts.usersTotal, value: 'instance-users-total' },
+		{ label: localeRef.value.env._instanceCharts.notes, value: 'instance-notes' },
+		{ label: localeRef.value.env._instanceCharts.notesTotal, value: 'instance-notes-total' },
+		{ label: localeRef.value.env._instanceCharts.ff, value: 'instance-ff' },
+		{ label: localeRef.value.env._instanceCharts.ffTotal, value: 'instance-ff-total' },
+		{ label: localeRef.value.env._instanceCharts.cacheSize, value: 'instance-drive-usage' },
+		{ label: localeRef.value.env._instanceCharts.cacheSizeTotal, value: 'instance-drive-usage-total' },
+		{ label: localeRef.value.env._instanceCharts.files, value: 'instance-drive-files' },
+		{ label: localeRef.value.env._instanceCharts.filesTotal, value: 'instance-drive-files-total' },
 	],
 	initialValue: 'instance-requests',
 });
@@ -296,15 +297,15 @@ const headerActions = computed(() => [{
 
 const headerTabs = computed(() => [{
 	key: 'overview',
-	title: i18n.ts.overview,
+	title: localeRef.value.env.overview,
 	icon: 'ti ti-info-circle',
 }, ...(iAmModerator ? [{
 	key: 'chart',
-	title: i18n.ts.charts,
+	title: localeRef.value.env.charts,
 	icon: 'ti ti-chart-line',
 }, {
 	key: 'users',
-	title: i18n.ts.users,
+	title: localeRef.value.env.users,
 	icon: 'ti ti-users',
 }] : []), {
 	key: 'raw',

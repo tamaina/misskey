@@ -6,35 +6,36 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <MkContainer :showHeader="widgetProps.showHeader" data-cy-mkw-memo class="mkw-memo">
 	<template #icon><i class="ti ti-note"></i></template>
-	<template #header>{{ i18n.ts._widgets.memo }}</template>
+	<template #header>{{ $locale.env._widgets.memo }}</template>
 
 	<div :class="$style.root">
-		<textarea v-model="text" :style="`height: ${widgetProps.height}px;`" :class="$style.textarea" :placeholder="i18n.ts.memo" @input="onChange"></textarea>
-		<button :class="$style.save" :disabled="!changed" class="_buttonPrimary" @click="saveMemo">{{ i18n.ts.save }}</button>
+		<textarea v-model="text" :style="`height: ${widgetProps.height}px;`" :class="$style.textarea" :placeholder="$locale.env.memo" @input="onChange"></textarea>
+		<button :class="$style.save" :disabled="!changed" class="_buttonPrimary" @click="saveMemo">{{ $locale.env.save }}</button>
 	</div>
 </MkContainer>
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef } from '@/i18n.js';
+
 import { ref, watch } from 'vue';
 import { useWidgetPropsManager } from './widget.js';
 import type { WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
 import type { FormWithDefault, GetFormResultType } from '@/utility/form.js';
 import MkContainer from '@/components/MkContainer.vue';
 import { store } from '@/store.js';
-import { i18n } from '@/i18n.js';
 
 const name = 'memo';
 
 const widgetPropsDef = {
 	showHeader: {
 		type: 'boolean',
-		label: i18n.ts._widgetOptions.showHeader,
+		label: localeRef.value.env._widgetOptions.showHeader,
 		default: true,
 	},
 	height: {
 		type: 'number',
-		label: i18n.ts.height,
+		label: localeRef.value.env.height,
 		default: 100,
 	},
 } satisfies FormWithDefault;

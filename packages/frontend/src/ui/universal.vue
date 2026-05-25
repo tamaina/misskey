@@ -33,6 +33,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef } from '@/i18n.js';
+
 import { defineAsyncComponent, provide, onMounted, computed, ref } from 'vue';
 import { instanceName } from '@@/js/config.js';
 import { isLink } from '@@/js/is-link.js';
@@ -46,7 +48,6 @@ import XTitlebar from '@/ui/_common_/titlebar.vue';
 import XSidebar from '@/ui/_common_/navbar.vue';
 import { isPreviewMode as isThemePreviewMode } from '@/theme.js';
 import * as os from '@/os.js';
-import { i18n } from '@/i18n.js';
 import { $i } from '@/i.js';
 import { provideMetadataReceiver, provideReactiveMetadata } from '@/page.js';
 import { deviceKind } from '@/utility/device-kind.js';
@@ -116,7 +117,7 @@ function onContextmenu(ev: PointerEvent) {
 		text: path,
 	}, {
 		icon: 'ti ti-window-maximize',
-		text: i18n.ts.openInWindow,
+		text: localeRef.value.env.openInWindow,
 		action: () => {
 			os.pageWindow(path);
 		},

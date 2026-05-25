@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <MkPagination :paginator="paginator" :direction="direction" :autoLoad="autoLoad" :pullToRefresh="pullToRefresh" :withControl="withControl" :forceDisableInfiniteScroll="forceDisableInfiniteScroll">
-	<template #empty><MkResult type="empty" :text="i18n.ts.noNotes"/></template>
+	<template #empty><MkResult type="empty" :text="$locale.env.noNotes"/></template>
 
 	<template #default="{ items: notes }">
 		<div :class="[$style.root, { [$style.noGap]: noGap, '_gaps': !noGap }]">
@@ -39,12 +39,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup generic="T extends IPaginator<Misskey.entities.Note>">
+
 import * as Misskey from 'misskey-js';
 import type { MkPaginationOptions } from '@/components/MkPagination.vue';
 import type { IPaginator } from '@/utility/paginator.js';
 import MkNote from '@/components/MkNote.vue';
 import MkPagination from '@/components/MkPagination.vue';
-import { i18n } from '@/i18n.js';
 import { useGlobalEvent } from '@/events.js';
 import { isSeparatorNeeded, getSeparatorInfo } from '@/utility/timeline-date-separate.js';
 

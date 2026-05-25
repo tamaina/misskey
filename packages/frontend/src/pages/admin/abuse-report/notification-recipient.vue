@@ -9,15 +9,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div :class="$style.root" class="_gaps_m">
 			<div :class="$style.addButton">
 				<MkButton primary @click="onAddButtonClicked">
-					<span class="ti ti-plus"></span> {{ i18n.ts._abuseReport._notificationRecipient.createRecipient }}
+					<span class="ti ti-plus"></span> {{ $locale.env._abuseReport._notificationRecipient.createRecipient }}
 				</MkButton>
 			</div>
 			<div :class="$style.subMenus" class="_gaps_s">
 				<MkSelect v-model="filterMethod" :items="filterMethodDef" style="flex: 1">
-					<template #label>{{ i18n.ts._abuseReport._notificationRecipient.recipientType }}</template>
+					<template #label>{{ $locale.env._abuseReport._notificationRecipient.recipientType }}</template>
 				</MkSelect>
 				<MkInput v-model="filterText" type="search" style="flex: 1">
-					<template #label>{{ i18n.ts._abuseReport._notificationRecipient.keywords }}</template>
+					<template #label>{{ $locale.env._abuseReport._notificationRecipient.keywords }}</template>
 				</MkInput>
 			</div>
 
@@ -38,6 +38,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script setup lang="ts">
+import { $locale as localeRef } from '@/i18n.js';
+
 import { entities } from 'misskey-js';
 import { computed, defineAsyncComponent, onMounted, ref } from 'vue';
 import XRecipient from './notification-recipient.item.vue';
@@ -47,7 +49,6 @@ import MkSelect from '@/components/MkSelect.vue';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os.js';
 import MkDivider from '@/components/MkDivider.vue';
-import { i18n } from '@/i18n.js';
 import { useMkSelect } from '@/composables/use-mkselect.js';
 
 const recipients = ref<entities.AbuseReportNotificationRecipient[]>([]);
@@ -57,9 +58,9 @@ const {
 	def: filterMethodDef,
 } = useMkSelect({
 	items: [
-		{ label: i18n.ts.all, value: null },
-		{ label: i18n.ts._abuseReport._notificationRecipient._recipientType.mail, value: 'email' },
-		{ label: i18n.ts._abuseReport._notificationRecipient._recipientType.webhook, value: 'webhook' },
+		{ label: localeRef.value.env.all, value: null },
+		{ label: localeRef.value.env._abuseReport._notificationRecipient._recipientType.mail, value: 'email' },
+		{ label: localeRef.value.env._abuseReport._notificationRecipient._recipientType.webhook, value: 'webhook' },
 	],
 	initialValue: null,
 });
@@ -102,7 +103,7 @@ async function onEditButtonClicked(id: string) {
 async function onDeleteButtonClicked(id: string) {
 	const res = await os.confirm({
 		type: 'warning',
-		title: i18n.ts._abuseReport._notificationRecipient.deleteConfirm,
+		title: localeRef.value.env._abuseReport._notificationRecipient.deleteConfirm,
 	});
 	if (!res.canceled) {
 		await misskeyApi('admin/abuse-report/notification-recipient/delete', { id: id });

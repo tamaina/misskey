@@ -16,7 +16,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<template #prefix><i class="ti ti-search"></i></template>
 		</MkInput>
 		<MkFoldableSection expanded>
-			<template #header>{{ i18n.ts.options }}</template>
+			<template #header>{{ $locale.env.options }}</template>
 
 			<div class="_gaps_m">
 				<MkRadios
@@ -28,16 +28,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<div v-if="instance.federation !== 'none' && searchScope === 'server'" :class="$style.subOptionRoot">
 					<MkInput
 						v-model="hostInput"
-						:placeholder="i18n.ts._search.serverHostPlaceholder"
+						:placeholder="$locale.env._search.serverHostPlaceholder"
 						@enter.prevent="search"
 					>
-						<template #label>{{ i18n.ts._search.pleaseEnterServerHost }}</template>
+						<template #label>{{ $locale.env._search.pleaseEnterServerHost }}</template>
 						<template #prefix><i class="ti ti-server"></i></template>
 					</MkInput>
 				</div>
 
 				<div v-if="searchScope === 'user'" :class="$style.subOptionRoot">
-					<div :class="$style.userSelectLabel">{{ i18n.ts._search.pleaseSelectUser }}</div>
+					<div :class="$style.userSelectLabel">{{ $locale.env._search.pleaseSelectUser }}</div>
 					<div class="_gaps">
 						<div v-if="user == null" :class="$style.userSelectButtons">
 							<div v-if="$i != null">
@@ -48,7 +48,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 								>
 									<div :class="$style.userSelectButtonInner">
 										<span><i class="ti ti-plus"></i><i class="ti ti-user"></i></span>
-										<span>{{ i18n.ts.selectSelf }}</span>
+										<span>{{ $locale.env.selectSelf }}</span>
 									</div>
 								</MkButton>
 							</div>
@@ -60,7 +60,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 								>
 									<div :class="$style.userSelectButtonInner">
 										<span><i class="ti ti-plus"></i></span>
-										<span>{{ i18n.ts.selectUser }}</span>
+										<span>{{ $locale.env.selectUser }}</span>
 									</div>
 								</MkButton>
 							</div>
@@ -96,24 +96,25 @@ SPDX-License-Identifier: AGPL-3.0-only
 				style="margin: 0 auto;"
 				@click="search"
 			>
-				{{ i18n.ts.search }}
+				{{ $locale.env.search }}
 			</MkButton>
 		</div>
 	</div>
 
 	<MkFoldableSection v-if="paginator">
-		<template #header>{{ i18n.ts.searchResult }}</template>
+		<template #header>{{ $locale.env.searchResult }}</template>
 		<MkNotesTimeline :key="`searchNotes:${key}`" :paginator="paginator"/>
 	</MkFoldableSection>
 </div>
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef } from '@/i18n.js';
+
 import { computed, markRaw, ref, shallowRef, toRef } from 'vue';
 import { host as localHost } from '@@/js/config.js';
 import type * as Misskey from 'misskey-js';
 import { $i } from '@/i.js';
-import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
@@ -187,16 +188,16 @@ const searchScopeDef = computed<MkRadiosOption[]>(() => {
 	const options: MkRadiosOption[] = [];
 
 	if (instance.federation !== 'none' && noteSearchableScope === 'global') {
-		options.push({ value: 'all', label: i18n.ts._search.searchScopeAll });
+		options.push({ value: 'all', label: localeRef.value.env._search.searchScopeAll });
 	}
 
-	options.push({ value: 'local', label: instance.federation === 'none' ? i18n.ts._search.searchScopeAll : i18n.ts._search.searchScopeLocal });
+	options.push({ value: 'local', label: instance.federation === 'none' ? localeRef.value.env._search.searchScopeAll : localeRef.value.env._search.searchScopeLocal });
 
 	if (instance.federation !== 'none' && noteSearchableScope === 'global') {
-		options.push({ value: 'server', label: i18n.ts._search.searchScopeServer });
+		options.push({ value: 'server', label: localeRef.value.env._search.searchScopeServer });
 	}
 
-	options.push({ value: 'user', label: i18n.ts._search.searchScopeUser });
+	options.push({ value: 'user', label: localeRef.value.env._search.searchScopeUser });
 
 	return options;
 });
@@ -275,7 +276,7 @@ async function search() {
 	if (searchParams.value.query.startsWith('https://') && !searchParams.value.query.includes(' ')) {
 		const confirm = await os.confirm({
 			type: 'info',
-			text: i18n.ts.lookupConfirm,
+			text: localeRef.value.env.lookupConfirm,
 		});
 		if (!confirm.canceled) {
 			const res = await apLookup(searchParams.value.query);
@@ -304,7 +305,7 @@ async function search() {
 		if (searchParams.value.query.startsWith('@')) {
 			const confirm = await os.confirm({
 				type: 'info',
-				text: i18n.ts.lookupConfirm,
+				text: localeRef.value.env.lookupConfirm,
 			});
 			if (!confirm.canceled) {
 				router.pushByPath(`/${searchParams.value.query}`);
@@ -315,7 +316,7 @@ async function search() {
 		if (searchParams.value.query.startsWith('#')) {
 			const confirm = await os.confirm({
 				type: 'info',
-				text: i18n.ts.openTagPageConfirm,
+				text: localeRef.value.env.openTagPageConfirm,
 			});
 			if (!confirm.canceled) {
 				router.push('/tags/:tag', {

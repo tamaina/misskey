@@ -8,35 +8,35 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div class="_spacer" style="--MI_SPACER-w: 700px;">
 		<div v-if="channelId == null || channel != null" class="_gaps_m">
 			<MkInput v-model="name">
-				<template #label>{{ i18n.ts.name }}</template>
+				<template #label>{{ $locale.env.name }}</template>
 			</MkInput>
 
 			<MkTextarea v-model="description" mfmAutocomplete :mfmPreview="true">
-				<template #label>{{ i18n.ts.description }}</template>
+				<template #label>{{ $locale.env.description }}</template>
 			</MkTextarea>
 
 			<MkColorInput v-model="color">
-				<template #label>{{ i18n.ts.color }}</template>
+				<template #label>{{ $locale.env.color }}</template>
 			</MkColorInput>
 
 			<MkSwitch v-model="isSensitive">
-				<template #label>{{ i18n.ts.sensitive }}</template>
+				<template #label>{{ $locale.env.sensitive }}</template>
 			</MkSwitch>
 
 			<MkSwitch v-model="allowRenoteToExternal">
-				<template #label>{{ i18n.ts._channel.allowRenoteToExternal }}</template>
+				<template #label>{{ $locale.env._channel.allowRenoteToExternal }}</template>
 			</MkSwitch>
 
 			<div>
-				<MkButton v-if="bannerId == null" @click="setBannerImage"><i class="ti ti-plus"></i> {{ i18n.ts._channel.setBanner }}</MkButton>
+				<MkButton v-if="bannerId == null" @click="setBannerImage"><i class="ti ti-plus"></i> {{ $locale.env._channel.setBanner }}</MkButton>
 				<div v-else-if="bannerUrl">
 					<img :src="bannerUrl" style="width: 100%;"/>
-					<MkButton @click="removeBannerImage()"><i class="ti ti-trash"></i> {{ i18n.ts._channel.removeBanner }}</MkButton>
+					<MkButton @click="removeBannerImage()"><i class="ti ti-trash"></i> {{ $locale.env._channel.removeBanner }}</MkButton>
 				</div>
 			</div>
 
 			<MkFolder :defaultOpen="true">
-				<template #label>{{ i18n.ts.pinnedNotes }}</template>
+				<template #label>{{ $locale.env.pinnedNotes }}</template>
 
 				<div class="_gaps">
 					<MkButton primary rounded @click="addPinnedNote()"><i class="ti ti-plus"></i></MkButton>
@@ -59,8 +59,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</MkFolder>
 
 			<div class="_buttons">
-				<MkButton primary @click="save()"><i class="ti ti-device-floppy"></i> {{ channelId ? i18n.ts.save : i18n.ts.create }}</MkButton>
-				<MkButton v-if="channelId" danger @click="archive()"><i class="ti ti-trash"></i> {{ i18n.ts.archive }}</MkButton>
+				<MkButton primary @click="save()"><i class="ti ti-device-floppy"></i> {{ channelId ? $locale.env.save : $locale.env.create }}</MkButton>
+				<MkButton v-if="channelId" danger @click="archive()"><i class="ti ti-trash"></i> {{ $locale.env.archive }}</MkButton>
 			</div>
 		</div>
 	</div>
@@ -68,6 +68,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef, $l as localizerRef } from '@/i18n.js';
+
 import { computed, ref, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkButton from '@/components/MkButton.vue';
@@ -77,7 +79,6 @@ import { selectFile } from '@/utility/drive.js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { definePage } from '@/page.js';
-import { i18n } from '@/i18n.js';
 import MkFolder from '@/components/MkFolder.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
@@ -133,7 +134,7 @@ fetchChannel();
 
 async function addPinnedNote() {
 	const { canceled, result: value } = await os.inputText({
-		title: i18n.ts.noteIdOrUrl,
+		title: localeRef.value.env.noteIdOrUrl,
 	});
 	if (canceled || value == null) return;
 	const fromUrl = value.includes('/') ? value.split('/').pop() : null;
@@ -179,8 +180,8 @@ async function archive() {
 
 	const { canceled } = await os.confirm({
 		type: 'warning',
-		title: i18n.tsx.channelArchiveConfirmTitle({ name: name.value }),
-		text: i18n.ts.channelArchiveConfirmDescription,
+		title: localizerRef.value.env.channelArchiveConfirmTitle({ name: name.value }),
+		text: localeRef.value.env.channelArchiveConfirmDescription,
 	});
 	if (canceled) return;
 
@@ -210,7 +211,7 @@ const headerActions = computed(() => []);
 const headerTabs = computed(() => []);
 
 definePage(() => ({
-	title: props.channelId ? i18n.ts._channel.edit : i18n.ts._channel.create,
+	title: props.channelId ? localeRef.value.env._channel.edit : localeRef.value.env._channel.create,
 	icon: 'ti ti-device-tv',
 }));
 </script>

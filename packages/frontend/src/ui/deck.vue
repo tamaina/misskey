@@ -40,38 +40,38 @@ SPDX-License-Identifier: AGPL-3.0-only
 						/>
 					</section>
 					<div v-if="layout.length === 0" class="_panel _gaps" :class="$style.onboarding">
-						<div>{{ i18n.ts._deck.introduction }}</div>
-						<div>{{ i18n.ts._deck.introduction2 }}</div>
+						<div>{{ $locale.env._deck.introduction }}</div>
+						<div>{{ $locale.env._deck.introduction2 }}</div>
 						<MkInfo v-if="!store.r.tips.value.deck" closable @close="closeTip('deck')">
-							<button class="_textButton" @click="showTour">{{ i18n.ts._deck.showHowToUse }}</button>
+							<button class="_textButton" @click="showTour">{{ $locale.env._deck.showHowToUse }}</button>
 						</MkInfo>
 					</div>
 				</div>
 
 				<div v-if="prefer.r['deck.menuPosition'].value === 'right'" :class="$style.sideMenu">
 					<div :class="$style.sideMenuTop">
-						<button ref="swicthProfileButtonEl" v-tooltip.noDelay.left="`${i18n.ts._deck.profile}: ${prefer.s['deck.profile']}`" :class="$style.sideMenuButton" class="_button" @click="switchProfileMenu"><i class="ti ti-caret-down"></i></button>
-						<button v-tooltip.noDelay.left="i18n.ts._deck.deleteProfile" :class="$style.sideMenuButton" class="_button" @click="deleteProfile"><i class="ti ti-trash"></i></button>
+						<button ref="swicthProfileButtonEl" v-tooltip.noDelay.left="`${$locale.env._deck.profile}: ${prefer.s['deck.profile']}`" :class="$style.sideMenuButton" class="_button" @click="switchProfileMenu"><i class="ti ti-caret-down"></i></button>
+						<button v-tooltip.noDelay.left="$locale.env._deck.deleteProfile" :class="$style.sideMenuButton" class="_button" @click="deleteProfile"><i class="ti ti-trash"></i></button>
 					</div>
 					<div :class="$style.sideMenuMiddle">
-						<button ref="addColumnButtonEl" v-tooltip.noDelay.left="i18n.ts._deck.addColumn" :class="$style.sideMenuButton" class="_button" @click="addColumn"><i class="ti ti-plus"></i></button>
+						<button ref="addColumnButtonEl" v-tooltip.noDelay.left="$locale.env._deck.addColumn" :class="$style.sideMenuButton" class="_button" @click="addColumn"><i class="ti ti-plus"></i></button>
 					</div>
 					<div :class="$style.sideMenuBottom">
-						<button ref="settingsButtonEl" v-tooltip.noDelay.left="i18n.ts.settings" :class="$style.sideMenuButton" class="_button" @click="showSettings"><i class="ti ti-settings-2"></i></button>
+						<button ref="settingsButtonEl" v-tooltip.noDelay.left="$locale.env.settings" :class="$style.sideMenuButton" class="_button" @click="showSettings"><i class="ti ti-settings-2"></i></button>
 					</div>
 				</div>
 			</div>
 
 			<div v-if="prefer.r['deck.menuPosition'].value === 'bottom'" :class="$style.bottomMenu">
 				<div :class="$style.bottomMenuLeft">
-					<button ref="swicthProfileButtonEl" v-tooltip.noDelay.top="`${i18n.ts._deck.profile}: ${prefer.s['deck.profile']}`" :class="$style.bottomMenuButton" class="_button" @click="switchProfileMenu"><i class="ti ti-caret-down"></i></button>
-					<button v-tooltip.noDelay.top="i18n.ts._deck.deleteProfile" :class="$style.bottomMenuButton" class="_button" @click="deleteProfile"><i class="ti ti-trash"></i></button>
+					<button ref="swicthProfileButtonEl" v-tooltip.noDelay.top="`${$locale.env._deck.profile}: ${prefer.s['deck.profile']}`" :class="$style.bottomMenuButton" class="_button" @click="switchProfileMenu"><i class="ti ti-caret-down"></i></button>
+					<button v-tooltip.noDelay.top="$locale.env._deck.deleteProfile" :class="$style.bottomMenuButton" class="_button" @click="deleteProfile"><i class="ti ti-trash"></i></button>
 				</div>
 				<div :class="$style.bottomMenuMiddle">
-					<button ref="addColumnButtonEl" v-tooltip.noDelay.top="i18n.ts._deck.addColumn" :class="$style.bottomMenuButton" class="_button" @click="addColumn"><i class="ti ti-plus"></i></button>
+					<button ref="addColumnButtonEl" v-tooltip.noDelay.top="$locale.env._deck.addColumn" :class="$style.bottomMenuButton" class="_button" @click="addColumn"><i class="ti ti-plus"></i></button>
 				</div>
 				<div :class="$style.bottomMenuRight">
-					<button ref="settingsButtonEl" v-tooltip.noDelay.top="i18n.ts.settings" :class="$style.bottomMenuButton" class="_button" @click="showSettings"><i class="ti ti-settings-2"></i></button>
+					<button ref="settingsButtonEl" v-tooltip.noDelay.top="$locale.env.settings" :class="$style.bottomMenuButton" class="_button" @click="showSettings"><i class="ti ti-settings-2"></i></button>
 				</div>
 			</div>
 
@@ -86,6 +86,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef, $l as localizerRef } from '@/i18n.js';
+
 import { defineAsyncComponent, ref, useTemplateRef } from 'vue';
 import XCommon from './_common_/common.vue';
 import { genId } from '@/utility/id.js';
@@ -98,7 +100,6 @@ import XReloadSuggestion from '@/ui/_common_/ReloadSuggestion.vue';
 import XThemePreviewing from '@/ui/_common_/ThemePreviewing.vue';
 import * as os from '@/os.js';
 import { $i } from '@/i.js';
-import { i18n } from '@/i18n.js';
 import { deviceKind } from '@/utility/device-kind.js';
 import { prefer } from '@/preferences.js';
 import { store } from '@/store.js';
@@ -179,9 +180,9 @@ const swicthProfileButtonEl = useTemplateRef('swicthProfileButtonEl');
 
 async function addColumn(ev: PointerEvent) {
 	const { canceled, result: column } = await os.select({
-		title: i18n.ts._deck.addColumn,
+		title: localeRef.value.env._deck.addColumn,
 		items: columnTypes.filter(column => column !== 'chat' || $i == null || $i.policies.chatAvailability !== 'unavailable').map(column => ({
-			value: column, label: i18n.ts._deck._columns[column],
+			value: column, label: localeRef.value.env._deck._columns[column],
 		})),
 	});
 	if (canceled || column == null) return;
@@ -197,7 +198,7 @@ async function addColumn(ev: PointerEvent) {
 
 function onContextmenu(ev: PointerEvent) {
 	os.contextMenu([{
-		text: i18n.ts._deck.addColumn,
+		text: localeRef.value.env._deck.addColumn,
 		action: addColumn,
 	}], ev);
 }
@@ -222,7 +223,7 @@ async function deleteProfile() {
 
 	const { canceled } = await os.confirm({
 		type: 'warning',
-		text: i18n.tsx.deleteAreYouSure({ x: prefer.s['deck.profile'] }),
+		text: localizerRef.value.env.deleteAreYouSure({ x: prefer.s['deck.profile'] }),
 	});
 	if (canceled) return;
 
@@ -240,16 +241,16 @@ function showTour() {
 
 	startTour([{
 		element: addColumnButtonEl.value,
-		title: i18n.ts._deck._howToUse.addColumn_title,
-		description: i18n.ts._deck._howToUse.addColumn_description,
+		title: localeRef.value.env._deck._howToUse.addColumn_title,
+		description: localeRef.value.env._deck._howToUse.addColumn_description,
 	}, {
 		element: settingsButtonEl.value,
-		title: i18n.ts._deck._howToUse.settings_title,
-		description: i18n.ts._deck._howToUse.settings_description,
+		title: localeRef.value.env._deck._howToUse.settings_title,
+		description: localeRef.value.env._deck._howToUse.settings_description,
 	}, {
 		element: swicthProfileButtonEl.value,
-		title: i18n.ts._deck._howToUse.switchProfile_title,
-		description: i18n.ts._deck._howToUse.switchProfile_description,
+		title: localeRef.value.env._deck._howToUse.switchProfile_title,
+		description: localeRef.value.env._deck._howToUse.switchProfile_description,
 	}]).then(() => {
 		closeTip('deck');
 	});

@@ -17,7 +17,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			>
 				<template #consentAdditionalInfo>
 					<div v-if="callback != null" class="_gaps_s" :class="$style.redirectRoot">
-						<div>{{ i18n.ts._auth.byClickingYouWillBeRedirectedToThisUrl }}</div>
+						<div>{{ $locale.env._auth.byClickingYouWillBeRedirectedToThisUrl }}</div>
 						<div class="_monospace" :class="$style.redirectUrl">{{ callback }}</div>
 					</div>
 				</template>
@@ -28,10 +28,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+
 import { computed, useTemplateRef } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkAuthConfirm from '@/components/MkAuthConfirm.vue';
-import { i18n } from '@/i18n.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { definePage } from '@/page.js';
 

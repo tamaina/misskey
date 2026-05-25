@@ -41,13 +41,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<span style="margin-left: 8px; opacity: 0.7;">({{ number(job[1]) }} jobs)</span>
 				</div>
 			</div>
-			<span v-else style="opacity: 0.5;">{{ i18n.ts.noJobs }}</span>
+			<span v-else style="opacity: 0.5;">{{ $locale.env.noJobs }}</span>
 		</div>
 	</MkFolder>
 </div>
 </template>
 
 <script lang="ts" setup>
+
 import { markRaw, onMounted, onUnmounted, ref, useTemplateRef } from 'vue';
 import * as Misskey from 'misskey-js';
 import XChart from './federation-job-queue.chart.chart.vue';
@@ -55,7 +56,6 @@ import type { ApQueueDomain } from '@/pages/admin/federation-job-queue.vue';
 import number from '@/filters/number.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { useStream } from '@/stream.js';
-import { i18n } from '@/i18n.js';
 import MkFolder from '@/components/MkFolder.vue';
 import { genId } from '@/utility/id.js';
 

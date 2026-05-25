@@ -16,9 +16,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef } from '@/i18n.js';
+
 import { onUnmounted, ref, watch } from 'vue';
 import { useWidgetPropsManager } from './widget.js';
-import { i18n } from '@/i18n.js';
 import type { WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
 import type { FormWithDefault, GetFormResultType } from '@/utility/form.js';
 
@@ -27,23 +28,23 @@ const name = 'unixClock';
 const widgetPropsDef = {
 	transparent: {
 		type: 'boolean',
-		label: i18n.ts._widgetOptions.transparent,
+		label: localeRef.value.env._widgetOptions.transparent,
 		default: false,
 	},
 	fontSize: {
 		type: 'number',
-		label: i18n.ts.fontSize,
+		label: localeRef.value.env.fontSize,
 		default: 1.5,
 		step: 0.1,
 	},
 	showMs: {
 		type: 'boolean',
-		label: i18n.ts._widgetOptions._clock.showMs,
+		label: localeRef.value.env._widgetOptions._clock.showMs,
 		default: true,
 	},
 	showLabel: {
 		type: 'boolean',
-		label: i18n.ts._widgetOptions._clock.showLabel,
+		label: localeRef.value.env._widgetOptions._clock.showLabel,
 		default: true,
 	},
 } satisfies FormWithDefault;

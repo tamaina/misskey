@@ -15,7 +15,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</div>
 
 	<MkKeyValue>
-		<template #key>{{ i18n.ts.description }}</template>
+		<template #key>{{ $locale.env.description }}</template>
 		<template #value><div v-html="instance.description"></div></template>
 	</MkKeyValue>
 
@@ -25,18 +25,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<template #key>Misskey</template>
 				<template #value>{{ version }}</template>
 			</MkKeyValue>
-			<div v-html="i18n.tsx.poweredByMisskeyDescription({ name: instance.name ?? host })">
+			<div v-html="$l.env.poweredByMisskeyDescription({ name: instance.name ?? host })">
 			</div>
 			<FormLink to="/about-misskey">
 				<template #icon><i class="ti ti-info-circle"></i></template>
-				{{ i18n.ts.aboutMisskey }}
+				{{ $locale.env.aboutMisskey }}
 			</FormLink>
 			<FormLink v-if="instance.repositoryUrl || instance.providesTarball" :to="instance.repositoryUrl || `/tarball/misskey-${version}.tar.gz`" external>
 				<template #icon><i class="ti ti-code"></i></template>
-				{{ i18n.ts.sourceCode }}
+				{{ $locale.env.sourceCode }}
 			</FormLink>
 			<MkInfo v-else warn>
-				{{ i18n.ts.sourceCodeIsNotYetProvided }}
+				{{ $locale.env.sourceCodeIsNotYetProvided }}
 			</MkInfo>
 		</div>
 	</FormSection>
@@ -45,35 +45,35 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div class="_gaps_m">
 			<FormSplit>
 				<MkKeyValue :copy="instance.maintainerName">
-					<template #key>{{ i18n.ts.administrator }}</template>
+					<template #key>{{ $locale.env.administrator }}</template>
 					<template #value>
 						<template v-if="instance.maintainerName">{{ instance.maintainerName }}</template>
-						<span v-else style="opacity: 0.7;">({{ i18n.ts.none }})</span>
+						<span v-else style="opacity: 0.7;">({{ $locale.env.none }})</span>
 					</template>
 				</MkKeyValue>
 				<MkKeyValue :copy="instance.maintainerEmail">
-					<template #key>{{ i18n.ts.contact }}</template>
+					<template #key>{{ $locale.env.contact }}</template>
 					<template #value>
 						<template v-if="instance.maintainerEmail">{{ instance.maintainerEmail }}</template>
-						<span v-else style="opacity: 0.7;">({{ i18n.ts.none }})</span>
+						<span v-else style="opacity: 0.7;">({{ $locale.env.none }})</span>
 					</template>
 				</MkKeyValue>
 				<MkKeyValue>
-					<template #key>{{ i18n.ts.inquiry }}</template>
+					<template #key>{{ $locale.env.inquiry }}</template>
 					<template #value>
 						<MkLink v-if="instance.inquiryUrl" :url="instance.inquiryUrl" target="_blank">{{ instance.inquiryUrl }}</MkLink>
-						<span v-else style="opacity: 0.7;">({{ i18n.ts.none }})</span>
+						<span v-else style="opacity: 0.7;">({{ $locale.env.none }})</span>
 					</template>
 				</MkKeyValue>
 			</FormSplit>
 			<div class="_gaps_s">
 				<FormLink v-if="instance.impressumUrl" :to="instance.impressumUrl" external>
 					<template #icon><i class="ti ti-user-shield"></i></template>
-					<template #default>{{ i18n.ts.impressum }}</template>
+					<template #default>{{ $locale.env.impressum }}</template>
 				</FormLink>
 				<MkFolder v-if="instance.serverRules.length > 0">
 					<template #icon><i class="ti ti-checkup-list"></i></template>
-					<template #label>{{ i18n.ts.serverRules }}</template>
+					<template #label>{{ $locale.env.serverRules }}</template>
 					<ol class="_gaps_s" :class="$style.rules">
 						<li v-for="item in instance.serverRules" :key="item" :class="$style.rule">
 							<div :class="$style.ruleText" v-html="item"></div>
@@ -82,15 +82,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</MkFolder>
 				<FormLink v-if="instance.tosUrl" :to="instance.tosUrl" external>
 					<template #icon><i class="ti ti-license"></i></template>
-					<template #default>{{ i18n.ts.termsOfService }}</template>
+					<template #default>{{ $locale.env.termsOfService }}</template>
 				</FormLink>
 				<FormLink v-if="instance.privacyPolicyUrl" :to="instance.privacyPolicyUrl" external>
 					<template #icon><i class="ti ti-shield-lock"></i></template>
-					<template #default>{{ i18n.ts.privacyPolicy }}</template>
+					<template #default>{{ $locale.env.privacyPolicy }}</template>
 				</FormLink>
 				<FormLink v-if="instance.feedbackUrl" :to="instance.feedbackUrl" external>
 					<template #icon><i class="ti ti-message"></i></template>
-					<template #default>{{ i18n.ts.feedback }}</template>
+					<template #default>{{ $locale.env.feedback }}</template>
 				</FormLink>
 			</div>
 		</div>
@@ -98,14 +98,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 	<MkSuspense v-slot="{ result: stats }" :p="initStats">
 		<FormSection>
-			<template #label>{{ i18n.ts.statistics }}</template>
+			<template #label>{{ $locale.env.statistics }}</template>
 			<FormSplit>
 				<MkKeyValue>
-					<template #key>{{ i18n.ts.users }}</template>
+					<template #key>{{ $locale.env.users }}</template>
 					<template #value>{{ number(stats.originalUsersCount) }}</template>
 				</MkKeyValue>
 				<MkKeyValue>
-					<template #key>{{ i18n.ts.notes }}</template>
+					<template #key>{{ $locale.env.notes }}</template>
 					<template #value>{{ number(stats.originalNotesCount) }}</template>
 				</MkKeyValue>
 			</FormSplit>
@@ -126,8 +126,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+
 import { host, version } from '@@/js/config.js';
-import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
 import number from '@/filters/number.js';
 import { misskeyApi } from '@/utility/misskey-api.js';

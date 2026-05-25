@@ -16,7 +16,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	@closed="emit('closed')"
 >
 	<template #header>
-		{{ multiple ? i18n.ts.selectFolders : i18n.ts.selectFolder }}
+		{{ multiple ? $locale.env.selectFolders : $locale.env.selectFolder }}
 		<span v-if="multiple && selected.length > 0" style="margin-left: 8px; opacity: 0.5;">({{ selected.length }})</span>
 	</template>
 	<MkDrive :multiple="multiple" select="folder" :initialFolder="initialFolder" @changeSelectedFolders="onChangeSelection"/>
@@ -24,11 +24,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+
 import { ref, useTemplateRef } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkDrive from '@/components/MkDrive.vue';
 import MkModalWindow from '@/components/MkModalWindow.vue';
-import { i18n } from '@/i18n.js';
 
 withDefaults(defineProps<{
 	initialFolder?: Misskey.entities.DriveFolder['id'] | null;

@@ -13,7 +13,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<div class="body">
 					<div class="value">
 						<MkNumber :value="stats.originalUsersCount" style="margin-right: 0.5em;"/>
-						<MkNumberDiff v-if="usersComparedToThePrevDay != null" v-tooltip="i18n.ts.dayOverDayChanges" class="diff" :value="usersComparedToThePrevDay"></MkNumberDiff>
+						<MkNumberDiff v-if="usersComparedToThePrevDay != null" v-tooltip="$locale.env.dayOverDayChanges" class="diff" :value="usersComparedToThePrevDay"></MkNumberDiff>
 					</div>
 					<div class="label">Users</div>
 				</div>
@@ -23,7 +23,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<div class="body">
 					<div class="value">
 						<MkNumber :value="stats.originalNotesCount" style="margin-right: 0.5em;"/>
-						<MkNumberDiff v-if="notesComparedToThePrevDay != null" v-tooltip="i18n.ts.dayOverDayChanges" class="diff" :value="notesComparedToThePrevDay"></MkNumberDiff>
+						<MkNumberDiff v-if="notesComparedToThePrevDay != null" v-tooltip="$locale.env.dayOverDayChanges" class="diff" :value="notesComparedToThePrevDay"></MkNumberDiff>
 					</div>
 					<div class="label">Notes</div>
 				</div>
@@ -62,12 +62,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+
 import { onMounted, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import { misskeyApi, misskeyApiGet } from '@/utility/misskey-api.js';
 import MkNumberDiff from '@/components/MkNumberDiff.vue';
 import MkNumber from '@/components/MkNumber.vue';
-import { i18n } from '@/i18n.js';
 import { customEmojis } from '@/custom-emojis.js';
 import { prefer } from '@/preferences.js';
 

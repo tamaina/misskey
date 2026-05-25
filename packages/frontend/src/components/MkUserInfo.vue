@@ -13,22 +13,22 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<MkA :class="$style.name" :to="userPage(user)"><MkUserName :user="user" :nowrap="false"/></MkA>
 		<p :class="$style.username"><MkAcct :user="user"/></p>
 	</div>
-	<span v-if="$i && $i.id !== user.id && user.isFollowed" :class="$style.followed">{{ i18n.ts.followsYou }}</span>
+	<span v-if="$i && $i.id !== user.id && user.isFollowed" :class="$style.followed">{{ $locale.env.followsYou }}</span>
 	<div :class="$style.description">
 		<div v-if="user.description" :class="$style.mfm">
 			<Mfm :text="user.description" :author="user"/>
 		</div>
-		<span v-else style="opacity: 0.7;">{{ i18n.ts.noAccountDescription }}</span>
+		<span v-else style="opacity: 0.7;">{{ $locale.env.noAccountDescription }}</span>
 	</div>
 	<div :class="$style.status">
 		<MkA :class="$style.statusItem" :to="userPage(user, 'notes')">
-			<p :class="$style.statusItemLabel">{{ i18n.ts.notes }}</p><span :class="$style.statusItemValue">{{ number(user.notesCount) }}</span>
+			<p :class="$style.statusItemLabel">{{ $locale.env.notes }}</p><span :class="$style.statusItemValue">{{ number(user.notesCount) }}</span>
 		</MkA>
 		<MkA v-if="isFollowingVisibleForMe(user)" :class="$style.statusItem" :to="userPage(user, 'following')">
-			<p :class="$style.statusItemLabel">{{ i18n.ts.following }}</p><span :class="$style.statusItemValue">{{ number(user.followingCount) }}</span>
+			<p :class="$style.statusItemLabel">{{ $locale.env.following }}</p><span :class="$style.statusItemValue">{{ number(user.followingCount) }}</span>
 		</MkA>
 		<MkA v-if="isFollowersVisibleForMe(user)" :class="$style.statusItem" :to="userPage(user, 'followers')">
-			<p :class="$style.statusItemLabel">{{ i18n.ts.followers }}</p><span :class="$style.statusItemValue">{{ number(user.followersCount) }}</span>
+			<p :class="$style.statusItemLabel">{{ $locale.env.followers }}</p><span :class="$style.statusItemValue">{{ number(user.followersCount) }}</span>
 		</MkA>
 	</div>
 	<MkFollowButton v-if="user.id != $i?.id" :class="$style.follow" :user="user" mini/>
@@ -36,11 +36,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+
 import * as Misskey from 'misskey-js';
 import MkFollowButton from '@/components/MkFollowButton.vue';
 import number from '@/filters/number.js';
 import { userPage } from '@/filters/user.js';
-import { i18n } from '@/i18n.js';
 import { $i } from '@/i.js';
 import { isFollowingVisibleForMe, isFollowersVisibleForMe } from '@/utility/isFfVisibleForMe.js';
 import { getStaticImageUrl } from '@/utility/media-proxy.js';

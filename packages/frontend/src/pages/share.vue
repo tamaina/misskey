@@ -21,14 +21,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 			@posted="onPosted"
 		/>
 		<div v-else-if="state === 'posted'" class="_buttonsCenter">
-			<MkButton primary @click="close">{{ i18n.ts.close }}</MkButton>
-			<MkButton @click="goToMisskey">{{ i18n.ts.goToMisskey }}</MkButton>
+			<MkButton primary @click="close">{{ $locale.env.close }}</MkButton>
+			<MkButton @click="goToMisskey">{{ $locale.env.goToMisskey }}</MkButton>
 		</div>
 	</div>
 </PageWithHeader>
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef } from '@/i18n.js';
+
 // SPECIFICATION: https://misskey-hub.net/docs/for-users/features/share-form/
 
 import { ref, computed } from 'vue';
@@ -39,7 +41,6 @@ import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { definePage } from '@/page.js';
 import { postMessageToParentWindow } from '@/utility/post-message.js';
-import { i18n } from '@/i18n.js';
 
 const urlParams = new URLSearchParams(window.location.search);
 const localOnlyQuery = urlParams.get('localOnly');
@@ -209,7 +210,7 @@ const headerActions = computed(() => []);
 const headerTabs = computed(() => []);
 
 definePage(() => ({
-	title: i18n.ts.share,
+	title: localeRef.value.env.share,
 	icon: 'ti ti-share',
 }));
 </script>

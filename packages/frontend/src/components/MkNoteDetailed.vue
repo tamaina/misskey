@@ -13,7 +13,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 >
 	<div v-if="appearNote.reply && appearNote.reply.replyId">
 		<div v-if="!conversationLoaded" style="padding: 16px">
-			<MkButton style="margin: 0 auto;" primary rounded @click="loadConversation">{{ i18n.ts.loadConversation }}</MkButton>
+			<MkButton style="margin: 0 auto;" primary rounded @click="loadConversation">{{ $locale.env.loadConversation }}</MkButton>
 		</div>
 		<MkNoteSub v-for="note in conversation" :key="note.id" :class="$style.replyToMore" :note="note"/>
 	</div>
@@ -22,7 +22,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<MkAvatar :class="$style.renoteAvatar" :user="note.user" link preview/>
 		<i class="ti ti-repeat" style="margin-right: 4px;"></i>
 		<span :class="$style.renoteText">
-			<I18n :src="i18n.ts.renotedBy" tag="span">
+			<I18n :src="$locale.env.renotedBy" tag="span">
 				<template #user>
 					<MkA v-user-preview="note.userId" :class="$style.renoteName" :to="userPage(note.user)">
 						<MkUserName :user="note.user"/>
@@ -35,16 +35,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<i v-if="isMyRenote" class="ti ti-dots" style="margin-right: 4px;"></i>
 				<MkTime :time="note.createdAt"/>
 			</button>
-			<span v-if="note.visibility !== 'public'" style="margin-left: 0.5em;" :title="i18n.ts._visibility[note.visibility]">
+			<span v-if="note.visibility !== 'public'" style="margin-left: 0.5em;" :title="$locale.env._visibility[note.visibility]">
 				<i v-if="note.visibility === 'home'" class="ti ti-home"></i>
 				<i v-else-if="note.visibility === 'followers'" class="ti ti-lock"></i>
 				<i v-else-if="note.visibility === 'specified'" ref="specified" class="ti ti-mail"></i>
 			</span>
-			<span v-if="note.localOnly" style="margin-left: 0.5em;" :title="i18n.ts._visibility['disableFederation']"><i class="ti ti-rocket-off"></i></span>
+			<span v-if="note.localOnly" style="margin-left: 0.5em;" :title="$locale.env._visibility['disableFederation']"><i class="ti ti-rocket-off"></i></span>
 		</div>
 	</div>
 	<div v-if="isRenote && note.renote == null" :class="$style.deleted">
-		{{ i18n.ts.deletedNote }}
+		{{ $locale.env.deletedNote }}
 	</div>
 	<template v-else>
 		<article :class="$style.note" @contextmenu.stop="onContextmenu">
@@ -57,12 +57,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 						</MkA>
 						<span v-if="appearNote.user.isBot" :class="$style.isBot">bot</span>
 						<div :class="$style.noteHeaderInfo">
-							<span v-if="appearNote.visibility !== 'public'" style="margin-left: 0.5em;" :title="i18n.ts._visibility[appearNote.visibility]">
+							<span v-if="appearNote.visibility !== 'public'" style="margin-left: 0.5em;" :title="$locale.env._visibility[appearNote.visibility]">
 								<i v-if="appearNote.visibility === 'home'" class="ti ti-home"></i>
 								<i v-else-if="appearNote.visibility === 'followers'" class="ti ti-lock"></i>
 								<i v-else-if="appearNote.visibility === 'specified'" ref="specified" class="ti ti-mail"></i>
 							</span>
-							<span v-if="appearNote.localOnly" style="margin-left: 0.5em;" :title="i18n.ts._visibility['disableFederation']"><i class="ti ti-rocket-off"></i></span>
+							<span v-if="appearNote.localOnly" style="margin-left: 0.5em;" :title="$locale.env._visibility['disableFederation']"><i class="ti ti-rocket-off"></i></span>
 						</div>
 					</div>
 					<div :class="$style.noteHeaderUsernameAndBadgeRoles">
@@ -89,7 +89,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<MkCwButton v-model="showContent" :text="appearNote.text" :renote="appearNote.renote" :files="appearNote.files" :poll="appearNote.poll"/>
 				</p>
 				<div v-show="appearNote.cw == null || showContent">
-					<span v-if="appearNote.isHidden" style="opacity: 0.5">({{ i18n.ts.private }})</span>
+					<span v-if="appearNote.isHidden" style="opacity: 0.5">({{ $locale.env.private }})</span>
 					<MkA v-if="appearNote.replyId" :class="$style.noteReplyTarget" :to="`/notes/${appearNote.replyId}`"><i class="ti ti-arrow-back-up"></i></MkA>
 					<Mfm
 						v-if="appearNote.text"
@@ -106,7 +106,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<div v-if="translating || translation" :class="$style.translation">
 						<MkLoading v-if="translating" mini/>
 						<div v-else-if="translation">
-							<b>{{ i18n.tsx.translatedFrom({ x: translation.sourceLang }) }}: </b>
+							<b>{{ $l.env.translatedFrom({ x: translation.sourceLang }) }}: </b>
 							<Mfm :text="translation.text" :author="appearNote.user" :nyaize="'respect'" :emojiUrls="appearNote.emojis" class="_selectable"/>
 						</div>
 					</div>
@@ -141,7 +141,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<i v-else-if="appearNote.visibility === 'home'" class="ti ti-home"></i>
 						<i v-else-if="appearNote.visibility === 'followers'" class="ti ti-lock"></i>
 						<i v-else-if="appearNote.visibility === 'specified'" ref="specified" class="ti ti-mail"></i>
-						<span style="margin-left: 0.3em;">{{ i18n.ts._visibility[appearNote.visibility] }}</span>
+						<span style="margin-left: 0.3em;">{{ $locale.env._visibility[appearNote.visibility] }}</span>
 					</span>
 				</div>
 				<MkReactionsViewer
@@ -185,14 +185,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</footer>
 		</article>
 		<div :class="$style.tabs">
-			<button class="_button" :class="[$style.tab, { [$style.tabActive]: tab === 'replies' }]" @click="tab = 'replies'"><i class="ti ti-arrow-back-up"></i> {{ i18n.ts.replies }}</button>
-			<button class="_button" :class="[$style.tab, { [$style.tabActive]: tab === 'renotes' }]" @click="tab = 'renotes'"><i class="ti ti-repeat"></i> {{ i18n.ts.renotes }}</button>
-			<button class="_button" :class="[$style.tab, { [$style.tabActive]: tab === 'reactions' }]" @click="tab = 'reactions'"><i class="ti ti-icons"></i> {{ i18n.ts.reactions }}</button>
+			<button class="_button" :class="[$style.tab, { [$style.tabActive]: tab === 'replies' }]" @click="tab = 'replies'"><i class="ti ti-arrow-back-up"></i> {{ $locale.env.replies }}</button>
+			<button class="_button" :class="[$style.tab, { [$style.tabActive]: tab === 'renotes' }]" @click="tab = 'renotes'"><i class="ti ti-repeat"></i> {{ $locale.env.renotes }}</button>
+			<button class="_button" :class="[$style.tab, { [$style.tabActive]: tab === 'reactions' }]" @click="tab = 'reactions'"><i class="ti ti-icons"></i> {{ $locale.env.reactions }}</button>
 		</div>
 		<div>
 			<div v-if="tab === 'replies'">
 				<div v-if="!repliesLoaded" style="padding: 16px">
-					<MkButton style="margin: 0 auto;" primary rounded @click="loadReplies">{{ i18n.ts.loadReplies }}</MkButton>
+					<MkButton style="margin: 0 auto;" primary rounded @click="loadReplies">{{ $locale.env.loadReplies }}</MkButton>
 				</div>
 				<MkNoteSub v-for="note in replies" :key="note.id" :note="note" :class="$style.reply" :detail="true"/>
 			</div>
@@ -228,7 +228,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</template>
 </div>
 <div v-else-if="muted" class="_panel" :class="$style.muted" @click="muted = false">
-	<I18n :src="i18n.ts.userSaysSomething" tag="small">
+	<I18n :src="$locale.env.userSaysSomething" tag="small">
 		<template #name>
 			<MkA v-user-preview="appearNote.userId" :to="userPage(appearNote.user)">
 				<MkUserName :user="appearNote.user"/>
@@ -239,6 +239,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef, $l as localizerRef } from '@/i18n.js';
+
 import { computed, inject, markRaw, provide, ref, useTemplateRef } from 'vue';
 import * as mfm from 'mfm-js';
 import * as Misskey from 'misskey-js';
@@ -268,7 +270,6 @@ import * as sound from '@/utility/sound.js';
 import { reactionPicker } from '@/utility/reaction-picker.js';
 import { extractUrlFromMfm } from '@/utility/extract-url-from-mfm.js';
 import { $i } from '@/i.js';
-import { i18n } from '@/i18n.js';
 import { getNoteClipMenu, getNoteMenu, getRenoteMenu } from '@/utility/get-note-menu.js';
 import { noteEvents, useNoteCapture } from '@/composables/use-note-capture.js';
 import { deepClone } from '@/utility/clone.js';
@@ -515,7 +516,7 @@ async function react() {
 			if (prefer.s.confirmOnReact) {
 				const confirm = await os.confirm({
 					type: 'question',
-					text: i18n.tsx.reactAreYouSure({ emoji: reaction.replace('@.', '') }),
+					text: localizerRef.value.env.reactAreYouSure({ emoji: reaction.replace('@.', '') }),
 				});
 
 				if (confirm.canceled) return;
@@ -594,7 +595,7 @@ async function showRenoteMenu() {
 
 	if (isMyRenote) {
 		menu.push({
-			text: i18n.ts.unrenote,
+			text: localeRef.value.env.unrenote,
 			icon: 'ti ti-trash',
 			danger: true,
 			action: () => {
@@ -613,7 +614,7 @@ async function showRenoteMenu() {
 	) {
 		menu.push({
 			type: 'link',
-			text: i18n.ts.viewRenotedChannel,
+			text: localeRef.value.env.viewRenotedChannel,
 			icon: 'ti ti-device-tv',
 			to: `/channels/${props.note.channelId}`,
 		});

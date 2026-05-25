@@ -6,37 +6,38 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <div class="_gaps_m">
 	<MkSelect v-model="type" :items="typeDef">
-		<template #label>{{ i18n.ts.sound }}</template>
+		<template #label>{{ $locale.env.sound }}</template>
 	</MkSelect>
 	<div v-if="type === '_driveFile_' && driveFileError === true" :class="$style.fileSelectorRoot">
-		<MkButton :class="$style.fileSelectorButton" inline rounded primary @click="selectSound">{{ i18n.ts.selectFile }}</MkButton>
+		<MkButton :class="$style.fileSelectorButton" inline rounded primary @click="selectSound">{{ $locale.env.selectFile }}</MkButton>
 		<div :class="$style.fileErrorRoot">
-			<MkCondensedLine>{{ i18n.ts._soundSettings.driveFileError }}</MkCondensedLine>
+			<MkCondensedLine>{{ $locale.env._soundSettings.driveFileError }}</MkCondensedLine>
 		</div>
 	</div>
 	<div v-else-if="type === '_driveFile_'" :class="$style.fileSelectorRoot">
-		<MkButton :class="$style.fileSelectorButton" inline rounded primary @click="selectSound">{{ i18n.ts.selectFile }}</MkButton>
+		<MkButton :class="$style.fileSelectorButton" inline rounded primary @click="selectSound">{{ $locale.env.selectFile }}</MkButton>
 		<div :class="['_nowrap', !fileUrl && $style.fileNotSelected]">{{ friendlyFileName }}</div>
 	</div>
 	<MkRange v-model="volume" :min="0" :max="1" :step="0.05" :textConverter="(v) => `${Math.floor(v * 100)}%`">
-		<template #label>{{ i18n.ts.volume }}</template>
+		<template #label>{{ $locale.env.volume }}</template>
 	</MkRange>
 
 	<div class="_buttons">
-		<MkButton inline @click="listen"><i class="ti ti-player-play"></i> {{ i18n.ts.listen }}</MkButton>
-		<MkButton inline primary :disabled="!hasChanged || driveFileError" @click="save"><i class="ti ti-check"></i> {{ i18n.ts.save }}</MkButton>
+		<MkButton inline @click="listen"><i class="ti ti-player-play"></i> {{ $locale.env.listen }}</MkButton>
+		<MkButton inline primary :disabled="!hasChanged || driveFileError" @click="save"><i class="ti ti-check"></i> {{ $locale.env.save }}</MkButton>
 	</div>
 </div>
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef } from '@/i18n.js';
+
 import { ref, computed, watch } from 'vue';
 import type { SoundType } from '@/utility/sound.js';
 import type { SoundStore } from '@/preferences/def.js';
 import MkSelect from '@/components/MkSelect.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkRange from '@/components/MkRange.vue';
-import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
 import { useMkSelect } from '@/composables/use-mkselect.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
@@ -81,9 +82,9 @@ if (type.value === '_driveFile_' && fileId.value) {
 function getSoundTypeName(f: SoundType): string {
 	switch (f) {
 		case null:
-			return i18n.ts.none;
+			return localeRef.value.env.none;
 		case '_driveFile_':
-			return i18n.ts._soundSettings.driveFile;
+			return localeRef.value.env._soundSettings.driveFile;
 		default:
 			return f;
 	}
@@ -97,20 +98,20 @@ const friendlyFileName = computed<string>(() => {
 		return fileUrl.value;
 	}
 
-	return i18n.ts._soundSettings.driveFileWarn;
+	return localeRef.value.env._soundSettings.driveFileWarn;
 });
 
 function selectSound(ev: PointerEvent) {
 	selectFile({
 		anchorElement: ev.currentTarget ?? ev.target,
 		multiple: false,
-		label: i18n.ts._soundSettings.driveFile,
+		label: localeRef.value.env._soundSettings.driveFile,
 	}).then(async (file) => {
 		if (!file.type.startsWith('audio')) {
 			os.alert({
 				type: 'warning',
-				title: i18n.ts._soundSettings.driveFileTypeWarn,
-				text: i18n.ts._soundSettings.driveFileTypeWarnDescription,
+				title: localeRef.value.env._soundSettings.driveFileTypeWarn,
+				text: localeRef.value.env._soundSettings.driveFileTypeWarnDescription,
 			});
 			return;
 		}
@@ -118,10 +119,10 @@ function selectSound(ev: PointerEvent) {
 		if (duration >= 2000) {
 			const { canceled } = await os.confirm({
 				type: 'warning',
-				title: i18n.ts._soundSettings.driveFileDurationWarn,
-				text: i18n.ts._soundSettings.driveFileDurationWarnDescription,
-				okText: i18n.ts.continue,
-				cancelText: i18n.ts.cancel,
+				title: localeRef.value.env._soundSettings.driveFileDurationWarn,
+				text: localeRef.value.env._soundSettings.driveFileDurationWarnDescription,
+				okText: localeRef.value.env.continue,
+				cancelText: localeRef.value.env.cancel,
 			});
 			if (canceled) return;
 		}
@@ -148,7 +149,7 @@ function listen() {
 	if (type.value === '_driveFile_' && (!fileUrl.value || !fileId.value)) {
 		os.alert({
 			type: 'warning',
-			text: i18n.ts._soundSettings.driveFileWarn,
+			text: localeRef.value.env._soundSettings.driveFileWarn,
 		});
 		return;
 	}
@@ -172,7 +173,7 @@ function save() {
 	if (type.value === '_driveFile_' && !fileUrl.value) {
 		os.alert({
 			type: 'warning',
-			text: i18n.ts._soundSettings.driveFileWarn,
+			text: localeRef.value.env._soundSettings.driveFileWarn,
 		});
 		return;
 	}

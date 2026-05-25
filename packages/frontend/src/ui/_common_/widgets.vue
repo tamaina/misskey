@@ -15,8 +15,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 		@exit="editMode = false"
 	/>
 
-	<button v-if="editMode" class="_textButton" style="font-size: 0.9em;" @click="editMode = false"><i class="ti ti-check"></i> {{ i18n.ts.editWidgetsExit }}</button>
-	<button v-else class="_textButton" data-cy-widget-edit :class="$style.edit" style="font-size: 0.9em; margin-top: 16px;" @click="editMode = true"><i class="ti ti-pencil"></i> {{ i18n.ts.editWidgets }}</button>
+	<button v-if="editMode" class="_textButton" style="font-size: 0.9em;" @click="editMode = false"><i class="ti ti-check"></i> {{ $locale.env.editWidgetsExit }}</button>
+	<button v-else class="_textButton" data-cy-widget-edit :class="$style.edit" style="font-size: 0.9em; margin-top: 16px;" @click="editMode = true"><i class="ti ti-pencil"></i> {{ $locale.env.editWidgets }}</button>
 </div>
 </template>
 
@@ -26,9 +26,9 @@ const editMode = ref(false);
 </script>
 
 <script lang="ts" setup>
+
 import type { DefaultStoredWidget, Widget } from '@/components/MkWidgets.vue';
 import XWidgets from '@/components/MkWidgets.vue';
-import { i18n } from '@/i18n.js';
 import { prefer } from '@/preferences.js';
 
 const props = withDefaults(defineProps<{

@@ -32,29 +32,29 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<img :src="imgUrl" :class="$style.img"/>
 					</div>
 				</div>
-				<MkButton rounded style="margin: 0 auto;" @click="changeImage">{{ i18n.ts.selectFile }}</MkButton>
+				<MkButton rounded style="margin: 0 auto;" @click="changeImage">{{ $locale.env.selectFile }}</MkButton>
 				<MkInput v-model="name" pattern="[a-z0-9_]" autocapitalize="off">
-					<template #label>{{ i18n.ts.name }}</template>
+					<template #label>{{ $locale.env.name }}</template>
 				</MkInput>
 				<MkInput v-model="category" :datalist="customEmojiCategories.filter(x => x != null)">
-					<template #label>{{ i18n.ts.category }}</template>
+					<template #label>{{ $locale.env.category }}</template>
 				</MkInput>
 				<MkInput v-model="aliases" autocapitalize="off">
-					<template #label>{{ i18n.ts.tags }}</template>
+					<template #label>{{ $locale.env.tags }}</template>
 					<template #caption>
-						{{ i18n.ts.theKeywordWhenSearchingForCustomEmoji }}<br/>
-						{{ i18n.ts.setMultipleBySeparatingWithSpace }}
+						{{ $locale.env.theKeywordWhenSearchingForCustomEmoji }}<br/>
+						{{ $locale.env.setMultipleBySeparatingWithSpace }}
 					</template>
 				</MkInput>
 				<MkInput v-model="license" :mfmAutocomplete="true">
-					<template #label>{{ i18n.ts.license }}</template>
+					<template #label>{{ $locale.env.license }}</template>
 				</MkInput>
 				<MkFolder>
-					<template #label>{{ i18n.ts.rolesThatCanBeUsedThisEmojiAsReaction }}</template>
-					<template #suffix>{{ rolesThatCanBeUsedThisEmojiAsReaction.length === 0 ? i18n.ts.all : rolesThatCanBeUsedThisEmojiAsReaction.length }}</template>
+					<template #label>{{ $locale.env.rolesThatCanBeUsedThisEmojiAsReaction }}</template>
+					<template #suffix>{{ rolesThatCanBeUsedThisEmojiAsReaction.length === 0 ? $locale.env.all : rolesThatCanBeUsedThisEmojiAsReaction.length }}</template>
 
 					<div class="_gaps">
-						<MkButton rounded @click="addRole"><i class="ti ti-plus"></i> {{ i18n.ts.add }}</MkButton>
+						<MkButton rounded @click="addRole"><i class="ti ti-plus"></i> {{ $locale.env.add }}</MkButton>
 
 						<div v-for="role in rolesThatCanBeUsedThisEmojiAsReaction" :key="role.id" :class="$style.roleItem">
 							<MkRolePreview :class="$style.role" :role="role" :forModeration="true" :detailed="false" style="pointer-events: none;"/>
@@ -62,23 +62,25 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<button v-else class="_button" :class="$style.roleUnassign" disabled><i class="ti ti-ban"></i></button>
 						</div>
 
-						<MkInfo>{{ i18n.ts.rolesThatCanBeUsedThisEmojiAsReactionEmptyDescription }}</MkInfo>
-						<MkInfo warn>{{ i18n.ts.rolesThatCanBeUsedThisEmojiAsReactionPublicRoleWarn }}</MkInfo>
+						<MkInfo>{{ $locale.env.rolesThatCanBeUsedThisEmojiAsReactionEmptyDescription }}</MkInfo>
+						<MkInfo warn>{{ $locale.env.rolesThatCanBeUsedThisEmojiAsReactionPublicRoleWarn }}</MkInfo>
 					</div>
 				</MkFolder>
-				<MkSwitch v-model="isSensitive">{{ i18n.ts.sensitive }}</MkSwitch>
-				<MkSwitch v-model="localOnly">{{ i18n.ts.localOnly }}</MkSwitch>
-				<MkButton v-if="emoji" danger @click="del()"><i class="ti ti-trash"></i> {{ i18n.ts.delete }}</MkButton>
+				<MkSwitch v-model="isSensitive">{{ $locale.env.sensitive }}</MkSwitch>
+				<MkSwitch v-model="localOnly">{{ $locale.env.localOnly }}</MkSwitch>
+				<MkButton v-if="emoji" danger @click="del()"><i class="ti ti-trash"></i> {{ $locale.env.delete }}</MkButton>
 			</div>
 		</div>
 		<div :class="$style.footer">
-			<MkButton primary rounded style="margin: 0 auto;" @click="done"><i class="ti ti-check"></i> {{ props.emoji ? i18n.ts.update : i18n.ts.create }}</MkButton>
+			<MkButton primary rounded style="margin: 0 auto;" @click="done"><i class="ti ti-check"></i> {{ props.emoji ? $locale.env.update : $locale.env.create }}</MkButton>
 		</div>
 	</div>
 </MkWindow>
 </template>
 
 <script lang="ts" setup>
+import { $l as localizerRef } from '@/i18n.js';
+
 import { computed, watch, ref, useTemplateRef } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkWindow from '@/components/MkWindow.vue';
@@ -88,7 +90,6 @@ import MkInfo from '@/components/MkInfo.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
-import { i18n } from '@/i18n.js';
 import { customEmojiCategories } from '@/custom-emojis.js';
 import MkSwitch from '@/components/MkSwitch.vue';
 import { selectFile } from '@/utility/drive.js';
@@ -203,7 +204,7 @@ async function del() {
 	if (!props.emoji) return;
 	const { canceled } = await os.confirm({
 		type: 'warning',
-		text: i18n.tsx.removeAreYouSure({ x: name.value }),
+		text: localizerRef.value.env.removeAreYouSure({ x: name.value }),
 	});
 	if (canceled) return;
 

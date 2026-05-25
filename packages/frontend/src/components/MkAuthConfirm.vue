@@ -19,10 +19,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<div :class="$style.iconFallback">
 					<i class="ti ti-user"></i>
 				</div>
-				<div :class="$style.headerText">{{ i18n.ts.pleaseSelectAccount }}</div>
+				<div :class="$style.headerText">{{ $locale.env.pleaseSelectAccount }}</div>
 			</div>
 			<div>
-				<div :class="$style.accountSelectorLabel">{{ i18n.ts.selectAccount }}</div>
+				<div :class="$style.accountSelectorLabel">{{ $locale.env.selectAccount }}</div>
 				<div :class="$style.accountSelectorList">
 					<template v-for="[id, user] in users">
 						<input :id="'account-' + id" v-model="selectedUser" type="radio" name="accountSelector" :value="id" :class="$style.accountSelectorRadio"/>
@@ -38,12 +38,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<div :class="[$style.accountSelectorAvatar, $style.accountSelectorAddAccountAvatar]">
 							<i class="ti ti-user-plus"></i>
 						</div>
-						<div :class="[$style.accountSelectorBody, $style.accountSelectorName]">{{ i18n.ts.addAccount }}</div>
+						<div :class="[$style.accountSelectorBody, $style.accountSelectorName]">{{ $locale.env.addAccount }}</div>
 					</button>
 				</div>
 			</div>
 			<div class="_buttonsCenter">
-				<MkButton rounded gradate :disabled="selectedUser === null" @click="clickChooseAccount">{{ i18n.ts.continue }} <i class="ti ti-arrow-right"></i></MkButton>
+				<MkButton rounded gradate :disabled="selectedUser === null" @click="clickChooseAccount">{{ $locale.env.continue }} <i class="ti ti-arrow-right"></i></MkButton>
 			</div>
 		</div>
 		<div v-else-if="phase === 'consent'" key="consent" :class="$style.root" class="_gaps">
@@ -52,20 +52,20 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<div v-else :class="$style.iconFallback">
 					<i class="ti ti-apps"></i>
 				</div>
-				<div :class="$style.headerText">{{ name ? i18n.tsx._auth.shareAccess({ name }) : i18n.ts._auth.shareAccessAsk }}</div>
+				<div :class="$style.headerText">{{ name ? $l.env._auth.shareAccess({ name }) : $locale.env._auth.shareAccessAsk }}</div>
 			</div>
 			<div v-if="permissions && permissions.length > 0" class="_gaps_s" :class="$style.permissionRoot">
-				<div>{{ name ? i18n.tsx._auth.permission({ name }) : i18n.ts._auth.permissionAsk }}</div>
+				<div>{{ name ? $l.env._auth.permission({ name }) : $locale.env._auth.permissionAsk }}</div>
 				<div :class="$style.permissionListWrapper">
 					<ul :class="$style.permissionList">
-						<li v-for="p in permissions" :key="p">{{ i18n.ts._permissions[p] }}</li>
+						<li v-for="p in permissions" :key="p">{{ $locale.env._permissions[p] }}</li>
 					</ul>
 				</div>
 			</div>
 			<slot name="consentAdditionalInfo"></slot>
 			<div>
 				<div :class="$style.accountSelectorLabel">
-					{{ i18n.ts._auth.scopeUser }} <button class="_textButton" @click="clickBackToAccountSelect">{{ i18n.ts.switchAccount }}</button>
+					{{ $locale.env._auth.scopeUser }} <button class="_textButton" @click="clickBackToAccountSelect">{{ $locale.env.switchAccount }}</button>
 				</div>
 				<div :class="$style.accountSelectorList">
 					<div :class="[$style.accountSelectorItem, $style.static]">
@@ -78,8 +78,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 			</div>
 			<div class="_buttonsCenter">
-				<MkButton rounded @click="clickCancel">{{ i18n.ts.reject }}</MkButton>
-				<MkButton rounded gradate @click="clickAccept">{{ i18n.ts.accept }}</MkButton>
+				<MkButton rounded @click="clickCancel">{{ $locale.env.reject }}</MkButton>
+				<MkButton rounded gradate @click="clickAccept">{{ $locale.env.accept }}</MkButton>
 			</div>
 		</div>
 		<div v-else-if="phase === 'success'" key="success" :class="$style.root" class="_gaps_s">
@@ -87,8 +87,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<div :class="$style.iconFallback">
 					<i class="ti ti-check"></i>
 				</div>
-				<div :class="$style.headerText">{{ i18n.ts._auth.accepted }}</div>
-				<div :class="$style.headerTextSub">{{ i18n.ts._auth.pleaseGoBack }}</div>
+				<div :class="$style.headerText">{{ $locale.env._auth.accepted }}</div>
+				<div :class="$style.headerTextSub">{{ $locale.env._auth.pleaseGoBack }}</div>
 			</div>
 		</div>
 		<div v-else-if="phase === 'denied'" key="denied" :class="$style.root" class="_gaps_s">
@@ -96,7 +96,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<div :class="$style.iconFallback">
 					<i class="ti ti-x"></i>
 				</div>
-				<div :class="$style.headerText">{{ i18n.ts._auth.denied }}</div>
+				<div :class="$style.headerText">{{ $locale.env._auth.denied }}</div>
 			</div>
 		</div>
 		<div v-else-if="phase === 'failed'" key="failed" :class="$style.root" class="_gaps_s">
@@ -104,7 +104,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<div :class="$style.iconFallback">
 					<i class="ti ti-x"></i>
 				</div>
-				<div :class="$style.headerText">{{ i18n.ts.somethingHappened }}</div>
+				<div :class="$style.headerText">{{ $locale.env.somethingHappened }}</div>
 			</div>
 		</div>
 	</Transition>
@@ -115,12 +115,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script setup lang="ts">
+import { $locale as localeRef } from '@/i18n.js';
+
 import { ref, computed } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkButton from '@/components/MkButton.vue';
 import { $i } from '@/i.js';
 import { getAccounts, getAccountWithSigninDialog, getAccountWithSignupDialog } from '@/accounts.js';
-import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
 import { getProxiedImageUrl } from '@/utility/media-proxy.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
@@ -187,7 +188,7 @@ function clickAddAccount(ev: PointerEvent) {
 	selectedUser.value = null;
 
 	os.popupMenu([{
-		text: i18n.ts.existingAccount,
+		text: localeRef.value.env.existingAccount,
 		action: () => {
 			getAccountWithSigninDialog().then(async (res) => {
 				if (res != null) {
@@ -200,7 +201,7 @@ function clickAddAccount(ev: PointerEvent) {
 			});
 		},
 	}, {
-		text: i18n.ts.createAccount,
+		text: localeRef.value.env.createAccount,
 		action: () => {
 			getAccountWithSignupDialog().then(async (res) => {
 				if (res != null) {

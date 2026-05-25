@@ -13,11 +13,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 
 				<div class="_gaps_s">
-					<MkInfo v-if="thereIsUnresolvedAbuseReport" warn>{{ i18n.ts.thereIsUnresolvedAbuseReportWarning }} <MkA to="/admin/abuses" class="_link">{{ i18n.ts.check }}</MkA></MkInfo>
-					<MkInfo v-if="noMaintainerInformation" warn>{{ i18n.ts.noMaintainerInformationWarning }} <MkA to="/admin/settings" class="_link">{{ i18n.ts.configure }}</MkA></MkInfo>
-					<MkInfo v-if="noInquiryUrl" warn>{{ i18n.ts.noInquiryUrlWarning }} <MkA to="/admin/settings" class="_link">{{ i18n.ts.configure }}</MkA></MkInfo>
-					<MkInfo v-if="noBotProtection" warn>{{ i18n.ts.noBotProtectionWarning }} <MkA to="/admin/security" class="_link">{{ i18n.ts.configure }}</MkA></MkInfo>
-					<MkInfo v-if="noEmailServer" warn>{{ i18n.ts.noEmailServerWarning }} <MkA to="/admin/email-settings" class="_link">{{ i18n.ts.configure }}</MkA></MkInfo>
+					<MkInfo v-if="thereIsUnresolvedAbuseReport" warn>{{ $locale.env.thereIsUnresolvedAbuseReportWarning }} <MkA to="/admin/abuses" class="_link">{{ $locale.env.check }}</MkA></MkInfo>
+					<MkInfo v-if="noMaintainerInformation" warn>{{ $locale.env.noMaintainerInformationWarning }} <MkA to="/admin/settings" class="_link">{{ $locale.env.configure }}</MkA></MkInfo>
+					<MkInfo v-if="noInquiryUrl" warn>{{ $locale.env.noInquiryUrlWarning }} <MkA to="/admin/settings" class="_link">{{ $locale.env.configure }}</MkA></MkInfo>
+					<MkInfo v-if="noBotProtection" warn>{{ $locale.env.noBotProtectionWarning }} <MkA to="/admin/security" class="_link">{{ $locale.env.configure }}</MkA></MkInfo>
+					<MkInfo v-if="noEmailServer" warn>{{ $locale.env.noEmailServerWarning }} <MkA to="/admin/email-settings" class="_link">{{ $locale.env.configure }}</MkA></MkInfo>
 				</div>
 
 				<MkSuperMenu :def="menuDef" :searchIndex="searchIndex" :grid="narrow"></MkSuperMenu>
@@ -31,10 +31,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef } from '@/i18n.js';
+
 import { onActivated, onMounted, onUnmounted, provide, watch, ref, computed } from 'vue';
 import type { SuperMenuDef } from '@/components/MkSuperMenu.vue';
 import type { PageMetadata } from '@/page.js';
-import { i18n } from '@/i18n.js';
 import MkSuperMenu from '@/components/MkSuperMenu.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import { instance } from '@/instance.js';
@@ -53,7 +54,7 @@ const isEmpty = (x: string | null) => x == null || x === '';
 const router = useRouter();
 
 const indexInfo = {
-	title: i18n.ts.controlPanel,
+	title: localeRef.value.env.controlPanel,
 	icon: 'ti ti-settings',
 	hideHeader: true,
 };
@@ -87,136 +88,136 @@ const ro = new ResizeObserver((entries, observer) => {
 });
 
 const menuDef = computed<SuperMenuDef[]>(() => [{
-	title: i18n.ts.quickAction,
+	title: localeRef.value.env.quickAction,
 	items: [{
 		type: 'button',
 		icon: 'ti ti-search',
-		text: i18n.ts.lookup,
+		text: localeRef.value.env.lookup,
 		action: adminLookup,
 	}, ...(instance.disableRegistration ? [{
 		type: 'button' as const,
 		icon: 'ti ti-user-plus',
-		text: i18n.ts.createInviteCode,
+		text: localeRef.value.env.createInviteCode,
 		action: invite,
 	}] : [])],
 }, {
-	title: i18n.ts.administration,
+	title: localeRef.value.env.administration,
 	items: [{
 		icon: 'ti ti-dashboard',
-		text: i18n.ts.dashboard,
+		text: localeRef.value.env.dashboard,
 		to: '/admin/overview',
 		active: currentPage.value?.route.name === 'overview',
 	}, {
 		icon: 'ti ti-users',
-		text: i18n.ts.users,
+		text: localeRef.value.env.users,
 		to: '/admin/users',
 		active: currentPage.value?.route.name === 'users',
 	}, {
 		icon: 'ti ti-user-plus',
-		text: i18n.ts.invite,
+		text: localeRef.value.env.invite,
 		to: '/admin/invites',
 		active: currentPage.value?.route.name === 'invites',
 	}, {
 		icon: 'ti ti-badges',
-		text: i18n.ts.roles,
+		text: localeRef.value.env.roles,
 		to: '/admin/roles',
 		active: currentPage.value?.route.name === 'roles',
 	}, {
 		icon: 'ti ti-icons',
-		text: i18n.ts.customEmojis,
+		text: localeRef.value.env.customEmojis,
 		to: '/admin/emojis',
 		active: currentPage.value?.route.name === 'emojis',
 	}, {
 		icon: 'ti ti-icons',
-		text: i18n.ts.customEmojis + '(beta)',
+		text: localeRef.value.env.customEmojis + '(beta)',
 		to: '/admin/emojis2',
 		active: currentPage.value?.route.name === 'emojis2',
 	}, {
 		icon: 'ti ti-sparkles',
-		text: i18n.ts.avatarDecorations,
+		text: localeRef.value.env.avatarDecorations,
 		to: '/admin/avatar-decorations',
 		active: currentPage.value?.route.name === 'avatarDecorations',
 	}, {
 		icon: 'ti ti-whirl',
-		text: i18n.ts.federation,
+		text: localeRef.value.env.federation,
 		to: '/admin/federation',
 		active: currentPage.value?.route.name === 'federation',
 	}, {
 		icon: 'ti ti-clock-play',
-		text: i18n.ts.federationJobs,
+		text: localeRef.value.env.federationJobs,
 		to: '/admin/federation-job-queue',
 		active: currentPage.value?.route.name === 'federationJobQueue',
 	}, {
 		icon: 'ti ti-clock-play',
-		text: i18n.ts.jobQueue,
+		text: localeRef.value.env.jobQueue,
 		to: '/admin/job-queue',
 		active: currentPage.value?.route.name === 'jobQueue',
 	}, {
 		icon: 'ti ti-cloud',
-		text: i18n.ts.files,
+		text: localeRef.value.env.files,
 		to: '/admin/files',
 		active: currentPage.value?.route.name === 'files',
 	}, {
 		icon: 'ti ti-speakerphone',
-		text: i18n.ts.announcements,
+		text: localeRef.value.env.announcements,
 		to: '/admin/announcements',
 		active: currentPage.value?.route.name === 'announcements',
 	}, {
 		icon: 'ti ti-ad',
-		text: i18n.ts.ads,
+		text: localeRef.value.env.ads,
 		to: '/admin/ads',
 		active: currentPage.value?.route.name === 'ads',
 	}, {
 		icon: 'ti ti-exclamation-circle',
-		text: i18n.ts.abuseReports,
+		text: localeRef.value.env.abuseReports,
 		to: '/admin/abuses',
 		active: currentPage.value?.route.name === 'abuses',
 	}, {
 		icon: 'ti ti-list-search',
-		text: i18n.ts.moderationLogs,
+		text: localeRef.value.env.moderationLogs,
 		to: '/admin/modlog',
 		active: currentPage.value?.route.name === 'modlog',
 	}],
 }, {
-	title: i18n.ts.settings,
+	title: localeRef.value.env.settings,
 	items: [{
 		icon: 'ti ti-settings',
-		text: i18n.ts.general,
+		text: localeRef.value.env.general,
 		to: '/admin/settings',
 		active: currentPage.value?.route.name === 'settings',
 	}, {
 		icon: 'ti ti-paint',
-		text: i18n.ts.branding,
+		text: localeRef.value.env.branding,
 		to: '/admin/branding',
 		active: currentPage.value?.route.name === 'branding',
 	}, {
 		icon: 'ti ti-shield',
-		text: i18n.ts.moderation,
+		text: localeRef.value.env.moderation,
 		to: '/admin/moderation',
 		active: currentPage.value?.route.name === 'moderation',
 	}, {
 		icon: 'ti ti-mail',
-		text: i18n.ts.emailServer,
+		text: localeRef.value.env.emailServer,
 		to: '/admin/email-settings',
 		active: currentPage.value?.route.name === 'email-settings',
 	}, {
 		icon: 'ti ti-cloud',
-		text: i18n.ts.objectStorage,
+		text: localeRef.value.env.objectStorage,
 		to: '/admin/object-storage',
 		active: currentPage.value?.route.name === 'object-storage',
 	}, {
 		icon: 'ti ti-lock',
-		text: i18n.ts.security,
+		text: localeRef.value.env.security,
 		to: '/admin/security',
 		active: currentPage.value?.route.name === 'security',
 	}, {
 		icon: 'ti ti-planet',
-		text: i18n.ts.relays,
+		text: localeRef.value.env.relays,
 		to: '/admin/relays',
 		active: currentPage.value?.route.name === 'relays',
 	}, {
 		icon: 'ti ti-link',
-		text: i18n.ts.externalServices,
+		text: localeRef.value.env.externalServices,
 		to: '/admin/external-services',
 		active: currentPage.value?.route.name === 'external-services',
 	}, {
@@ -226,15 +227,15 @@ const menuDef = computed<SuperMenuDef[]>(() => [{
 		active: currentPage.value?.route.name === 'system-webhook',
 	}, {
 		icon: 'ti ti-bolt',
-		text: i18n.ts.performance,
+		text: localeRef.value.env.performance,
 		to: '/admin/performance',
 		active: currentPage.value?.route.name === 'performance',
 	}],
 }, {
-	title: i18n.ts.info,
+	title: localeRef.value.env.info,
 	items: [{
 		icon: 'ti ti-database',
-		text: i18n.ts.database,
+		text: localeRef.value.env.database,
 		to: '/admin/database',
 		active: currentPage.value?.route.name === 'database',
 	}],
@@ -296,25 +297,25 @@ function invite() {
 
 function adminLookup(ev: PointerEvent) {
 	os.popupMenu([{
-		text: i18n.ts.user,
+		text: localeRef.value.env.user,
 		icon: 'ti ti-user',
 		action: () => {
 			lookupUser();
 		},
 	}, {
-		text: `${i18n.ts.user} (${i18n.ts.email})`,
+		text: `${localeRef.value.env.user} (${localeRef.value.env.email})`,
 		icon: 'ti ti-user',
 		action: () => {
 			lookupUserByEmail();
 		},
 	}, {
-		text: i18n.ts.file,
+		text: localeRef.value.env.file,
 		icon: 'ti ti-cloud',
 		action: () => {
 			lookupFile();
 		},
 	}, {
-		text: i18n.ts.lookup,
+		text: localeRef.value.env.lookup,
 		icon: 'ti ti-world-search',
 		action: () => {
 			lookup();

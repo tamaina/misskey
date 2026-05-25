@@ -12,14 +12,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 		<div class="_panel _gaps" style="padding: 16px;">
 			<div class="_buttonsCenter">
-				<MkButton primary gradate rounded @click="matchAny">{{ i18n.ts._reversi.freeMatch }}</MkButton>
-				<MkButton primary gradate rounded @click="matchUser">{{ i18n.ts.invite }}</MkButton>
+				<MkButton primary gradate rounded @click="matchAny">{{ $locale.env._reversi.freeMatch }}</MkButton>
+				<MkButton primary gradate rounded @click="matchUser">{{ $locale.env.invite }}</MkButton>
 			</div>
-			<div style="font-size: 90%; opacity: 0.7; text-align: center;"><i class="ti ti-music"></i> {{ i18n.ts.soundWillBePlayed }}</div>
+			<div style="font-size: 90%; opacity: 0.7; text-align: center;"><i class="ti ti-music"></i> {{ $locale.env.soundWillBePlayed }}</div>
 		</div>
 
 		<MkFolder v-if="invitations.length > 0" :defaultOpen="true">
-			<template #label>{{ i18n.ts.invitations }}</template>
+			<template #label>{{ $locale.env.invitations }}</template>
 			<div class="_gaps_s">
 				<button v-for="user in invitations" :key="user.id" v-panel :class="$style.invitation" class="_button" tabindex="-1" @click="accept(user)">
 					<MkAvatar style="width: 32px; height: 32px; margin-right: 8px;" :user="user" :showIndicator="true"/>
@@ -30,7 +30,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</MkFolder>
 
 		<MkFolder v-if="$i" :defaultOpen="true">
-			<template #label>{{ i18n.ts._reversi.myGames }}</template>
+			<template #label>{{ $locale.env._reversi.myGames }}</template>
 			<MkPagination :paginator="myGamesPaginator">
 				<template #default="{ items }">
 					<div :class="$style.gamePreviews">
@@ -45,9 +45,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 								<span v-if="g.winnerId === g.user2Id" style="margin-left: 0.75em; color: var(--MI_THEME-accent); font-weight: bold;"><i class="ti ti-trophy"></i></span>
 							</div>
 							<div :class="$style.gamePreviewFooter">
-								<span v-if="g.isStarted && !g.isEnded" :class="$style.gamePreviewStatusActive">{{ i18n.ts._reversi.playing }}</span>
+								<span v-if="g.isStarted && !g.isEnded" :class="$style.gamePreviewStatusActive">{{ $locale.env._reversi.playing }}</span>
 								<span v-else-if="!g.isEnded" :class="$style.gamePreviewStatusWaiting"><MkEllipsis/></span>
-								<span v-else>{{ i18n.ts._reversi.ended }}</span>
+								<span v-else>{{ $locale.env._reversi.ended }}</span>
 								<MkTime style="margin-left: auto; opacity: 0.7;" :time="g.createdAt"/>
 							</div>
 						</MkA>
@@ -57,7 +57,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</MkFolder>
 
 		<MkFolder :defaultOpen="true">
-			<template #label>{{ i18n.ts._reversi.allGames }}</template>
+			<template #label>{{ $locale.env._reversi.allGames }}</template>
 			<MkPagination :paginator="gamesPaginator">
 				<template #default="{ items }">
 					<div :class="$style.gamePreviews">
@@ -72,9 +72,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 								<span v-if="g.winnerId === g.user2Id" style="margin-left: 0.75em; color: var(--MI_THEME-accent); font-weight: bold;"><i class="ti ti-trophy"></i></span>
 							</div>
 							<div :class="$style.gamePreviewFooter">
-								<span v-if="g.isStarted && !g.isEnded" :class="$style.gamePreviewStatusActive">{{ i18n.ts._reversi.playing }}</span>
+								<span v-if="g.isStarted && !g.isEnded" :class="$style.gamePreviewStatusActive">{{ $locale.env._reversi.playing }}</span>
 								<span v-else-if="!g.isEnded" :class="$style.gamePreviewStatusWaiting"><MkEllipsis/></span>
-								<span v-else>{{ i18n.ts._reversi.ended }}</span>
+								<span v-else>{{ $locale.env._reversi.ended }}</span>
 								<MkTime style="margin-left: auto; opacity: 0.7;" :time="g.createdAt"/>
 							</div>
 						</MkA>
@@ -87,7 +87,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <div v-else class="_spacer" style="--MI_SPACER-w: 600px;">
 	<div :class="$style.waitingScreen">
 		<div v-if="matchingUser" :class="$style.waitingScreenTitle">
-			<I18n :src="i18n.ts.waitingFor" tag="span">
+			<I18n :src="$locale.env.waitingFor" tag="span">
 				<template #x>
 					<b><MkUserName :user="matchingUser"/></b>
 				</template>
@@ -95,16 +95,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkEllipsis/>
 		</div>
 		<div v-else :class="$style.waitingScreenTitle">
-			{{ i18n.ts._reversi.lookingForPlayer }}<MkEllipsis/>
+			{{ $locale.env._reversi.lookingForPlayer }}<MkEllipsis/>
 		</div>
 		<div class="cancel">
-			<MkButton inline rounded @click="cancelMatching">{{ i18n.ts.cancel }}</MkButton>
+			<MkButton inline rounded @click="cancelMatching">{{ $locale.env.cancel }}</MkButton>
 		</div>
 	</div>
 </div>
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef } from '@/i18n.js';
+
 import { markRaw, onDeactivated, onMounted, onUnmounted, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import { useInterval } from '@@/js/use-interval.js';
@@ -113,7 +115,6 @@ import { definePage } from '@/page.js';
 import { useStream } from '@/stream.js';
 import MkButton from '@/components/MkButton.vue';
 import MkFolder from '@/components/MkFolder.vue';
-import { i18n } from '@/i18n.js';
 import { $i } from '@/i.js';
 import MkPagination from '@/components/MkPagination.vue';
 import { useRouter } from '@/router.js';
@@ -213,14 +214,14 @@ async function matchAny(ev: PointerEvent) {
 	if (!isLoggedIn) return;
 
 	os.popupMenu([{
-		text: i18n.ts._reversi.allowIrregularRules,
+		text: localeRef.value.env._reversi.allowIrregularRules,
 		action: () => {
 			noIrregularRules.value = false;
 			matchingAny.value = true;
 			matchHeatbeat();
 		},
 	}, {
-		text: i18n.ts._reversi.disallowIrregularRules,
+		text: localeRef.value.env._reversi.disallowIrregularRules,
 		action: () => {
 			noIrregularRules.value = true;
 			matchingAny.value = true;

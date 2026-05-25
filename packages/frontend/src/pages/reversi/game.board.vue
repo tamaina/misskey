@@ -7,30 +7,30 @@ SPDX-License-Identifier: AGPL-3.0-only
 <div class="_spacer" style="--MI_SPACER-w: 500px;">
 	<div :class="$style.root" class="_gaps">
 		<div style="display: flex; align-items: center; justify-content: center; gap: 10px;">
-			<span>({{ i18n.ts._reversi.black }})</span>
+			<span>({{ $locale.env._reversi.black }})</span>
 			<MkAvatar style="width: 32px; height: 32px;" :user="blackUser" :showIndicator="true"/>
 			<span> vs </span>
 			<MkAvatar style="width: 32px; height: 32px;" :user="whiteUser" :showIndicator="true"/>
-			<span>({{ i18n.ts._reversi.white }})</span>
+			<span>({{ $locale.env._reversi.white }})</span>
 		</div>
 
 		<div style="overflow: clip; line-height: 28px;">
 			<div v-if="!iAmPlayer && !game.isEnded && turnUser">
-				<Mfm :key="'turn:' + turnUser.id" :text="i18n.tsx._reversi.turnOf({ name: turnUser.name ?? turnUser.username })" :plain="true" :customEmojis="turnUser.emojis"/>
+				<Mfm :key="'turn:' + turnUser.id" :text="$l.env._reversi.turnOf({ name: turnUser.name ?? turnUser.username })" :plain="true" :customEmojis="turnUser.emojis"/>
 				<MkEllipsis/>
 			</div>
 			<div v-if="(logPos !== game.logs.length) && turnUser">
-				<Mfm :key="'past-turn-of:' + turnUser.id" :text="i18n.tsx._reversi.pastTurnOf({ name: turnUser.name ?? turnUser.username })" :plain="true" :customEmojis="turnUser.emojis"/>
+				<Mfm :key="'past-turn-of:' + turnUser.id" :text="$l.env._reversi.pastTurnOf({ name: turnUser.name ?? turnUser.username })" :plain="true" :customEmojis="turnUser.emojis"/>
 			</div>
-			<div v-if="iAmPlayer && !game.isEnded && !isMyTurn">{{ i18n.ts._reversi.opponentTurn }}<MkEllipsis/><span style="margin-left: 1em; opacity: 0.7;">({{ i18n.tsx.remainingN({ n: opTurnTimerRmain }) }})</span></div>
-			<div v-if="iAmPlayer && !game.isEnded && isMyTurn"><span style="display: inline-block; font-weight: bold; animation: global-tada 1s linear infinite both;">{{ i18n.ts._reversi.myTurn }}</span><span style="margin-left: 1em; opacity: 0.7;">({{ i18n.tsx.remainingN({ n: myTurnTimerRmain }) }})</span></div>
+			<div v-if="iAmPlayer && !game.isEnded && !isMyTurn">{{ $locale.env._reversi.opponentTurn }}<MkEllipsis/><span style="margin-left: 1em; opacity: 0.7;">({{ $l.env.remainingN({ n: opTurnTimerRmain }) }})</span></div>
+			<div v-if="iAmPlayer && !game.isEnded && isMyTurn"><span style="display: inline-block; font-weight: bold; animation: global-tada 1s linear infinite both;">{{ $locale.env._reversi.myTurn }}</span><span style="margin-left: 1em; opacity: 0.7;">({{ $l.env.remainingN({ n: myTurnTimerRmain }) }})</span></div>
 			<div v-if="game.isEnded && logPos == game.logs.length">
 				<template v-if="game.winner">
-					<Mfm :key="'won'" :text="i18n.tsx._reversi.won({ name: game.winner.name ?? game.winner.username })" :plain="true" :customEmojis="game.winner.emojis"/>
-					<span v-if="game.surrenderedUserId != null"> ({{ i18n.ts._reversi.surrendered }})</span>
-					<span v-if="game.timeoutUserId != null"> ({{ i18n.ts._reversi.timeout }})</span>
+					<Mfm :key="'won'" :text="$l.env._reversi.won({ name: game.winner.name ?? game.winner.username })" :plain="true" :customEmojis="game.winner.emojis"/>
+					<span v-if="game.surrenderedUserId != null"> ({{ $locale.env._reversi.surrendered }})</span>
+					<span v-if="game.timeoutUserId != null"> ({{ $locale.env._reversi.timeout }})</span>
 				</template>
-				<template v-else>{{ i18n.ts._reversi.drawn }}</template>
+				<template v-else>{{ $locale.env._reversi.drawn }}</template>
 			</div>
 		</div>
 
@@ -99,39 +99,39 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 		<div class="_panel" style="padding: 16px;">
 			<div>
-				<b>{{ i18n.tsx._reversi.turnCount({ count: logPos }) }}</b> {{ i18n.ts._reversi.black }}:{{ engine.blackCount }} {{ i18n.ts._reversi.white }}:{{ engine.whiteCount }} {{ i18n.ts._reversi.total }}:{{ engine.blackCount + engine.whiteCount }}
+				<b>{{ $l.env._reversi.turnCount({ count: logPos }) }}</b> {{ $locale.env._reversi.black }}:{{ engine.blackCount }} {{ $locale.env._reversi.white }}:{{ engine.whiteCount }} {{ $locale.env._reversi.total }}:{{ engine.blackCount + engine.whiteCount }}
 			</div>
 			<div>
 				<div style="display: flex; align-items: center;">
-					<span style="margin-right: 8px;">({{ i18n.ts._reversi.black }})</span>
+					<span style="margin-right: 8px;">({{ $locale.env._reversi.black }})</span>
 					<MkAvatar style="width: 32px; height: 32px; margin-right: 8px;" :user="blackUser" :showIndicator="true"/>
 					<MkA :to="userPage(blackUser)"><MkUserName :user="blackUser"/></MkA>
 				</div>
 				<div> vs </div>
 				<div style="display: flex; align-items: center;">
-					<span style="margin-right: 8px;">({{ i18n.ts._reversi.white }})</span>
+					<span style="margin-right: 8px;">({{ $locale.env._reversi.white }})</span>
 					<MkAvatar style="width: 32px; height: 32px; margin-right: 8px;" :user="whiteUser" :showIndicator="true"/>
 					<MkA :to="userPage(whiteUser)"><MkUserName :user="whiteUser"/></MkA>
 				</div>
 			</div>
 			<div>
-				<p v-if="game.isLlotheo">{{ i18n.ts._reversi.isLlotheo }}</p>
-				<p v-if="game.loopedBoard">{{ i18n.ts._reversi.loopedMap }}</p>
-				<p v-if="game.canPutEverywhere">{{ i18n.ts._reversi.canPutEverywhere }}</p>
+				<p v-if="game.isLlotheo">{{ $locale.env._reversi.isLlotheo }}</p>
+				<p v-if="game.loopedBoard">{{ $locale.env._reversi.loopedMap }}</p>
+				<p v-if="game.canPutEverywhere">{{ $locale.env._reversi.canPutEverywhere }}</p>
 			</div>
 		</div>
 
 		<MkFolder>
-			<template #label>{{ i18n.ts.options }}</template>
+			<template #label>{{ $locale.env.options }}</template>
 			<div class="_gaps_s" style="text-align: left;">
-				<MkSwitch v-model="showBoardLabels">{{ i18n.ts._reversi.showBoardLabels }}</MkSwitch>
-				<MkSwitch v-model="useAvatarAsStone">{{ i18n.ts._reversi.useAvatarAsStone }}</MkSwitch>
+				<MkSwitch v-model="showBoardLabels">{{ $locale.env._reversi.showBoardLabels }}</MkSwitch>
+				<MkSwitch v-model="useAvatarAsStone">{{ $locale.env._reversi.useAvatarAsStone }}</MkSwitch>
 			</div>
 		</MkFolder>
 
 		<div class="_buttonsCenter">
-			<MkButton v-if="!game.isEnded && iAmPlayer" danger @click="surrender">{{ i18n.ts._reversi.surrender }}</MkButton>
-			<MkButton @click="share">{{ i18n.ts.share }}</MkButton>
+			<MkButton v-if="!game.isEnded && iAmPlayer" danger @click="surrender">{{ $locale.env._reversi.surrender }}</MkButton>
+			<MkButton @click="share">{{ $locale.env.share }}</MkButton>
 		</div>
 
 		<MkA v-if="game.isEnded" :to="`/reversi`">
@@ -142,6 +142,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef } from '@/i18n.js';
+
 import { computed, onActivated, onDeactivated, onMounted, onUnmounted, ref, shallowRef, triggerRef, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import * as Reversi from 'misskey-reversi';
@@ -152,7 +154,6 @@ import MkFolder from '@/components/MkFolder.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import { deepClone } from '@/utility/clone.js';
 import { $i } from '@/i.js';
-import { i18n } from '@/i18n.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { userPage } from '@/filters/user.js';
 import * as sound from '@/utility/sound.js';
@@ -404,7 +405,7 @@ function restoreGame(_game: Misskey.entities.ReversiGameDetailed) {
 async function surrender() {
 	const { canceled } = await os.confirm({
 		type: 'warning',
-		text: i18n.ts.areYouSure,
+		text: localeRef.value.env.areYouSure,
 	});
 	if (canceled) return;
 

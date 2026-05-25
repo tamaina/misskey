@@ -17,13 +17,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<template #footer>
 		<div class="_buttons">
 			<template v-if="!report.resolved">
-				<MkButton @click="resolve('accept')"><i class="ti ti-check" style="color: var(--MI_THEME-success)"></i> {{ i18n.ts._abuseUserReport.resolve }} ({{ i18n.ts._abuseUserReport.accept }})</MkButton>
-				<MkButton @click="resolve('reject')"><i class="ti ti-x" style="color: var(--MI_THEME-error)"></i> {{ i18n.ts._abuseUserReport.resolve }} ({{ i18n.ts._abuseUserReport.reject }})</MkButton>
-				<MkButton @click="resolve(null)"><i class="ti ti-slash"></i> {{ i18n.ts._abuseUserReport.resolve }} ({{ i18n.ts.other }})</MkButton>
+				<MkButton @click="resolve('accept')"><i class="ti ti-check" style="color: var(--MI_THEME-success)"></i> {{ $locale.env._abuseUserReport.resolve }} ({{ $locale.env._abuseUserReport.accept }})</MkButton>
+				<MkButton @click="resolve('reject')"><i class="ti ti-x" style="color: var(--MI_THEME-error)"></i> {{ $locale.env._abuseUserReport.resolve }} ({{ $locale.env._abuseUserReport.reject }})</MkButton>
+				<MkButton @click="resolve(null)"><i class="ti ti-slash"></i> {{ $locale.env._abuseUserReport.resolve }} ({{ $locale.env.other }})</MkButton>
 			</template>
 			<template v-if="report.targetUser.host != null">
-				<MkButton :disabled="report.forwarded" primary @click="forward"><i class="ti ti-corner-up-right"></i> {{ i18n.ts._abuseUserReport.forward }}</MkButton>
-				<div v-tooltip:dialog="i18n.ts._abuseUserReport.forwardDescription" class="_button _help"><i class="ti ti-help-circle"></i></div>
+				<MkButton :disabled="report.forwarded" primary @click="forward"><i class="ti ti-corner-up-right"></i> {{ $locale.env._abuseUserReport.forward }}</MkButton>
+				<div v-tooltip:dialog="$locale.env._abuseUserReport.forwardDescription" class="_button _help"><i class="ti ti-help-circle"></i></div>
 			</template>
 			<button class="_button" style="margin-left: auto; width: 34px;" @click="showMenu"><i class="ti ti-dots"></i></button>
 		</div>
@@ -32,7 +32,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div class="_gaps_s">
 		<MkFolder :withSpacer="false">
 			<template #icon><MkAvatar :user="report.targetUser" style="width: 18px; height: 18px;"/></template>
-			<template #label>{{ i18n.ts.target }}: <MkAcct :user="report.targetUser"/></template>
+			<template #label>{{ $locale.env.target }}: <MkAcct :user="report.targetUser"/></template>
 			<template #suffix>#{{ report.targetUserId.toUpperCase() }}</template>
 
 			<div style="height: 300px; --MI-stickyTop: 0; --MI-stickyBottom: 0;">
@@ -42,7 +42,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 		<MkFolder :defaultOpen="true">
 			<template #icon><i class="ti ti-message-2"></i></template>
-			<template #label>{{ i18n.ts.details }}</template>
+			<template #label>{{ $locale.env.details }}</template>
 			<div class="_gaps_s">
 				<Mfm :text="report.comment" :linkNavigationBehavior="'window'"/>
 			</div>
@@ -50,7 +50,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 		<MkFolder :withSpacer="false">
 			<template #icon><MkAvatar :user="report.reporter" style="width: 18px; height: 18px;"/></template>
-			<template #label>{{ i18n.ts.reporter }}: <MkAcct :user="report.reporter"/></template>
+			<template #label>{{ $locale.env.reporter }}: <MkAcct :user="report.reporter"/></template>
 			<template #suffix>#{{ report.reporterId.toUpperCase() }}</template>
 
 			<div style="height: 300px; --MI-stickyTop: 0; --MI-stickyBottom: 0;">
@@ -60,17 +60,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 		<MkFolder :defaultOpen="false">
 			<template #icon><i class="ti ti-message-2"></i></template>
-			<template #label>{{ i18n.ts.moderationNote }}</template>
-			<template #suffix>{{ moderationNote.length > 0 ? '...' : i18n.ts.none }}</template>
+			<template #label>{{ $locale.env.moderationNote }}</template>
+			<template #suffix>{{ moderationNote.length > 0 ? '...' : $locale.env.none }}</template>
 			<div class="_gaps_s">
 				<MkTextarea v-model="moderationNote" manualSave>
-					<template #caption>{{ i18n.ts.moderationNoteDescription }}</template>
+					<template #caption>{{ $locale.env.moderationNoteDescription }}</template>
 				</MkTextarea>
 			</div>
 		</MkFolder>
 
 		<div v-if="report.assignee">
-			{{ i18n.ts.moderator }}:
+			{{ $locale.env.moderator }}:
 			<MkAcct :user="report.assignee"/>
 		</div>
 	</div>
@@ -78,13 +78,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+
 import { provide, ref, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkButton from '@/components/MkButton.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkKeyValue from '@/components/MkKeyValue.vue';
 import * as os from '@/os.js';
-import { i18n } from '@/i18n.js';
 import { dateString } from '@/filters/date.js';
 import MkFolder from '@/components/MkFolder.vue';
 import RouterView from '@/components/global/RouterView.vue';

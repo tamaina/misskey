@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <MkWindow ref="uiWindow" :initialWidth="400" :initialHeight="500" :canResize="true" @closed="emit('closed')">
 	<template #header>
 		<i class="ti ti-exclamation-circle" style="margin-right: 0.5em;"></i>
-		<I18n :src="i18n.ts.reportAbuseOf" tag="span">
+		<I18n :src="$locale.env.reportAbuseOf" tag="span">
 			<template #name>
 				<b><MkAcct :user="user"/></b>
 			</template>
@@ -17,12 +17,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div class="_gaps_m" :class="$style.root">
 			<div class="">
 				<MkTextarea v-model="comment">
-					<template #label>{{ i18n.ts.details }}</template>
-					<template #caption>{{ i18n.ts.fillAbuseReportDescription }}</template>
+					<template #label>{{ $locale.env.details }}</template>
+					<template #caption>{{ $locale.env.fillAbuseReportDescription }}</template>
 				</MkTextarea>
 			</div>
 			<div class="">
-				<MkButton primary full :disabled="comment.length === 0" @click="send">{{ i18n.ts.send }}</MkButton>
+				<MkButton primary full :disabled="comment.length === 0" @click="send">{{ $locale.env.send }}</MkButton>
 			</div>
 		</div>
 	</div>
@@ -30,13 +30,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script setup lang="ts">
+import { $locale as localeRef } from '@/i18n.js';
+
 import { ref, useTemplateRef } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkWindow from '@/components/MkWindow.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os.js';
-import { i18n } from '@/i18n.js';
 
 const props = defineProps<{
 	user: Misskey.entities.UserLite;
@@ -57,7 +58,7 @@ function send() {
 	}, undefined).then(res => {
 		os.alert({
 			type: 'success',
-			text: i18n.ts.abuseReported,
+			text: localeRef.value.env.abuseReported,
 		});
 		uiWindow.value?.close();
 		emit('closed');

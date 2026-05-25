@@ -13,7 +13,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	@close="cancel()"
 	@closed="emit('closed')"
 >
-	<template #header><i class="ti ti-code"></i> {{ i18n.ts._embedCodeGen.title }}</template>
+	<template #header><i class="ti ti-code"></i> {{ $locale.env._embedCodeGen.title }}</template>
 
 	<div :class="$style.embedCodeGenRoot">
 		<Transition
@@ -26,7 +26,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkPreviewWithControls v-if="phase === 'input'" key="input" :previewLoading="iframeLoading">
 				<template #preview>
 					<div :class="$style.embedCodeGenPreviewWrapper">
-						<div class="_acrylic" :class="$style.embedCodeGenPreviewTitle">{{ i18n.ts.preview }}</div>
+						<div class="_acrylic" :class="$style.embedCodeGenPreviewTitle">{{ $locale.env.preview }}</div>
 						<div ref="resizerRootEl" :class="$style.embedCodeGenPreviewResizerRoot" inert>
 							<div
 								:class="$style.embedCodeGenPreviewResizer"
@@ -46,21 +46,21 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<template #controls>
 					<div class="_spacer _gaps">
 						<MkInput v-if="isEmbedWithScrollbar" v-model="maxHeight" type="number" :min="0">
-							<template #label>{{ i18n.ts._embedCodeGen.maxHeight }}</template>
+							<template #label>{{ $locale.env._embedCodeGen.maxHeight }}</template>
 							<template #suffix>px</template>
-							<template #caption>{{ i18n.ts._embedCodeGen.maxHeightDescription }}</template>
+							<template #caption>{{ $locale.env._embedCodeGen.maxHeightDescription }}</template>
 						</MkInput>
 						<MkSelect v-model="colorMode" :items="colorModeDef">
-							<template #label>{{ i18n.ts.theme }}</template>
+							<template #label>{{ $locale.env.theme }}</template>
 						</MkSelect>
-						<MkSwitch v-if="isEmbedWithScrollbar" v-model="header">{{ i18n.ts._embedCodeGen.header }}</MkSwitch>
-						<MkSwitch v-model="rounded">{{ i18n.ts._embedCodeGen.rounded }}</MkSwitch>
-						<MkSwitch v-model="border">{{ i18n.ts._embedCodeGen.border }}</MkSwitch>
-						<MkInfo v-if="isEmbedWithScrollbar && (!maxHeight || maxHeight <= 0)" warn>{{ i18n.ts._embedCodeGen.maxHeightWarn }}</MkInfo>
-						<MkInfo v-if="typeof maxHeight === 'number' && (maxHeight <= 0 || maxHeight > 700)">{{ i18n.ts._embedCodeGen.previewIsNotActual }}</MkInfo>
+						<MkSwitch v-if="isEmbedWithScrollbar" v-model="header">{{ $locale.env._embedCodeGen.header }}</MkSwitch>
+						<MkSwitch v-model="rounded">{{ $locale.env._embedCodeGen.rounded }}</MkSwitch>
+						<MkSwitch v-model="border">{{ $locale.env._embedCodeGen.border }}</MkSwitch>
+						<MkInfo v-if="isEmbedWithScrollbar && (!maxHeight || maxHeight <= 0)" warn>{{ $locale.env._embedCodeGen.maxHeightWarn }}</MkInfo>
+						<MkInfo v-if="typeof maxHeight === 'number' && (maxHeight <= 0 || maxHeight > 700)">{{ $locale.env._embedCodeGen.previewIsNotActual }}</MkInfo>
 						<div class="_buttons">
-							<MkButton :disabled="iframeLoading" @click="applyToPreview">{{ i18n.ts._embedCodeGen.applyToPreview }}</MkButton>
-							<MkButton :disabled="iframeLoading" primary @click="generate">{{ i18n.ts._embedCodeGen.generateCode }} <i class="ti ti-arrow-right"></i></MkButton>
+							<MkButton :disabled="iframeLoading" @click="applyToPreview">{{ $locale.env._embedCodeGen.applyToPreview }}</MkButton>
+							<MkButton :disabled="iframeLoading" primary @click="generate">{{ $locale.env._embedCodeGen.generateCode }} <i class="ti ti-arrow-right"></i></MkButton>
 						</div>
 					</div>
 				</template>
@@ -69,14 +69,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<div :class="$style.embedCodeGenResultWrapper" class="_gaps">
 					<div class="_gaps_s">
 						<div :class="$style.embedCodeGenResultHeadingIcon"><i class="ti ti-check"></i></div>
-						<div :class="$style.embedCodeGenResultHeading">{{ i18n.ts._embedCodeGen.codeGenerated }}</div>
-						<div :class="$style.embedCodeGenResultDescription">{{ i18n.ts._embedCodeGen.codeGeneratedDescription }}</div>
+						<div :class="$style.embedCodeGenResultHeading">{{ $locale.env._embedCodeGen.codeGenerated }}</div>
+						<div :class="$style.embedCodeGenResultDescription">{{ $locale.env._embedCodeGen.codeGeneratedDescription }}</div>
 					</div>
 					<div class="_gaps_s">
 						<MkCode :code="result" lang="html" :forceShow="true" :copyButton="false" :class="$style.embedCodeGenResultCode"/>
-						<MkButton :class="$style.embedCodeGenResultButtons" rounded primary @click="doCopy"><i class="ti ti-copy"></i> {{ i18n.ts.copy }}</MkButton>
+						<MkButton :class="$style.embedCodeGenResultButtons" rounded primary @click="doCopy"><i class="ti ti-copy"></i> {{ $locale.env.copy }}</MkButton>
 					</div>
-					<MkButton :class="$style.embedCodeGenResultButtons" rounded transparent @click="close">{{ i18n.ts.close }}</MkButton>
+					<MkButton :class="$style.embedCodeGenResultButtons" rounded transparent @click="close">{{ $locale.env.close }}</MkButton>
 				</div>
 			</div>
 		</Transition>
@@ -85,6 +85,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script setup lang="ts">
+import { $locale as localeRef } from '@/i18n.js';
+
 import { useTemplateRef, ref, computed, nextTick, onMounted, onDeactivated, onUnmounted } from 'vue';
 import { url } from '@@/js/config.js';
 import { embedRouteWithScrollbar } from '@@/js/embed-page.js';
@@ -97,7 +99,6 @@ import MkSwitch from '@/components/MkSwitch.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkCode from '@/components/MkCode.vue';
 import MkInfo from '@/components/MkInfo.vue';
-import { i18n } from '@/i18n.js';
 import { useMkSelect } from '@/composables/use-mkselect.js';
 import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
 import { normalizeEmbedParams, getEmbedCode } from '@/utility/get-embed-code.js';
@@ -161,9 +162,9 @@ const {
 	def: colorModeDef,
 } = useMkSelect({
 	items: [
-		{ value: 'auto', label: i18n.ts.syncDeviceDarkMode },
-		{ value: 'light', label: i18n.ts.light },
-		{ value: 'dark', label: i18n.ts.dark },
+		{ value: 'auto', label: localeRef.value.env.syncDeviceDarkMode },
+		{ value: 'light', label: localeRef.value.env.light },
+		{ value: 'dark', label: localeRef.value.env.dark },
 	],
 	initialValue: props.params?.colorMode ?? 'auto',
 });

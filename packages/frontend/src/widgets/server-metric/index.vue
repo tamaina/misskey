@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <MkContainer :showHeader="widgetProps.showHeader" :naked="widgetProps.transparent">
 	<template #icon><i class="ti ti-server"></i></template>
-	<template #header>{{ i18n.ts._widgets.serverMetric }}</template>
+	<template #header>{{ $locale.env._widgets.serverMetric }}</template>
 	<template #func="{ buttonStyleClass }"><button class="_button" :class="buttonStyleClass" @click="toggleView()"><i class="ti ti-selector"></i></button></template>
 
 	<div v-if="meta" data-cy-mkw-serverMetric class="mkw-serverMetric">
@@ -20,6 +20,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef } from '@/i18n.js';
+
 import { onUnmounted, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import { useWidgetPropsManager } from '../widget.js';
@@ -33,19 +35,18 @@ import MkContainer from '@/components/MkContainer.vue';
 import type { FormWithDefault, GetFormResultType } from '@/utility/form.js';
 import { misskeyApiGet } from '@/utility/misskey-api.js';
 import { useStream } from '@/stream.js';
-import { i18n } from '@/i18n.js';
 
 const name = 'serverMetric';
 
 const widgetPropsDef = {
 	showHeader: {
 		type: 'boolean',
-		label: i18n.ts._widgetOptions.showHeader,
+		label: localeRef.value.env._widgetOptions.showHeader,
 		default: true,
 	},
 	transparent: {
 		type: 'boolean',
-		label: i18n.ts._widgetOptions.transparent,
+		label: localeRef.value.env._widgetOptions.transparent,
 		default: false,
 	},
 	view: {

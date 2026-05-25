@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <PageWithHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs" :swipable="true">
 	<div :key="tab" class="_spacer" style="--MI_SPACER-w: 800px;">
 		<MkPagination :paginator="paginator">
-			<template #empty><MkResult type="empty" :text="i18n.ts.noFollowRequests"/></template>
+			<template #empty><MkResult type="empty" :text="$locale.env.noFollowRequests"/></template>
 			<template #default="{items}">
 				<div class="mk-follow-requests _gaps">
 					<div v-for="req in items" :key="req.id" class="user _panel">
@@ -18,11 +18,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 								<p class="acct">@{{ acct(displayUser(req)) }}</p>
 							</div>
 							<div v-if="tab === 'list'" class="commands">
-								<MkButton class="command" rounded primary @click="accept(displayUser(req))"><i class="ti ti-check"></i> {{ i18n.ts.accept }}</MkButton>
-								<MkButton class="command" rounded danger @click="reject(displayUser(req))"><i class="ti ti-x"></i> {{ i18n.ts.reject }}</MkButton>
+								<MkButton class="command" rounded primary @click="accept(displayUser(req))"><i class="ti ti-check"></i> {{ $locale.env.accept }}</MkButton>
+								<MkButton class="command" rounded danger @click="reject(displayUser(req))"><i class="ti ti-x"></i> {{ $locale.env.reject }}</MkButton>
 							</div>
 							<div v-else class="commands">
-								<MkButton class="command" rounded danger @click="cancel(displayUser(req))"><i class="ti ti-x"></i> {{ i18n.ts.cancel }}</MkButton>
+								<MkButton class="command" rounded danger @click="cancel(displayUser(req))"><i class="ti ti-x"></i> {{ $locale.env.cancel }}</MkButton>
 							</div>
 						</div>
 					</div>
@@ -34,13 +34,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef, $l as localizerRef } from '@/i18n.js';
+
 import * as Misskey from 'misskey-js';
 import { computed, markRaw, ref, watch } from 'vue';
 import MkPagination from '@/components/MkPagination.vue';
 import MkButton from '@/components/MkButton.vue';
 import { userPage, acct } from '@/filters/user.js';
 import * as os from '@/os.js';
-import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
 import { $i } from '@/i.js';
 import { Paginator } from '@/utility/paginator.js';
@@ -66,7 +67,7 @@ function accept(user: Misskey.entities.UserLite) {
 async function reject(user: Misskey.entities.UserLite) {
 	const { canceled } = await os.confirm({
 		type: 'question',
-		text: i18n.tsx.rejectFollowRequestConfirm({ name: user.name || user.username }),
+		text: localizerRef.value.env.rejectFollowRequestConfirm({ name: user.name || user.username }),
 	});
 
 	if (canceled) return;
@@ -79,7 +80,7 @@ async function reject(user: Misskey.entities.UserLite) {
 async function cancel(user: Misskey.entities.UserLite) {
 	const { canceled } = await os.confirm({
 		type: 'question',
-		text: i18n.tsx.cancelFollowRequestConfirm({ name: user.name || user.username }),
+		text: localizerRef.value.env.cancelFollowRequestConfirm({ name: user.name || user.username }),
 	});
 
 	if (canceled) return;
@@ -98,17 +99,17 @@ const headerActions = computed(() => []);
 const headerTabs = computed(() => [
 	{
 		key: 'list',
-		title: i18n.ts._followRequest.recieved,
+		title: localeRef.value.env._followRequest.recieved,
 		icon: 'ti ti-download',
 	}, {
 		key: 'sent',
-		title: i18n.ts._followRequest.sent,
+		title: localeRef.value.env._followRequest.sent,
 		icon: 'ti ti-upload',
 	},
 ]);
 
 definePage(() => ({
-	title: i18n.ts.followRequests,
+	title: localeRef.value.env.followRequests,
 	icon: 'ti ti-user-plus',
 }));
 </script>

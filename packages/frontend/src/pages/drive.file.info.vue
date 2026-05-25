@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div class="_gaps">
-	<MkInfo>{{ i18n.ts._fileViewer.thisPageCanBeSeenFromTheAuthor }}</MkInfo>
+	<MkInfo>{{ $locale.env._fileViewer.thisPageCanBeSeenFromTheAuthor }}</MkInfo>
 	<MkLoading v-if="fetching"/>
 	<div v-else-if="file" class="_gaps">
 		<div :class="$style.filePreviewRoot">
@@ -17,19 +17,19 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<i class="ti ti-pencil" :class="$style.fileNameEditIcon"></i>
 			</button>
 			<div :class="$style.fileQuickActionsOthers">
-				<button v-tooltip="i18n.ts.createNoteFromTheFile" class="_button" :class="$style.fileQuickActionsOthersButton" @click="postThis()">
+				<button v-tooltip="$locale.env.createNoteFromTheFile" class="_button" :class="$style.fileQuickActionsOthersButton" @click="postThis()">
 					<i class="ti ti-pencil"></i>
 				</button>
-				<button v-if="file.isSensitive" v-tooltip="i18n.ts.unmarkAsSensitive" class="_button" :class="$style.fileQuickActionsOthersButton" @click="toggleSensitive()">
+				<button v-if="file.isSensitive" v-tooltip="$locale.env.unmarkAsSensitive" class="_button" :class="$style.fileQuickActionsOthersButton" @click="toggleSensitive()">
 					<i class="ti ti-eye"></i>
 				</button>
-				<button v-else v-tooltip="i18n.ts.markAsSensitive" class="_button" :class="$style.fileQuickActionsOthersButton" @click="toggleSensitive()">
+				<button v-else v-tooltip="$locale.env.markAsSensitive" class="_button" :class="$style.fileQuickActionsOthersButton" @click="toggleSensitive()">
 					<i class="ti ti-eye-exclamation"></i>
 				</button>
-				<a v-tooltip="i18n.ts.download" :href="file.url" :download="file.name" class="_button" :class="$style.fileQuickActionsOthersButton">
+				<a v-tooltip="$locale.env.download" :href="file.url" :download="file.name" class="_button" :class="$style.fileQuickActionsOthersButton">
 					<i class="ti ti-download"></i>
 				</a>
-				<button v-tooltip="i18n.ts.delete" class="_button" :class="[$style.fileQuickActionsOthersButton, $style.danger]" @click="deleteFile()">
+				<button v-tooltip="$locale.env.delete" class="_button" :class="[$style.fileQuickActionsOthersButton, $style.danger]" @click="deleteFile()">
 					<i class="ti ti-trash"></i>
 				</button>
 			</div>
@@ -37,26 +37,26 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div class="_gaps_s">
 			<button class="_button" :class="$style.kvEditBtn" @click="move()">
 				<MkKeyValue>
-					<template #key>{{ i18n.ts.folder }}</template>
+					<template #key>{{ $locale.env.folder }}</template>
 					<template #value>{{ folderHierarchy.join(' > ') }}<i class="ti ti-pencil" :class="$style.kvEditIcon"></i></template>
 				</MkKeyValue>
 			</button>
 			<button class="_button" :class="$style.kvEditBtn" @click="describe()">
 				<MkKeyValue :class="$style.multiline">
-					<template #key>{{ i18n.ts.description }}</template>
-					<template #value>{{ file.comment ? file.comment : `(${i18n.ts.none})` }}<i class="ti ti-pencil" :class="$style.kvEditIcon"></i></template>
+					<template #key>{{ $locale.env.description }}</template>
+					<template #value>{{ file.comment ? file.comment : `(${$locale.env.none})` }}<i class="ti ti-pencil" :class="$style.kvEditIcon"></i></template>
 				</MkKeyValue>
 			</button>
 			<MkKeyValue :class="$style.fileMetaDataChildren">
-				<template #key>{{ i18n.ts._fileViewer.uploadedAt }}</template>
+				<template #key>{{ $locale.env._fileViewer.uploadedAt }}</template>
 				<template #value><MkTime :time="file.createdAt" mode="detail"/></template>
 			</MkKeyValue>
 			<MkKeyValue :class="$style.fileMetaDataChildren">
-				<template #key>{{ i18n.ts._fileViewer.type }}</template>
+				<template #key>{{ $locale.env._fileViewer.type }}</template>
 				<template #value>{{ file.type }}</template>
 			</MkKeyValue>
 			<MkKeyValue :class="$style.fileMetaDataChildren">
-				<template #key>{{ i18n.ts._fileViewer.size }}</template>
+				<template #key>{{ $locale.env._fileViewer.size }}</template>
 				<template #value>{{ bytes(file.size) }}</template>
 			</MkKeyValue>
 			<MkKeyValue :class="$style.fileMetaDataChildren" :copy="file.url">
@@ -70,13 +70,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script setup lang="ts">
+import { $locale as localeRef, $l as localizerRef } from '@/i18n.js';
+
 import { ref, computed, defineAsyncComponent, onMounted } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkInfo from '@/components/MkInfo.vue';
 import MkMediaList from '@/components/MkMediaList.vue';
 import MkKeyValue from '@/components/MkKeyValue.vue';
 import bytes from '@/filters/bytes.js';
-import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { useRouter } from '@/router.js';
@@ -92,8 +93,8 @@ const props = defineProps<{
 const fetching = ref(true);
 const file = ref<Misskey.entities.DriveFile>();
 const folderHierarchy = computed(() => {
-	if (!file.value) return [i18n.ts.drive];
-	const folderNames = [i18n.ts.drive];
+	if (!file.value) return [localeRef.value.env.drive];
+	const folderNames = [localeRef.value.env.drive];
 
 	function get(folder: Misskey.entities.DriveFolder) {
 		if (folder.parent) get(folder.parent);
@@ -153,7 +154,7 @@ function toggleSensitive() {
 	}).catch(err => {
 		os.alert({
 			type: 'error',
-			title: i18n.ts.error,
+			title: localeRef.value.env.error,
 			text: err.message,
 		});
 	});
@@ -165,8 +166,8 @@ function rename() {
 	const f = file.value;
 
 	os.inputText({
-		title: i18n.ts.renameFile,
-		placeholder: i18n.ts.inputNewFileName,
+		title: localeRef.value.env.renameFile,
+		placeholder: localeRef.value.env.inputNewFileName,
 		default: file.value.name,
 	}).then(({ canceled, result: name }) => {
 		if (canceled) return;
@@ -205,7 +206,7 @@ async function deleteFile() {
 
 	const { canceled } = await os.confirm({
 		type: 'warning',
-		text: i18n.tsx.driveFileDeleteConfirm({ name: file.value.name }),
+		text: localizerRef.value.env.driveFileDeleteConfirm({ name: file.value.name }),
 	});
 	if (canceled) return;
 

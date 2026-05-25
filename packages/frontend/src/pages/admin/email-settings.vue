@@ -6,36 +6,36 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <PageWithHeader :tabs="headerTabs">
 	<div class="_spacer" style="--MI_SPACER-w: 700px; --MI_SPACER-min: 16px; --MI_SPACER-max: 32px;">
-		<SearchMarker path="/admin/email-settings" :label="i18n.ts.emailServer" :keywords="['email']" icon="ti ti-mail">
+		<SearchMarker path="/admin/email-settings" :label="$locale.env.emailServer" :keywords="['email']" icon="ti ti-mail">
 			<div class="_gaps_m">
 				<SearchMarker>
 					<MkSwitch v-model="enableEmail">
-						<template #label><SearchLabel>{{ i18n.ts.enableEmail }}</SearchLabel> ({{ i18n.ts.recommended }})</template>
-						<template #caption><SearchText>{{ i18n.ts.emailConfigInfo }}</SearchText></template>
+						<template #label><SearchLabel>{{ $locale.env.enableEmail }}</SearchLabel> ({{ $locale.env.recommended }})</template>
+						<template #caption><SearchText>{{ $locale.env.emailConfigInfo }}</SearchText></template>
 					</MkSwitch>
 				</SearchMarker>
 
 				<template v-if="enableEmail">
 					<SearchMarker>
 						<MkInput v-model="email" type="email">
-							<template #label><SearchLabel>{{ i18n.ts.emailAddress }}</SearchLabel></template>
+							<template #label><SearchLabel>{{ $locale.env.emailAddress }}</SearchLabel></template>
 						</MkInput>
 					</SearchMarker>
 
 					<SearchMarker>
 						<FormSection>
-							<template #label><SearchLabel>{{ i18n.ts.smtpConfig }}</SearchLabel></template>
+							<template #label><SearchLabel>{{ $locale.env.smtpConfig }}</SearchLabel></template>
 
 							<div class="_gaps_m">
 								<FormSplit :minWidth="280">
 									<SearchMarker>
 										<MkInput v-model="smtpHost">
-											<template #label><SearchLabel>{{ i18n.ts.smtpHost }}</SearchLabel></template>
+											<template #label><SearchLabel>{{ $locale.env.smtpHost }}</SearchLabel></template>
 										</MkInput>
 									</SearchMarker>
 									<SearchMarker>
 										<MkInput v-model="smtpPort" type="number">
-											<template #label><SearchLabel>{{ i18n.ts.smtpPort }}</SearchLabel></template>
+											<template #label><SearchLabel>{{ $locale.env.smtpPort }}</SearchLabel></template>
 										</MkInput>
 									</SearchMarker>
 								</FormSplit>
@@ -43,22 +43,22 @@ SPDX-License-Identifier: AGPL-3.0-only
 								<FormSplit :minWidth="280">
 									<SearchMarker>
 										<MkInput v-model="smtpUser">
-											<template #label><SearchLabel>{{ i18n.ts.smtpUser }}</SearchLabel></template>
+											<template #label><SearchLabel>{{ $locale.env.smtpUser }}</SearchLabel></template>
 										</MkInput>
 									</SearchMarker>
 									<SearchMarker>
 										<MkInput v-model="smtpPass" type="password">
-											<template #label><SearchLabel>{{ i18n.ts.smtpPass }}</SearchLabel></template>
+											<template #label><SearchLabel>{{ $locale.env.smtpPass }}</SearchLabel></template>
 										</MkInput>
 									</SearchMarker>
 								</FormSplit>
 
-								<FormInfo>{{ i18n.ts.emptyToDisableSmtpAuth }}</FormInfo>
+								<FormInfo>{{ $locale.env.emptyToDisableSmtpAuth }}</FormInfo>
 
 								<SearchMarker>
 									<MkSwitch v-model="smtpSecure">
-										<template #label><SearchLabel>{{ i18n.ts.smtpSecure }}</SearchLabel></template>
-										<template #caption><SearchText>{{ i18n.ts.smtpSecureInfo }}</SearchText></template>
+										<template #label><SearchLabel>{{ $locale.env.smtpSecure }}</SearchLabel></template>
+										<template #caption><SearchText>{{ $locale.env.smtpSecureInfo }}</SearchText></template>
 									</MkSwitch>
 								</SearchMarker>
 							</div>
@@ -72,8 +72,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div :class="$style.footer">
 			<div class="_spacer" style="--MI_SPACER-w: 700px; --MI_SPACER-min: 16px; --MI_SPACER-max: 16px;">
 				<div class="_buttons">
-					<MkButton primary rounded @click="save"><i class="ti ti-check"></i> {{ i18n.ts.save }}</MkButton>
-					<MkButton rounded @click="testEmail"><i class="ti ti-send"></i> {{ i18n.ts.testEmail }}</MkButton>
+					<MkButton primary rounded @click="save"><i class="ti ti-check"></i> {{ $locale.env.save }}</MkButton>
+					<MkButton rounded @click="testEmail"><i class="ti ti-send"></i> {{ $locale.env.testEmail }}</MkButton>
 				</div>
 			</div>
 		</div>
@@ -82,6 +82,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef } from '@/i18n.js';
+
 import { ref, computed } from 'vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkInput from '@/components/MkInput.vue';
@@ -91,7 +93,6 @@ import FormSection from '@/components/form/section.vue';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { fetchInstance, instance } from '@/instance.js';
-import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
 import MkButton from '@/components/MkButton.vue';
 
@@ -138,7 +139,7 @@ function save() {
 const headerTabs = computed(() => []);
 
 definePage(() => ({
-	title: i18n.ts.emailServer,
+	title: localeRef.value.env.emailServer,
 	icon: 'ti ti-mail',
 }));
 </script>

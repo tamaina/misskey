@@ -93,15 +93,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <div v-if="dev" id="devTicker"><span style="animation: dev-ticker-blink 2s infinite;">DEV BUILD</span></div>
 
-<div v-if="$i && $i.isBot" id="botWarn"><span style="animation: dev-ticker-blink 2s infinite;">{{ i18n.ts.loggedInAsBot }}</span></div>
+<div v-if="$i && $i.isBot" id="botWarn"><span style="animation: dev-ticker-blink 2s infinite;">{{ $locale.env.loggedInAsBot }}</span></div>
 
 <div v-if="isSafeMode" id="safemodeWarn">
-	<span style="animation: dev-ticker-blink 2s infinite;">{{ i18n.ts.safeModeEnabled }}</span>&nbsp;
-	<button class="_textButton" style="pointer-events: all;" @click="exitSafeMode">{{ i18n.ts.turnItOff }}</button>
+	<span style="animation: dev-ticker-blink 2s infinite;">{{ $locale.env.safeModeEnabled }}</span>&nbsp;
+	<button class="_textButton" style="pointer-events: all;" @click="exitSafeMode">{{ $locale.env.turnItOff }}</button>
 </div>
 </template>
 
 <script lang="ts" setup>
+
 import { defineAsyncComponent, ref, TransitionGroup } from 'vue';
 import * as Misskey from 'misskey-js';
 import { swInject } from './sw-inject.js';
@@ -114,7 +115,6 @@ import { pendingApiRequestsCount } from '@/utility/misskey-api.js';
 import * as sound from '@/utility/sound.js';
 import { $i } from '@/i.js';
 import { useStream } from '@/stream.js';
-import { i18n } from '@/i18n.js';
 import { prefer } from '@/preferences.js';
 import { globalEvents } from '@/events.js';
 import { store } from '@/store.js';

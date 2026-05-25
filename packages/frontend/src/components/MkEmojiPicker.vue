@@ -11,7 +11,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		class="search"
 		data-prevent-emoji-insert
 		:class="{ filled: q != null && q != '' }"
-		:placeholder="i18n.ts.search"
+		:placeholder="$locale.env.search"
 		type="search"
 		autocapitalize="off"
 		@input="input()"
@@ -64,12 +64,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<MkCustomEmoji v-if="!emoji.hasOwnProperty('char')" class="emoji" :name="getKey(emoji)" :normal="true"/>
 						<MkEmoji v-else class="emoji" :emoji="getKey(emoji)" :normal="true"/>
 					</button>
-					<button v-tooltip="i18n.ts.settings" class="_button config" @click="settings"><i class="ti ti-settings"></i></button>
+					<button v-tooltip="$locale.env.settings" class="_button config" @click="settings"><i class="ti ti-settings"></i></button>
 				</div>
 			</section>
 
 			<section>
-				<header class="_acrylic"><i class="ti ti-clock ti-fw"></i> {{ i18n.ts.recentUsed }}</header>
+				<header class="_acrylic"><i class="ti ti-clock ti-fw"></i> {{ $locale.env.recentUsed }}</header>
 				<div class="body">
 					<button
 						v-for="emoji in recentlyUsedEmojisDef"
@@ -87,7 +87,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</section>
 		</div>
 		<div v-once class="group">
-			<header class="_acrylic">{{ i18n.ts.customEmojis }}</header>
+			<header class="_acrylic">{{ $locale.env.customEmojis }}</header>
 			<XSection
 				v-for="child in customEmojiFolderRoot.children"
 				:key="`custom:${child.value}`"
@@ -98,11 +98,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 				:customEmojiTree="child.children"
 				@chosen="chosen"
 			>
-				{{ child.value || i18n.ts.other }}
+				{{ child.value || $locale.env.other }}
 			</XSection>
 		</div>
 		<div v-once class="group">
-			<header class="_acrylic">{{ i18n.ts.emoji }}</header>
+			<header class="_acrylic">{{ $locale.env.emoji }}</header>
 			<XSection v-for="category in categories" :key="category" :emojis="emojiCharByCategory.get(category) ?? []" :hasChildSection="false" @chosen="chosen">{{ category }}</XSection>
 		</div>
 	</div>
@@ -116,6 +116,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+
 import { ref, useTemplateRef, computed, watch, onMounted } from 'vue';
 import * as Misskey from 'misskey-js';
 import {
@@ -134,7 +135,6 @@ import MkRippleEffect from '@/components/MkRippleEffect.vue';
 import * as os from '@/os.js';
 import { isTouchUsing } from '@/utility/touch.js';
 import { deviceKind } from '@/utility/device-kind.js';
-import { i18n } from '@/i18n.js';
 import { store } from '@/store.js';
 import { customEmojiCategories, customEmojis, customEmojisMap } from '@/custom-emojis.js';
 import { $i } from '@/i.js';

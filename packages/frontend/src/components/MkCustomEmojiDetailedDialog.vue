@@ -13,13 +13,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<MkCustomEmoji :name="emoji.name" :normal="true" :useOriginalSize="true" style="height: 100%;"></MkCustomEmoji>
 				</div>
 				<MkKeyValue :copy="`:${emoji.name}:`">
-					<template #key>{{ i18n.ts.name }}</template>
+					<template #key>{{ $locale.env.name }}</template>
 					<template #value>{{ emoji.name }}</template>
 				</MkKeyValue>
 				<MkKeyValue>
-					<template #key>{{ i18n.ts.tags }}</template>
+					<template #key>{{ $locale.env.tags }}</template>
 					<template #value>
-						<div v-if="emoji.aliases.length === 0">{{ i18n.ts.none }}</div>
+						<div v-if="emoji.aliases.length === 0">{{ $locale.env.none }}</div>
 						<div v-else :class="$style.aliases">
 							<span v-for="alias in emoji.aliases" :key="alias" :class="$style.alias">
 								{{ alias }}
@@ -28,23 +28,23 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</template>
 				</MkKeyValue>
 				<MkKeyValue>
-					<template #key>{{ i18n.ts.category }}</template>
-					<template #value>{{ emoji.category ?? i18n.ts.none }}</template>
+					<template #key>{{ $locale.env.category }}</template>
+					<template #value>{{ emoji.category ?? $locale.env.none }}</template>
 				</MkKeyValue>
 				<MkKeyValue>
-					<template #key>{{ i18n.ts.sensitive }}</template>
-					<template #value>{{ emoji.isSensitive ? i18n.ts.yes : i18n.ts.no }}</template>
+					<template #key>{{ $locale.env.sensitive }}</template>
+					<template #value>{{ emoji.isSensitive ? $locale.env.yes : $locale.env.no }}</template>
 				</MkKeyValue>
 				<MkKeyValue>
-					<template #key>{{ i18n.ts.localOnly }}</template>
-					<template #value>{{ emoji.localOnly ? i18n.ts.yes : i18n.ts.no }}</template>
+					<template #key>{{ $locale.env.localOnly }}</template>
+					<template #value>{{ emoji.localOnly ? $locale.env.yes : $locale.env.no }}</template>
 				</MkKeyValue>
 				<MkKeyValue>
-					<template #key>{{ i18n.ts.license }}</template>
-					<template #value><Mfm :text="emoji.license ?? i18n.ts.none"/></template>
+					<template #key>{{ $locale.env.license }}</template>
+					<template #value><Mfm :text="emoji.license ?? $locale.env.none"/></template>
 				</MkKeyValue>
 				<MkKeyValue :copy="emoji.url">
-					<template #key>{{ i18n.ts.emojiUrl }}</template>
+					<template #key>{{ $locale.env.emojiUrl }}</template>
 					<template #value>
 						<MkLink :url="emoji.url" target="_blank">{{ emoji.url }}</MkLink>
 					</template>
@@ -56,10 +56,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+
 import * as Misskey from 'misskey-js';
 import { useTemplateRef } from 'vue';
 import MkLink from '@/components/MkLink.vue';
-import { i18n } from '@/i18n.js';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import MkKeyValue from '@/components/MkKeyValue.vue';
 

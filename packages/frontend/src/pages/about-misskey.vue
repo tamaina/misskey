@@ -21,7 +21,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<button v-if="thereIsTreasure" class="_button treasure" @click="getTreasure"><img src="/fluent-emoji/1f3c6.png" class="treasureImg"></button>
 				</div>
 				<div style="text-align: center;">
-					{{ i18n.ts._aboutMisskey.about }}<br><a href="https://misskey-hub.net/docs/about-misskey/" target="_blank" class="_link">{{ i18n.ts.learnMore }}</a>
+					{{ $locale.env._aboutMisskey.about }}<br><a href="https://misskey-hub.net/docs/about-misskey/" target="_blank" class="_link">{{ $locale.env.learnMore }}</a>
 				</div>
 				<div v-if="$i != null" style="text-align: center;">
 					<MkButton primary rounded inline @click="iLoveMisskey">I <Mfm text="$[jelly ❤]"/> #Misskey</MkButton>
@@ -30,17 +30,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<div class="_gaps_s">
 						<FormLink to="https://github.com/misskey-dev/misskey" external>
 							<template #icon><i class="ti ti-code"></i></template>
-							{{ i18n.ts._aboutMisskey.source }} ({{ i18n.ts._aboutMisskey.original }})
+							{{ $locale.env._aboutMisskey.source }} ({{ $locale.env._aboutMisskey.original }})
 							<template #suffix>GitHub</template>
 						</FormLink>
 						<FormLink to="https://crowdin.com/project/misskey" external>
 							<template #icon><i class="ti ti-language-hiragana"></i></template>
-							{{ i18n.ts._aboutMisskey.translation }}
+							{{ $locale.env._aboutMisskey.translation }}
 							<template #suffix>Crowdin</template>
 						</FormLink>
 						<FormLink to="https://www.patreon.com/syuilo" external>
 							<template #icon><i class="ti ti-pig-money"></i></template>
-							{{ i18n.ts._aboutMisskey.donate }}
+							{{ $locale.env._aboutMisskey.donate }}
 							<template #suffix>Patreon</template>
 						</FormLink>
 					</div>
@@ -48,24 +48,24 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<FormSection v-if="instance.repositoryUrl !== 'https://github.com/misskey-dev/misskey'">
 					<div class="_gaps_s">
 						<MkInfo>
-							{{ i18n.tsx._aboutMisskey.thisIsModifiedVersion({ name: instance.name ?? host }) }}
+							{{ $l.env._aboutMisskey.thisIsModifiedVersion({ name: instance.name ?? host }) }}
 						</MkInfo>
 						<FormLink v-if="instance.repositoryUrl" :to="instance.repositoryUrl" external>
 							<template #icon><i class="ti ti-code"></i></template>
-							{{ i18n.ts._aboutMisskey.source }}
+							{{ $locale.env._aboutMisskey.source }}
 						</FormLink>
 						<FormLink v-if="instance.providesTarball" :to="`/tarball/misskey-${version}.tar.gz`" external>
 							<template #icon><i class="ti ti-download"></i></template>
-							{{ i18n.ts._aboutMisskey.source }}
+							{{ $locale.env._aboutMisskey.source }}
 							<template #suffix>Tarball</template>
 						</FormLink>
 						<MkInfo v-if="!instance.repositoryUrl && !instance.providesTarball" warn>
-							{{ i18n.ts.sourceCodeIsNotYetProvided }}
+							{{ $locale.env.sourceCodeIsNotYetProvided }}
 						</MkInfo>
 					</div>
 				</FormSection>
 				<FormSection>
-					<template #label>{{ i18n.ts._aboutMisskey.projectMembers }}</template>
+					<template #label>{{ $locale.env._aboutMisskey.projectMembers }}</template>
 					<div :class="$style.contributors">
 						<a href="https://github.com/syuilo" target="_blank" :class="$style.contributor">
 							<img src="https://avatars.githubusercontent.com/u/4439005?v=4" :class="$style.contributorAvatar">
@@ -117,7 +117,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</div>
 				</FormSection>
 				<FormSection>
-					<template #label><Mfm text="$[jelly ❤]"/> {{ i18n.ts._aboutMisskey.patrons }}</template>
+					<template #label><Mfm text="$[jelly ❤]"/> {{ $locale.env._aboutMisskey.patrons }}</template>
 					<div :class="$style.patronsWithIcon">
 						<div v-for="patron in patronsWithIcon" :class="$style.patronWithIcon">
 							<img :src="patron.icon" :class="$style.patronIcon">
@@ -127,7 +127,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<div style="margin-top: 16px; display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); grid-gap: 12px;">
 						<div v-for="patron in patrons" :key="patron">{{ patron }}</div>
 					</div>
-					<p>{{ i18n.ts._aboutMisskey.morePatrons }}</p>
+					<p>{{ $locale.env._aboutMisskey.morePatrons }}</p>
 				</FormSection>
 			</div>
 		</div>
@@ -136,6 +136,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef } from '@/i18n.js';
+
 import { nextTick, onBeforeUnmount, ref, useTemplateRef, computed } from 'vue';
 import { host, version } from '@@/js/config.js';
 import { DEFAULT_EMOJIS } from '@@/js/const.js';
@@ -144,7 +146,6 @@ import FormSection from '@/components/form/section.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import { physics } from '@/utility/physics.js';
-import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
 import * as os from '@/os.js';
 import { definePage } from '@/page.js';
@@ -485,7 +486,7 @@ const headerActions = computed(() => []);
 const headerTabs = computed(() => []);
 
 definePage(() => ({
-	title: i18n.ts.aboutMisskey,
+	title: localeRef.value.env.aboutMisskey,
 	icon: null,
 }));
 </script>

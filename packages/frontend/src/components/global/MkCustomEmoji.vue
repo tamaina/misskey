@@ -37,6 +37,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef, $l as localizerRef } from '@/i18n.js';
+
 import { computed, defineAsyncComponent, inject, ref } from 'vue';
 import type { MenuItem } from '@/types/menu.js';
 import { getProxiedImageUrl, getStaticImageUrl } from '@/utility/media-proxy.js';
@@ -44,7 +46,6 @@ import { customEmojisMap } from '@/custom-emojis.js';
 import * as os from '@/os.js';
 import { misskeyApi, misskeyApiGet } from '@/utility/misskey-api.js';
 import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
-import { i18n } from '@/i18n.js';
 import MkCustomEmojiDetailedDialog from '@/components/MkCustomEmojiDetailedDialog.vue';
 import { $i } from '@/i.js';
 import { prefer } from '@/preferences.js';
@@ -113,7 +114,7 @@ function onClick(ev: PointerEvent) {
 
 		if (isLocal.value) {
 			menuItems.push({
-				text: i18n.ts.copy,
+				text: localeRef.value.env.copy,
 				icon: 'ti ti-copy',
 				action: () => {
 					copyToClipboard(`:${props.name}:`);
@@ -123,7 +124,7 @@ function onClick(ev: PointerEvent) {
 
 		if (props.menuReaction && react) {
 			menuItems.push({
-				text: i18n.ts.doReaction,
+				text: localeRef.value.env.doReaction,
 				icon: 'ti ti-plus',
 				action: () => {
 					react(`:${props.name}:`);
@@ -135,7 +136,7 @@ function onClick(ev: PointerEvent) {
 			menuItems.push({
 				type: 'divider',
 			}, {
-				text: i18n.ts.info,
+				text: localeRef.value.env.info,
 				icon: 'ti ti-info-circle',
 				action: async () => {
 					const { dispose } = os.popup(MkCustomEmojiDetailedDialog, {
@@ -151,7 +152,7 @@ function onClick(ev: PointerEvent) {
 
 		if (isMuted.value) {
 			menuItems.push({
-				text: i18n.ts.emojiUnmute,
+				text: localeRef.value.env.emojiUnmute,
 				icon: 'ti ti-mood-smile',
 				action: async () => {
 					await unmute();
@@ -159,7 +160,7 @@ function onClick(ev: PointerEvent) {
 			});
 		} else {
 			menuItems.push({
-				text: i18n.ts.emojiMute,
+				text: localeRef.value.env.emojiMute,
 				icon: 'ti ti-mood-off',
 				action: async () => {
 					await mute();
@@ -169,7 +170,7 @@ function onClick(ev: PointerEvent) {
 
 		if (($i?.isModerator ?? $i?.isAdmin) && isLocal.value) {
 			menuItems.push({
-				text: i18n.ts.edit,
+				text: localeRef.value.env.edit,
 				icon: 'ti ti-pencil',
 				action: async () => {
 					await edit(props.name);
@@ -198,7 +199,7 @@ function mute() {
 		: emojiCodeToMute;
 	os.confirm({
 		type: 'question',
-		title: i18n.tsx.muteX({ x: titleEmojiName }),
+		title: localizerRef.value.env.muteX({ x: titleEmojiName }),
 	}).then(({ canceled }) => {
 		if (canceled) {
 			return;
@@ -213,7 +214,7 @@ function unmute() {
 		: emojiCodeToMute;
 	os.confirm({
 		type: 'question',
-		title: i18n.tsx.unmuteX({ x: titleEmojiName }),
+		title: localizerRef.value.env.unmuteX({ x: titleEmojiName }),
 	}).then(({ canceled }) => {
 		if (canceled) {
 			return;

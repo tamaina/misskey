@@ -9,11 +9,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div class="_gaps">
 			<MkPaginationControl :paginator="paginator" canFilter>
 				<MkSelect v-model="type" :items="typeDef" style="margin: 0; flex: 1;">
-					<template #label>{{ i18n.ts.type }}</template>
+					<template #label>{{ $locale.env.type }}</template>
 				</MkSelect>
 
 				<MkInput v-model="moderatorId" style="margin: 0; flex: 1;">
-					<template #label>{{ i18n.ts.moderator }}(ID)</template>
+					<template #label>{{ $locale.env.moderator }}(ID)</template>
 				</MkInput>
 			</MkPaginationControl>
 
@@ -36,20 +36,21 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</MkTl>
 			</component>
 
-			<MkButton primary rounded style="margin: 0 auto;" @click="fetchMore">{{ i18n.ts.loadMore }}</MkButton>
+			<MkButton primary rounded style="margin: 0 auto;" @click="fetchMore">{{ $locale.env.loadMore }}</MkButton>
 		</div>
 	</div>
 </PageWithHeader>
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef } from '@/i18n.js';
+
 import { computed, ref, markRaw, onMounted } from 'vue';
 import * as Misskey from 'misskey-js';
 import XModLog from './modlog.ModLog.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkTl from '@/components/MkTl.vue';
-import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
 import { prefer } from '@/preferences.js';
 import { useMkSelect } from '@/composables/use-mkselect.js';
@@ -63,8 +64,8 @@ const {
 	def: typeDef,
 } = useMkSelect({
 	items: [
-		{ label: i18n.ts.all, value: null },
-		...Misskey.moderationLogTypes.map(t => ({ label: i18n.ts._moderationLogTypes[t] ?? t, value: t })),
+		{ label: localeRef.value.env.all, value: null },
+		...Misskey.moderationLogTypes.map(t => ({ label: localeRef.value.env._moderationLogTypes[t] ?? t, value: t })),
 	],
 	initialValue: null,
 });
@@ -103,7 +104,7 @@ const headerActions = computed(() => []);
 const headerTabs = computed(() => []);
 
 definePage(() => ({
-	title: i18n.ts.moderationLogs,
+	title: localeRef.value.env.moderationLogs,
 	icon: 'ti ti-list-search',
 }));
 </script>

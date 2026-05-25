@@ -18,7 +18,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<MkLoading v-if="fetching"/>
 		<div v-else class="_gaps" :class="$style.root">
 			<div :class="$style.header">
-				<MkButton rounded @click="addRole"><i class="ti ti-plus"></i> {{ i18n.ts.add }}</MkButton>
+				<MkButton rounded @click="addRole"><i class="ti ti-plus"></i> {{ $locale.env.add }}</MkButton>
 			</div>
 
 			<div v-if="selectedRoles.length > 0" class="_gaps" :class="$style.roleItemArea">
@@ -28,14 +28,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 			</div>
 			<div v-else :class="$style.roleItemArea" style="text-align: center">
-				{{ i18n.ts._roleSelectDialog.notSelected }}
+				{{ $locale.env._roleSelectDialog.notSelected }}
 			</div>
 
 			<MkInfo v-if="infoMessage">{{ infoMessage }}</MkInfo>
 
 			<div :class="$style.buttons">
-				<MkButton primary @click="onOkClicked">{{ i18n.ts.ok }}</MkButton>
-				<MkButton @click="onCancelClicked">{{ i18n.ts.cancel }}</MkButton>
+				<MkButton primary @click="onOkClicked">{{ $locale.env.ok }}</MkButton>
+				<MkButton @click="onCancelClicked">{{ $locale.env.cancel }}</MkButton>
 			</div>
 		</div>
 	</div>
@@ -43,9 +43,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script setup lang="ts">
+
 import { computed, ref, toRefs, useTemplateRef } from 'vue';
 import * as Misskey from 'misskey-js';
-import { i18n } from '@/i18n.js';
 import MkButton from '@/components/MkButton.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import MkRolePreview from '@/components/MkRolePreview.vue';

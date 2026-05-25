@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div class="_spacer" style="--MI_SPACER-w: 1400px;">
 		<div v-if="tab === 'explore'">
 			<MkFoldableSection class="_margin">
-				<template #header><i class="ti ti-clock"></i>{{ i18n.ts.recentPosts }}</template>
+				<template #header><i class="ti ti-clock"></i>{{ $locale.env.recentPosts }}</template>
 				<MkPagination v-slot="{items}" :paginator="recentPostsPaginator">
 					<div :class="$style.items">
 						<MkGalleryPostPreview v-for="post in items" :key="post.id" :post="post" class="post"/>
@@ -16,7 +16,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</MkPagination>
 			</MkFoldableSection>
 			<MkFoldableSection class="_margin">
-				<template #header><i class="ti ti-comet"></i>{{ i18n.ts.popularPosts }}</template>
+				<template #header><i class="ti ti-comet"></i>{{ $locale.env.popularPosts }}</template>
 				<MkPagination v-slot="{items}" :paginator="popularPostsPaginator">
 					<div :class="$style.items">
 						<MkGalleryPostPreview v-for="post in items" :key="post.id" :post="post" class="post"/>
@@ -32,7 +32,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</MkPagination>
 		</div>
 		<div v-else-if="tab === 'my'">
-			<MkA to="/gallery/new" class="_link" style="margin: 16px;"><i class="ti ti-plus"></i> {{ i18n.ts.postToGallery }}</MkA>
+			<MkA to="/gallery/new" class="_link" style="margin: 16px;"><i class="ti ti-plus"></i> {{ $locale.env.postToGallery }}</MkA>
 			<MkPagination v-slot="{items}" :paginator="myPostsPaginator">
 				<div :class="$style.items">
 					<MkGalleryPostPreview v-for="post in items" :key="post.id" :post="post" class="post"/>
@@ -44,12 +44,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef } from '@/i18n.js';
+
 import { watch, ref, computed, markRaw } from 'vue';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';
 import MkPagination from '@/components/MkPagination.vue';
 import MkGalleryPostPreview from '@/components/MkGalleryPostPreview.vue';
 import { definePage } from '@/page.js';
-import { i18n } from '@/i18n.js';
 import { useRouter } from '@/router.js';
 import { Paginator } from '@/utility/paginator.js';
 
@@ -81,7 +82,7 @@ watch(() => props.tag, () => {
 
 const headerActions = computed(() => [{
 	icon: 'ti ti-plus',
-	text: i18n.ts.create,
+	text: localeRef.value.env.create,
 	handler: () => {
 		router.push('/gallery/new');
 	},
@@ -89,20 +90,20 @@ const headerActions = computed(() => [{
 
 const headerTabs = computed(() => [{
 	key: 'explore',
-	title: i18n.ts.gallery,
+	title: localeRef.value.env.gallery,
 	icon: 'ti ti-icons',
 }, {
 	key: 'liked',
-	title: i18n.ts._gallery.liked,
+	title: localeRef.value.env._gallery.liked,
 	icon: 'ti ti-heart',
 }, {
 	key: 'my',
-	title: i18n.ts._gallery.my,
+	title: localeRef.value.env._gallery.my,
 	icon: 'ti ti-edit',
 }]);
 
 definePage(() => ({
-	title: i18n.ts.gallery,
+	title: localeRef.value.env.gallery,
 	icon: 'ti ti-icons',
 }));
 </script>

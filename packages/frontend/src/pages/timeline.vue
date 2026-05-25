@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <PageWithHeader v-model:tab="src" :actions="headerActions" :tabs="$i ? headerTabs : headerTabsWhenNotLogin" :swipable="true" :displayMyAvatar="true" :canOmitTitle="true">
 	<div class="_spacer" style="--MI_SPACER-w: 800px;">
 		<MkTip v-if="isBasicTimeline(src)" :k="`tl.${src}`" style="margin-bottom: var(--MI-margin);">
-			{{ i18n.ts._timelineDescription[src] }}
+			{{ $locale.env._timelineDescription[src] }}
 		</MkTip>
 		<MkPostForm v-if="prefer.r.showFixedPostForm.value" :class="$style.postForm" class="_panel" fixed style="margin-bottom: var(--MI-margin);"/>
 		<MkStreamingNotesTimeline
@@ -27,6 +27,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef } from '@/i18n.js';
+
 import { computed, watch, provide, useTemplateRef, ref, onMounted, onActivated } from 'vue';
 import type { Tab } from '@/components/global/MkPageHeader.tabs.vue';
 import type { MenuItem } from '@/types/menu.js';
@@ -36,7 +38,6 @@ import MkStreamingNotesTimeline from '@/components/MkStreamingNotesTimeline.vue'
 import MkPostForm from '@/components/MkPostForm.vue';
 import * as os from '@/os.js';
 import { store } from '@/store.js';
-import { i18n } from '@/i18n.js';
 import { $i } from '@/i.js';
 import { definePage } from '@/page.js';
 import { antennasCache, userListsCache, favoritedChannelsCache } from '@/cache.js';
@@ -118,7 +119,7 @@ async function chooseList(ev: PointerEvent): Promise<void> {
 		{
 			type: 'link' as const,
 			icon: 'ti ti-plus',
-			text: i18n.ts.createNew,
+			text: localeRef.value.env.createNew,
 			to: '/my/lists',
 		},
 	];
@@ -138,7 +139,7 @@ async function chooseAntenna(ev: PointerEvent): Promise<void> {
 		{
 			type: 'link' as const,
 			icon: 'ti ti-plus',
-			text: i18n.ts.createNew,
+			text: localeRef.value.env.createNew,
 			to: '/my/antennas',
 		},
 	];
@@ -163,7 +164,7 @@ async function chooseChannel(ev: PointerEvent): Promise<void> {
 		{
 			type: 'link',
 			icon: 'ti ti-plus',
-			text: i18n.ts.createNew,
+			text: localeRef.value.env.createNew,
 			to: '/channels/new',
 		},
 	];
@@ -207,14 +208,14 @@ onActivated(() => {
 const headerActions = computed<PageHeaderItem[]>(() => {
 	const items: PageHeaderItem[] = [{
 		icon: 'ti ti-dots',
-		text: i18n.ts.options,
+		text: localeRef.value.env.options,
 		handler: (ev) => {
 			const menuItems: MenuItem[] = [];
 
 			menuItems.push({
 				type: 'switch',
 				icon: 'ti ti-repeat',
-				text: i18n.ts.showRenotes,
+				text: localeRef.value.env.showRenotes,
 				ref: withRenotes,
 			});
 
@@ -222,7 +223,7 @@ const headerActions = computed<PageHeaderItem[]>(() => {
 				menuItems.push({
 					type: 'switch',
 					icon: 'ti ti-messages',
-					text: i18n.ts.showRepliesToOthersInTimeline,
+					text: localeRef.value.env.showRepliesToOthersInTimeline,
 					ref: withReplies,
 					disabled: onlyFiles,
 				});
@@ -231,19 +232,19 @@ const headerActions = computed<PageHeaderItem[]>(() => {
 			menuItems.push({
 				type: 'switch',
 				icon: 'ti ti-eye-exclamation',
-				text: i18n.ts.withSensitive,
+				text: localeRef.value.env.withSensitive,
 				ref: withSensitive,
 			}, {
 				type: 'switch',
 				icon: 'ti ti-photo',
-				text: i18n.ts.fileAttachedOnly,
+				text: localeRef.value.env.fileAttachedOnly,
 				ref: onlyFiles,
 				disabled: isBasicTimeline(src.value) && hasWithReplies(src.value) ? withReplies : false,
 			}, {
 				type: 'divider',
 			}, {
 				type: 'switch',
-				text: i18n.ts.showFixedPostForm,
+				text: localeRef.value.env.showFixedPostForm,
 				ref: showFixedPostForm,
 			});
 
@@ -254,7 +255,7 @@ const headerActions = computed<PageHeaderItem[]>(() => {
 	if (deviceKind === 'desktop') {
 		items.unshift({
 			icon: 'ti ti-refresh',
-			text: i18n.ts.reload,
+			text: localeRef.value.env.reload,
 			handler: () => {
 				tlComponent.value?.reloadTimeline();
 			},
@@ -271,35 +272,35 @@ const headerTabs = computed(() => [...(prefer.r.pinnedUserLists.value.map(l => (
 	iconOnly: true,
 }))), ...availableBasicTimelines().map(tl => ({
 	key: tl,
-	title: i18n.ts._timelines[tl],
+	title: localeRef.value.env._timelines[tl],
 	icon: basicTimelineIconClass(tl),
 	iconOnly: true,
 })), {
 	icon: 'ti ti-list',
-	title: i18n.ts.lists,
+	title: localeRef.value.env.lists,
 	iconOnly: true,
 	onClick: chooseList,
 }, {
 	icon: 'ti ti-antenna',
-	title: i18n.ts.antennas,
+	title: localeRef.value.env.antennas,
 	iconOnly: true,
 	onClick: chooseAntenna,
 }, {
 	icon: 'ti ti-device-tv',
-	title: i18n.ts.channel,
+	title: localeRef.value.env.channel,
 	iconOnly: true,
 	onClick: chooseChannel,
 }] as Tab[]);
 
 const headerTabsWhenNotLogin = computed(() => [...availableBasicTimelines().map(tl => ({
 	key: tl,
-	title: i18n.ts._timelines[tl],
+	title: localeRef.value.env._timelines[tl],
 	icon: basicTimelineIconClass(tl),
 	iconOnly: true,
 }))] as Tab[]);
 
 definePage(() => ({
-	title: i18n.ts.timeline,
+	title: localeRef.value.env.timeline,
 	icon: isBasicTimeline(src.value) ? basicTimelineIconClass(src.value) : 'ti ti-home',
 }));
 </script>

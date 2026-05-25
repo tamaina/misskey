@@ -10,19 +10,20 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<XQueue v-else-if="tab === 'inbox'" domain="inbox"/>
 		<br>
 		<div class="_buttons">
-			<MkButton @click="promoteAllQueues"><i class="ti ti-reload"></i> {{ i18n.ts.retryAllQueuesNow }}</MkButton>
-			<MkButton danger @click="clear"><i class="ti ti-trash"></i> {{ i18n.ts.clearQueue }}</MkButton>
+			<MkButton @click="promoteAllQueues"><i class="ti ti-reload"></i> {{ $locale.env.retryAllQueuesNow }}</MkButton>
+			<MkButton danger @click="clear"><i class="ti ti-trash"></i> {{ $locale.env.clearQueue }}</MkButton>
 		</div>
 	</div>
 </PageWithHeader>
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef } from '@/i18n.js';
+
 import { ref, computed } from 'vue';
 import XQueue from './federation-job-queue.chart.vue';
 import type { Ref } from 'vue';
 import * as os from '@/os.js';
-import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
 import MkButton from '@/components/MkButton.vue';
 
@@ -33,8 +34,8 @@ const tab: Ref<ApQueueDomain> = ref('deliver');
 function clear() {
 	os.confirm({
 		type: 'warning',
-		title: i18n.ts.clearQueueConfirmTitle,
-		text: i18n.ts.clearQueueConfirmText,
+		title: localeRef.value.env.clearQueueConfirmTitle,
+		text: localeRef.value.env.clearQueueConfirmText,
 	}).then(({ canceled }) => {
 		if (canceled) return;
 
@@ -45,8 +46,8 @@ function clear() {
 function promoteAllQueues() {
 	os.confirm({
 		type: 'warning',
-		title: i18n.ts.retryAllQueuesConfirmTitle,
-		text: i18n.ts.retryAllQueuesConfirmText,
+		title: localeRef.value.env.retryAllQueuesConfirmTitle,
+		text: localeRef.value.env.retryAllQueuesConfirmText,
 	}).then(({ canceled }) => {
 		if (canceled) return;
 
@@ -65,7 +66,7 @@ const headerTabs = computed(() => [{
 }]);
 
 definePage(() => ({
-	title: i18n.ts.federationJobs,
+	title: localeRef.value.env.federationJobs,
 	icon: 'ti ti-clock-play',
 }));
 </script>

@@ -8,10 +8,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<template v-if="edit">
 		<header :class="$style.editHeader">
 			<MkSelect v-model="widgetAdderSelected" :items="widgetAdderSelectedDef" style="margin-bottom: var(--MI-margin)" data-cy-widget-select>
-				<template #label>{{ i18n.ts.selectWidget }}</template>
+				<template #label>{{ $locale.env.selectWidget }}</template>
 			</MkSelect>
-			<MkButton inline primary data-cy-widget-add @click="addWidget"><i class="ti ti-plus"></i> {{ i18n.ts.add }}</MkButton>
-			<MkButton inline @click="emit('exit')">{{ i18n.ts.close }}</MkButton>
+			<MkButton inline primary data-cy-widget-add @click="addWidget"><i class="ti ti-plus"></i> {{ $locale.env.add }}</MkButton>
+			<MkButton inline @click="emit('exit')">{{ $locale.env.close }}</MkButton>
 		</header>
 		<MkDraggable
 			:modelValue="props.widgets"
@@ -34,6 +34,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts">
+
 export type Widget = {
 	name: string;
 	id: string;
@@ -45,6 +46,8 @@ export type DefaultStoredWidget = {
 </script>
 
 <script lang="ts" setup>
+import { $locale as localeRef } from '@/i18n.js';
+
 import { computed } from 'vue';
 import { isLink } from '@@/js/is-link.js';
 import type { Component } from 'vue';
@@ -54,7 +57,6 @@ import MkButton from '@/components/MkButton.vue';
 import MkDraggable from '@/components/MkDraggable.vue';
 import { widgets as widgetDefs, federationWidgets } from '@/widgets/index.js';
 import * as os from '@/os.js';
-import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
 import { useMkSelect } from '@/composables/use-mkselect.js';
 
@@ -91,7 +93,7 @@ const {
 	model: widgetAdderSelected,
 	def: widgetAdderSelectedDef,
 } = useMkSelect({
-	items: computed(() => [{ label: i18n.ts.none, value: null }, ..._widgetDefs.value.map(x => ({ label: i18n.ts._widgets[x], value: x }))]),
+	items: computed(() => [{ label: localeRef.value.env.none, value: null }, ..._widgetDefs.value.map(x => ({ label: localeRef.value.env._widgets[x], value: x }))]),
 	initialValue: null,
 });
 
@@ -123,10 +125,10 @@ function onContextmenu(widget: Widget, ev: PointerEvent) {
 
 	os.contextMenu([{
 		type: 'label',
-		text: i18n.ts._widgets[widget.name as typeof widgetDefs[number]],
+		text: localeRef.value.env._widgets[widget.name as typeof widgetDefs[number]],
 	}, {
 		icon: 'ti ti-settings',
-		text: i18n.ts.settings,
+		text: localeRef.value.env.settings,
 		action: () => {
 			configWidget(widget.id);
 		},

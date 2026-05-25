@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div class="_gaps" :class="$style.root">
 		<div :class="$style.avatar" :style="{ backgroundImage: user ? `url('${user.avatarUrl}')` : undefined }"></div>
 		<div :class="$style.welcomeBackMessage">
-			<I18n :src="i18n.ts.welcomeBackWithName" tag="span">
+			<I18n :src="$locale.env.welcomeBackWithName" tag="span">
 				<template #name><Mfm :text="user.name ?? user.username" :plain="true"/></template>
 			</I18n>
 		</div>
@@ -18,9 +18,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<!-- ブラウザ オートコンプリート用 -->
 			<input type="hidden" name="username" autocomplete="username" :value="user.username">
 
-			<MkInput v-model="password" :placeholder="i18n.ts.password" type="password" autocomplete="current-password webauthn" :withPasswordToggle="true" required autofocus data-cy-signin-password>
+			<MkInput v-model="password" :placeholder="$locale.env.password" type="password" autocomplete="current-password webauthn" :withPasswordToggle="true" required autofocus data-cy-signin-password>
 				<template #prefix><i class="ti ti-lock"></i></template>
-				<template #caption><button class="_textButton" type="button" @click="resetPassword">{{ i18n.ts.forgotPassword }}</button></template>
+				<template #caption><button class="_textButton" type="button" @click="resetPassword">{{ $locale.env.forgotPassword }}</button></template>
 			</MkInput>
 
 			<div v-if="needCaptcha">
@@ -31,7 +31,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkCaptcha v-if="instance.enableTestcaptcha" ref="testcaptcha" v-model="testcaptchaResponse" provider="testcaptcha" :sitekey="null"/>
 			</div>
 
-			<MkButton type="submit" :disabled="needCaptcha && captchaFailed" large primary rounded style="margin: 0 auto;" data-cy-signin-page-password-continue>{{ i18n.ts.continue }} <i class="ti ti-arrow-right"></i></MkButton>
+			<MkButton type="submit" :disabled="needCaptcha && captchaFailed" large primary rounded style="margin: 0 auto;" data-cy-signin-page-password-continue>{{ $locale.env.continue }} <i class="ti ti-arrow-right"></i></MkButton>
 		</form>
 	</div>
 </div>
@@ -51,11 +51,11 @@ export type PwResponse = {
 </script>
 
 <script setup lang="ts">
+
 import { ref, computed, useTemplateRef, defineAsyncComponent } from 'vue';
 import * as Misskey from 'misskey-js';
 
 import { instance } from '@/instance.js';
-import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
 
 import MkButton from '@/components/MkButton.vue';

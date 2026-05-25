@@ -9,16 +9,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</MkSelect>
 
 	<MkSelect v-if="type === 'list'" v-model="userListId" :items="userListIdDef">
-		<template #label>{{ i18n.ts.userList }}</template>
+		<template #label>{{ $locale.env.userList }}</template>
 	</MkSelect>
 
 	<div class="_buttons">
-		<MkButton inline primary :disabled="type === 'list' && userListId === null" @click="save"><i class="ti ti-check"></i> {{ i18n.ts.save }}</MkButton>
+		<MkButton inline primary :disabled="type === 'list' && userListId === null" @click="save"><i class="ti ti-check"></i> {{ $locale.env.save }}</MkButton>
 	</div>
 </div>
 </template>
 
 <script lang="ts">
+
 const notificationConfigTypes = [
 	'all',
 	'following',
@@ -38,12 +39,13 @@ export type NotificationConfig = {
 </script>
 
 <script lang="ts" setup>
+import { $locale as localeRef } from '@/i18n.js';
+
 import * as Misskey from 'misskey-js';
 import { ref, computed } from 'vue';
 import MkSelect from '@/components/MkSelect.vue';
 import MkButton from '@/components/MkButton.vue';
 import { useMkSelect } from '@/composables/use-mkselect.js';
-import { i18n } from '@/i18n.js';
 
 const props = defineProps<{
 	value: NotificationConfig;
@@ -56,13 +58,13 @@ const emit = defineEmits<{
 }>();
 
 const notificationConfigTypesI18nMap: Record<typeof notificationConfigTypes[number], string> = {
-	all: i18n.ts.all,
-	following: i18n.ts.following,
-	follower: i18n.ts.followers,
-	mutualFollow: i18n.ts.mutualFollow,
-	followingOrFollower: i18n.ts.followingOrFollower,
-	list: i18n.ts.userList,
-	never: i18n.ts.none,
+	all: localeRef.value.env.all,
+	following: localeRef.value.env.following,
+	follower: localeRef.value.env.followers,
+	mutualFollow: localeRef.value.env.mutualFollow,
+	followingOrFollower: localeRef.value.env.followingOrFollower,
+	list: localeRef.value.env.userList,
+	never: localeRef.value.env.none,
 };
 
 const {

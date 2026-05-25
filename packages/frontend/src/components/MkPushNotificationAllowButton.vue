@@ -16,7 +16,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	:full="full"
 	@click="subscribe"
 >
-	{{ i18n.ts.subscribePushNotification }}
+	{{ $locale.env.subscribePushNotification }}
 </MkButton>
 <MkButton
 	v-else-if="!showOnlyToRegister && ($i ? pushRegistrationInServer : pushSubscription)"
@@ -30,17 +30,19 @@ SPDX-License-Identifier: AGPL-3.0-only
 	:full="full"
 	@click="unsubscribe"
 >
-	{{ i18n.ts.unsubscribePushNotification }}
+	{{ $locale.env.unsubscribePushNotification }}
 </MkButton>
 <MkButton v-else-if="$i && pushRegistrationInServer" disabled :rounded="rounded" :inline="inline" :wait="wait" :full="full">
-	{{ i18n.ts.pushNotificationAlreadySubscribed }}
+	{{ $locale.env.pushNotificationAlreadySubscribed }}
 </MkButton>
 <MkButton v-else-if="!supported" disabled :rounded="rounded" :inline="inline" :wait="wait" :full="full">
-	{{ i18n.ts.pushNotificationNotSupported }}
+	{{ $locale.env.pushNotificationNotSupported }}
 </MkButton>
 </template>
 
 <script setup lang="ts">
+import { $locale as localeRef, $l as localizerRef } from '@/i18n.js';
+
 import { ref } from 'vue';
 import { instanceName } from '@@/js/config.js';
 import { $i } from '@/i.js';
@@ -48,7 +50,6 @@ import MkButton from '@/components/MkButton.vue';
 import { instance } from '@/instance.js';
 import { apiWithDialog, promiseDialog, alert } from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
-import { i18n } from '@/i18n.js';
 import { getAccounts } from '@/accounts.js';
 
 defineProps<{
@@ -80,14 +81,14 @@ async function subscribe() {
 		let permission = Notification.permission;
 
 		if (Notification.permission === 'default') {
-			permission = await promiseDialog(Notification.requestPermission(), null, null, i18n.ts.pleaseAllowPushNotification);
+			permission = await promiseDialog(Notification.requestPermission(), null, null, localeRef.value.env.pleaseAllowPushNotification);
 		}
 
 		if (permission !== 'granted') {
 			alert({
 				type: 'error',
-				title: i18n.ts.browserPushNotificationDisabled,
-				text: i18n.tsx.browserPushNotificationDisabledDescription({ serverName: instanceName }),
+				title: localeRef.value.env.browserPushNotificationDisabled,
+				text: localizerRef.value.env.browserPushNotificationDisabledDescription({ serverName: instanceName }),
 			});
 			return;
 		}

@@ -20,9 +20,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 			</div>
 
-			<MkInfo v-if="isSystem">{{ i18n.ts.isSystemAccount }}</MkInfo>
+			<MkInfo v-if="isSystem">{{ $locale.env.isSystemAccount }}</MkInfo>
 
-			<FormLink v-if="user.host" :to="`/instance-info/${user.host}`">{{ i18n.ts.instanceInfo }}</FormLink>
+			<FormLink v-if="user.host" :to="`/instance-info/${user.host}`">{{ $locale.env.instanceInfo }}</FormLink>
 
 			<div style="display: flex; flex-direction: column; gap: 1em;">
 				<MkKeyValue :copy="user.id" oneline>
@@ -37,23 +37,23 @@ SPDX-License-Identifier: AGPL-3.0-only
 					-->
 				<template v-if="!isSystem">
 					<MkKeyValue oneline>
-						<template #key>{{ i18n.ts.createdAt }}</template>
+						<template #key>{{ $locale.env.createdAt }}</template>
 						<template #value><span class="_monospace"><MkTime :time="user.createdAt" :mode="'detail'"/></span></template>
 					</MkKeyValue>
 					<MkKeyValue v-if="info" oneline>
-						<template #key>{{ i18n.ts.lastActiveDate }}</template>
+						<template #key>{{ $locale.env.lastActiveDate }}</template>
 						<template #value><span class="_monospace"><MkTime :time="info.lastActiveDate" :mode="'detail'"/></span></template>
 					</MkKeyValue>
 					<MkKeyValue v-if="info" oneline>
-						<template #key>{{ i18n.ts.email }}</template>
+						<template #key>{{ $locale.env.email }}</template>
 						<template #value><span class="_monospace">{{ info.email }}</span></template>
 					</MkKeyValue>
 				</template>
 			</div>
 
 			<MkTextarea v-if="!isSystem" v-model="moderationNote" manualSave>
-				<template #label>{{ i18n.ts.moderationNote }}</template>
-				<template #caption>{{ i18n.ts.moderationNoteDescription }}</template>
+				<template #label>{{ $locale.env.moderationNote }}</template>
+				<template #caption>{{ $locale.env.moderationNoteDescription }}</template>
 			</MkTextarea>
 
 			<!--
@@ -63,15 +63,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<div class="_gaps_m">
 						<div style="display: flex; flex-direction: column; gap: 1em;">
 							<MkKeyValue v-if="user.host" oneline>
-								<template #key>{{ i18n.ts.instanceInfo }}</template>
+								<template #key>{{ $locale.env.instanceInfo }}</template>
 								<template #value><MkA :to="`/instance-info/${user.host}`" class="_link">{{ user.host }} <i class="ti ti-chevron-right"></i></MkA></template>
 							</MkKeyValue>
 							<MkKeyValue v-else oneline>
-								<template #key>{{ i18n.ts.instanceInfo }}</template>
+								<template #key>{{ $locale.env.instanceInfo }}</template>
 								<template #value>(Local user)</template>
 							</MkKeyValue>
 							<MkKeyValue oneline>
-								<template #key>{{ i18n.ts.updatedAt }}</template>
+								<template #key>{{ $locale.env.updatedAt }}</template>
 								<template #value><MkTime v-if="user.lastFetchedAt" mode="detail" :time="user.lastFetchedAt"/><span v-else>N/A</span></template>
 							</MkKeyValue>
 							<MkKeyValue v-if="ap" oneline>
@@ -80,7 +80,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 							</MkKeyValue>
 						</div>
 
-						<MkButton v-if="user.host != null" @click="updateRemoteUser"><i class="ti ti-refresh"></i> {{ i18n.ts.updateRemoteUser }}</MkButton>
+						<MkButton v-if="user.host != null" @click="updateRemoteUser"><i class="ti ti-refresh"></i> {{ $locale.env.updateRemoteUser }}</MkButton>
 
 						<MkFolder>
 							<template #label>Raw</template>
@@ -94,15 +94,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 			<FormSection v-if="!isSystem">
 				<div class="_gaps">
-					<MkSwitch v-model="suspended" @update:modelValue="toggleSuspend">{{ i18n.ts.suspend }}</MkSwitch>
+					<MkSwitch v-model="suspended" @update:modelValue="toggleSuspend">{{ $locale.env.suspend }}</MkSwitch>
 
 					<div>
-						<MkButton v-if="user.host == null" inline style="margin-right: 8px;" @click="resetPassword"><i class="ti ti-key"></i> {{ i18n.ts.resetPassword }}</MkButton>
+						<MkButton v-if="user.host == null" inline style="margin-right: 8px;" @click="resetPassword"><i class="ti ti-key"></i> {{ $locale.env.resetPassword }}</MkButton>
 					</div>
 
 					<MkFolder>
 						<template #icon><i class="ti ti-license"></i></template>
-						<template #label>{{ i18n.ts._role.policies }}</template>
+						<template #label>{{ $locale.env._role.policies }}</template>
 						<div class="_gaps">
 							<div v-for="policy in Object.keys(info.policies)" :key="policy">
 								{{ policy }} ... {{ info.policies[policy as keyof typeof info.policies] }}
@@ -113,7 +113,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<MkFolder>
 						<template #icon><i class="ti ti-password"></i></template>
 						<template #label>IP</template>
-						<MkInfo v-if="!iAmAdmin" warn>{{ i18n.ts.requireAdminForView }}</MkInfo>
+						<MkInfo v-if="!iAmAdmin" warn>{{ $locale.env.requireAdminForView }}</MkInfo>
 						<MkInfo v-else>The date is the IP address was first acknowledged.</MkInfo>
 						<template v-if="iAmAdmin && ips">
 							<div v-for="record in ips" :key="record.ip" class="_monospace" :class="$style.ip" style="margin: 1em 0;">
@@ -124,16 +124,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</MkFolder>
 
 					<div>
-						<MkButton v-if="iAmModerator" inline danger style="margin-right: 8px;" @click="unsetUserAvatar"><i class="ti ti-user-circle"></i> {{ i18n.ts.unsetUserAvatar }}</MkButton>
-						<MkButton v-if="iAmModerator" inline danger @click="unsetUserBanner"><i class="ti ti-photo"></i> {{ i18n.ts.unsetUserBanner }}</MkButton>
+						<MkButton v-if="iAmModerator" inline danger style="margin-right: 8px;" @click="unsetUserAvatar"><i class="ti ti-user-circle"></i> {{ $locale.env.unsetUserAvatar }}</MkButton>
+						<MkButton v-if="iAmModerator" inline danger @click="unsetUserBanner"><i class="ti ti-photo"></i> {{ $locale.env.unsetUserBanner }}</MkButton>
 					</div>
-					<MkButton v-if="$i.isAdmin" inline danger @click="deleteAccount">{{ i18n.ts.deleteAccount }}</MkButton>
+					<MkButton v-if="$i.isAdmin" inline danger @click="deleteAccount">{{ $locale.env.deleteAccount }}</MkButton>
 				</div>
 			</FormSection>
 		</div>
 
 		<div v-else-if="tab === 'roles'" class="_gaps">
-			<MkButton v-if="user.host == null" primary rounded @click="assignRole"><i class="ti ti-plus"></i> {{ i18n.ts.assign }}</MkButton>
+			<MkButton v-if="user.host == null" primary rounded @click="assignRole"><i class="ti ti-plus"></i> {{ $locale.env.assign }}</MkButton>
 
 			<div v-for="role in info.roles" :key="role.id">
 				<div :class="$style.roleItemMain">
@@ -145,16 +145,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<div v-if="expandedRoleIds.includes(role.id)" :class="$style.roleItemSub">
 					<div>Assigned: <MkTime :time="info.roleAssigns.find(a => a.roleId === role.id)!.createdAt" mode="detail"/></div>
 					<div v-if="info.roleAssigns.find(a => a.roleId === role.id)!.expiresAt">Period: {{ new Date(info.roleAssigns.find(a => a.roleId === role.id)!.expiresAt!).toLocaleString() }}</div>
-					<div v-else>Period: {{ i18n.ts.indefinitely }}</div>
+					<div v-else>Period: {{ $locale.env.indefinitely }}</div>
 				</div>
 			</div>
 		</div>
 
 		<div v-else-if="tab === 'announcements'" class="_gaps">
-			<MkButton primary rounded @click="createAnnouncement"><i class="ti ti-plus"></i> {{ i18n.ts.createNew }}</MkButton>
+			<MkButton primary rounded @click="createAnnouncement"><i class="ti ti-plus"></i> {{ $locale.env.createNew }}</MkButton>
 
 			<MkSelect v-model="announcementsStatus" :items="announcementsStatusDef">
-				<template #label>{{ i18n.ts.filter }}</template>
+				<template #label>{{ $locale.env.filter }}</template>
 			</MkSelect>
 
 			<MkPagination :paginator="announcementsPaginator">
@@ -168,7 +168,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 								<i v-else-if="announcement.icon === 'success'" class="ti ti-check" style="color: var(--MI_THEME-success);"></i>
 							</span>
 							<span>{{ announcement.title }}</span>
-							<span v-if="announcement.reads > 0" style="margin-left: auto; opacity: 0.7;">{{ i18n.ts.messageRead }}</span>
+							<span v-if="announcement.reads > 0" style="margin-left: auto; opacity: 0.7;">{{ $locale.env.messageRead }}</span>
 						</div>
 					</div>
 				</template>
@@ -186,9 +186,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</MkSelect>
 				</div>
 				<div class="charts">
-					<div class="label">{{ i18n.tsx.recentNHours({ n: 90 }) }}</div>
+					<div class="label">{{ $l.env.recentNHours({ n: 90 }) }}</div>
 					<MkChart class="chart" :src="chartSrc" span="hour" :limit="90" :args="{ user, withoutAll: true }" :detailed="true"></MkChart>
-					<div class="label">{{ i18n.tsx.recentNDays({ n: 90 }) }}</div>
+					<div class="label">{{ $l.env.recentNDays({ n: 90 }) }}</div>
 					<MkChart class="chart" :src="chartSrc" span="day" :limit="90" :args="{ user, withoutAll: true }" :detailed="true"></MkChart>
 				</div>
 			</div>
@@ -206,6 +206,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef, $l as localizerRef } from '@/i18n.js';
+
 import { computed, defineAsyncComponent, watch, ref, markRaw } from 'vue';
 import * as Misskey from 'misskey-js';
 import { url } from '@@/js/config.js';
@@ -226,7 +228,6 @@ import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { acct } from '@/filters/user.js';
 import { definePage } from '@/page.js';
-import { i18n } from '@/i18n.js';
 import { useMkSelect } from '@/composables/use-mkselect.js';
 import { ensureSignin, iAmAdmin, iAmModerator } from '@/i.js';
 import MkRolePreview from '@/components/MkRolePreview.vue';
@@ -250,7 +251,7 @@ const {
 	def: chartSrcDef,
 } = useMkSelect({
 	items: [
-		{ label: i18n.ts.notes, value: 'per-user-notes' },
+		{ label: localeRef.value.env.notes, value: 'per-user-notes' },
 	],
 	initialValue: 'per-user-notes',
 });
@@ -275,8 +276,8 @@ const {
 	def: announcementsStatusDef,
 } = useMkSelect({
 	items: [
-		{ label: i18n.ts.active, value: 'active' },
-		{ label: i18n.ts.archived, value: 'archived' },
+		{ label: localeRef.value.env.active, value: 'active' },
+		{ label: localeRef.value.env.archived, value: 'archived' },
 	],
 	initialValue: 'active',
 });
@@ -329,7 +330,7 @@ async function updateRemoteUser() {
 async function resetPassword() {
 	const confirm = await os.confirm({
 		type: 'warning',
-		text: i18n.ts.resetPasswordConfirm,
+		text: localeRef.value.env.resetPasswordConfirm,
 	});
 	if (confirm.canceled) {
 		return;
@@ -339,7 +340,7 @@ async function resetPassword() {
 		});
 		os.alert({
 			type: 'success',
-			text: i18n.tsx.newPasswordIs({ password }),
+			text: localizerRef.value.env.newPasswordIs({ password }),
 		});
 	}
 }
@@ -347,7 +348,7 @@ async function resetPassword() {
 async function toggleSuspend(v: boolean) {
 	const confirm = await os.confirm({
 		type: 'warning',
-		text: v ? i18n.ts.suspendConfirm : i18n.ts.unsuspendConfirm,
+		text: v ? localeRef.value.env.suspendConfirm : localeRef.value.env.unsuspendConfirm,
 	});
 	if (confirm.canceled) {
 		suspended.value = !v;
@@ -360,7 +361,7 @@ async function toggleSuspend(v: boolean) {
 async function unsetUserAvatar() {
 	const confirm = await os.confirm({
 		type: 'warning',
-		text: i18n.ts.unsetUserAvatarConfirm,
+		text: localeRef.value.env.unsetUserAvatarConfirm,
 	});
 	if (confirm.canceled) return;
 	const process = async () => {
@@ -379,7 +380,7 @@ async function unsetUserAvatar() {
 async function unsetUserBanner() {
 	const confirm = await os.confirm({
 		type: 'warning',
-		text: i18n.ts.unsetUserBannerConfirm,
+		text: localeRef.value.env.unsetUserBannerConfirm,
 	});
 	if (confirm.canceled) return;
 	const process = async () => {
@@ -398,7 +399,7 @@ async function unsetUserBanner() {
 async function deleteAllFiles() {
 	const confirm = await os.confirm({
 		type: 'warning',
-		text: i18n.ts.deleteAllFilesConfirm,
+		text: localeRef.value.env.deleteAllFilesConfirm,
 	});
 	if (confirm.canceled) return;
 	const process = async () => {
@@ -417,12 +418,12 @@ async function deleteAllFiles() {
 async function deleteAccount() {
 	const confirm = await os.confirm({
 		type: 'warning',
-		text: i18n.ts.deleteAccountConfirm,
+		text: localeRef.value.env.deleteAccountConfirm,
 	});
 	if (confirm.canceled) return;
 
 	const typed = await os.inputText({
-		text: i18n.tsx.typeToConfirm({ x: user.value?.username }),
+		text: localizerRef.value.env.typeToConfirm({ x: user.value?.username }),
 	});
 	if (typed.canceled) return;
 
@@ -442,23 +443,23 @@ async function assignRole() {
 	const roles = await misskeyApi('admin/roles/list').then(it => it.filter(r => r.target === 'manual'));
 
 	const { canceled, result: roleId } = await os.select({
-		title: i18n.ts._role.chooseRoleToAssign,
+		title: localeRef.value.env._role.chooseRoleToAssign,
 		items: roles.map(r => ({ label: r.name, value: r.id })),
 	});
 	if (canceled || roleId == null) return;
 
 	const { canceled: canceled2, result: period } = await os.select({
-		title: i18n.ts.period + ': ' + roles.find(r => r.id === roleId)!.name,
+		title: localeRef.value.env.period + ': ' + roles.find(r => r.id === roleId)!.name,
 		items: [{
-			value: 'indefinitely', label: i18n.ts.indefinitely,
+			value: 'indefinitely', label: localeRef.value.env.indefinitely,
 		}, {
-			value: 'oneHour', label: i18n.ts.oneHour,
+			value: 'oneHour', label: localeRef.value.env.oneHour,
 		}, {
-			value: 'oneDay', label: i18n.ts.oneDay,
+			value: 'oneDay', label: localeRef.value.env.oneDay,
 		}, {
-			value: 'oneWeek', label: i18n.ts.oneWeek,
+			value: 'oneWeek', label: localeRef.value.env.oneWeek,
 		}, {
-			value: 'oneMonth', label: i18n.ts.oneMonth,
+			value: 'oneMonth', label: localeRef.value.env.oneMonth,
 		}],
 		default: 'indefinitely',
 	});
@@ -477,7 +478,7 @@ async function assignRole() {
 
 async function unassignRole(role: typeof info.value.roles[number], ev: PointerEvent) {
 	os.popupMenu([{
-		text: i18n.ts.unassign,
+		text: localeRef.value.env.unassign,
 		icon: 'ti ti-x',
 		danger: true,
 		action: async () => {
@@ -524,7 +525,7 @@ const headerActions = computed(() => []);
 
 const headerTabs = computed(() => isSystem.value ? [{
 	key: 'overview',
-	title: i18n.ts.overview,
+	title: localeRef.value.env.overview,
 	icon: 'ti ti-info-circle',
 }, {
 	key: 'raw',
@@ -532,23 +533,23 @@ const headerTabs = computed(() => isSystem.value ? [{
 	icon: 'ti ti-code',
 }] : [{
 	key: 'overview',
-	title: i18n.ts.overview,
+	title: localeRef.value.env.overview,
 	icon: 'ti ti-info-circle',
 }, {
 	key: 'roles',
-	title: i18n.ts.roles,
+	title: localeRef.value.env.roles,
 	icon: 'ti ti-badges',
 }, {
 	key: 'announcements',
-	title: i18n.ts.announcements,
+	title: localeRef.value.env.announcements,
 	icon: 'ti ti-speakerphone',
 }, {
 	key: 'drive',
-	title: i18n.ts.drive,
+	title: localeRef.value.env.drive,
 	icon: 'ti ti-cloud',
 }, {
 	key: 'chart',
-	title: i18n.ts.charts,
+	title: localeRef.value.env.charts,
 	icon: 'ti ti-chart-line',
 }, {
 	key: 'raw',
@@ -557,7 +558,7 @@ const headerTabs = computed(() => isSystem.value ? [{
 }]);
 
 definePage(() => ({
-	title: user.value ? acct(user.value) : i18n.ts.userInfo,
+	title: user.value ? acct(user.value) : localeRef.value.env.userInfo,
 	icon: 'ti ti-user-exclamation',
 }));
 </script>

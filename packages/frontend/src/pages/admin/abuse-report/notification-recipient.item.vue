@@ -10,11 +10,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div :class="$style.rightDivider" style="flex: 1">
 		<div v-if="method === 'email' && user">
 			{{
-				`${i18n.ts._abuseReport._notificationRecipient.notifiedUser}: ` + ((user.name) ? `${user.name}(${user.username})` : user.username)
+				`${$locale.env._abuseReport._notificationRecipient.notifiedUser}: ` + ((user.name) ? `${user.name}(${user.username})` : user.username)
 			}}
 		</div>
 		<div v-if="method === 'webhook' && systemWebhook">
-			{{ `${i18n.ts._abuseReport._notificationRecipient.notifiedWebhook}: ` + systemWebhook.name }}
+			{{ `${$locale.env._abuseReport._notificationRecipient.notifiedWebhook}: ` + systemWebhook.name }}
 		</div>
 	</div>
 	<div :class="$style.recipientButtons" style="margin-left: auto">
@@ -29,9 +29,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script setup lang="ts">
+import { $locale as localeRef } from '@/i18n.js';
+
 import { entities } from 'misskey-js';
 import { computed, toRefs } from 'vue';
-import { i18n } from '@/i18n.js';
 
 const emit = defineEmits<{
 	(ev: 'edit', id: entities.AbuseReportNotificationRecipient['id']): void;
@@ -60,9 +61,9 @@ const methodIcon = computed(() => {
 const methodName = computed(() => {
 	switch (entity.value.method) {
 		case 'email':
-			return i18n.ts._abuseReport._notificationRecipient._recipientType.mail;
+			return localeRef.value.env._abuseReport._notificationRecipient._recipientType.mail;
 		case 'webhook':
-			return i18n.ts._abuseReport._notificationRecipient._recipientType.webhook;
+			return localeRef.value.env._abuseReport._notificationRecipient._recipientType.webhook;
 		default:
 			return '不明';
 	}

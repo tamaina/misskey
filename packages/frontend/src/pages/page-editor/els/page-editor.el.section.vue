@@ -21,13 +21,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef } from '@/i18n.js';
+
 
 import { defineAsyncComponent, inject, onMounted, watch, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import XContainer from '../page-editor.container.vue';
 import { genId } from '@/utility/id.js';
 import * as os from '@/os.js';
-import { i18n } from '@/i18n.js';
 import { deepClone } from '@/utility/clone.js';
 import MkButton from '@/components/MkButton.vue';
 import { getPageBlockList } from '@/pages/page-editor/common.js';
@@ -57,7 +58,7 @@ watch(children, () => {
 
 async function rename() {
 	const { canceled, result: title } = await os.inputText({
-		title: i18n.ts._pages.enterSectionTitle,
+		title: localeRef.value.env._pages.enterSectionTitle,
 		default: props.modelValue.title,
 	});
 	if (canceled || title == null) return;
@@ -69,7 +70,7 @@ async function rename() {
 
 async function add() {
 	const { canceled, result: type } = await os.select({
-		title: i18n.ts._pages.chooseBlock,
+		title: localeRef.value.env._pages.chooseBlock,
 		items: getPageBlockList(),
 	});
 	if (canceled || type == null) return;

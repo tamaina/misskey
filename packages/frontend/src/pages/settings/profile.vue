@@ -4,13 +4,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<SearchMarker path="/settings/profile" :label="i18n.ts.profile" :keywords="['profile']" icon="ti ti-user">
+<SearchMarker path="/settings/profile" :label="$locale.env.profile" :keywords="['profile']" icon="ti ti-user">
 	<div class="_gaps_m">
 		<div class="_panel">
 			<div :class="$style.banner" :style="{ backgroundImage: $i.bannerUrl ? `url(${ $i.bannerUrl })` : '' }">
 				<div :class="$style.bannerEdit">
 					<SearchMarker :keywords="['banner', 'change']">
-						<MkButton primary rounded @click="changeBanner"><SearchLabel>{{ i18n.ts._profile.changeBanner }}</SearchLabel></MkButton>
+						<MkButton primary rounded @click="changeBanner"><SearchLabel>{{ $locale.env._profile.changeBanner }}</SearchLabel></MkButton>
 					</SearchMarker>
 				</div>
 			</div>
@@ -18,43 +18,43 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkAvatar :class="$style.avatar" :user="$i" forceShowDecoration @click="changeAvatar"/>
 				<div class="_buttonsCenter">
 					<SearchMarker :keywords="['avatar', 'icon', 'change']">
-						<MkButton primary rounded @click="changeAvatar"><SearchLabel>{{ i18n.ts._profile.changeAvatar }}</SearchLabel></MkButton>
+						<MkButton primary rounded @click="changeAvatar"><SearchLabel>{{ $locale.env._profile.changeAvatar }}</SearchLabel></MkButton>
 					</SearchMarker>
-					<MkButton primary rounded type="routerLink" to="/settings/avatar-decoration">{{ i18n.ts.decorate }} <i class="ti ti-sparkles"></i></MkButton>
+					<MkButton primary rounded type="routerLink" to="/settings/avatar-decoration">{{ $locale.env.decorate }} <i class="ti ti-sparkles"></i></MkButton>
 				</div>
 			</div>
 		</div>
 
 		<SearchMarker :keywords="['name']">
 			<MkInput v-model="profile.name" :max="30" manualSave :mfmAutocomplete="['emoji']">
-				<template #label><SearchLabel>{{ i18n.ts._profile.name }}</SearchLabel></template>
+				<template #label><SearchLabel>{{ $locale.env._profile.name }}</SearchLabel></template>
 			</MkInput>
 		</SearchMarker>
 
 		<SearchMarker :keywords="['description', 'bio']">
 			<MkTextarea v-model="profile.description" :max="500" tall manualSave mfmAutocomplete :mfmPreview="true">
-				<template #label><SearchLabel>{{ i18n.ts._profile.description }}</SearchLabel></template>
-				<template #caption>{{ i18n.ts._profile.youCanIncludeHashtags }}</template>
+				<template #label><SearchLabel>{{ $locale.env._profile.description }}</SearchLabel></template>
+				<template #caption>{{ $locale.env._profile.youCanIncludeHashtags }}</template>
 			</MkTextarea>
 		</SearchMarker>
 
 		<SearchMarker :keywords="['location', 'locale']">
 			<MkInput v-model="profile.location" manualSave>
-				<template #label><SearchLabel>{{ i18n.ts.location }}</SearchLabel></template>
+				<template #label><SearchLabel>{{ $locale.env.location }}</SearchLabel></template>
 				<template #prefix><i class="ti ti-map-pin"></i></template>
 			</MkInput>
 		</SearchMarker>
 
 		<SearchMarker :keywords="['birthday', 'birthdate', 'age']">
 			<MkInput v-model="profile.birthday" type="date" manualSave>
-				<template #label><SearchLabel>{{ i18n.ts.birthday }}</SearchLabel></template>
+				<template #label><SearchLabel>{{ $locale.env.birthday }}</SearchLabel></template>
 				<template #prefix><i class="ti ti-cake"></i></template>
 			</MkInput>
 		</SearchMarker>
 
 		<SearchMarker :keywords="['language', 'locale']">
 			<MkSelect v-model="profile.lang" :items="Object.entries(langmap).map(([code, def]) => ({ label: def.nativeName, value: code }))">
-				<template #label><SearchLabel>{{ i18n.ts.language }}</SearchLabel></template>
+				<template #label><SearchLabel>{{ $locale.env.language }}</SearchLabel></template>
 			</MkSelect>
 		</SearchMarker>
 
@@ -62,18 +62,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<FormSlot>
 				<MkFolder>
 					<template #icon><i class="ti ti-list"></i></template>
-					<template #label><SearchLabel>{{ i18n.ts._profile.metadataEdit }}</SearchLabel></template>
+					<template #label><SearchLabel>{{ $locale.env._profile.metadataEdit }}</SearchLabel></template>
 					<template #footer>
 						<div class="_buttons">
-							<MkButton primary @click="saveFields"><i class="ti ti-check"></i> {{ i18n.ts.save }}</MkButton>
-							<MkButton :disabled="fields.length >= 16" @click="addField"><i class="ti ti-plus"></i> {{ i18n.ts.add }}</MkButton>
-							<MkButton v-if="!fieldEditMode" :disabled="fields.length <= 1" danger @click="fieldEditMode = !fieldEditMode"><i class="ti ti-trash"></i> {{ i18n.ts.delete }}</MkButton>
-							<MkButton v-else @click="fieldEditMode = !fieldEditMode"><i class="ti ti-arrows-sort"></i> {{ i18n.ts.rearrange }}</MkButton>
+							<MkButton primary @click="saveFields"><i class="ti ti-check"></i> {{ $locale.env.save }}</MkButton>
+							<MkButton :disabled="fields.length >= 16" @click="addField"><i class="ti ti-plus"></i> {{ $locale.env.add }}</MkButton>
+							<MkButton v-if="!fieldEditMode" :disabled="fields.length <= 1" danger @click="fieldEditMode = !fieldEditMode"><i class="ti ti-trash"></i> {{ $locale.env.delete }}</MkButton>
+							<MkButton v-else @click="fieldEditMode = !fieldEditMode"><i class="ti ti-arrows-sort"></i> {{ $locale.env.rearrange }}</MkButton>
 						</div>
 					</template>
 
 					<div :class="$style.metadataRoot" class="_gaps_s">
-						<MkInfo>{{ i18n.ts._profile.verifiedLinkDescription }}</MkInfo>
+						<MkInfo>{{ $locale.env._profile.verifiedLinkDescription }}</MkInfo>
 
 						<MkDraggable
 							v-model="fields"
@@ -87,9 +87,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 									<button v-if="fieldEditMode" :disabled="fields.length <= 1" class="_button" :class="$style.dragItemRemove" @click="deleteField(item.id)"><i class="ti ti-x"></i></button>
 									<div :class="$style.dragItemForm">
 										<FormSplit :minWidth="200">
-											<MkInput v-model="item.name" small :placeholder="i18n.ts._profile.metadataLabel">
+											<MkInput v-model="item.name" small :placeholder="$locale.env._profile.metadataLabel">
 											</MkInput>
-											<MkInput v-model="item.value" small :placeholder="i18n.ts._profile.metadataContent">
+											<MkInput v-model="item.value" small :placeholder="$locale.env._profile.metadataContent">
 											</MkInput>
 										</FormSplit>
 									</div>
@@ -98,16 +98,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 						</MkDraggable>
 					</div>
 				</MkFolder>
-				<template #caption>{{ i18n.ts._profile.metadataDescription }}</template>
+				<template #caption>{{ $locale.env._profile.metadataDescription }}</template>
 			</FormSlot>
 		</SearchMarker>
 
 		<SearchMarker :keywords="['follow', 'message']">
 			<MkInput v-model="profile.followedMessage" :max="200" manualSave :mfmPreview="false">
-				<template #label><SearchLabel>{{ i18n.ts._profile.followedMessage }}</SearchLabel></template>
+				<template #label><SearchLabel>{{ $locale.env._profile.followedMessage }}</SearchLabel></template>
 				<template #caption>
-					<div><SearchText>{{ i18n.ts._profile.followedMessageDescription }}</SearchText></div>
-					<div>{{ i18n.ts._profile.followedMessageDescriptionForLockedAccount }}</div>
+					<div><SearchText>{{ $locale.env._profile.followedMessageDescription }}</SearchText></div>
+					<div>{{ $locale.env._profile.followedMessageDescriptionForLockedAccount }}</div>
 				</template>
 			</MkInput>
 		</SearchMarker>
@@ -116,33 +116,33 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkSelect
 				v-model="reactionAcceptance"
 				:items="[
-					{ label: i18n.ts.all, value: null },
-					{ label: i18n.ts.likeOnlyForRemote, value: 'likeOnlyForRemote' },
-					{ label: i18n.ts.nonSensitiveOnly, value: 'nonSensitiveOnly' },
-					{ label: i18n.ts.nonSensitiveOnlyForLocalLikeOnlyForRemote, value: 'nonSensitiveOnlyForLocalLikeOnlyForRemote' },
-					{ label: i18n.ts.likeOnly, value: 'likeOnly' },
+					{ label: $locale.env.all, value: null },
+					{ label: $locale.env.likeOnlyForRemote, value: 'likeOnlyForRemote' },
+					{ label: $locale.env.nonSensitiveOnly, value: 'nonSensitiveOnly' },
+					{ label: $locale.env.nonSensitiveOnlyForLocalLikeOnlyForRemote, value: 'nonSensitiveOnlyForLocalLikeOnlyForRemote' },
+					{ label: $locale.env.likeOnly, value: 'likeOnly' },
 				]"
 			>
-				<template #label><SearchLabel>{{ i18n.ts.reactionAcceptance }}</SearchLabel></template>
+				<template #label><SearchLabel>{{ $locale.env.reactionAcceptance }}</SearchLabel></template>
 			</MkSelect>
 		</SearchMarker>
 
 		<SearchMarker>
 			<MkFolder>
-				<template #label><SearchLabel>{{ i18n.ts.advancedSettings }}</SearchLabel></template>
+				<template #label><SearchLabel>{{ $locale.env.advancedSettings }}</SearchLabel></template>
 
 				<div class="_gaps_m">
 					<SearchMarker :keywords="['cat']">
 						<MkSwitch v-model="profile.isCat">
-							<template #label><SearchLabel>{{ i18n.ts.flagAsCat }}</SearchLabel></template>
-							<template #caption>{{ i18n.ts.flagAsCatDescription }}</template>
+							<template #label><SearchLabel>{{ $locale.env.flagAsCat }}</SearchLabel></template>
+							<template #caption>{{ $locale.env.flagAsCatDescription }}</template>
 						</MkSwitch>
 					</SearchMarker>
 
 					<SearchMarker :keywords="['bot']">
 						<MkSwitch v-model="profile.isBot">
-							<template #label><SearchLabel>{{ i18n.ts.flagAsBot }}</SearchLabel></template>
-							<template #caption>{{ i18n.ts.flagAsBotDescription }}</template>
+							<template #label><SearchLabel>{{ $locale.env.flagAsBot }}</SearchLabel></template>
+							<template #caption>{{ $locale.env.flagAsBotDescription }}</template>
 						</MkSwitch>
 					</SearchMarker>
 				</div>
@@ -154,7 +154,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<SearchMarker :keywords="['qrcode']">
 			<FormLink to="/qr">
 				<template #icon><i class="ti ti-qrcode"></i></template>
-				<SearchLabel>{{ i18n.ts.qr }}</SearchLabel>
+				<SearchLabel>{{ $locale.env.qr }}</SearchLabel>
 			</FormLink>
 		</SearchMarker>
 	</div>
@@ -162,6 +162,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef } from '@/i18n.js';
+
 import { computed, reactive, ref, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkButton from '@/components/MkButton.vue';
@@ -175,7 +177,6 @@ import FormLink from '@/components/form/link.vue';
 import MkDraggable from '@/components/MkDraggable.vue';
 import { chooseDriveFile } from '@/utility/drive.js';
 import * as os from '@/os.js';
-import { i18n } from '@/i18n.js';
 import { ensureSignin } from '@/i.js';
 import { langmap } from '@/utility/langmap.js';
 import { definePage } from '@/page.js';
@@ -254,8 +255,8 @@ function save() {
 		isCat: !!profile.isCat,
 	}, undefined, {
 		'0b3f9f6a-2f4d-4b1f-9fb4-49d3a2fd7191': {
-			title: i18n.ts.yourNameContainsProhibitedWords,
-			text: i18n.ts.yourNameContainsProhibitedWordsDescription,
+			title: localeRef.value.env.yourNameContainsProhibitedWords,
+			text: localeRef.value.env.yourNameContainsProhibitedWordsDescription,
 		},
 	});
 	claimAchievement('profileFilled');
@@ -278,10 +279,10 @@ function changeAvatar(ev: PointerEvent) {
 	}
 
 	os.popupMenu([{
-		text: i18n.ts.avatar,
+		text: localeRef.value.env.avatar,
 		type: 'label',
 	}, {
-		text: i18n.ts.upload,
+		text: localeRef.value.env.upload,
 		icon: 'ti ti-upload',
 		action: async () => {
 			const files = await os.chooseFileFromPc({ multiple: false });
@@ -291,9 +292,9 @@ function changeAvatar(ev: PointerEvent) {
 
 			const { canceled } = await os.confirm({
 				type: 'question',
-				text: i18n.ts.cropImageAsk,
-				okText: i18n.ts.cropYes,
-				cancelText: i18n.ts.cropNo,
+				text: localeRef.value.env.cropImageAsk,
+				okText: localeRef.value.env.cropYes,
+				cancelText: localeRef.value.env.cropNo,
 			});
 
 			if (!canceled) {
@@ -306,7 +307,7 @@ function changeAvatar(ev: PointerEvent) {
 			done(driveFile);
 		},
 	}, {
-		text: i18n.ts.fromDrive,
+		text: localeRef.value.env.fromDrive,
 		icon: 'ti ti-cloud',
 		action: () => {
 			chooseDriveFile({ multiple: false }).then(files => {
@@ -326,10 +327,10 @@ function changeBanner(ev: PointerEvent) {
 	}
 
 	os.popupMenu([{
-		text: i18n.ts.banner,
+		text: localeRef.value.env.banner,
 		type: 'label',
 	}, {
-		text: i18n.ts.upload,
+		text: localeRef.value.env.upload,
 		icon: 'ti ti-upload',
 		action: async () => {
 			const files = await os.chooseFileFromPc({ multiple: false });
@@ -339,9 +340,9 @@ function changeBanner(ev: PointerEvent) {
 
 			const { canceled } = await os.confirm({
 				type: 'question',
-				text: i18n.ts.cropImageAsk,
-				okText: i18n.ts.cropYes,
-				cancelText: i18n.ts.cropNo,
+				text: localeRef.value.env.cropImageAsk,
+				okText: localeRef.value.env.cropYes,
+				cancelText: localeRef.value.env.cropNo,
 			});
 
 			if (!canceled) {
@@ -354,7 +355,7 @@ function changeBanner(ev: PointerEvent) {
 			done(driveFile);
 		},
 	}, {
-		text: i18n.ts.fromDrive,
+		text: localeRef.value.env.fromDrive,
 		icon: 'ti ti-cloud',
 		action: () => {
 			chooseDriveFile({ multiple: false }).then(files => {
@@ -369,7 +370,7 @@ const headerActions = computed(() => []);
 const headerTabs = computed(() => []);
 
 definePage(() => ({
-	title: i18n.ts.profile,
+	title: localeRef.value.env.profile,
 	icon: 'ti ti-user',
 }));
 </script>

@@ -15,7 +15,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	@esc="cancel()"
 >
 	<template #header>
-		{{ i18n.ts.draftsAndScheduledNotes }} ({{ currentDraftsCount }}/{{ $i?.policies.noteDraftLimit }})
+		{{ $locale.env.draftsAndScheduledNotes }} ({{ currentDraftsCount }}/{{ $i?.policies.noteDraftLimit }})
 	</template>
 
 	<MkStickyContainer>
@@ -27,12 +27,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 				:tabs="[
 					{
 						key: 'drafts',
-						title: i18n.ts.drafts,
+						title: $locale.env.drafts,
 						icon: 'ti ti-pencil-question',
 					},
 					{
 						key: 'scheduled',
-						title: i18n.ts.scheduled,
+						title: $locale.env.scheduled,
 						icon: 'ti ti-calendar-clock',
 					},
 				]"
@@ -42,7 +42,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div class="_spacer">
 			<MkPagination :key="tab" :paginator="tab === 'scheduled' ? scheduledPaginator : draftsPaginator" withControl>
 				<template #empty>
-					<MkResult type="empty" :text="i18n.ts._drafts.noDrafts"/>
+					<MkResult type="empty" :text="$locale.env._drafts.noDrafts"/>
 				</template>
 
 				<template #default="{ items }">
@@ -55,7 +55,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						>
 							<div :class="$style.draftBody" class="_gaps_s">
 								<MkInfo v-if="draft.scheduledAt != null && draft.isActuallyScheduled">
-									<I18n :src="i18n.ts.scheduledToPostOnX" tag="span">
+									<I18n :src="$locale.env.scheduledToPostOnX" tag="span">
 										<template #x>
 											<MkTime :time="draft.scheduledAt" :mode="'detail'" style="font-weight: bold;"/>
 										</template>
@@ -64,7 +64,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 								<div :class="$style.draftInfo">
 									<div :class="$style.draftMeta">
 										<div v-if="draft.reply" class="_nowrap">
-											<i class="ti ti-arrow-back-up"></i> <I18n :src="i18n.ts._drafts.replyTo" tag="span">
+											<i class="ti ti-arrow-back-up"></i> <I18n :src="$locale.env._drafts.replyTo" tag="span">
 												<template #user>
 													<Mfm v-if="draft.reply.user.name != null" :text="draft.reply.user.name" :plain="true" :nowrap="true"/>
 													<MkAcct v-else :user="draft.reply.user"/>
@@ -72,14 +72,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 											</I18n>
 										</div>
 										<div v-else-if="draft.replyId" class="_nowrap">
-											<i class="ti ti-arrow-back-up"></i> <I18n :src="i18n.ts._drafts.replyTo" tag="span">
+											<i class="ti ti-arrow-back-up"></i> <I18n :src="$locale.env._drafts.replyTo" tag="span">
 												<template #user>
-													{{ i18n.ts.deletedNote }}
+													{{ $locale.env.deletedNote }}
 												</template>
 											</I18n>
 										</div>
 										<div v-if="draft.renote && draft.text != null" class="_nowrap">
-											<i class="ti ti-quote"></i> <I18n :src="i18n.ts._drafts.quoteOf" tag="span">
+											<i class="ti ti-quote"></i> <I18n :src="$locale.env._drafts.quoteOf" tag="span">
 												<template #user>
 													<Mfm v-if="draft.renote.user.name != null" :text="draft.renote.user.name" :plain="true" :nowrap="true"/>
 													<MkAcct v-else :user="draft.renote.user"/>
@@ -87,14 +87,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 											</I18n>
 										</div>
 										<div v-else-if="draft.renoteId" class="_nowrap">
-											<i class="ti ti-quote"></i> <I18n :src="i18n.ts._drafts.quoteOf" tag="span">
+											<i class="ti ti-quote"></i> <I18n :src="$locale.env._drafts.quoteOf" tag="span">
 												<template #user>
-													{{ i18n.ts.deletedNote }}
+													{{ $locale.env.deletedNote }}
 												</template>
 											</I18n>
 										</div>
 										<div v-if="draft.channel" class="_nowrap">
-											<i class="ti ti-device-tv"></i> {{ i18n.tsx._drafts.postTo({ channel: draft.channel.name }) }}
+											<i class="ti ti-device-tv"></i> {{ $l.env._drafts.postTo({ channel: draft.channel.name }) }}
 										</div>
 									</div>
 								</div>
@@ -103,13 +103,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 								</div>
 								<div :class="$style.draftFooter">
 									<div :class="$style.draftVisibility">
-										<span :title="i18n.ts._visibility[draft.visibility]">
+										<span :title="$locale.env._visibility[draft.visibility]">
 											<i v-if="draft.visibility === 'public'" class="ti ti-world"></i>
 											<i v-else-if="draft.visibility === 'home'" class="ti ti-home"></i>
 											<i v-else-if="draft.visibility === 'followers'" class="ti ti-lock"></i>
 											<i v-else-if="draft.visibility === 'specified'" class="ti ti-mail"></i>
 										</span>
-										<span v-if="draft.localOnly" :title="i18n.ts._visibility['disableFederation']"><i class="ti ti-rocket-off"></i></span>
+										<span v-if="draft.localOnly" :title="$locale.env._visibility['disableFederation']"><i class="ti ti-rocket-off"></i></span>
 									</div>
 									<MkTime :time="draft.createdAt" :class="$style.draftCreatedAt" mode="detail" colored/>
 								</div>
@@ -121,14 +121,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 										small
 										@click="cancelSchedule(draft)"
 									>
-										<i class="ti ti-calendar-x"></i> {{ i18n.ts._drafts.cancelSchedule }}
+										<i class="ti ti-calendar-x"></i> {{ $locale.env._drafts.cancelSchedule }}
 									</MkButton>
 									<!-- TODO
 									<MkButton
 										small
 										@click="reSchedule(draft)"
 									>
-										<i class="ti ti-calendar-time"></i> {{ i18n.ts._drafts.reSchedule }}
+										<i class="ti ti-calendar-time"></i> {{ $locale.env._drafts.reSchedule }}
 									</MkButton>
 									-->
 								</template>
@@ -137,10 +137,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 									small
 									@click="restoreDraft(draft)"
 								>
-									<i class="ti ti-corner-up-left"></i> {{ i18n.ts._drafts.restore }}
+									<i class="ti ti-corner-up-left"></i> {{ $locale.env._drafts.restore }}
 								</MkButton>
 								<MkButton
-									v-tooltip="i18n.ts._drafts.delete"
+									v-tooltip="$locale.env._drafts.delete"
 									danger
 									small
 									:iconOnly="true"
@@ -160,13 +160,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef } from '@/i18n.js';
+
 import { ref, shallowRef, markRaw } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkButton from '@/components/MkButton.vue';
 import MkPagination from '@/components/MkPagination.vue';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import { getNoteSummary } from '@/utility/get-note-summary.js';
-import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
 import { $i } from '@/i.js';
 import { misskeyApi } from '@/utility/misskey-api';
@@ -220,7 +221,7 @@ function restoreDraft(draft: Misskey.entities.NoteDraft) {
 async function deleteDraft(draft: Misskey.entities.NoteDraft) {
 	const { canceled } = await os.confirm({
 		type: 'warning',
-		text: i18n.ts._drafts.deleteAreYouSure,
+		text: localeRef.value.env._drafts.deleteAreYouSure,
 	});
 
 	if (canceled) return;

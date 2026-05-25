@@ -10,11 +10,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef } from '@/i18n.js';
+
 import { ref, computed } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkAntennaEditor from '@/components/MkAntennaEditor.vue';
 import { misskeyApi } from '@/utility/misskey-api.js';
-import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
 import { antennasCache } from '@/cache.js';
 import { useRouter } from '@/router.js';
@@ -38,7 +39,7 @@ misskeyApi('antennas/show', { antennaId: props.antennaId }).then((antennaRespons
 
 const headerActions = computed(() => antenna.value ? [{
 	icon: 'ti ti-timeline',
-	text: i18n.ts.timeline,
+	text: localeRef.value.env.timeline,
 	handler: () => {
 		router.push('/timeline/antenna/:antennaId', {
 			params: {
@@ -50,7 +51,7 @@ const headerActions = computed(() => antenna.value ? [{
 const headerTabs = computed(() => []);
 
 definePage(() => ({
-	title: i18n.ts.editAntenna,
+	title: localeRef.value.env.editAntenna,
 	icon: 'ti ti-antenna',
 }));
 </script>

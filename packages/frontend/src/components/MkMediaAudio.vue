@@ -17,9 +17,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 >
 	<button v-if="hide" :class="$style.hidden" @click="reveal">
 		<div :class="$style.hiddenTextWrapper">
-			<b v-if="audio.isSensitive" style="display: block;"><i class="ti ti-eye-exclamation"></i> {{ i18n.ts.sensitive }}{{ prefer.s.dataSaver.media ? ` (${i18n.ts.audio}${audio.size ? ' ' + bytes(audio.size) : ''})` : '' }}</b>
-			<b v-else style="display: block;"><i class="ti ti-music"></i> {{ prefer.s.dataSaver.media && audio.size ? bytes(audio.size) : i18n.ts.audio }}</b>
-			<span style="display: block;">{{ i18n.ts.clickToShow }}</span>
+			<b v-if="audio.isSensitive" style="display: block;"><i class="ti ti-eye-exclamation"></i> {{ $locale.env.sensitive }}{{ prefer.s.dataSaver.media ? ` (${$locale.env.audio}${audio.size ? ' ' + bytes(audio.size) : ''})` : '' }}</b>
+			<b v-else style="display: block;"><i class="ti ti-music"></i> {{ prefer.s.dataSaver.media && audio.size ? bytes(audio.size) : $locale.env.audio }}</b>
+			<span style="display: block;">{{ $locale.env.clickToShow }}</span>
 		</div>
 	</button>
 
@@ -88,12 +88,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef } from '@/i18n.js';
+
 import { useTemplateRef, watch, computed, ref, onDeactivated, onActivated, onMounted } from 'vue';
 import * as Misskey from 'misskey-js';
 import type { MenuItem } from '@/types/menu.js';
 import type { Keymap } from '@/utility/hotkey.js';
 import { copyToClipboard } from '@/utility/copy-to-clipboard';
-import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
 import bytes from '@/filters/bytes.js';
 import { hms } from '@/filters/hms.js';
@@ -173,13 +174,13 @@ function showMenu(ev: MouseEvent) {
 		// TODO: 再生キューに追加
 		{
 			type: 'switch',
-			text: i18n.ts._mediaControls.loop,
+			text: localeRef.value.env._mediaControls.loop,
 			icon: 'ti ti-repeat',
 			ref: loop,
 		},
 		{
 			type: 'radio',
-			text: i18n.ts._mediaControls.playbackRate,
+			text: localeRef.value.env._mediaControls.playbackRate,
 			icon: 'ti ti-clock-play',
 			ref: speed,
 			options: [{
@@ -209,7 +210,7 @@ function showMenu(ev: MouseEvent) {
 			type: 'divider',
 		},
 		{
-			text: i18n.ts.hide,
+			text: localeRef.value.env.hide,
 			icon: 'ti ti-eye-off',
 			action: () => {
 				hide.value = true;
@@ -219,7 +220,7 @@ function showMenu(ev: MouseEvent) {
 
 	if (iAmModerator) {
 		menu.push({
-			text: props.audio.isSensitive ? i18n.ts.unmarkAsSensitive : i18n.ts.markAsSensitive,
+			text: props.audio.isSensitive ? localeRef.value.env.unmarkAsSensitive : localeRef.value.env.markAsSensitive,
 			icon: props.audio.isSensitive ? 'ti ti-eye' : 'ti ti-eye-exclamation',
 			danger: true,
 			action: () => toggleSensitive(props.audio),
@@ -230,7 +231,7 @@ function showMenu(ev: MouseEvent) {
 	if ($i?.id === props.audio.userId) {
 		details.push({
 			type: 'link',
-			text: i18n.ts._fileViewer.title,
+			text: localeRef.value.env._fileViewer.title,
 			icon: 'ti ti-info-circle',
 			to: `/my/drive/file/${props.audio.id}`,
 		});
@@ -239,7 +240,7 @@ function showMenu(ev: MouseEvent) {
 	if (iAmModerator) {
 		details.push({
 			type: 'link',
-			text: i18n.ts.moderation,
+			text: localeRef.value.env.moderation,
 			icon: 'ti ti-photo-exclamation',
 			to: `/admin/file/${props.audio.id}`,
 		});
@@ -252,7 +253,7 @@ function showMenu(ev: MouseEvent) {
 	if (prefer.s.devMode) {
 		menu.push({ type: 'divider' }, {
 			icon: 'ti ti-hash',
-			text: i18n.ts.copyFileId,
+			text: localeRef.value.env.copyFileId,
 			action: () => {
 				copyToClipboard(props.audio.id);
 			},
@@ -271,7 +272,7 @@ function showMenu(ev: MouseEvent) {
 async function toggleSensitive(file: Misskey.entities.DriveFile) {
 	const { canceled } = await os.confirm({
 		type: 'warning',
-		text: file.isSensitive ? i18n.ts.unmarkAsSensitiveConfirm : i18n.ts.markAsSensitiveConfirm,
+		text: file.isSensitive ? localeRef.value.env.unmarkAsSensitiveConfirm : localeRef.value.env.markAsSensitiveConfirm,
 	});
 
 	if (canceled) return;

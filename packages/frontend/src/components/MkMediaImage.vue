@@ -47,9 +47,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<template v-if="hide">
 		<div :class="$style.hiddenText">
 			<div :class="$style.hiddenTextWrapper">
-				<b v-if="image.isSensitive" style="display: block;"><i class="ti ti-eye-exclamation"></i> {{ i18n.ts.sensitive }}{{ prefer.s.dataSaver.media ? ` (${i18n.ts.image}${image.size ? ' ' + bytes(image.size) : ''})` : '' }}</b>
-				<b v-else style="display: block;"><i class="ti ti-photo"></i> {{ prefer.s.dataSaver.media && image.size ? bytes(image.size) : i18n.ts.image }}</b>
-				<span v-if="controls" style="display: block;">{{ i18n.ts.clickToShow }}</span>
+				<b v-if="image.isSensitive" style="display: block;"><i class="ti ti-eye-exclamation"></i> {{ $locale.env.sensitive }}{{ prefer.s.dataSaver.media ? ` (${$locale.env.image}${image.size ? ' ' + bytes(image.size) : ''})` : '' }}</b>
+				<b v-else style="display: block;"><i class="ti ti-photo"></i> {{ prefer.s.dataSaver.media && image.size ? bytes(image.size) : $locale.env.image }}</b>
+				<span v-if="controls" style="display: block;">{{ $locale.env.clickToShow }}</span>
 			</div>
 		</div>
 	</template>
@@ -57,7 +57,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div :class="$style.indicators">
 			<div v-if="['image/gif', 'image/apng'].includes(image.type)" :class="$style.indicator">GIF</div>
 			<div v-if="image.comment" :class="$style.indicator">ALT</div>
-			<div v-if="image.isSensitive" :class="$style.indicator" style="color: var(--MI_THEME-warn);" :title="i18n.ts.sensitive"><i class="ti ti-eye-exclamation"></i></div>
+			<div v-if="image.isSensitive" :class="$style.indicator" style="color: var(--MI_THEME-warn);" :title="$locale.env.sensitive"><i class="ti ti-eye-exclamation"></i></div>
 		</div>
 		<button :class="$style.menu" class="_button" @click.stop="showMenu"><i class="ti ti-dots" style="vertical-align: middle;"></i></button>
 		<i class="ti ti-eye-off" :class="$style.hide" @click.stop="hide = true"></i>
@@ -66,6 +66,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef } from '@/i18n.js';
+
 import { watch, ref, computed } from 'vue';
 import * as Misskey from 'misskey-js';
 import type { MenuItem } from '@/types/menu.js';
@@ -73,7 +75,6 @@ import { copyToClipboard } from '@/utility/copy-to-clipboard';
 import { getStaticImageUrl } from '@/utility/media-proxy.js';
 import bytes from '@/filters/bytes.js';
 import MkImgWithBlurhash from '@/components/MkImgWithBlurhash.vue';
-import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
 import { $i, iAmModerator } from '@/i.js';
 import { prefer } from '@/preferences.js';
@@ -127,7 +128,7 @@ function getMenu() {
 	const menuItems: MenuItem[] = [];
 
 	menuItems.push({
-		text: i18n.ts.hide,
+		text: localeRef.value.env.hide,
 		icon: 'ti ti-eye-off',
 		action: () => {
 			hide.value = true;
@@ -136,13 +137,13 @@ function getMenu() {
 
 	if (iAmModerator) {
 		menuItems.push({
-			text: props.image.isSensitive ? i18n.ts.unmarkAsSensitive : i18n.ts.markAsSensitive,
+			text: props.image.isSensitive ? localeRef.value.env.unmarkAsSensitive : localeRef.value.env.markAsSensitive,
 			icon: 'ti ti-eye-exclamation',
 			danger: true,
 			action: async () => {
 				const { canceled } = await os.confirm({
 					type: 'warning',
-					text: props.image.isSensitive ? i18n.ts.unmarkAsSensitiveConfirm : i18n.ts.markAsSensitiveConfirm,
+					text: props.image.isSensitive ? localeRef.value.env.unmarkAsSensitiveConfirm : localeRef.value.env.markAsSensitiveConfirm,
 				});
 
 				if (canceled) return;
@@ -159,7 +160,7 @@ function getMenu() {
 	if ($i?.id === props.image.userId) {
 		details.push({
 			type: 'link',
-			text: i18n.ts._fileViewer.title,
+			text: localeRef.value.env._fileViewer.title,
 			icon: 'ti ti-info-circle',
 			to: `/my/drive/file/${props.image.id}`,
 		});
@@ -168,7 +169,7 @@ function getMenu() {
 	if (iAmModerator) {
 		details.push({
 			type: 'link',
-			text: i18n.ts.moderation,
+			text: localeRef.value.env.moderation,
 			icon: 'ti ti-photo-exclamation',
 			to: `/admin/file/${props.image.id}`,
 		});
@@ -181,7 +182,7 @@ function getMenu() {
 	if (prefer.s.devMode) {
 		menuItems.push({ type: 'divider' }, {
 			icon: 'ti ti-hash',
-			text: i18n.ts.copyFileId,
+			text: localeRef.value.env.copyFileId,
 			action: () => {
 				copyToClipboard(props.image.id);
 			},

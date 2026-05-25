@@ -10,7 +10,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div v-if="tab === 'local'" class="local">
 				<MkInput v-model="query" :debounce="true" type="search" autocapitalize="off">
 					<template #prefix><i class="ti ti-search"></i></template>
-					<template #label>{{ i18n.ts.search }}</template>
+					<template #label>{{ $locale.env.search }}</template>
 				</MkInput>
 				<MkSwitch v-model="selectMode" style="margin: 8px 0;">
 					<template #label>Select mode</template>
@@ -25,7 +25,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<MkButton inline danger @click="delBulk">Delete</MkButton>
 				</div>
 				<MkPagination ref="emojisPaginationComponent" :paginator="paginator">
-					<template #empty><span>{{ i18n.ts.noCustomEmojis }}</span></template>
+					<template #empty><span>{{ $locale.env.noCustomEmojis }}</span></template>
 					<template #default="{items}">
 						<div class="ldhfsamy">
 							<button v-for="emoji in items" :key="emoji.id" class="emoji _panel _button" :class="{ selected: selectedEmojis.includes(emoji.id) }" @click="selectMode ? toggleSelect(emoji) : edit(emoji)">
@@ -44,14 +44,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<FormSplit>
 					<MkInput v-model="queryRemote" :debounce="true" type="search" autocapitalize="off">
 						<template #prefix><i class="ti ti-search"></i></template>
-						<template #label>{{ i18n.ts.search }}</template>
+						<template #label>{{ $locale.env.search }}</template>
 					</MkInput>
 					<MkInput v-model="host" :debounce="true">
-						<template #label>{{ i18n.ts.host }}</template>
+						<template #label>{{ $locale.env.host }}</template>
 					</MkInput>
 				</FormSplit>
 				<MkPagination :paginator="remotePaginator">
-					<template #empty><span>{{ i18n.ts.noCustomEmojis }}</span></template>
+					<template #empty><span>{{ $locale.env.noCustomEmojis }}</span></template>
 					<template #default="{items}">
 						<div class="ldhfsamy">
 							<div v-for="emoji in items" :key="emoji.id" class="emoji _panel _button" @click="remoteMenu(emoji as RemoteEmoji, $event)">
@@ -71,6 +71,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef } from '@/i18n.js';
+
 import * as Misskey from 'misskey-js';
 import { computed, markRaw, ref } from 'vue';
 import MkButton from '@/components/MkButton.vue';
@@ -83,7 +85,6 @@ import { selectFile } from '@/utility/drive.js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { getProxiedImageUrl } from '@/utility/media-proxy.js';
-import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
 import { Paginator } from '@/utility/paginator.js';
 
@@ -197,11 +198,11 @@ const remoteMenu = (emoji: {
 		type: 'label',
 		text: ':' + emoji.name + ':',
 	}, {
-		text: i18n.ts.details,
+		text: localeRef.value.env.details,
 		icon: 'ti ti-info-circle',
 		action: () => { detailRemoteEmoji(emoji); },
 	}, {
-		text: i18n.ts.import,
+		text: localeRef.value.env.import,
 		icon: 'ti ti-plus',
 		action: () => { importEmoji(emoji.id); },
 	}], ev.currentTarget ?? ev.target);
@@ -210,14 +211,14 @@ const remoteMenu = (emoji: {
 const menu = (ev: PointerEvent) => {
 	os.popupMenu([{
 		icon: 'ti ti-download',
-		text: i18n.ts.export,
+		text: localeRef.value.env.export,
 		action: async () => {
 			misskeyApi('export-custom-emojis', {
 			})
 				.then(() => {
 					os.alert({
 						type: 'info',
-						text: i18n.ts.exportRequested,
+						text: localeRef.value.env.exportRequested,
 					});
 				}).catch((err) => {
 					os.alert({
@@ -228,7 +229,7 @@ const menu = (ev: PointerEvent) => {
 		},
 	}, {
 		icon: 'ti ti-upload',
-		text: i18n.ts.import,
+		text: localeRef.value.env.import,
 		action: async () => {
 			const file = await selectFile({
 				anchorElement: ev.currentTarget ?? ev.target,
@@ -240,7 +241,7 @@ const menu = (ev: PointerEvent) => {
 				.then(() => {
 					os.alert({
 						type: 'info',
-						text: i18n.ts.importRequested,
+						text: localeRef.value.env.importRequested,
 					});
 				}).catch((err) => {
 					os.alert({
@@ -315,7 +316,7 @@ const setTagBulk = async () => {
 const delBulk = async () => {
 	const { canceled } = await os.confirm({
 		type: 'warning',
-		text: i18n.ts.deleteConfirm,
+		text: localeRef.value.env.deleteConfirm,
 	});
 	if (canceled) return;
 	await os.apiWithDialog('admin/emoji/delete-bulk', {
@@ -327,24 +328,24 @@ const delBulk = async () => {
 const headerActions = computed(() => [{
 	asFullButton: true,
 	icon: 'ti ti-plus',
-	text: i18n.ts.addEmoji,
+	text: localeRef.value.env.addEmoji,
 	handler: add,
 }, {
 	icon: 'ti ti-dots',
-	text: i18n.ts.more,
+	text: localeRef.value.env.more,
 	handler: menu,
 }]);
 
 const headerTabs = computed(() => [{
 	key: 'local',
-	title: i18n.ts.local,
+	title: localeRef.value.env.local,
 }, {
 	key: 'remote',
-	title: i18n.ts.remote,
+	title: localeRef.value.env.remote,
 }]);
 
 definePage(() => ({
-	title: i18n.ts.customEmojis,
+	title: localeRef.value.env.customEmojis,
 	icon: 'ti ti-icons',
 }));
 </script>

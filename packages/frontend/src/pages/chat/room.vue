@@ -13,22 +13,22 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 			<div v-else-if="messages.length === 0">
 				<div class="_gaps" style="text-align: center;">
-					<div>{{ i18n.ts._chat.noMessagesYet }}</div>
+					<div>{{ $locale.env._chat.noMessagesYet }}</div>
 					<template v-if="user">
-						<div v-if="user.chatScope === 'followers'">{{ i18n.ts._chat.thisUserAllowsChatOnlyFromFollowers }}</div>
-						<div v-else-if="user.chatScope === 'following'">{{ i18n.ts._chat.thisUserAllowsChatOnlyFromFollowing }}</div>
-						<div v-else-if="user.chatScope === 'mutual'">{{ i18n.ts._chat.thisUserAllowsChatOnlyFromMutualFollowing }}</div>
-						<div v-else-if="user.chatScope === 'none'">{{ i18n.ts._chat.thisUserNotAllowedChatAnyone }}</div>
+						<div v-if="user.chatScope === 'followers'">{{ $locale.env._chat.thisUserAllowsChatOnlyFromFollowers }}</div>
+						<div v-else-if="user.chatScope === 'following'">{{ $locale.env._chat.thisUserAllowsChatOnlyFromFollowing }}</div>
+						<div v-else-if="user.chatScope === 'mutual'">{{ $locale.env._chat.thisUserAllowsChatOnlyFromMutualFollowing }}</div>
+						<div v-else-if="user.chatScope === 'none'">{{ $locale.env._chat.thisUserNotAllowedChatAnyone }}</div>
 					</template>
 					<template v-else-if="room">
-						<div>{{ i18n.ts._chat.inviteUserToChat }}</div>
+						<div>{{ $locale.env._chat.inviteUserToChat }}</div>
 					</template>
 				</div>
 			</div>
 
 			<div v-else ref="timelineEl" class="_gaps">
 				<div v-if="canFetchMore">
-					<MkButton :class="$style.more" :wait="moreFetching" primary rounded @click="fetchMore">{{ i18n.ts.loadMore }}</MkButton>
+					<MkButton :class="$style.more" :wait="moreFetching" primary rounded @click="fetchMore">{{ $locale.env.loadMore }}</MkButton>
 				</div>
 
 				<TransitionGroup
@@ -51,10 +51,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 
 			<div v-if="user && (!user.canChat || user.host !== null)">
-				<MkInfo warn>{{ i18n.ts._chat.chatNotAvailableInOtherAccount }}</MkInfo>
+				<MkInfo warn>{{ $locale.env._chat.chatNotAvailableInOtherAccount }}</MkInfo>
 			</div>
 
-			<MkInfo v-if="$i.policies.chatAvailability !== 'available'" warn>{{ $i.policies.chatAvailability === 'readonly' ? i18n.ts._chat.chatIsReadOnlyForThisAccountOrServer : i18n.ts._chat.chatNotAvailableForThisAccountOrServer }}</MkInfo>
+			<MkInfo v-if="$i.policies.chatAvailability !== 'available'" warn>{{ $i.policies.chatAvailability === 'readonly' ? $locale.env._chat.chatIsReadOnlyForThisAccountOrServer : $locale.env._chat.chatNotAvailableForThisAccountOrServer }}</MkInfo>
 		</div>
 	</div>
 
@@ -76,7 +76,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<Transition name="fade">
 					<div v-show="showIndicator" :class="$style.new">
 						<button class="_buttonPrimary" :class="$style.newButton" @click="onIndicatorClick">
-							<i class="fas ti-fw fa-arrow-circle-down" :class="$style.newIcon"></i>{{ i18n.ts._chat.newMessage }}
+							<i class="fas ti-fw fa-arrow-circle-down" :class="$style.newIcon"></i>{{ $locale.env._chat.newMessage }}
 						</button>
 					</div>
 				</Transition>
@@ -88,6 +88,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef } from '@/i18n.js';
+
 import { ref, useTemplateRef, computed, onMounted, onBeforeUnmount, onDeactivated, onActivated } from 'vue';
 import * as Misskey from 'misskey-js';
 import { getScrollContainer } from '@@/js/scroll.js';
@@ -101,7 +103,6 @@ import type { PageHeaderItem } from '@/types/page-header.js';
 import * as os from '@/os.js';
 import { useStream } from '@/stream.js';
 import * as sound from '@/utility/sound.js';
-import { i18n } from '@/i18n.js';
 import { ensureSignin } from '@/i.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { definePage } from '@/page.js';
@@ -206,7 +207,7 @@ async function initialize() {
 		if (rResult.status === 'rejected') {
 			os.alert({
 				type: 'error',
-				text: i18n.ts.somethingHappened,
+				text: localeRef.value.env.somethingHappened,
 			});
 			initializing.value = false;
 			return;
@@ -218,7 +219,7 @@ async function initialize() {
 			const confirm = await os.confirm({
 				type: 'question',
 				title: r.name,
-				text: i18n.ts._chat.youAreNotAMemberOfThisRoomButInvited + '\n' + i18n.ts._chat.doYouAcceptInvitation,
+				text: localeRef.value.env._chat.youAreNotAMemberOfThisRoomButInvited + '\n' + localeRef.value.env._chat.doYouAcceptInvitation,
 			});
 			if (confirm.canceled) {
 				initializing.value = false;
@@ -381,7 +382,7 @@ async function leaveRoom() {
 
 	const { canceled } = await os.confirm({
 		type: 'warning',
-		text: i18n.ts.areYouSure,
+		text: localeRef.value.env.areYouSure,
 	});
 	if (canceled) return;
 
@@ -397,7 +398,7 @@ function showMenu(ev: PointerEvent) {
 	if (room.value) {
 		if (room.value.ownerId === $i.id) {
 			menuItems.push({
-				text: i18n.ts._chat.inviteUser,
+				text: localeRef.value.env._chat.inviteUser,
 				icon: 'ti ti-user-plus',
 				action: () => {
 					inviteUser();
@@ -405,7 +406,7 @@ function showMenu(ev: PointerEvent) {
 			});
 		} else {
 			menuItems.push({
-				text: i18n.ts._chat.leave,
+				text: localeRef.value.env._chat.leave,
 				icon: 'ti ti-x',
 				action: () => {
 					leaveRoom();
@@ -421,27 +422,27 @@ const tab = ref('chat');
 
 const headerTabs = computed(() => room.value ? [{
 	key: 'chat',
-	title: i18n.ts._chat.messages,
+	title: localeRef.value.env._chat.messages,
 	icon: 'ti ti-messages',
 }, {
 	key: 'members',
-	title: i18n.ts._chat.members,
+	title: localeRef.value.env._chat.members,
 	icon: 'ti ti-users',
 }, {
 	key: 'search',
-	title: i18n.ts.search,
+	title: localeRef.value.env.search,
 	icon: 'ti ti-search',
 }, {
 	key: 'info',
-	title: i18n.ts.info,
+	title: localeRef.value.env.info,
 	icon: 'ti ti-info-circle',
 }] : [{
 	key: 'chat',
-	title: i18n.ts._chat.messages,
+	title: localeRef.value.env._chat.messages,
 	icon: 'ti ti-messages',
 }, {
 	key: 'search',
-	title: i18n.ts.search,
+	title: localeRef.value.env.search,
 	icon: 'ti ti-search',
 }]);
 
@@ -465,12 +466,12 @@ definePage(computed(() => {
 			};
 		} else {
 			return {
-				title: i18n.ts.directMessage,
+				title: localeRef.value.env.directMessage,
 			};
 		}
 	} else {
 		return {
-			title: i18n.ts.directMessage,
+			title: localeRef.value.env.directMessage,
 		};
 	}
 }));

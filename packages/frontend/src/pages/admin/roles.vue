@@ -8,9 +8,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div class="_spacer" style="--MI_SPACER-w: 700px;">
 		<div class="_gaps">
 			<MkFolder>
-				<template #label>{{ i18n.ts._role.baseRole }}</template>
+				<template #label>{{ $locale.env._role.baseRole }}</template>
 				<template #footer>
-					<MkButton primary rounded @click="updateBaseRole">{{ i18n.ts.save }}</MkButton>
+					<MkButton primary rounded @click="updateBaseRole">{{ $locale.env.save }}</MkButton>
 				</template>
 				<div class="_gaps_s">
 					<MkInput v-model="baseRoleQ" type="search">
@@ -24,16 +24,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 					/>
 				</div>
 			</MkFolder>
-			<MkButton primary rounded @click="create"><i class="ti ti-plus"></i> {{ i18n.ts._role.new }}</MkButton>
+			<MkButton primary rounded @click="create"><i class="ti ti-plus"></i> {{ $locale.env._role.new }}</MkButton>
 			<div class="_gaps_s">
 				<MkFoldableSection>
-					<template #header>{{ i18n.ts._role.manualRoles }}</template>
+					<template #header>{{ $locale.env._role.manualRoles }}</template>
 					<div class="_gaps_s">
 						<MkRolePreview v-for="role in roles.filter(x => x.target === 'manual')" :key="role.id" :role="role" :forModeration="true"/>
 					</div>
 				</MkFoldableSection>
 				<MkFoldableSection>
-					<template #header>{{ i18n.ts._role.conditionalRoles }}</template>
+					<template #header>{{ $locale.env._role.conditionalRoles }}</template>
 					<div class="_gaps_s">
 						<MkRolePreview v-for="role in roles.filter(x => x.target === 'conditional')" :key="role.id" :role="role" :forModeration="true"/>
 					</div>
@@ -45,6 +45,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef } from '@/i18n.js';
+
 import { computed, reactive, ref } from 'vue';
 import MkInput from '@/components/MkInput.vue';
 import MkFolder from '@/components/MkFolder.vue';
@@ -53,7 +55,6 @@ import MkRolePreview from '@/components/MkRolePreview.vue';
 import XPolicyEditor from './roles.policy-editor.vue';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
-import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
 import { instance, fetchInstance } from '@/instance.js';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';
@@ -84,7 +85,7 @@ const headerActions = computed(() => []);
 const headerTabs = computed(() => []);
 
 definePage(() => ({
-	title: i18n.ts.roles,
+	title: localeRef.value.env.roles,
 	icon: 'ti ti-badges',
 }));
 </script>

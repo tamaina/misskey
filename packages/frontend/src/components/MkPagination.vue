@@ -27,14 +27,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div v-else key="_root_" class="_gaps">
 				<div v-if="direction === 'up' || direction === 'both'" v-show="upButtonVisible">
 					<MkButton v-if="!upButtonLoading" v-appear="shouldEnableInfiniteScroll ? upButtonClick : null" :class="$style.more" primary rounded @click="upButtonClick">
-						{{ i18n.ts.loadMore }}
+						{{ $locale.env.loadMore }}
 					</MkButton>
 					<MkLoading v-else/>
 				</div>
 				<slot :items="getValue(paginator.items)" :fetching="paginator.fetching.value || paginator.fetchingOlder.value"></slot>
 				<div v-if="direction === 'down' || direction === 'both'" v-show="downButtonVisible">
 					<MkButton v-if="!downButtonLoading" v-appear="shouldEnableInfiniteScroll ? downButtonClick : null" :class="$style.more" primary rounded @click="downButtonClick">
-						{{ i18n.ts.loadMore }}
+						{{ $locale.env.loadMore }}
 					</MkButton>
 					<MkLoading v-else/>
 				</div>
@@ -45,6 +45,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts">
+
 export type MkPaginationOptions = {
 	autoLoad?: boolean;
 	/**
@@ -63,12 +64,13 @@ export type MkPaginationOptions = {
 </script>
 
 <script lang="ts" setup generic="T extends IPaginator">
+import { $locale as localeRef } from '@/i18n.js';
+
 import { isLink } from '@@/js/is-link.js';
 import { onMounted, computed, watch, unref } from 'vue';
 import type { UnwrapRef } from 'vue';
 import type { IPaginator } from '@/utility/paginator.js';
 import MkButton from '@/components/MkButton.vue';
-import { i18n } from '@/i18n.js';
 import { prefer } from '@/preferences.js';
 import MkPullToRefresh from '@/components/MkPullToRefresh.vue';
 import MkPaginationControl from '@/components/MkPaginationControl.vue';
@@ -95,7 +97,7 @@ function onContextmenu(ev: PointerEvent) {
 	// TODO: 並び順設定
 	os.contextMenu([{
 		icon: 'ti ti-refresh',
-		text: i18n.ts.reload,
+		text: localeRef.value.env.reload,
 		action: () => {
 			props.paginator.reload();
 		},

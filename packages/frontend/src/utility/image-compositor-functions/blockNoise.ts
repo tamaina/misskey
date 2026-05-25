@@ -7,7 +7,7 @@ import seedrandom from 'seedrandom';
 import shader from './blockNoise.glsl';
 import type { ImageEffectorUiDefinition } from '../image-effector/ImageEffector.js';
 import { defineImageCompositorFunction } from '@/lib/ImageCompositor.js';
-import { i18n } from '@/i18n.js';
+import { $locale, $l } from '@/i18n.js';
 
 export const fn = defineImageCompositorFunction<{
 	amount: number;
@@ -40,10 +40,10 @@ export const fn = defineImageCompositorFunction<{
 });
 
 export const uiDefinition = {
-	name: i18n.ts._imageEffector._fxs.glitch + ': ' + i18n.ts._imageEffector._fxs.blockNoise,
+	name: $locale.value.env._imageEffector._fxs.glitch + ': ' + $locale.value.env._imageEffector._fxs.blockNoise,
 	params: {
 		amount: {
-			label: i18n.ts._imageEffector._fxProps.amount,
+			label: $locale.value.env._imageEffector._fxProps.amount,
 			type: 'number',
 			default: 50,
 			min: 1,
@@ -51,7 +51,7 @@ export const uiDefinition = {
 			step: 1,
 		},
 		strength: {
-			label: i18n.ts._imageEffector._fxProps.strength,
+			label: $locale.value.env._imageEffector._fxProps.strength,
 			type: 'number',
 			default: 0.05,
 			min: -1,
@@ -60,7 +60,7 @@ export const uiDefinition = {
 			toViewValue: v => Math.round(v * 100) + '%',
 		},
 		width: {
-			label: i18n.ts.width,
+			label: $locale.value.env.width,
 			type: 'number',
 			default: 0.05,
 			min: 0.01,
@@ -69,7 +69,7 @@ export const uiDefinition = {
 			toViewValue: v => Math.round(v * 100) + '%',
 		},
 		height: {
-			label: i18n.ts.height,
+			label: $locale.value.env.height,
 			type: 'number',
 			default: 0.01,
 			min: 0.01,
@@ -78,7 +78,7 @@ export const uiDefinition = {
 			toViewValue: v => Math.round(v * 100) + '%',
 		},
 		channelShift: {
-			label: i18n.ts._imageEffector._fxProps.glitchChannelShift,
+			label: $locale.value.env._imageEffector._fxProps.glitchChannelShift,
 			type: 'number',
 			default: 0,
 			min: 0,
@@ -87,7 +87,7 @@ export const uiDefinition = {
 			toViewValue: v => Math.round(v * 100) + '%',
 		},
 		seed: {
-			label: i18n.ts._imageEffector._fxProps.seed,
+			label: $locale.value.env._imageEffector._fxProps.seed,
 			type: 'seed',
 			default: 100,
 		},

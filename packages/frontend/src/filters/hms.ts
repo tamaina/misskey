@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { i18n } from '@/i18n.js';
 
+import { $locale, $l } from '@/i18n.js';
 export function hms(ms: number, options?: {
 	textFormat?: 'colon' | 'locale';
 	enableSeconds?: boolean;
@@ -49,9 +49,9 @@ export function hms(ms: number, options?: {
 
 	// 結果を返す
 	if (_options.textFormat === 'locale') {
-		res.h += i18n.ts._time.hour;
-		res.m += i18n.ts._time.minute;
-		res.s += i18n.ts._time.second;
+		res.h += $locale.value.env._time.hour;
+		res.m += $locale.value.env._time.minute;
+		res.s += $locale.value.env._time.second;
 	}
 	return [
 		res.h.startsWith('00') ? undefined : res.h,

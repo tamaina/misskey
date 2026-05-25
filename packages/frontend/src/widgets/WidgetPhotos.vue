@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <MkContainer :showHeader="widgetProps.showHeader" :naked="widgetProps.transparent" :class="$style.root" :data-transparent="widgetProps.transparent ? true : null" data-cy-mkw-photos class="mkw-photos">
 	<template #icon><i class="ti ti-camera"></i></template>
-	<template #header>{{ i18n.ts._widgets.photos }}</template>
+	<template #header>{{ $locale.env._widgets.photos }}</template>
 
 	<div class="">
 		<MkLoading v-if="fetching"/>
@@ -22,6 +22,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef } from '@/i18n.js';
+
 import { onUnmounted, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import { useWidgetPropsManager } from './widget.js';
@@ -32,19 +34,18 @@ import { getStaticImageUrl } from '@/utility/media-proxy.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import MkContainer from '@/components/MkContainer.vue';
 import { prefer } from '@/preferences.js';
-import { i18n } from '@/i18n.js';
 
 const name = 'photos';
 
 const widgetPropsDef = {
 	showHeader: {
 		type: 'boolean',
-		label: i18n.ts._widgetOptions.showHeader,
+		label: localeRef.value.env._widgetOptions.showHeader,
 		default: true,
 	},
 	transparent: {
 		type: 'boolean',
-		label: i18n.ts._widgetOptions.transparent,
+		label: localeRef.value.env._widgetOptions.transparent,
 		default: false,
 	},
 } satisfies FormWithDefault;

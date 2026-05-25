@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <span
-	v-tooltip="checked ? i18n.ts.itsOn : i18n.ts.itsOff"
+	v-tooltip="checked ? $locale.env.itsOn : $locale.env.itsOff"
 	:class="{
 		[$style.button]: true,
 		[$style.buttonChecked]: checked,
@@ -19,9 +19,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+
 import { toRefs } from 'vue';
 import type { Ref } from 'vue';
-import { i18n } from '@/i18n.js';
 
 const props = withDefaults(defineProps<{
 	checked: boolean | Ref<boolean>;

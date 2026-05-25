@@ -6,12 +6,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <MkContainer :showHeader="widgetProps.showHeader" class="mkw-userList">
 	<template #icon><i class="ti ti-users"></i></template>
-	<template #header>{{ list ? list.name : i18n.ts._widgets.userList }}</template>
+	<template #header>{{ list ? list.name : $locale.env._widgets.userList }}</template>
 	<template #func="{ buttonStyleClass }"><button class="_button" :class="buttonStyleClass" @click="configure()"><i class="ti ti-settings"></i></button></template>
 
 	<div :class="$style.root">
 		<div v-if="widgetProps.listId == null" class="init">
-			<MkButton primary @click="chooseList">{{ i18n.ts._widgets._userList.chooseList }}</MkButton>
+			<MkButton primary @click="chooseList">{{ $locale.env._widgets._userList.chooseList }}</MkButton>
 		</div>
 		<MkLoading v-else-if="fetching"/>
 		<div v-else class="users">
@@ -24,6 +24,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef } from '@/i18n.js';
+
 import { ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import { useWidgetPropsManager } from './widget.js';
@@ -33,7 +35,6 @@ import MkContainer from '@/components/MkContainer.vue';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { useInterval } from '@@/js/use-interval.js';
-import { i18n } from '@/i18n.js';
 import MkButton from '@/components/MkButton.vue';
 
 const name = 'userList';
@@ -41,7 +42,7 @@ const name = 'userList';
 const widgetPropsDef = {
 	showHeader: {
 		type: 'boolean',
-		label: i18n.ts._widgetOptions.showHeader,
+		label: localeRef.value.env._widgetOptions.showHeader,
 		default: true,
 	},
 	listId: {
@@ -69,7 +70,7 @@ const fetching = ref(true);
 async function chooseList() {
 	const lists = await misskeyApi('users/lists/list');
 	const { canceled, result: listId } = await os.select({
-		title: i18n.ts.selectList,
+		title: localeRef.value.env.selectList,
 		items: lists.map(x => ({
 			value: x.id, label: x.name,
 		})),

@@ -23,20 +23,21 @@ SPDX-License-Identifier: AGPL-3.0-only
 				full
 				:disabled="!hasReachedBottom"
 				@click="ok"
-			>{{ hasReachedBottom ? i18n.ts.close : i18n.ts.scrollToClose }}</MkButton>
+			>{{ hasReachedBottom ? $locale.env.close : $locale.env.scrollToClose }}</MkButton>
 		</div>
 	</div>
 </MkModal>
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef, $l as localizerRef } from '@/i18n.js';
+
 import { onMounted, ref, useTemplateRef } from 'vue';
 import * as Misskey from 'misskey-js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import MkModal from '@/components/MkModal.vue';
 import MkButton from '@/components/MkButton.vue';
-import { i18n } from '@/i18n.js';
 import { $i } from '@/i.js';
 import { updateCurrentAccountPartial } from '@/accounts.js';
 
@@ -56,8 +57,8 @@ async function ok() {
 	if (props.announcement.needConfirmationToRead) {
 		const confirm = await os.confirm({
 			type: 'question',
-			title: i18n.ts._announcement.readConfirmTitle,
-			text: i18n.tsx._announcement.readConfirmText({ title: props.announcement.title }),
+			title: localeRef.value.env._announcement.readConfirmTitle,
+			text: localizerRef.value.env._announcement.readConfirmText({ title: props.announcement.title }),
 		});
 		if (confirm.canceled) return;
 	}

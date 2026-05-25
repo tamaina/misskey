@@ -5,10 +5,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div class="_gaps">
-	<div style="text-align: center;">{{ i18n.ts._initialAccountSetting.followUsers }}</div>
+	<div style="text-align: center;">{{ $locale.env._initialAccountSetting.followUsers }}</div>
 
 	<MkFolder :defaultOpen="true">
-		<template #label>{{ i18n.ts.recommended }}</template>
+		<template #label>{{ $locale.env.recommended }}</template>
 
 		<MkPagination :paginator="pinnedUsersPaginator">
 			<template #default="{ items }">
@@ -20,7 +20,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</MkFolder>
 
 	<MkFolder :defaultOpen="true">
-		<template #label>{{ i18n.ts.popularUsers }}</template>
+		<template #label>{{ $locale.env.popularUsers }}</template>
 
 		<MkPagination :paginator="popularUsersPaginator">
 			<template #default="{ items }">
@@ -34,8 +34,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+
 import { markRaw } from 'vue';
-import { i18n } from '@/i18n.js';
 import MkFolder from '@/components/MkFolder.vue';
 import XUser from '@/components/MkUserSetupDialog.User.vue';
 import MkPagination from '@/components/MkPagination.vue';

@@ -4,6 +4,7 @@
  */
 
 import type { Ref } from 'vue';
+import { $locale, $l } from '@/i18n.js';
 
 export function useLeaveGuard(enabled: Ref<boolean>) {
 	/* TODO
@@ -15,7 +16,7 @@ export function useLeaveGuard(enabled: Ref<boolean>) {
 
 			const { canceled } = await os.confirm({
 				type: 'warning',
-				text: i18n.ts.leaveConfirm,
+				text: $locale.value.env.leaveConfirm,
 			});
 
 			return canceled;
@@ -26,7 +27,7 @@ export function useLeaveGuard(enabled: Ref<boolean>) {
 
 			const { canceled } = await os.confirm({
 				type: 'warning',
-				text: i18n.ts.leaveConfirm,
+				text: $locale.value.env.leaveConfirm,
 			});
 
 			return !canceled;

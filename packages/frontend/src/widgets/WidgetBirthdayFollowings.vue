@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <MkContainer :style="`height: ${widgetProps.height}px;`" :showHeader="widgetProps.showHeader" :scrollable="true" class="mkw-bdayfollowings">
 	<template #icon><i class="ti ti-cake"></i></template>
-	<template #header>{{ i18n.ts._widgets.birthdayFollowings }}</template>
+	<template #header>{{ $locale.env._widgets.birthdayFollowings }}</template>
 	<template #func="{ buttonStyleClass }"><button class="_button" :class="buttonStyleClass" @click="fetch"><i class="ti ti-refresh"></i></button></template>
 
 	<MkPagination v-slot="{ items }" :paginator="birthdayUsersPaginator">
@@ -30,6 +30,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef, $l as localizerRef } from '@/i18n.js';
+
 import { computed, markRaw, ref, watch } from 'vue';
 import { useLowresTime } from '@/composables/use-lowres-time.js';
 import { isSeparatorNeeded, getSeparatorInfo } from '@/utility/timeline-date-separate.js';
@@ -39,7 +41,6 @@ import type { FormWithDefault, GetFormResultType } from '@/utility/form.js';
 import MkContainer from '@/components/MkContainer.vue';
 import MkPagination from '@/components/MkPagination.vue';
 import XUser from './WidgetBirthdayFollowings.user.vue';
-import { i18n } from '@/i18n.js';
 import { Paginator } from '@/utility/paginator.js';
 
 const name = 'birthdayFollowings';
@@ -47,30 +48,30 @@ const name = 'birthdayFollowings';
 const widgetPropsDef = {
 	showHeader: {
 		type: 'boolean',
-		label: i18n.ts._widgetOptions.showHeader,
+		label: localeRef.value.env._widgetOptions.showHeader,
 		default: true,
 	},
 	height: {
 		type: 'number' as const,
-		label: i18n.ts._widgetOptions.height,
+		label: localeRef.value.env._widgetOptions.height,
 		default: 300,
 	},
 	period: {
 		type: 'radio' as const,
-		label: i18n.ts._widgetOptions._birthdayFollowings.period,
+		label: localeRef.value.env._widgetOptions._birthdayFollowings.period,
 		default: '3day',
 		options: [{
 			value: 'today' as const,
-			label: i18n.ts.today,
+			label: localeRef.value.env.today,
 		}, {
 			value: '3day' as const,
-			label: i18n.tsx.dayX({ day: 3 }),
+			label: localizerRef.value.env.dayX({ day: 3 }),
 		}, {
 			value: 'week' as const,
-			label: i18n.ts.oneWeek,
+			label: localeRef.value.env.oneWeek,
 		}, {
 			value: 'month' as const,
-			label: i18n.ts.oneMonth,
+			label: localeRef.value.env.oneMonth,
 		}],
 	},
 } satisfies FormWithDefault;

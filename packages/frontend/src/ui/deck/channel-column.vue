@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <XColumn :menu="menu" :column="column" :isStacked="isStacked" :refresher="async () => { await timeline?.reloadTimeline() }">
 	<template #header>
-		<i class="ti ti-device-tv"></i><span style="margin-left: 8px;">{{ column.name || column.timelineNameCache || i18n.ts._deck._columns.channel }}</span>
+		<i class="ti ti-device-tv"></i><span style="margin-left: 8px;">{{ column.name || column.timelineNameCache || $locale.env._deck._columns.channel }}</span>
 	</template>
 
 	<template v-if="column.channelId">
@@ -19,6 +19,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef } from '@/i18n.js';
+
 import { onMounted, ref, shallowRef, watch, useTemplateRef } from 'vue';
 import * as Misskey from 'misskey-js';
 import XColumn from './column.vue';
@@ -31,7 +33,6 @@ import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os.js';
 import { favoritedChannelsCache } from '@/cache.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
-import { i18n } from '@/i18n.js';
 import { soundSettingsButton } from '@/ui/deck/tl-note-notification.js';
 
 const props = defineProps<{
@@ -59,7 +60,7 @@ watch(soundSetting, v => {
 async function setChannel() {
 	const channels = await favoritedChannelsCache.fetch();
 	const { canceled, result: chosenChannelId } = await os.select({
-		title: i18n.ts.selectChannel,
+		title: localeRef.value.env.selectChannel,
 		items: channels.map(x => ({
 			value: x.id, label: x.name,
 		})),
@@ -88,11 +89,11 @@ async function post() {
 
 const menu: MenuItem[] = [{
 	icon: 'ti ti-pencil',
-	text: i18n.ts.selectChannel,
+	text: localeRef.value.env.selectChannel,
 	action: setChannel,
 }, {
 	icon: 'ti ti-bell',
-	text: i18n.ts._deck.newNoteNotificationSettings,
+	text: localeRef.value.env._deck.newNoteNotificationSettings,
 	action: () => soundSettingsButton(soundSetting),
 }];
 </script>

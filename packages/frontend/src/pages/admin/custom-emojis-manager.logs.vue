@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <div>
 	<div v-if="logs.length > 0" style="display:flex; flex-direction: column; overflow-y: scroll; gap: 16px;">
 		<MkSwitch v-model="showingSuccessLogs">
-			<template #label>{{ i18n.ts._customEmojisManager._logs.showSuccessLogSwitch }}</template>
+			<template #label>{{ $locale.env._customEmojisManager._logs.showSuccessLogSwitch }}</template>
 		</MkSwitch>
 		<div>
 			<div v-if="filteredLogs.length > 0">
@@ -17,19 +17,20 @@ SPDX-License-Identifier: AGPL-3.0-only
 				/>
 			</div>
 			<div v-else>
-				{{ i18n.ts._customEmojisManager._logs.failureLogNothing }}
+				{{ $locale.env._customEmojisManager._logs.failureLogNothing }}
 			</div>
 		</div>
 	</div>
 	<div v-else>
-		{{ i18n.ts._customEmojisManager._logs.logNothing }}
+		{{ $locale.env._customEmojisManager._logs.logNothing }}
 	</div>
 </div>
 </template>
 
 <script setup lang="ts">
+import { $locale as localeRef } from '@/i18n.js';
+
 import { computed, ref, toRefs } from 'vue';
-import { i18n } from '@/i18n.js';
 import MkGrid from '@/components/grid/MkGrid.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import { copyGridDataToClipboard } from '@/components/grid/grid-utils.js';
@@ -46,7 +47,7 @@ function setupGrid(): GridSetting {
 				return [
 					{
 						type: 'button',
-						text: i18n.ts._customEmojisManager._gridCommon.copySelectionRows,
+						text: localeRef.value.env._customEmojisManager._gridCommon.copySelectionRows,
 						icon: 'ti ti-copy',
 						action: () => copyGridDataToClipboard(logs, context),
 					},
@@ -64,7 +65,7 @@ function setupGrid(): GridSetting {
 				return [
 					{
 						type: 'button',
-						text: i18n.ts._customEmojisManager._gridCommon.copySelectionRanges,
+						text: localeRef.value.env._customEmojisManager._gridCommon.copySelectionRanges,
 						icon: 'ti ti-copy',
 						action: () => copyGridDataToClipboard(logs, context),
 					},

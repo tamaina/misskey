@@ -6,7 +6,7 @@
 import shader from './zoomLines.glsl';
 import type { ImageEffectorUiDefinition } from '../image-effector/ImageEffector.js';
 import { defineImageCompositorFunction } from '@/lib/ImageCompositor.js';
-import { i18n } from '@/i18n.js';
+import { $locale, $l } from '@/i18n.js';
 
 export const fn = defineImageCompositorFunction<{
 	x: number;
@@ -27,10 +27,10 @@ export const fn = defineImageCompositorFunction<{
 });
 
 export const uiDefinition = {
-	name: i18n.ts._imageEffector._fxs.zoomLines,
+	name: $locale.value.env._imageEffector._fxs.zoomLines,
 	params: {
 		x: {
-			label: i18n.ts._imageEffector._fxProps.centerX,
+			label: $locale.value.env._imageEffector._fxProps.centerX,
 			type: 'number',
 			default: 0.0,
 			min: -1.0,
@@ -38,7 +38,7 @@ export const uiDefinition = {
 			step: 0.01,
 		},
 		y: {
-			label: i18n.ts._imageEffector._fxProps.centerY,
+			label: $locale.value.env._imageEffector._fxProps.centerY,
 			type: 'number',
 			default: 0.0,
 			min: -1.0,
@@ -46,7 +46,7 @@ export const uiDefinition = {
 			step: 0.01,
 		},
 		frequency: {
-			label: i18n.ts._imageEffector._fxProps.frequency,
+			label: $locale.value.env._imageEffector._fxProps.frequency,
 			type: 'number',
 			default: 5.0,
 			min: 0.0,
@@ -54,7 +54,7 @@ export const uiDefinition = {
 			step: 0.1,
 		},
 		density: {
-			label: i18n.ts._imageEffector._fxProps.density,
+			label: $locale.value.env._imageEffector._fxProps.density,
 			type: 'number',
 			default: 0.5,
 			min: 0.0,
@@ -62,7 +62,7 @@ export const uiDefinition = {
 			step: 0.01,
 		},
 		outlineThickness: {
-			label: i18n.ts._imageEffector._fxProps.zoomLinesOutlineThickness,
+			label: $locale.value.env._imageEffector._fxProps.zoomLinesOutlineThickness,
 			type: 'number',
 			default: 0.25,
 			min: 0.0,
@@ -70,7 +70,7 @@ export const uiDefinition = {
 			step: 0.01,
 		},
 		maskSize: {
-			label: i18n.ts._imageEffector._fxProps.zoomLinesMaskSize,
+			label: $locale.value.env._imageEffector._fxProps.zoomLinesMaskSize,
 			type: 'number',
 			default: 0.5,
 			min: 0.0,

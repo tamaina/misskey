@@ -17,10 +17,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div class="_spacer" style="--MI_SPACER-min: 20px; --MI_SPACER-max: 28px;">
 			<div class="_gaps_m">
 				<MkInput v-model="title">
-					<template #label>{{ i18n.ts.title }}</template>
+					<template #label>{{ $locale.env.title }}</template>
 				</MkInput>
 				<MkTextarea v-model="text">
-					<template #label>{{ i18n.ts.text }}</template>
+					<template #label>{{ $locale.env.text }}</template>
 				</MkTextarea>
 				<MkRadios
 					v-model="icon"
@@ -31,33 +31,35 @@ SPDX-License-Identifier: AGPL-3.0-only
 						{ value: 'success', icon: 'ti ti-check', iconStyle: 'color: var(--MI_THEME-success);' },
 					]"
 				>
-					<template #label>{{ i18n.ts.icon }}</template>
+					<template #label>{{ $locale.env.icon }}</template>
 				</MkRadios>
 				<MkRadios
 					v-model="display"
 					:options="[
-						{ value: 'normal', label: i18n.ts.normal },
-						{ value: 'banner', label: i18n.ts.banner },
-						{ value: 'dialog', label: i18n.ts.dialog },
+						{ value: 'normal', label: $locale.env.normal },
+						{ value: 'banner', label: $locale.env.banner },
+						{ value: 'dialog', label: $locale.env.dialog },
 					]"
 				>
-					<template #label>{{ i18n.ts.display }}</template>
+					<template #label>{{ $locale.env.display }}</template>
 				</MkRadios>
 				<MkSwitch v-model="needConfirmationToRead">
-					{{ i18n.ts._announcement.needConfirmationToRead }}
-					<template #caption>{{ i18n.ts._announcement.needConfirmationToReadDescription }}</template>
+					{{ $locale.env._announcement.needConfirmationToRead }}
+					<template #caption>{{ $locale.env._announcement.needConfirmationToReadDescription }}</template>
 				</MkSwitch>
-				<MkButton v-if="announcement" danger @click="del()"><i class="ti ti-trash"></i> {{ i18n.ts.delete }}</MkButton>
+				<MkButton v-if="announcement" danger @click="del()"><i class="ti ti-trash"></i> {{ $locale.env.delete }}</MkButton>
 			</div>
 		</div>
 		<div :class="$style.footer">
-			<MkButton primary rounded style="margin: 0 auto;" @click="done"><i class="ti ti-check"></i> {{ props.announcement ? i18n.ts.update : i18n.ts.create }}</MkButton>
+			<MkButton primary rounded style="margin: 0 auto;" @click="done"><i class="ti ti-check"></i> {{ props.announcement ? $locale.env.update : $locale.env.create }}</MkButton>
 		</div>
 	</div>
 </MkModalWindow>
 </template>
 
 <script lang="ts" setup>
+import { $l as localizerRef } from '@/i18n.js';
+
 import { ref, useTemplateRef } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkModalWindow from '@/components/MkModalWindow.vue';
@@ -65,7 +67,6 @@ import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
-import { i18n } from '@/i18n.js';
 import MkTextarea from '@/components/MkTextarea.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkRadios from '@/components/MkRadios.vue';
@@ -128,7 +129,7 @@ async function done() {
 async function del() {
 	const { canceled } = await os.confirm({
 		type: 'warning',
-		text: i18n.tsx.removeAreYouSure({ x: title.value }),
+		text: localizerRef.value.env.removeAreYouSure({ x: title.value }),
 	});
 	if (canceled) return;
 

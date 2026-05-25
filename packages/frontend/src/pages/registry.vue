@@ -6,11 +6,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <PageWithHeader :actions="headerActions" :tabs="headerTabs">
 	<div class="_spacer" style="--MI_SPACER-w: 600px; --MI_SPACER-min: 16px;">
-		<MkButton primary @click="createKey">{{ i18n.ts._registry.createKey }}</MkButton>
+		<MkButton primary @click="createKey">{{ $locale.env._registry.createKey }}</MkButton>
 
 		<div v-if="scopesWithDomain" class="_gaps_m">
 			<FormSection v-for="domain in scopesWithDomain" :key="domain.domain ?? 'system'">
-				<template #label>{{ domain.domain ? domain.domain.toUpperCase() : i18n.ts.system }}</template>
+				<template #label>{{ domain.domain ? domain.domain.toUpperCase() : $locale.env.system }}</template>
 				<div class="_gaps_s">
 					<FormLink v-for="scope in domain.scopes" :to="`/registry/keys/${domain.domain ?? '@'}/${scope.join('/')}`" class="_monospace">{{ scope.length === 0 ? '(root)' : scope.join('/') }}</FormLink>
 				</div>
@@ -21,12 +21,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef } from '@/i18n.js';
+
 import { ref, computed } from 'vue';
 import * as Misskey from 'misskey-js';
 import JSON5 from 'json5';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
-import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
 import FormLink from '@/components/form/link.vue';
 import FormSection from '@/components/form/section.vue';
@@ -41,19 +42,19 @@ function fetchScopes() {
 }
 
 async function createKey() {
-	const { canceled, result } = await os.form(i18n.ts._registry.createKey, {
+	const { canceled, result } = await os.form(localeRef.value.env._registry.createKey, {
 		key: {
 			type: 'string',
-			label: i18n.ts._registry.key,
+			label: localeRef.value.env._registry.key,
 		},
 		value: {
 			type: 'string',
 			multiline: true,
-			label: i18n.ts.value,
+			label: localeRef.value.env.value,
 		},
 		scope: {
 			type: 'string',
-			label: i18n.ts._registry.scope,
+			label: localeRef.value.env._registry.scope,
 		},
 	});
 
@@ -75,7 +76,7 @@ const headerActions = computed(() => []);
 const headerTabs = computed(() => []);
 
 definePage(() => ({
-	title: i18n.ts.registry,
+	title: localeRef.value.env.registry,
 	icon: 'ti ti-adjustments',
 }));
 </script>

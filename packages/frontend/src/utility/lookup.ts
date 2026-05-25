@@ -6,15 +6,15 @@
 import type { Router } from '@/router.js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
-import { i18n } from '@/i18n.js';
 import { mainRouter } from '@/router.js';
 import { acct } from '@/filters/user';
+import { $locale, $l } from '@/i18n.js';
 
 export async function lookup(router?: Router) {
 	const _router = router ?? mainRouter;
 
 	const { canceled, result: temp } = await os.inputText({
-		title: i18n.ts.lookup,
+		title: $locale.value.env.lookup,
 	});
 	const query = temp ? temp.trim() : '';
 	if (canceled || query.length <= 1) return;
@@ -60,29 +60,29 @@ export async function apLookup(query: string) {
 	});
 
 	os.promiseDialog(promise, null, (err) => {
-		let title = i18n.ts.somethingHappened;
+		let title = $locale.value.env.somethingHappened;
 		let text = err.message + '\n' + err.id;
 
 		switch (err.id) {
 			case '974b799e-1a29-4889-b706-18d4dd93e266':
-				title = i18n.ts._remoteLookupErrors._federationNotAllowed.title;
-				text = i18n.ts._remoteLookupErrors._federationNotAllowed.description;
+				title = $locale.value.env._remoteLookupErrors._federationNotAllowed.title;
+				text = $locale.value.env._remoteLookupErrors._federationNotAllowed.description;
 				break;
 			case '1a5eab56-e47b-48c2-8d5e-217b897d70db':
-				title = i18n.ts._remoteLookupErrors._uriInvalid.title;
-				text = i18n.ts._remoteLookupErrors._uriInvalid.description;
+				title = $locale.value.env._remoteLookupErrors._uriInvalid.title;
+				text = $locale.value.env._remoteLookupErrors._uriInvalid.description;
 				break;
 			case '81b539cf-4f57-4b29-bc98-032c33c0792e':
-				title = i18n.ts._remoteLookupErrors._requestFailed.title;
-				text = i18n.ts._remoteLookupErrors._requestFailed.description;
+				title = $locale.value.env._remoteLookupErrors._requestFailed.title;
+				text = $locale.value.env._remoteLookupErrors._requestFailed.description;
 				break;
 			case '70193c39-54f3-4813-82f0-70a680f7495b':
-				title = i18n.ts._remoteLookupErrors._responseInvalid.title;
-				text = i18n.ts._remoteLookupErrors._responseInvalid.description;
+				title = $locale.value.env._remoteLookupErrors._responseInvalid.title;
+				text = $locale.value.env._remoteLookupErrors._responseInvalid.description;
 				break;
 			case 'dc94d745-1262-4e63-a17d-fecaa57efc82':
-				title = i18n.ts._remoteLookupErrors._noSuchObject.title;
-				text = i18n.ts._remoteLookupErrors._noSuchObject.description;
+				title = $locale.value.env._remoteLookupErrors._noSuchObject.title;
+				text = $locale.value.env._remoteLookupErrors._noSuchObject.description;
 				break;
 		}
 
@@ -91,7 +91,7 @@ export async function apLookup(query: string) {
 			title,
 			text,
 		});
-	}, i18n.ts.fetchingAsApObject);
+	}, $locale.value.env.fetchingAsApObject);
 
 	return await promise;
 }

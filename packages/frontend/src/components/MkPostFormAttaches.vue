@@ -40,6 +40,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef, $l as localizerRef } from '@/i18n.js';
+
 import { inject } from 'vue';
 import * as Misskey from 'misskey-js';
 import type { MenuItem } from '@/types/menu';
@@ -48,7 +50,6 @@ import MkDriveFileThumbnail from '@/components/MkDriveFileThumbnail.vue';
 import MkDraggable from '@/components/MkDraggable.vue';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
-import { i18n } from '@/i18n.js';
 import { prefer } from '@/preferences.js';
 import { DI } from '@/di.js';
 import { globalEvents } from '@/events.js';
@@ -86,7 +87,7 @@ async function detachAndDeleteMedia(file: Misskey.entities.DriveFile) {
 
 	const { canceled } = await os.confirm({
 		type: 'warning',
-		text: i18n.tsx.driveFileDeleteConfirm({ name: file.name }),
+		text: localizerRef.value.env.driveFileDeleteConfirm({ name: file.name }),
 	});
 	if (canceled) return;
 
@@ -115,7 +116,7 @@ async function rename(file: Misskey.entities.DriveFile) {
 	if (mock) return;
 
 	const { canceled, result } = await os.inputText({
-		title: i18n.ts.enterFileName,
+		title: localeRef.value.env.enterFileName,
 		default: file.name,
 		minLength: 1,
 	});
@@ -157,22 +158,22 @@ function showFileMenu(file: Misskey.entities.DriveFile, ev: PointerEvent | Keybo
 	const menuItems: MenuItem[] = [];
 
 	menuItems.push({
-		text: i18n.ts.renameFile,
+		text: localeRef.value.env.renameFile,
 		icon: 'ti ti-forms',
 		action: () => { rename(file); },
 	}, {
-		text: file.isSensitive ? i18n.ts.unmarkAsSensitive : i18n.ts.markAsSensitive,
+		text: file.isSensitive ? localeRef.value.env.unmarkAsSensitive : localeRef.value.env.markAsSensitive,
 		icon: file.isSensitive ? 'ti ti-eye-exclamation' : 'ti ti-eye',
 		action: () => { toggleSensitive(file); },
 	}, {
-		text: i18n.ts.describeFile,
+		text: localeRef.value.env.describeFile,
 		icon: 'ti ti-text-caption',
 		action: () => { describe(file); },
 	});
 
 	if (isImage) {
 		menuItems.push({
-			text: i18n.ts.preview,
+			text: localeRef.value.env.preview,
 			icon: 'ti ti-photo-search',
 			action: async () => {
 				const { dispose } = await os.popupAsyncWithDialog(import('@/components/MkImgPreviewDialog.vue').then(x => x.default), {
@@ -187,11 +188,11 @@ function showFileMenu(file: Misskey.entities.DriveFile, ev: PointerEvent | Keybo
 	menuItems.push({
 		type: 'divider',
 	}, {
-		text: i18n.ts.attachCancel,
+		text: localeRef.value.env.attachCancel,
 		icon: 'ti ti-circle-x',
 		action: () => { detachMedia(file.id); },
 	}, {
-		text: i18n.ts.deleteFile,
+		text: localeRef.value.env.deleteFile,
 		icon: 'ti ti-trash',
 		danger: true,
 		action: () => { detachAndDeleteMedia(file); },
@@ -200,7 +201,7 @@ function showFileMenu(file: Misskey.entities.DriveFile, ev: PointerEvent | Keybo
 	if (prefer.s.devMode) {
 		menuItems.push({ type: 'divider' }, {
 			icon: 'ti ti-hash',
-			text: i18n.ts.copyFileId,
+			text: localeRef.value.env.copyFileId,
 			action: () => {
 				copyToClipboard(file.id);
 			},

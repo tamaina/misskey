@@ -20,7 +20,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				:to="`/admin/file/${file.id}`"
 				:class="[$style.file, '_button']"
 			>
-				<div v-if="file.isSensitive" :class="$style.sensitiveLabel">{{ i18n.ts.sensitive }}</div>
+				<div v-if="file.isSensitive" :class="$style.sensitiveLabel">{{ $locale.env.sensitive }}</div>
 				<MkDriveFileThumbnail :class="$style.thumbnail" :file="file" fit="contain" :highlightWhenSensitive="true"/>
 				<div v-if="viewMode === 'list'" :class="$style.body">
 					<div>
@@ -28,14 +28,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</div>
 					<div>
 						<MkAcct v-if="file.user" :user="file.user"/>
-						<div v-else>{{ i18n.ts.system }}</div>
+						<div v-else>{{ $locale.env.system }}</div>
 					</div>
 					<div>
 						<span style="margin-right: 1em;">{{ file.type }}</span>
 						<span>{{ bytes(file.size) }}</span>
 					</div>
 					<div>
-						<span>{{ i18n.ts.registeredDate }}: <MkTime :time="file.createdAt" mode="detail"/></span>
+						<span>{{ $locale.env.registeredDate }}: <MkTime :time="file.createdAt" mode="detail"/></span>
 					</div>
 				</div>
 			</MkA>
@@ -45,12 +45,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+
 import * as Misskey from 'misskey-js';
 import type { Paginator } from '@/utility/paginator.js';
 import MkPagination from '@/components/MkPagination.vue';
 import MkDriveFileThumbnail from '@/components/MkDriveFileThumbnail.vue';
 import bytes from '@/filters/bytes.js';
-import { i18n } from '@/i18n.js';
 import { dateString } from '@/filters/date.js';
 
 defineProps<{

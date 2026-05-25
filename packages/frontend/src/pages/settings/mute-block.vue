@@ -4,29 +4,29 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<SearchMarker path="/settings/mute-block" :label="i18n.ts.muteAndBlock" icon="ti ti-ban" :keywords="['mute', 'block']">
+<SearchMarker path="/settings/mute-block" :label="$locale.env.muteAndBlock" icon="ti ti-ban" :keywords="['mute', 'block']">
 	<div class="_gaps_m">
 		<MkFeatureBanner icon="/client-assets/prohibited_3d.png" color="#ff2600">
-			<SearchText>{{ i18n.ts._settings.muteAndBlockBanner }}</SearchText>
+			<SearchText>{{ $locale.env._settings.muteAndBlockBanner }}</SearchText>
 		</MkFeatureBanner>
 
 		<div class="_gaps_s">
 			<SearchMarker
-				:label="i18n.ts.wordMute"
+				:label="$locale.env.wordMute"
 				:keywords="['note', 'word', 'soft', 'mute', 'hide']"
 			>
 				<MkFolder>
 					<template #icon><i class="ti ti-message-off"></i></template>
-					<template #label>{{ i18n.ts.wordMute }}</template>
+					<template #label>{{ $locale.env.wordMute }}</template>
 
 					<div class="_gaps_m">
-						<MkInfo>{{ i18n.ts.wordMuteDescription }}</MkInfo>
+						<MkInfo>{{ $locale.env.wordMuteDescription }}</MkInfo>
 
 						<SearchMarker
-							:label="i18n.ts.showMutedWord"
+							:label="$locale.env.showMutedWord"
 							:keywords="['show']"
 						>
-							<MkSwitch v-model="showSoftWordMutedWord">{{ i18n.ts.showMutedWord }}</MkSwitch>
+							<MkSwitch v-model="showSoftWordMutedWord">{{ $locale.env.showMutedWord }}</MkSwitch>
 						</SearchMarker>
 
 						<XWordMute :muted="$i.mutedWords" @save="saveMutedWords"/>
@@ -35,39 +35,39 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</SearchMarker>
 
 			<SearchMarker
-				:label="i18n.ts.hardWordMute"
+				:label="$locale.env.hardWordMute"
 				:keywords="['note', 'word', 'hard', 'mute', 'hide']"
 			>
 				<MkFolder>
 					<template #icon><i class="ti ti-message-off"></i></template>
-					<template #label>{{ i18n.ts.hardWordMute }}</template>
+					<template #label>{{ $locale.env.hardWordMute }}</template>
 
 					<div class="_gaps_m">
-						<MkInfo>{{ i18n.ts.hardWordMuteDescription }}</MkInfo>
+						<MkInfo>{{ $locale.env.hardWordMuteDescription }}</MkInfo>
 						<XWordMute :muted="$i.hardMutedWords" @save="saveHardMutedWords"/>
 					</div>
 				</MkFolder>
 			</SearchMarker>
 
 			<SearchMarker
-				:label="i18n.ts.emojiMute"
+				:label="$locale.env.emojiMute"
 				:keywords="['emoji', 'mute', 'hide']"
 			>
 				<MkFolder>
 					<template #icon><i class="ti ti-mood-off"></i></template>
-					<template #label>{{ i18n.ts.emojiMute }}</template>
+					<template #label>{{ $locale.env.emojiMute }}</template>
 
 					<XEmojiMute/>
 				</mkfolder>
 			</SearchMarker>
 
 			<SearchMarker
-				:label="i18n.ts.instanceMute"
+				:label="$locale.env.instanceMute"
 				:keywords="['note', 'server', 'instance', 'host', 'federation', 'mute', 'hide']"
 			>
 				<MkFolder v-if="instance.federation !== 'none'">
 					<template #icon><i class="ti ti-planet-off"></i></template>
-					<template #label>{{ i18n.ts.instanceMute }}</template>
+					<template #label>{{ $locale.env.instanceMute }}</template>
 
 					<XInstanceMute/>
 				</MkFolder>
@@ -78,10 +78,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 			>
 				<MkFolder>
 					<template #icon><i class="ti ti-repeat-off"></i></template>
-					<template #label><SearchLabel>{{ i18n.ts.mutedUsers }} ({{ i18n.ts.renote }})</SearchLabel></template>
+					<template #label><SearchLabel>{{ $locale.env.mutedUsers }} ({{ $locale.env.renote }})</SearchLabel></template>
 
 					<MkPagination :paginator="renoteMutingPaginator" withControl>
-						<template #empty><MkResult type="empty" :text="i18n.ts.noUsers"/></template>
+						<template #empty><MkResult type="empty" :text="$locale.env.noUsers"/></template>
 
 						<template #default="{ items }">
 							<div class="_gaps_s">
@@ -104,15 +104,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</SearchMarker>
 
 			<SearchMarker
-				:label="i18n.ts.mutedUsers"
+				:label="$locale.env.mutedUsers"
 				:keywords="['note', 'mute', 'hide', 'user']"
 			>
 				<MkFolder>
 					<template #icon><i class="ti ti-eye-off"></i></template>
-					<template #label>{{ i18n.ts.mutedUsers }}</template>
+					<template #label>{{ $locale.env.mutedUsers }}</template>
 
 					<MkPagination :paginator="mutingPaginator" withControl>
-						<template #empty><MkResult type="empty" :text="i18n.ts.noUsers"/></template>
+						<template #empty><MkResult type="empty" :text="$locale.env.noUsers"/></template>
 
 						<template #default="{ items }">
 							<div class="_gaps_s">
@@ -127,7 +127,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 									<div v-if="expandedMuteItems.includes(item.id)" :class="$style.userItemSub">
 										<div>Muted at: <MkTime :time="item.createdAt" mode="detail"/></div>
 										<div v-if="item.expiresAt">Period: {{ new Date(item.expiresAt).toLocaleString() }}</div>
-										<div v-else>Period: {{ i18n.ts.indefinitely }}</div>
+										<div v-else>Period: {{ $locale.env.indefinitely }}</div>
 									</div>
 								</div>
 							</div>
@@ -137,15 +137,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</SearchMarker>
 
 			<SearchMarker
-				:label="i18n.ts.blockedUsers"
+				:label="$locale.env.blockedUsers"
 				:keywords="['block', 'user']"
 			>
 				<MkFolder>
 					<template #icon><i class="ti ti-ban"></i></template>
-					<template #label>{{ i18n.ts.blockedUsers }}</template>
+					<template #label>{{ $locale.env.blockedUsers }}</template>
 
 					<MkPagination :paginator="blockingPaginator" withControl>
-						<template #empty><MkResult type="empty" :text="i18n.ts.noUsers"/></template>
+						<template #empty><MkResult type="empty" :text="$locale.env.noUsers"/></template>
 
 						<template #default="{ items }">
 							<div class="_gaps_s">
@@ -172,6 +172,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef } from '@/i18n.js';
+
 import { ref, computed, watch, markRaw } from 'vue';
 import * as Misskey from 'misskey-js';
 import XEmojiMute from './mute-block.emoji-mute.vue';
@@ -179,7 +181,6 @@ import XInstanceMute from './mute-block.instance-mute.vue';
 import XWordMute from './mute-block.word-mute.vue';
 import MkPagination from '@/components/MkPagination.vue';
 import { userPage } from '@/filters/user.js';
-import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
 import * as os from '@/os.js';
@@ -221,7 +222,7 @@ watch([
 
 async function unrenoteMute(user: Misskey.entities.UserDetailed, ev: PointerEvent) {
 	os.popupMenu([{
-		text: i18n.ts.renoteUnmute,
+		text: localeRef.value.env.renoteUnmute,
 		icon: 'ti ti-x',
 		action: async () => {
 			await os.apiWithDialog('renote-mute/delete', { userId: user.id });
@@ -232,7 +233,7 @@ async function unrenoteMute(user: Misskey.entities.UserDetailed, ev: PointerEven
 
 async function unmute(user: Misskey.entities.UserDetailed, ev: PointerEvent) {
 	os.popupMenu([{
-		text: i18n.ts.unmute,
+		text: localeRef.value.env.unmute,
 		icon: 'ti ti-x',
 		action: async () => {
 			await os.apiWithDialog('mute/delete', { userId: user.id });
@@ -243,7 +244,7 @@ async function unmute(user: Misskey.entities.UserDetailed, ev: PointerEvent) {
 
 async function unblock(user: Misskey.entities.UserDetailed, ev: PointerEvent) {
 	os.popupMenu([{
-		text: i18n.ts.unblock,
+		text: localeRef.value.env.unblock,
 		icon: 'ti ti-x',
 		action: async () => {
 			await os.apiWithDialog('blocking/delete', { userId: user.id });
@@ -289,7 +290,7 @@ const headerActions = computed(() => []);
 const headerTabs = computed(() => []);
 
 definePage(() => ({
-	title: i18n.ts.muteAndBlock,
+	title: localeRef.value.env.muteAndBlock,
 	icon: 'ti ti-ban',
 }));
 </script>

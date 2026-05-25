@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { $locale, $l } from '@/i18n.js';
 // TODO: なんでもかんでもos.tsに突っ込むのやめたいのでよしなに分割する
 
 import { markRaw, ref, defineAsyncComponent, nextTick } from 'vue';
@@ -21,7 +22,6 @@ import type MkRoleSelectDialog_TypeReferenceOnly from '@/components/MkRoleSelect
 import type MkEmojiPickerDialog_TypeReferenceOnly from '@/components/MkEmojiPickerDialog.vue';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { prefer } from '@/preferences.js';
-import { i18n } from '@/i18n.js';
 import MkPostFormDialog from '@/components/MkPostFormDialog.vue';
 import MkWaitingDialog from '@/components/MkWaitingDialog.vue';
 import MkPageWindow from '@/components/MkPageWindow.vue';
@@ -49,8 +49,8 @@ export const apiWithDialog = (<E extends keyof Misskey.Endpoints>(
 		let title: string | undefined;
 		let text = err.message + '\n' + err.id;
 		if (err.code === 'INTERNAL_ERROR') {
-			title = i18n.ts.internalServerError;
-			text = i18n.ts.internalServerErrorDescription;
+			title = $locale.value.env.internalServerError;
+			text = $locale.value.env.internalServerErrorDescription;
 			const date = new Date().toISOString();
 			const { result } = await actions({
 				type: 'error',
@@ -58,11 +58,11 @@ export const apiWithDialog = (<E extends keyof Misskey.Endpoints>(
 				text,
 				actions: [{
 					value: 'ok',
-					text: i18n.ts.gotIt,
+					text: $locale.value.env.gotIt,
 					primary: true,
 				}, {
 					value: 'copy',
-					text: i18n.ts.copyErrorInfo,
+					text: $locale.value.env.copyErrorInfo,
 				}],
 			});
 			if (result === 'copy') {
@@ -70,20 +70,20 @@ export const apiWithDialog = (<E extends keyof Misskey.Endpoints>(
 			}
 			return;
 		} else if (err.code === 'RATE_LIMIT_EXCEEDED') {
-			title = i18n.ts.cannotPerformTemporary;
-			text = i18n.ts.cannotPerformTemporaryDescription;
+			title = $locale.value.env.cannotPerformTemporary;
+			text = $locale.value.env.cannotPerformTemporaryDescription;
 		} else if (err.code === 'INVALID_PARAM') {
-			title = i18n.ts.invalidParamError;
-			text = i18n.ts.invalidParamErrorDescription;
+			title = $locale.value.env.invalidParamError;
+			text = $locale.value.env.invalidParamErrorDescription;
 		} else if (err.code === 'ROLE_PERMISSION_DENIED') {
-			title = i18n.ts.permissionDeniedError;
-			text = i18n.ts.permissionDeniedErrorDescription;
+			title = $locale.value.env.permissionDeniedError;
+			text = $locale.value.env.permissionDeniedErrorDescription;
 		} else if (err.code.startsWith('TOO_MANY')) { // TODO: バックエンドに kind: client/contentsLimitExceeded みたいな感じで送るように統一してもらってそれで判定する
-			title = i18n.ts.youCannotCreateAnymore;
-			text = `${i18n.ts.error}: ${err.id}`;
+			title = $locale.value.env.youCannotCreateAnymore;
+			text = `${$locale.value.env.error}: ${err.id}`;
 		} else if (err.message.startsWith('Unexpected token')) {
-			title = i18n.ts.gotInvalidResponseError;
-			text = i18n.ts.gotInvalidResponseErrorDescription;
+			title = $locale.value.env.gotInvalidResponseError;
+			text = $locale.value.env.gotInvalidResponseErrorDescription;
 		} else if (customErrors && customErrors[err.id] != null) {
 			title = customErrors[err.id].title;
 			text = customErrors[err.id].text;
@@ -231,7 +231,7 @@ export async function popupAsyncWithDialog<T extends Component>(
 		closeWaiting();
 		alert({
 			type: 'error',
-			title: i18n.ts.somethingHappened,
+			title: $locale.value.env.somethingHappened,
 			text: 'CODE: ASYNC_COMP_LOAD_FAIL',
 		});
 		throw err;

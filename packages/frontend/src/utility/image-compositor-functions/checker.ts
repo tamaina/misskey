@@ -6,7 +6,7 @@
 import shader from './checker.glsl';
 import type { ImageEffectorUiDefinition } from '../image-effector/ImageEffector.js';
 import { defineImageCompositorFunction } from '@/lib/ImageCompositor.js';
-import { i18n } from '@/i18n.js';
+import { $locale, $l } from '@/i18n.js';
 
 export const fn = defineImageCompositorFunction<{
 	angle: number;
@@ -24,10 +24,10 @@ export const fn = defineImageCompositorFunction<{
 });
 
 export const uiDefinition = {
-	name: i18n.ts._imageEffector._fxs.checker,
+	name: $locale.value.env._imageEffector._fxs.checker,
 	params: {
 		angle: {
-			label: i18n.ts._imageEffector._fxProps.angle,
+			label: $locale.value.env._imageEffector._fxProps.angle,
 			type: 'number',
 			default: 0,
 			min: -1.0,
@@ -36,7 +36,7 @@ export const uiDefinition = {
 			toViewValue: v => Math.round(v * 90) + '°',
 		},
 		scale: {
-			label: i18n.ts._imageEffector._fxProps.scale,
+			label: $locale.value.env._imageEffector._fxProps.scale,
 			type: 'number',
 			default: 3.0,
 			min: 1.0,
@@ -44,12 +44,12 @@ export const uiDefinition = {
 			step: 0.1,
 		},
 		color: {
-			label: i18n.ts._imageEffector._fxProps.color,
+			label: $locale.value.env._imageEffector._fxProps.color,
 			type: 'color',
 			default: [1, 1, 1],
 		},
 		opacity: {
-			label: i18n.ts._imageEffector._fxProps.opacity,
+			label: $locale.value.env._imageEffector._fxProps.opacity,
 			type: 'number',
 			default: 0.5,
 			min: 0.0,

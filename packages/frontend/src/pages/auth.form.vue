@@ -6,25 +6,25 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <section>
 	<div v-if="permissions.length > 0">
-		<p>{{ i18n.tsx._auth.permission({ name }) }}</p>
+		<p>{{ $l.env._auth.permission({ name }) }}</p>
 		<ul>
-			<li v-for="p in permissions" :key="p">{{ i18n.ts._permissions[p] ?? p }}</li>
+			<li v-for="p in permissions" :key="p">{{ $locale.env._permissions[p] ?? p }}</li>
 		</ul>
 	</div>
-	<div>{{ i18n.tsx._auth.shareAccess({ name: `${name} (${app.id})` }) }}</div>
+	<div>{{ $l.env._auth.shareAccess({ name: `${name} (${app.id})` }) }}</div>
 	<div :class="$style.buttons">
-		<MkButton inline @click="cancel">{{ i18n.ts.cancel }}</MkButton>
-		<MkButton inline primary @click="accept">{{ i18n.ts.accept }}</MkButton>
+		<MkButton inline @click="cancel">{{ $locale.env.cancel }}</MkButton>
+		<MkButton inline primary @click="accept">{{ $locale.env.accept }}</MkButton>
 	</div>
 </section>
 </template>
 
 <script lang="ts" setup>
+
 import { computed } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkButton from '@/components/MkButton.vue';
 import { misskeyApi } from '@/utility/misskey-api.js';
-import { i18n } from '@/i18n.js';
 
 const props = defineProps<{
 	session: Misskey.entities.AuthSessionShowResponse;

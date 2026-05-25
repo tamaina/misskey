@@ -7,36 +7,36 @@ SPDX-License-Identifier: AGPL-3.0-only
 <PageWithHeader :actions="headerActions" :tabs="headerTabs">
 	<div class="_spacer" style="--MI_SPACER-w: 600px; --MI_SPACER-min: 16px;">
 		<div class="_gaps_m">
-			<FormInfo warn>{{ i18n.ts.editTheseSettingsMayBreakAccount }}</FormInfo>
+			<FormInfo warn>{{ $locale.env.editTheseSettingsMayBreakAccount }}</FormInfo>
 
 			<template v-if="value">
 				<FormSplit>
 					<MkKeyValue>
-						<template #key>{{ i18n.ts._registry.domain }}</template>
-						<template #value>{{ props.domain === '@' ? i18n.ts.system : props.domain.toUpperCase() }}</template>
+						<template #key>{{ $locale.env._registry.domain }}</template>
+						<template #value>{{ props.domain === '@' ? $locale.env.system : props.domain.toUpperCase() }}</template>
 					</MkKeyValue>
 					<MkKeyValue>
-						<template #key>{{ i18n.ts._registry.scope }}</template>
+						<template #key>{{ $locale.env._registry.scope }}</template>
 						<template #value>{{ scope.join('/') }}</template>
 					</MkKeyValue>
 					<MkKeyValue>
-						<template #key>{{ i18n.ts._registry.key }}</template>
+						<template #key>{{ $locale.env._registry.key }}</template>
 						<template #value>{{ key }}</template>
 					</MkKeyValue>
 				</FormSplit>
 
 				<MkCodeEditor v-model="valueForEditor" lang="json5">
-					<template #label>{{ i18n.ts.value }} (JSON)</template>
+					<template #label>{{ $locale.env.value }} (JSON)</template>
 				</MkCodeEditor>
 
-				<MkButton primary @click="save"><i class="ti ti-device-floppy"></i> {{ i18n.ts.save }}</MkButton>
+				<MkButton primary @click="save"><i class="ti ti-device-floppy"></i> {{ $locale.env.save }}</MkButton>
 
 				<MkKeyValue>
-					<template #key>{{ i18n.ts.updatedAt }}</template>
+					<template #key>{{ $locale.env.updatedAt }}</template>
 					<template #value><MkTime :time="value.updatedAt" mode="detail"/></template>
 				</MkKeyValue>
 
-				<MkButton danger @click="del"><i class="ti ti-trash"></i> {{ i18n.ts.delete }}</MkButton>
+				<MkButton danger @click="del"><i class="ti ti-trash"></i> {{ $locale.env.delete }}</MkButton>
 			</template>
 		</div>
 	</div>
@@ -44,11 +44,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef } from '@/i18n.js';
+
 import { watch, computed, ref } from 'vue';
 import JSON5 from 'json5';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
-import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
 import MkButton from '@/components/MkButton.vue';
 import MkKeyValue from '@/components/MkKeyValue.vue';
@@ -84,13 +85,13 @@ async function save() {
 	} catch (err) {
 		os.alert({
 			type: 'error',
-			text: i18n.ts.invalidValue,
+			text: localeRef.value.env.invalidValue,
 		});
 		return;
 	}
 	os.confirm({
 		type: 'warning',
-		text: i18n.ts.saveConfirm,
+		text: localeRef.value.env.saveConfirm,
 	}).then(({ canceled }) => {
 		if (canceled) return;
 		os.apiWithDialog('i/registry/set', {
@@ -105,7 +106,7 @@ async function save() {
 function del() {
 	os.confirm({
 		type: 'warning',
-		text: i18n.ts.deleteConfirm,
+		text: localeRef.value.env.deleteConfirm,
 	}).then(({ canceled }) => {
 		if (canceled) return;
 		os.apiWithDialog('i/registry/remove', {
@@ -123,7 +124,7 @@ const headerActions = computed(() => []);
 const headerTabs = computed(() => []);
 
 definePage(() => ({
-	title: i18n.ts.registry,
+	title: localeRef.value.env.registry,
 	icon: 'ti ti-adjustments',
 }));
 </script>

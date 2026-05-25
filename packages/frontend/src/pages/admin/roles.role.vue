@@ -8,23 +8,23 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div class="_spacer" style="--MI_SPACER-w: 700px;">
 		<div class="_gaps">
 			<div class="_buttons">
-				<MkButton primary rounded @click="edit"><i class="ti ti-pencil"></i> {{ i18n.ts.edit }}</MkButton>
-				<MkButton danger rounded @click="del"><i class="ti ti-trash"></i> {{ i18n.ts.delete }}</MkButton>
+				<MkButton primary rounded @click="edit"><i class="ti ti-pencil"></i> {{ $locale.env.edit }}</MkButton>
+				<MkButton danger rounded @click="del"><i class="ti ti-trash"></i> {{ $locale.env.delete }}</MkButton>
 			</div>
 			<MkFolder>
 				<template #icon><i class="ti ti-info-circle"></i></template>
-				<template #label>{{ i18n.ts.info }}</template>
+				<template #label>{{ $locale.env.info }}</template>
 				<XEditor :modelValue="role" readonly/>
 			</MkFolder>
 			<MkFolder v-if="role.target === 'manual'" defaultOpen>
 				<template #icon><i class="ti ti-users"></i></template>
-				<template #label>{{ i18n.ts.users }}</template>
+				<template #label>{{ $locale.env.users }}</template>
 				<template #suffix>{{ role.usersCount }}</template>
 				<div class="_gaps">
-					<MkButton primary rounded @click="assign"><i class="ti ti-plus"></i> {{ i18n.ts.assign }}</MkButton>
+					<MkButton primary rounded @click="assign"><i class="ti ti-plus"></i> {{ $locale.env.assign }}</MkButton>
 
 					<MkPagination :paginator="usersPaginator">
-						<template #empty><MkResult type="empty" :text="i18n.ts.noUsers"/></template>
+						<template #empty><MkResult type="empty" :text="$locale.env.noUsers"/></template>
 
 						<template #default="{ items }">
 							<div class="_gaps_s">
@@ -39,7 +39,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 									<div v-if="expandedItemIds.includes(item.id)" :class="$style.userItemSub">
 										<div>Assigned: <MkTime :time="item.createdAt" mode="detail"/></div>
 										<div v-if="item.expiresAt">Period: {{ new Date(item.expiresAt).toLocaleString() }}</div>
-										<div v-else>Period: {{ i18n.ts.indefinitely }}</div>
+										<div v-else>Period: {{ $locale.env.indefinitely }}</div>
 									</div>
 								</div>
 							</div>
@@ -47,20 +47,21 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</MkPagination>
 				</div>
 			</MkFolder>
-			<MkInfo v-else>{{ i18n.ts._role.isConditionalRole }}</MkInfo>
+			<MkInfo v-else>{{ $locale.env._role.isConditionalRole }}</MkInfo>
 		</div>
 	</div>
 </PageWithHeader>
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef, $l as localizerRef } from '@/i18n.js';
+
 import { computed, markRaw, reactive, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import XEditor from './roles.editor.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
-import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
 import MkButton from '@/components/MkButton.vue';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
@@ -99,7 +100,7 @@ function edit() {
 async function del() {
 	const { canceled } = await os.confirm({
 		type: 'warning',
-		text: i18n.tsx.deleteAreYouSure({ x: role.name }),
+		text: localizerRef.value.env.deleteAreYouSure({ x: role.name }),
 	});
 	if (canceled) return;
 
@@ -114,17 +115,17 @@ async function assign() {
 	const user = await os.selectUser({ includeSelf: true });
 
 	const { canceled: canceled2, result: period } = await os.select({
-		title: i18n.ts.period + ': ' + role.name,
+		title: localeRef.value.env.period + ': ' + role.name,
 		items: [{
-			value: 'indefinitely', label: i18n.ts.indefinitely,
+			value: 'indefinitely', label: localeRef.value.env.indefinitely,
 		}, {
-			value: 'oneHour', label: i18n.ts.oneHour,
+			value: 'oneHour', label: localeRef.value.env.oneHour,
 		}, {
-			value: 'oneDay', label: i18n.ts.oneDay,
+			value: 'oneDay', label: localeRef.value.env.oneDay,
 		}, {
-			value: 'oneWeek', label: i18n.ts.oneWeek,
+			value: 'oneWeek', label: localeRef.value.env.oneWeek,
 		}, {
-			value: 'oneMonth', label: i18n.ts.oneMonth,
+			value: 'oneMonth', label: localeRef.value.env.oneMonth,
 		}],
 		default: 'indefinitely',
 	});
@@ -144,7 +145,7 @@ async function assign() {
 
 async function unassign(userId: Misskey.entities.User['id'], ev: PointerEvent) {
 	os.popupMenu([{
-		text: i18n.ts.unassign,
+		text: localeRef.value.env.unassign,
 		icon: 'ti ti-x',
 		danger: true,
 		action: async () => {
@@ -168,7 +169,7 @@ const headerActions = computed(() => []);
 const headerTabs = computed(() => []);
 
 definePage(() => ({
-	title: `${i18n.ts.role}: ${role.name}`,
+	title: `${localeRef.value.env.role}: ${role.name}`,
 	icon: 'ti ti-badge',
 }));
 </script>

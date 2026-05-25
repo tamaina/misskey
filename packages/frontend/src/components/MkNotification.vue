@@ -63,21 +63,21 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</div>
 	<div :class="$style.tail">
 		<header :class="$style.header">
-			<span v-if="notification.type === 'pollEnded'">{{ i18n.ts._notification.pollEnded }}</span>
-			<span v-else-if="notification.type === 'scheduledNotePosted'">{{ i18n.ts._notification.scheduledNotePosted }}</span>
-			<span v-else-if="notification.type === 'scheduledNotePostFailed'">{{ i18n.ts._notification.scheduledNotePostFailed }}</span>
-			<span v-else-if="notification.type === 'note'">{{ i18n.ts._notification.newNote }}: <MkUserName :user="notification.note.user"/></span>
-			<span v-else-if="notification.type === 'roleAssigned'">{{ i18n.ts._notification.roleAssigned }}</span>
-			<span v-else-if="notification.type === 'chatRoomInvitationReceived'">{{ i18n.ts._notification.chatRoomInvitationReceived }}</span>
-			<span v-else-if="notification.type === 'achievementEarned'">{{ i18n.ts._notification.achievementEarned }}</span>
-			<span v-else-if="notification.type === 'login'">{{ i18n.ts._notification.login }}</span>
-			<span v-else-if="notification.type === 'createToken'">{{ i18n.ts._notification.createToken }}</span>
-			<span v-else-if="notification.type === 'test'">{{ i18n.ts._notification.testNotification }}</span>
-			<span v-else-if="notification.type === 'exportCompleted'">{{ i18n.tsx._notification.exportOfXCompleted({ x: exportEntityName[notification.exportedEntity] }) }}</span>
+			<span v-if="notification.type === 'pollEnded'">{{ $locale.env._notification.pollEnded }}</span>
+			<span v-else-if="notification.type === 'scheduledNotePosted'">{{ $locale.env._notification.scheduledNotePosted }}</span>
+			<span v-else-if="notification.type === 'scheduledNotePostFailed'">{{ $locale.env._notification.scheduledNotePostFailed }}</span>
+			<span v-else-if="notification.type === 'note'">{{ $locale.env._notification.newNote }}: <MkUserName :user="notification.note.user"/></span>
+			<span v-else-if="notification.type === 'roleAssigned'">{{ $locale.env._notification.roleAssigned }}</span>
+			<span v-else-if="notification.type === 'chatRoomInvitationReceived'">{{ $locale.env._notification.chatRoomInvitationReceived }}</span>
+			<span v-else-if="notification.type === 'achievementEarned'">{{ $locale.env._notification.achievementEarned }}</span>
+			<span v-else-if="notification.type === 'login'">{{ $locale.env._notification.login }}</span>
+			<span v-else-if="notification.type === 'createToken'">{{ $locale.env._notification.createToken }}</span>
+			<span v-else-if="notification.type === 'test'">{{ $locale.env._notification.testNotification }}</span>
+			<span v-else-if="notification.type === 'exportCompleted'">{{ $l.env._notification.exportOfXCompleted({ x: exportEntityName[notification.exportedEntity] }) }}</span>
 			<MkA v-else-if="notification.type === 'follow' || notification.type === 'mention' || notification.type === 'reply' || notification.type === 'renote' || notification.type === 'quote' || notification.type === 'reaction' || notification.type === 'receiveFollowRequest' || notification.type === 'followRequestAccepted'" v-user-preview="notification.user.id" :class="$style.headerName" :to="userPage(notification.user)"><MkUserName :user="notification.user"/></MkA>
-			<span v-else-if="notification.type === 'reaction:grouped' && notification.note.reactionAcceptance === 'likeOnly'">{{ i18n.tsx._notification.likedBySomeUsers({ n: getActualReactedUsersCount(notification) }) }}</span>
-			<span v-else-if="notification.type === 'reaction:grouped'">{{ i18n.tsx._notification.reactedBySomeUsers({ n: getActualReactedUsersCount(notification) }) }}</span>
-			<span v-else-if="notification.type === 'renote:grouped'">{{ i18n.tsx._notification.renotedBySomeUsers({ n: notification.users.length }) }}</span>
+			<span v-else-if="notification.type === 'reaction:grouped' && notification.note.reactionAcceptance === 'likeOnly'">{{ $l.env._notification.likedBySomeUsers({ n: getActualReactedUsersCount(notification) }) }}</span>
+			<span v-else-if="notification.type === 'reaction:grouped'">{{ $l.env._notification.reactedBySomeUsers({ n: getActualReactedUsersCount(notification) }) }}</span>
+			<span v-else-if="notification.type === 'renote:grouped'">{{ $l.env._notification.renotedBySomeUsers({ n: notification.users.length }) }}</span>
 			<span v-else-if="notification.type === 'app'">{{ notification.header }}</span>
 			<MkTime v-if="withTime" :time="notification.createdAt" :class="$style.headerTime"/>
 		</header>
@@ -121,19 +121,19 @@ SPDX-License-Identifier: AGPL-3.0-only
 				{{ notification.invitation.room.name }}
 			</div>
 			<MkA v-else-if="notification.type === 'achievementEarned'" :class="$style.text" to="/my/achievements">
-				{{ i18n.ts._achievements._types[`_${notification.achievement}`].title }}
+				{{ $locale.env._achievements._types[`_${notification.achievement}`].title }}
 			</MkA>
 			<MkA v-else-if="notification.type === 'exportCompleted'" :class="$style.text" :to="`/my/drive/file/${notification.fileId}`">
-				{{ i18n.ts.showFile }}
+				{{ $locale.env.showFile }}
 			</MkA>
 			<MkA v-else-if="notification.type === 'createToken'" :class="$style.text" to="/settings/apps">
-				<Mfm :text="i18n.tsx._notification.createTokenDescription({ text: i18n.ts.manageAccessTokens })"/>
+				<Mfm :text="$l.env._notification.createTokenDescription({ text: $locale.env.manageAccessTokens })"/>
 			</MkA>
 			<template v-else-if="notification.type === 'follow'">
-				<span :class="$style.text" style="opacity: 0.6;">{{ i18n.ts.youGotNewFollower }}</span>
+				<span :class="$style.text" style="opacity: 0.6;">{{ $locale.env.youGotNewFollower }}</span>
 			</template>
 			<template v-else-if="notification.type === 'followRequestAccepted'">
-				<div :class="$style.text" style="opacity: 0.6;">{{ i18n.ts.followRequestAccepted }}</div>
+				<div :class="$style.text" style="opacity: 0.6;">{{ $locale.env.followRequestAccepted }}</div>
 				<div v-if="notification.message" :class="$style.text" style="opacity: 0.6; font-style: oblique;">
 					<i class="ti ti-quote" :class="$style.quote"></i>
 					<Mfm :text="notification.message" :author="notification.user" :plain="true" :nowrap="true"/>
@@ -141,13 +141,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 			</template>
 			<template v-else-if="notification.type === 'receiveFollowRequest'">
-				<span :class="$style.text" style="opacity: 0.6;">{{ i18n.ts.receiveFollowRequest }}</span>
+				<span :class="$style.text" style="opacity: 0.6;">{{ $locale.env.receiveFollowRequest }}</span>
 				<div v-if="full && !followRequestDone" :class="$style.followRequestCommands">
-					<MkButton :class="$style.followRequestCommandButton" rounded primary @click="acceptFollowRequest()"><i class="ti ti-check"></i> {{ i18n.ts.accept }}</MkButton>
-					<MkButton :class="$style.followRequestCommandButton" rounded danger @click="rejectFollowRequest()"><i class="ti ti-x"></i> {{ i18n.ts.reject }}</MkButton>
+					<MkButton :class="$style.followRequestCommandButton" rounded primary @click="acceptFollowRequest()"><i class="ti ti-check"></i> {{ $locale.env.accept }}</MkButton>
+					<MkButton :class="$style.followRequestCommandButton" rounded danger @click="rejectFollowRequest()"><i class="ti ti-x"></i> {{ $locale.env.reject }}</MkButton>
 				</div>
 			</template>
-			<span v-else-if="notification.type === 'test'" :class="$style.text">{{ i18n.ts._notification.notificationWillBeDisplayedLikeThis }}</span>
+			<span v-else-if="notification.type === 'test'" :class="$style.text">{{ $locale.env._notification.notificationWillBeDisplayedLikeThis }}</span>
 			<span v-else-if="notification.type === 'app'" :class="$style.text">
 				<Mfm :text="notification.body" :nowrap="false"/>
 			</span>
@@ -176,6 +176,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef } from '@/i18n.js';
+
 import { ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkReactionIcon from '@/components/MkReactionIcon.vue';
@@ -183,7 +185,6 @@ import MkButton from '@/components/MkButton.vue';
 import { getNoteSummary } from '@/utility/get-note-summary.js';
 import { notePage } from '@/filters/note.js';
 import { userPage } from '@/filters/user.js';
-import { i18n } from '@/i18n.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { ensureSignin } from '@/i.js';
 
@@ -201,15 +202,15 @@ const props = withDefaults(defineProps<{
 type ExportCompletedNotification = Misskey.entities.Notification & { type: 'exportCompleted' };
 
 const exportEntityName = {
-	antenna: i18n.ts.antennas,
-	blocking: i18n.ts.blockedUsers,
-	clip: i18n.ts.clips,
-	customEmoji: i18n.ts.customEmojis,
-	favorite: i18n.ts.favorites,
-	following: i18n.ts.following,
-	muting: i18n.ts.mutedUsers,
-	note: i18n.ts.notes,
-	userList: i18n.ts.lists,
+	antenna: localeRef.value.env.antennas,
+	blocking: localeRef.value.env.blockedUsers,
+	clip: localeRef.value.env.clips,
+	customEmoji: localeRef.value.env.customEmojis,
+	favorite: localeRef.value.env.favorites,
+	following: localeRef.value.env.following,
+	muting: localeRef.value.env.mutedUsers,
+	note: localeRef.value.env.notes,
+	userList: localeRef.value.env.lists,
 } as const satisfies Record<ExportCompletedNotification['exportedEntity'], string>;
 
 const followRequestDone = ref(false);

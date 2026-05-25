@@ -7,14 +7,17 @@ import { vi } from 'vitest';
 import createFetchMock from 'vitest-fetch-mock';
 import type { Ref } from 'vue';
 import { ref } from 'vue';
+import { setActiveInternationalization } from 'virtual:vite-vue-internationalization';
 // Set i18n
 import locales from 'i18n';
-import { updateI18n } from '@/i18n.js';
+import { i18nReady, internationalization, updateI18n } from '@/i18n.js';
 
 const fetchMocker = createFetchMock(vi);
 fetchMocker.enableMocks();
 
 updateI18n(locales['en-US']);
+setActiveInternationalization(internationalization);
+await i18nReady;
 
 // XXX: misskey-js panics if WebSocket is not defined
 vi.stubGlobal('WebSocket', class WebSocket extends EventTarget { static CLOSING = 2; });

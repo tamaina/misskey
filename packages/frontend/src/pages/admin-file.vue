@@ -10,11 +10,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef } from '@/i18n.js';
+
 import { ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import XRoot from './admin-file.root.vue';
 import { misskeyApi } from '@/utility/misskey-api.js';
-import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
 
 const props = defineProps<{
@@ -34,7 +35,7 @@ function _fetch_() {
 const file = ref<Misskey.entities.DriveFile | null>(null);
 
 definePage(() => ({
-	title: file.value ? `${i18n.ts.file}: ${file.value.name}` : i18n.ts.file,
+	title: file.value ? `${localeRef.value.env.file}: ${file.value.name}` : localeRef.value.env.file,
 	icon: 'ti ti-file',
 }));
 </script>

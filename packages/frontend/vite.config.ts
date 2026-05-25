@@ -2,6 +2,7 @@ import path from 'path';
 import pluginVue from '@vitejs/plugin-vue';
 import pluginGlsl from 'vite-plugin-glsl';
 import { replacePlugin } from 'rolldown/plugins';
+import { vueInternationalization } from 'vite-vue-internationalization';
 import type { UserConfig } from 'vite';
 import { defineConfig } from 'vite';
 import * as yaml from 'js-yaml';
@@ -87,6 +88,7 @@ export function toBase62(n: number): string {
 
 export function getConfig(): UserConfig {
 	const localesHash = toBase62(hash(JSON.stringify(locales)));
+	const vviBuildStrategy = process.env.VVI_BUILD_STRATEGY === 'inline-chunks' ? 'inline-chunks' : 'virtual';
 
 	return {
 		base: '/vite/',
@@ -114,6 +116,13 @@ export function getConfig(): UserConfig {
 		plugins: [
 			pluginWatchLocales(),
 			...searchIndexes.map(options => pluginCreateSearchIndex(options)),
+			vueInternationalization({
+				primaryLocale: 'ja-JP',
+				global: locales,
+				messageSyntax: 'vue',
+				buildStrategy: vviBuildStrategy,
+				sfcTransform: vviBuildStrategy === 'inline-chunks' ? 'all' : 'locale-sources',
+			}),
 			pluginVue(),
 			pluginRemoveUnrefI18n(),
 			pluginUnwindCssModuleClassName(),

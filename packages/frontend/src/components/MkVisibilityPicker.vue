@@ -7,34 +7,34 @@ SPDX-License-Identifier: AGPL-3.0-only
 <MkModal ref="modal" v-slot="{ type }" :zPriority="'high'" :anchorElement="anchorElement" @click="modal?.close()" @closed="emit('closed')" @esc="modal?.close()">
 	<div class="_popup" :class="{ [$style.root]: true, [$style.asDrawer]: type === 'drawer' }">
 		<div :class="[$style.label, $style.item]">
-			{{ i18n.ts.visibility }}
+			{{ $locale.env.visibility }}
 		</div>
 		<button key="public" :disabled="isSilenced || isReplyVisibilitySpecified" class="_button" :class="[$style.item, { [$style.active]: v === 'public' }]" data-index="1" @click="choose('public')">
 			<div :class="$style.icon"><i class="ti ti-world"></i></div>
 			<div :class="$style.body">
-				<span :class="$style.itemTitle">{{ i18n.ts._visibility.public }}</span>
-				<span :class="$style.itemDescription">{{ i18n.ts._visibility.publicDescription }}</span>
+				<span :class="$style.itemTitle">{{ $locale.env._visibility.public }}</span>
+				<span :class="$style.itemDescription">{{ $locale.env._visibility.publicDescription }}</span>
 			</div>
 		</button>
 		<button key="home" :disabled="isReplyVisibilitySpecified" class="_button" :class="[$style.item, { [$style.active]: v === 'home' }]" data-index="2" @click="choose('home')">
 			<div :class="$style.icon"><i class="ti ti-home"></i></div>
 			<div :class="$style.body">
-				<span :class="$style.itemTitle">{{ i18n.ts._visibility.home }}</span>
-				<span :class="$style.itemDescription">{{ i18n.ts._visibility.homeDescription }}</span>
+				<span :class="$style.itemTitle">{{ $locale.env._visibility.home }}</span>
+				<span :class="$style.itemDescription">{{ $locale.env._visibility.homeDescription }}</span>
 			</div>
 		</button>
 		<button key="followers" :disabled="isReplyVisibilitySpecified" class="_button" :class="[$style.item, { [$style.active]: v === 'followers' }]" data-index="3" @click="choose('followers')">
 			<div :class="$style.icon"><i class="ti ti-lock"></i></div>
 			<div :class="$style.body">
-				<span :class="$style.itemTitle">{{ i18n.ts._visibility.followers }}</span>
-				<span :class="$style.itemDescription">{{ i18n.ts._visibility.followersDescription }}</span>
+				<span :class="$style.itemTitle">{{ $locale.env._visibility.followers }}</span>
+				<span :class="$style.itemDescription">{{ $locale.env._visibility.followersDescription }}</span>
 			</div>
 		</button>
 		<button key="specified" class="_button" :class="[$style.item, { [$style.active]: v === 'specified' }]" data-index="4" @click="choose('specified')">
 			<div :class="$style.icon"><i class="ti ti-mail"></i></div>
 			<div :class="$style.body">
-				<span :class="$style.itemTitle">{{ i18n.ts._visibility.specified }}</span>
-				<span :class="$style.itemDescription">{{ i18n.ts._visibility.specifiedDescription }}</span>
+				<span :class="$style.itemTitle">{{ $locale.env._visibility.specified }}</span>
+				<span :class="$style.itemDescription">{{ $locale.env._visibility.specifiedDescription }}</span>
 			</div>
 		</button>
 	</div>
@@ -42,10 +42,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+
 import { nextTick, useTemplateRef, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkModal from '@/components/MkModal.vue';
-import { i18n } from '@/i18n.js';
 
 const modal = useTemplateRef('modal');
 

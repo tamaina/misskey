@@ -10,11 +10,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef } from '@/i18n.js';
+
 import { ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import XRoot from './edit.root.vue';
 import { misskeyApi } from '@/utility/misskey-api.js';
-import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
 
 const props = defineProps<{
@@ -32,7 +33,7 @@ function _fetch_() {
 }
 
 definePage(() => ({
-	title: props.postId ? i18n.ts.edit : i18n.ts.postToGallery,
+	title: props.postId ? localeRef.value.env.edit : localeRef.value.env.postToGallery,
 	icon: 'ti ti-pencil',
 }));
 </script>

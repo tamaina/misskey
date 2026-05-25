@@ -18,7 +18,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div v-if="narrow && !isRoot" :class="$style.header">
 			<img :src="instance.iconUrl || '/favicon.ico'" alt="" :class="$style.headerIcon"/>
 			<MkA to="/" :class="$style.headerTitle">{{ instanceName }}</MkA>
-			<MkButton primary rounded :class="$style.headerButton" @click="goHome">{{ i18n.ts.signup }}</MkButton>
+			<MkButton primary rounded :class="$style.headerButton" @click="goHome">{{ $locale.env.signup }}</MkButton>
 		</div>
 		<div :class="$style.content">
 			<RouterView/>
@@ -29,6 +29,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+
 import { onMounted, provide, ref, computed } from 'vue';
 import { instanceName } from '@@/js/config.js';
 import XCommon from './_common_/common.vue';
@@ -36,7 +37,6 @@ import type { PageMetadata } from '@/page.js';
 import * as os from '@/os.js';
 import { instance } from '@/instance.js';
 import { provideMetadataReceiver, provideReactiveMetadata } from '@/page.js';
-import { i18n } from '@/i18n.js';
 import MkVisitorDashboard from '@/components/MkVisitorDashboard.vue';
 import { mainRouter } from '@/router.js';
 import { DI } from '@/di.js';

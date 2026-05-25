@@ -40,7 +40,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			:customEmojiTree="child.children"
 			@chosen="nestedChosen"
 		>
-			{{ child.value || i18n.ts.other }}
+			{{ child.value || $locale.env.other }}
 		</MkEmojiPickerSection>
 	</div>
 	<div v-if="shown" class="body">
@@ -61,11 +61,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+
 import { ref, computed } from 'vue';
 import { getEmojiName } from '@@/js/emojilist.js';
 import type { Ref } from 'vue';
 import type { CustomEmojiFolderTree } from '@@/js/emojilist.js';
-import { i18n } from '@/i18n.js';
 import { customEmojis } from '@/custom-emojis.js';
 import MkEmojiPickerSection from '@/components/MkEmojiPicker.section.vue';
 

@@ -4,21 +4,21 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<SearchMarker path="/settings/account-data" :label="i18n.ts._settings.accountData" :keywords="['import', 'export', 'data', 'archive']" icon="ti ti-package">
+<SearchMarker path="/settings/account-data" :label="$locale.env._settings.accountData" :keywords="['import', 'export', 'data', 'archive']" icon="ti ti-package">
 	<div class="_gaps_m">
 		<MkFeatureBanner icon="/client-assets/package_3d.png" color="#ff9100">
-			<SearchText>{{ i18n.ts._settings.accountDataBanner }}</SearchText>
+			<SearchText>{{ $locale.env._settings.accountDataBanner }}</SearchText>
 		</MkFeatureBanner>
 
 		<div class="_gaps_s">
 			<SearchMarker :keywords="['notes']">
 				<MkFolder>
 					<template #icon><i class="ti ti-pencil"></i></template>
-					<template #label><SearchLabel>{{ i18n.ts._exportOrImport.allNotes }}</SearchLabel></template>
+					<template #label><SearchLabel>{{ $locale.env._exportOrImport.allNotes }}</SearchLabel></template>
 					<MkFolder :defaultOpen="true">
-						<template #label>{{ i18n.ts.export }}</template>
+						<template #label>{{ $locale.env.export }}</template>
 						<template #icon><i class="ti ti-download"></i></template>
-						<MkButton primary :class="$style.button" inline @click="exportNotes()"><i class="ti ti-download"></i> {{ i18n.ts.export }}</MkButton>
+						<MkButton primary :class="$style.button" inline @click="exportNotes()"><i class="ti ti-download"></i> {{ $locale.env.export }}</MkButton>
 					</MkFolder>
 				</MkFolder>
 			</SearchMarker>
@@ -26,11 +26,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<SearchMarker :keywords="['favorite', 'notes']">
 				<MkFolder>
 					<template #icon><i class="ti ti-star"></i></template>
-					<template #label><SearchLabel>{{ i18n.ts._exportOrImport.favoritedNotes }}</SearchLabel></template>
+					<template #label><SearchLabel>{{ $locale.env._exportOrImport.favoritedNotes }}</SearchLabel></template>
 					<MkFolder :defaultOpen="true">
-						<template #label>{{ i18n.ts.export }}</template>
+						<template #label>{{ $locale.env.export }}</template>
 						<template #icon><i class="ti ti-download"></i></template>
-						<MkButton primary :class="$style.button" inline @click="exportFavorites()"><i class="ti ti-download"></i> {{ i18n.ts.export }}</MkButton>
+						<MkButton primary :class="$style.button" inline @click="exportFavorites()"><i class="ti ti-download"></i> {{ $locale.env.export }}</MkButton>
 					</MkFolder>
 				</MkFolder>
 			</SearchMarker>
@@ -38,11 +38,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<SearchMarker :keywords="['clip', 'notes']">
 				<MkFolder>
 					<template #icon><i class="ti ti-star"></i></template>
-					<template #label><SearchLabel>{{ i18n.ts._exportOrImport.clips }}</SearchLabel></template>
+					<template #label><SearchLabel>{{ $locale.env._exportOrImport.clips }}</SearchLabel></template>
 					<MkFolder :defaultOpen="true">
-						<template #label>{{ i18n.ts.export }}</template>
+						<template #label>{{ $locale.env.export }}</template>
 						<template #icon><i class="ti ti-download"></i></template>
-						<MkButton primary :class="$style.button" inline @click="exportClips()"><i class="ti ti-download"></i> {{ i18n.ts.export }}</MkButton>
+						<MkButton primary :class="$style.button" inline @click="exportClips()"><i class="ti ti-download"></i> {{ $locale.env.export }}</MkButton>
 					</MkFolder>
 				</MkFolder>
 			</SearchMarker>
@@ -50,28 +50,28 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<SearchMarker :keywords="['following', 'users']">
 				<MkFolder>
 					<template #icon><i class="ti ti-users"></i></template>
-					<template #label><SearchLabel>{{ i18n.ts._exportOrImport.followingList }}</SearchLabel></template>
+					<template #label><SearchLabel>{{ $locale.env._exportOrImport.followingList }}</SearchLabel></template>
 					<div class="_gaps_s">
 						<MkFolder :defaultOpen="true">
-							<template #label>{{ i18n.ts.export }}</template>
+							<template #label>{{ $locale.env.export }}</template>
 							<template #icon><i class="ti ti-download"></i></template>
 							<div class="_gaps_s">
 								<MkSwitch v-model="excludeMutingUsers">
-									{{ i18n.ts._exportOrImport.excludeMutingUsers }}
+									{{ $locale.env._exportOrImport.excludeMutingUsers }}
 								</MkSwitch>
 								<MkSwitch v-model="excludeInactiveUsers">
-									{{ i18n.ts._exportOrImport.excludeInactiveUsers }}
+									{{ $locale.env._exportOrImport.excludeInactiveUsers }}
 								</MkSwitch>
-								<MkButton primary :class="$style.button" inline @click="exportFollowing()"><i class="ti ti-download"></i> {{ i18n.ts.export }}</MkButton>
+								<MkButton primary :class="$style.button" inline @click="exportFollowing()"><i class="ti ti-download"></i> {{ $locale.env.export }}</MkButton>
 							</div>
 						</MkFolder>
 						<MkFolder v-if="$i && !$i.movedTo && $i.policies.canImportFollowing" :defaultOpen="true">
-							<template #label>{{ i18n.ts.import }}</template>
+							<template #label>{{ $locale.env.import }}</template>
 							<template #icon><i class="ti ti-upload"></i></template>
 							<MkSwitch v-model="withReplies">
-								{{ i18n.ts._exportOrImport.withReplies }}
+								{{ $locale.env._exportOrImport.withReplies }}
 							</MkSwitch>
-							<MkButton primary :class="$style.button" inline @click="importFollowing($event)"><i class="ti ti-upload"></i> {{ i18n.ts.import }}</MkButton>
+							<MkButton primary :class="$style.button" inline @click="importFollowing($event)"><i class="ti ti-upload"></i> {{ $locale.env.import }}</MkButton>
 						</MkFolder>
 					</div>
 				</MkFolder>
@@ -80,17 +80,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<SearchMarker :keywords="['user', 'lists']">
 				<MkFolder>
 					<template #icon><i class="ti ti-users"></i></template>
-					<template #label><SearchLabel>{{ i18n.ts._exportOrImport.userLists }}</SearchLabel></template>
+					<template #label><SearchLabel>{{ $locale.env._exportOrImport.userLists }}</SearchLabel></template>
 					<div class="_gaps_s">
 						<MkFolder :defaultOpen="true">
-							<template #label>{{ i18n.ts.export }}</template>
+							<template #label>{{ $locale.env.export }}</template>
 							<template #icon><i class="ti ti-download"></i></template>
-							<MkButton primary :class="$style.button" inline @click="exportUserLists()"><i class="ti ti-download"></i> {{ i18n.ts.export }}</MkButton>
+							<MkButton primary :class="$style.button" inline @click="exportUserLists()"><i class="ti ti-download"></i> {{ $locale.env.export }}</MkButton>
 						</MkFolder>
 						<MkFolder v-if="$i && !$i.movedTo && $i.policies.canImportUserLists" :defaultOpen="true">
-							<template #label>{{ i18n.ts.import }}</template>
+							<template #label>{{ $locale.env.import }}</template>
 							<template #icon><i class="ti ti-upload"></i></template>
-							<MkButton primary :class="$style.button" inline @click="importUserLists($event)"><i class="ti ti-upload"></i> {{ i18n.ts.import }}</MkButton>
+							<MkButton primary :class="$style.button" inline @click="importUserLists($event)"><i class="ti ti-upload"></i> {{ $locale.env.import }}</MkButton>
 						</MkFolder>
 					</div>
 				</MkFolder>
@@ -99,17 +99,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<SearchMarker :keywords="['mute', 'users']">
 				<MkFolder>
 					<template #icon><i class="ti ti-user-off"></i></template>
-					<template #label><SearchLabel>{{ i18n.ts._exportOrImport.muteList }}</SearchLabel></template>
+					<template #label><SearchLabel>{{ $locale.env._exportOrImport.muteList }}</SearchLabel></template>
 					<div class="_gaps_s">
 						<MkFolder :defaultOpen="true">
-							<template #label>{{ i18n.ts.export }}</template>
+							<template #label>{{ $locale.env.export }}</template>
 							<template #icon><i class="ti ti-download"></i></template>
-							<MkButton primary :class="$style.button" inline @click="exportMuting()"><i class="ti ti-download"></i> {{ i18n.ts.export }}</MkButton>
+							<MkButton primary :class="$style.button" inline @click="exportMuting()"><i class="ti ti-download"></i> {{ $locale.env.export }}</MkButton>
 						</MkFolder>
 						<MkFolder v-if="$i && !$i.movedTo && $i.policies.canImportMuting" :defaultOpen="true">
-							<template #label>{{ i18n.ts.import }}</template>
+							<template #label>{{ $locale.env.import }}</template>
 							<template #icon><i class="ti ti-upload"></i></template>
-							<MkButton primary :class="$style.button" inline @click="importMuting($event)"><i class="ti ti-upload"></i> {{ i18n.ts.import }}</MkButton>
+							<MkButton primary :class="$style.button" inline @click="importMuting($event)"><i class="ti ti-upload"></i> {{ $locale.env.import }}</MkButton>
 						</MkFolder>
 					</div>
 				</MkFolder>
@@ -118,17 +118,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<SearchMarker :keywords="['block', 'users']">
 				<MkFolder>
 					<template #icon><i class="ti ti-user-off"></i></template>
-					<template #label><SearchLabel>{{ i18n.ts._exportOrImport.blockingList }}</SearchLabel></template>
+					<template #label><SearchLabel>{{ $locale.env._exportOrImport.blockingList }}</SearchLabel></template>
 					<div class="_gaps_s">
 						<MkFolder :defaultOpen="true">
-							<template #label>{{ i18n.ts.export }}</template>
+							<template #label>{{ $locale.env.export }}</template>
 							<template #icon><i class="ti ti-download"></i></template>
-							<MkButton primary :class="$style.button" inline @click="exportBlocking()"><i class="ti ti-download"></i> {{ i18n.ts.export }}</MkButton>
+							<MkButton primary :class="$style.button" inline @click="exportBlocking()"><i class="ti ti-download"></i> {{ $locale.env.export }}</MkButton>
 						</MkFolder>
 						<MkFolder v-if="$i && !$i.movedTo && $i.policies.canImportBlocking" :defaultOpen="true">
-							<template #label>{{ i18n.ts.import }}</template>
+							<template #label>{{ $locale.env.import }}</template>
 							<template #icon><i class="ti ti-upload"></i></template>
-							<MkButton primary :class="$style.button" inline @click="importBlocking($event)"><i class="ti ti-upload"></i> {{ i18n.ts.import }}</MkButton>
+							<MkButton primary :class="$style.button" inline @click="importBlocking($event)"><i class="ti ti-upload"></i> {{ $locale.env.import }}</MkButton>
 						</MkFolder>
 					</div>
 				</MkFolder>
@@ -137,17 +137,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<SearchMarker :keywords="['antennas']">
 				<MkFolder>
 					<template #icon><i class="ti ti-antenna"></i></template>
-					<template #label><SearchLabel>{{ i18n.ts.antennas }}</SearchLabel></template>
+					<template #label><SearchLabel>{{ $locale.env.antennas }}</SearchLabel></template>
 					<div class="_gaps_s">
 						<MkFolder :defaultOpen="true">
-							<template #label>{{ i18n.ts.export }}</template>
+							<template #label>{{ $locale.env.export }}</template>
 							<template #icon><i class="ti ti-download"></i></template>
-							<MkButton primary :class="$style.button" inline @click="exportAntennas()"><i class="ti ti-download"></i> {{ i18n.ts.export }}</MkButton>
+							<MkButton primary :class="$style.button" inline @click="exportAntennas()"><i class="ti ti-download"></i> {{ $locale.env.export }}</MkButton>
 						</MkFolder>
 						<MkFolder v-if="$i && !$i.movedTo && $i.policies.canImportAntennas" :defaultOpen="true">
-							<template #label>{{ i18n.ts.import }}</template>
+							<template #label>{{ $locale.env.import }}</template>
 							<template #icon><i class="ti ti-upload"></i></template>
-							<MkButton primary :class="$style.button" inline @click="importAntennas($event)"><i class="ti ti-upload"></i> {{ i18n.ts.import }}</MkButton>
+							<MkButton primary :class="$style.button" inline @click="importAntennas($event)"><i class="ti ti-upload"></i> {{ $locale.env.import }}</MkButton>
 						</MkFolder>
 					</div>
 				</MkFolder>
@@ -158,6 +158,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef } from '@/i18n.js';
+
 import { ref, computed } from 'vue';
 import MkButton from '@/components/MkButton.vue';
 import MkFolder from '@/components/MkFolder.vue';
@@ -165,7 +167,6 @@ import MkSwitch from '@/components/MkSwitch.vue';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { selectFile } from '@/utility/drive.js';
-import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
 import { $i } from '@/i.js';
 import MkFeatureBanner from '@/components/MkFeatureBanner.vue';
@@ -178,14 +179,14 @@ const withReplies = ref(prefer.s.defaultFollowWithReplies);
 const onExportSuccess = () => {
 	os.alert({
 		type: 'info',
-		text: i18n.ts.exportRequested,
+		text: localeRef.value.env.exportRequested,
 	});
 };
 
 const onImportSuccess = () => {
 	os.alert({
 		type: 'info',
-		text: i18n.ts.importRequested,
+		text: localeRef.value.env.importRequested,
 	});
 };
 
@@ -280,7 +281,7 @@ const headerActions = computed(() => []);
 const headerTabs = computed(() => []);
 
 definePage(() => ({
-	title: i18n.ts._settings.accountData,
+	title: localeRef.value.env._settings.accountData,
 	icon: 'ti ti-package',
 }));
 </script>

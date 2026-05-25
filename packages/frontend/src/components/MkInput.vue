@@ -39,7 +39,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</div>
 	<div :class="$style.caption"><slot name="caption"></slot></div>
 
-	<MkButton v-if="manualSave && changed" primary :class="$style.save" @click="updated"><i class="ti ti-check"></i> {{ i18n.ts.save }}</MkButton>
+	<MkButton v-if="manualSave && changed" primary :class="$style.save" @click="updated"><i class="ti ti-check"></i> {{ $locale.env.save }}</MkButton>
 </div>
 </template>
 
@@ -52,13 +52,13 @@ type ModelValueType<T extends SupportedTypes> =
 </script>
 
 <script lang="ts" setup generic="T extends SupportedTypes = 'text'">
+
 import { onMounted, onUnmounted, nextTick, ref, useTemplateRef, watch, computed, toRefs } from 'vue';
 import { throttle, debounce } from 'throttle-debounce';
 import { useInterval } from '@@/js/use-interval.js';
 import type { InputHTMLAttributes } from 'vue';
 import type { SuggestionType } from '@/utility/autocomplete.js';
 import MkButton from '@/components/MkButton.vue';
-import { i18n } from '@/i18n.js';
 import { Autocomplete } from '@/utility/autocomplete.js';
 import { genId } from '@/utility/id.js';
 

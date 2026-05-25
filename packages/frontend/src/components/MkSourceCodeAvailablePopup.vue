@@ -13,26 +13,26 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</div>
 	<div :class="$style.main">
 		<div :class="$style.title">
-			<I18n :src="i18n.ts.aboutX" tag="span">
+			<I18n :src="$locale.env.aboutX" tag="span">
 				<template #x>
 					{{ instance.name ?? host }}
 				</template>
 			</I18n>
 		</div>
 		<div :class="$style.text">
-			<I18n :src="i18n.ts._aboutMisskey.thisIsModifiedVersion" tag="span">
+			<I18n :src="$locale.env._aboutMisskey.thisIsModifiedVersion" tag="span">
 				<template #name>
 					{{ instance.name ?? host }}
 				</template>
 			</I18n>
-			<I18n :src="i18n.ts.correspondingSourceIsAvailable" tag="span">
+			<I18n :src="$locale.env.correspondingSourceIsAvailable" tag="span">
 				<template #anchor>
-					<MkA to="/about-misskey" class="_link">{{ i18n.ts.aboutMisskey }}</MkA>
+					<MkA to="/about-misskey" class="_link">{{ $locale.env.aboutMisskey }}</MkA>
 				</template>
 			</I18n>
 		</div>
 		<div class="_buttons">
-			<MkButton @click="close">{{ i18n.ts.gotIt }}</MkButton>
+			<MkButton @click="close">{{ $locale.env.gotIt }}</MkButton>
 		</div>
 	</div>
 	<button class="_button" :class="$style.close" @click="close"><i class="ti ti-x"></i></button>
@@ -40,9 +40,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+
 import MkButton from '@/components/MkButton.vue';
 import { host } from '@@/js/config.js';
-import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
 import { miLocalStorage } from '@/local-storage.js';
 import * as os from '@/os.js';

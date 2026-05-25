@@ -14,12 +14,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef } from '@/i18n.js';
+
 import { computed } from 'vue';
 import { useWidgetPropsManager } from './widget.js';
 import type { WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
 import type { FormWithDefault, GetFormResultType } from '@/utility/form.js';
 import { timezones } from '@/utility/timezones.js';
-import { i18n } from '@/i18n.js';
 import MkDigitalClock from '@/components/MkDigitalClock.vue';
 
 const name = 'digitalClock';
@@ -27,34 +28,34 @@ const name = 'digitalClock';
 const widgetPropsDef = {
 	transparent: {
 		type: 'boolean',
-		label: i18n.ts._widgetOptions.transparent,
+		label: localeRef.value.env._widgetOptions.transparent,
 		default: false,
 	},
 	fontSize: {
 		type: 'number',
-		label: i18n.ts.fontSize,
+		label: localeRef.value.env.fontSize,
 		default: 1.5,
 		step: 0.1,
 	},
 	showMs: {
 		type: 'boolean',
-		label: i18n.ts._widgetOptions._clock.showMs,
+		label: localeRef.value.env._widgetOptions._clock.showMs,
 		default: true,
 	},
 	showLabel: {
 		type: 'boolean',
-		label: i18n.ts._widgetOptions._clock.showLabel,
+		label: localeRef.value.env._widgetOptions._clock.showLabel,
 		default: true,
 	},
 	timezone: {
 		type: 'enum',
-		label: i18n.ts._widgetOptions._clock.timezone,
+		label: localeRef.value.env._widgetOptions._clock.timezone,
 		default: null,
 		enum: [...timezones.map((tz) => ({
 			label: tz.name,
 			value: tz.name.toLowerCase(),
 		})), {
-			label: i18n.ts.auto,
+			label: localeRef.value.env.auto,
 			value: null,
 		}],
 	},

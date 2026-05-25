@@ -9,15 +9,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<MkRolePreview v-for="role in roles" :key="role.id" :role="role" :forModeration="false"/>
 	</div>
 	<MkLoading v-else-if="loading" />
-	<MkResult v-else type="empty" :text="i18n.ts.noRole"/>
+	<MkResult v-else type="empty" :text="$locale.env.noRole"/>
 </div>
 </template>
 
 <script lang="ts" setup>
+
 import { ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkRolePreview from '@/components/MkRolePreview.vue';
-import { i18n } from '@/i18n.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 
 const roles = ref<Misskey.entities.Role[] | null>(null);

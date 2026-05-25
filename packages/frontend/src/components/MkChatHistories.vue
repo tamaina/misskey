@@ -24,20 +24,20 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkAcct :class="$style.messageHeaderUsername" :user="item.other!"/>
 				<MkTime :time="item.message.createdAt" :class="$style.messageHeaderTime"/>
 			</header>
-			<div :class="$style.messageBodyText"><span v-if="item.isMe" :class="$style.youSaid">{{ i18n.ts.you }}:</span>{{ item.message.text }}</div>
+			<div :class="$style.messageBodyText"><span v-if="item.isMe" :class="$style.youSaid">{{ $locale.env.you }}:</span>{{ item.message.text }}</div>
 		</div>
 	</MkA>
 </div>
-<MkResult v-if="!initializing && history.length == 0" type="empty" :text="i18n.ts._chat.noHistory"/>
+<MkResult v-if="!initializing && history.length == 0" type="empty" :text="$locale.env._chat.noHistory"/>
 <MkLoading v-if="initializing"/>
 </template>
 
 <script lang="ts" setup>
+
 import { onActivated, onDeactivated, onMounted, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import { useInterval } from '@@/js/use-interval.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
-import { i18n } from '@/i18n.js';
 import { ensureSignin } from '@/i.js';
 
 const $i = ensureSignin();

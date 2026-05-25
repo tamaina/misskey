@@ -4,84 +4,84 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<SearchMarker path="/settings/privacy" :label="i18n.ts.privacy" :keywords="['privacy']" icon="ti ti-lock-open">
+<SearchMarker path="/settings/privacy" :label="$locale.env.privacy" :keywords="['privacy']" icon="ti ti-lock-open">
 	<div class="_gaps_m">
 		<MkFeatureBanner icon="/client-assets/unlocked_3d.png" color="#aeff00">
-			<SearchText>{{ i18n.ts._settings.privacyBanner }}</SearchText>
+			<SearchText>{{ $locale.env._settings.privacyBanner }}</SearchText>
 		</MkFeatureBanner>
 
 		<SearchMarker :keywords="['follow', 'lock']">
 			<MkSwitch v-model="isLocked" @update:modelValue="save()">
-				<template #label><SearchLabel>{{ i18n.ts.makeFollowManuallyApprove }}</SearchLabel></template>
-				<template #caption><SearchText>{{ i18n.ts.lockedAccountInfo }}</SearchText></template>
+				<template #label><SearchLabel>{{ $locale.env.makeFollowManuallyApprove }}</SearchLabel></template>
+				<template #caption><SearchText>{{ $locale.env.lockedAccountInfo }}</SearchText></template>
 			</MkSwitch>
 		</SearchMarker>
 
 		<MkDisableSection :disabled="!isLocked">
 			<SearchMarker :keywords="['follow', 'auto', 'accept']">
 				<MkSwitch v-model="autoAcceptFollowed" @update:modelValue="save()">
-					<template #label><SearchLabel>{{ i18n.ts.autoAcceptFollowed }}</SearchLabel></template>
+					<template #label><SearchLabel>{{ $locale.env.autoAcceptFollowed }}</SearchLabel></template>
 				</MkSwitch>
 			</SearchMarker>
 		</MkDisableSection>
 
 		<SearchMarker :keywords="['reaction', 'public']">
 			<MkSwitch v-model="publicReactions" @update:modelValue="save()">
-				<template #label><SearchLabel>{{ i18n.ts.makeReactionsPublic }}</SearchLabel></template>
-				<template #caption><SearchText>{{ i18n.ts.makeReactionsPublicDescription }}</SearchText></template>
+				<template #label><SearchLabel>{{ $locale.env.makeReactionsPublic }}</SearchLabel></template>
+				<template #caption><SearchText>{{ $locale.env.makeReactionsPublicDescription }}</SearchText></template>
 			</MkSwitch>
 		</SearchMarker>
 
 		<SearchMarker :keywords="['following', 'visibility']">
 			<MkSelect v-model="followingVisibility" :items="followingVisibilityDef" @update:modelValue="save()">
-				<template #label><SearchLabel>{{ i18n.ts.followingVisibility }}</SearchLabel></template>
+				<template #label><SearchLabel>{{ $locale.env.followingVisibility }}</SearchLabel></template>
 			</MkSelect>
 		</SearchMarker>
 
 		<SearchMarker :keywords="['follower', 'visibility']">
 			<MkSelect v-model="followersVisibility" :items="followersVisibilityDef" @update:modelValue="save()">
-				<template #label><SearchLabel>{{ i18n.ts.followersVisibility }}</SearchLabel></template>
+				<template #label><SearchLabel>{{ $locale.env.followersVisibility }}</SearchLabel></template>
 			</MkSelect>
 		</SearchMarker>
 
 		<SearchMarker :keywords="['online', 'status']">
 			<MkSwitch v-model="hideOnlineStatus" @update:modelValue="save()">
-				<template #label><SearchLabel>{{ i18n.ts.hideOnlineStatus }}</SearchLabel></template>
-				<template #caption><SearchText>{{ i18n.ts.hideOnlineStatusDescription }}</SearchText></template>
+				<template #label><SearchLabel>{{ $locale.env.hideOnlineStatus }}</SearchLabel></template>
+				<template #caption><SearchText>{{ $locale.env.hideOnlineStatusDescription }}</SearchText></template>
 			</MkSwitch>
 		</SearchMarker>
 
 		<SearchMarker :keywords="['crawle', 'index', 'search']">
 			<MkSwitch v-model="noCrawle" @update:modelValue="save()">
-				<template #label><SearchLabel>{{ i18n.ts.noCrawle }}</SearchLabel></template>
-				<template #caption><SearchText>{{ i18n.ts.noCrawleDescription }}</SearchText></template>
+				<template #label><SearchLabel>{{ $locale.env.noCrawle }}</SearchLabel></template>
+				<template #caption><SearchText>{{ $locale.env.noCrawleDescription }}</SearchText></template>
 			</MkSwitch>
 		</SearchMarker>
 
 		<SearchMarker :keywords="['crawle', 'ai']">
 			<MkSwitch v-model="preventAiLearning" @update:modelValue="save()">
-				<template #label><SearchLabel>{{ i18n.ts.preventAiLearning }}</SearchLabel></template>
-				<template #caption><SearchText>{{ i18n.ts.preventAiLearningDescription }}</SearchText></template>
+				<template #label><SearchLabel>{{ $locale.env.preventAiLearning }}</SearchLabel></template>
+				<template #caption><SearchText>{{ $locale.env.preventAiLearningDescription }}</SearchText></template>
 			</MkSwitch>
 		</SearchMarker>
 
 		<SearchMarker :keywords="['explore']">
 			<MkSwitch v-model="isExplorable" @update:modelValue="save()">
-				<template #label><SearchLabel>{{ i18n.ts.makeExplorable }}</SearchLabel></template>
-				<template #caption><SearchText>{{ i18n.ts.makeExplorableDescription }}</SearchText></template>
+				<template #label><SearchLabel>{{ $locale.env.makeExplorable }}</SearchLabel></template>
+				<template #caption><SearchText>{{ $locale.env.makeExplorableDescription }}</SearchText></template>
 			</MkSwitch>
 		</SearchMarker>
 
 		<SearchMarker :keywords="['chat']">
 			<FormSection>
-				<template #label><SearchLabel>{{ i18n.ts.directMessage }}</SearchLabel></template>
+				<template #label><SearchLabel>{{ $locale.env.directMessage }}</SearchLabel></template>
 
 				<div class="_gaps_m">
-					<MkInfo v-if="$i.policies.chatAvailability === 'unavailable'">{{ i18n.ts._chat.chatNotAvailableForThisAccountOrServer }}</MkInfo>
+					<MkInfo v-if="$i.policies.chatAvailability === 'unavailable'">{{ $locale.env._chat.chatNotAvailableForThisAccountOrServer }}</MkInfo>
 					<SearchMarker :keywords="['chat']">
 						<MkSelect v-model="chatScope" :items="chatScopeDef" @update:modelValue="save()">
-							<template #label><SearchLabel>{{ i18n.ts._chat.chatAllowedUsers }}</SearchLabel></template>
-							<template #caption>{{ i18n.ts._chat.chatAllowedUsers_note }}</template>
+							<template #label><SearchLabel>{{ $locale.env._chat.chatAllowedUsers }}</SearchLabel></template>
+							<template #caption>{{ $locale.env._chat.chatAllowedUsers_note }}</template>
 						</MkSelect>
 					</SearchMarker>
 				</div>
@@ -90,30 +90,30 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 		<SearchMarker :keywords="['lockdown']">
 			<FormSection>
-				<template #label><SearchLabel>{{ i18n.ts.lockdown }}</SearchLabel></template>
+				<template #label><SearchLabel>{{ $locale.env.lockdown }}</SearchLabel></template>
 
 				<div class="_gaps_m">
 					<SearchMarker :keywords="['login', 'signin']">
 						<MkSwitch :modelValue="requireSigninToViewContents" @update:modelValue="update_requireSigninToViewContents">
-							<template #label><SearchLabel>{{ i18n.ts._accountSettings.requireSigninToViewContents }}</SearchLabel></template>
+							<template #label><SearchLabel>{{ $locale.env._accountSettings.requireSigninToViewContents }}</SearchLabel></template>
 							<template #caption>
-								<div>{{ i18n.ts._accountSettings.requireSigninToViewContentsDescription1 }}</div>
-								<div><i class="ti ti-alert-triangle" style="color: var(--MI_THEME-warn);"></i> {{ i18n.ts._accountSettings.requireSigninToViewContentsDescription2 }}</div>
+								<div>{{ $locale.env._accountSettings.requireSigninToViewContentsDescription1 }}</div>
+								<div><i class="ti ti-alert-triangle" style="color: var(--MI_THEME-warn);"></i> {{ $locale.env._accountSettings.requireSigninToViewContentsDescription2 }}</div>
 							</template>
 						</MkSwitch>
 					</SearchMarker>
 
 					<SearchMarker :keywords="['follower']">
 						<FormSlot>
-							<template #label><SearchLabel>{{ i18n.ts._accountSettings.makeNotesFollowersOnlyBefore }}</SearchLabel></template>
+							<template #label><SearchLabel>{{ $locale.env._accountSettings.makeNotesFollowersOnlyBefore }}</SearchLabel></template>
 
 							<div class="_gaps_s">
 								<MkSelect
 									v-model="makeNotesFollowersOnlyBefore_type"
 									:items="[
-										{ label: i18n.ts.none, value: null },
-										{ label: i18n.ts._accountSettings.notesHavePassedSpecifiedPeriod, value: 'relative' },
-										{ label: i18n.ts._accountSettings.notesOlderThanSpecifiedDateAndTime, value: 'absolute' },
+										{ label: $locale.env.none, value: null },
+										{ label: $locale.env._accountSettings.notesHavePassedSpecifiedPeriod, value: 'relative' },
+										{ label: $locale.env._accountSettings.notesOlderThanSpecifiedDateAndTime, value: 'absolute' },
 									]"
 								>
 								</MkSelect>
@@ -123,7 +123,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 									v-model="makeNotesFollowersOnlyBefore_selection"
 									:items="[
 										...makeNotesFollowersOnlyBefore_presets,
-										{ label: i18n.ts.custom, value: 'custom' },
+										{ label: $locale.env.custom, value: 'custom' },
 									]"
 								>
 								</MkSelect>
@@ -134,7 +134,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 									type="number"
 									:min="1"
 								>
-									<template #suffix>{{ i18n.ts._time.month }}</template>
+									<template #suffix>{{ $locale.env._time.month }}</template>
 								</MkInput>
 
 								<MkInput
@@ -148,22 +148,22 @@ SPDX-License-Identifier: AGPL-3.0-only
 							</div>
 
 							<template #caption>
-								<div><SearchText>{{ i18n.ts._accountSettings.makeNotesFollowersOnlyBeforeDescription }}</SearchText></div>
+								<div><SearchText>{{ $locale.env._accountSettings.makeNotesFollowersOnlyBeforeDescription }}</SearchText></div>
 							</template>
 						</FormSlot>
 					</SearchMarker>
 
 					<SearchMarker :keywords="['hidden']">
 						<FormSlot>
-							<template #label><SearchLabel>{{ i18n.ts._accountSettings.makeNotesHiddenBefore }}</SearchLabel></template>
+							<template #label><SearchLabel>{{ $locale.env._accountSettings.makeNotesHiddenBefore }}</SearchLabel></template>
 
 							<div class="_gaps_s">
 								<MkSelect
 									v-model="makeNotesHiddenBefore_type"
 									:items="[
-										{ label: i18n.ts.none, value: null },
-										{ label: i18n.ts._accountSettings.notesHavePassedSpecifiedPeriod, value: 'relative' },
-										{ label: i18n.ts._accountSettings.notesOlderThanSpecifiedDateAndTime, value: 'absolute' },
+										{ label: $locale.env.none, value: null },
+										{ label: $locale.env._accountSettings.notesHavePassedSpecifiedPeriod, value: 'relative' },
+										{ label: $locale.env._accountSettings.notesOlderThanSpecifiedDateAndTime, value: 'absolute' },
 									]"
 								>
 								</MkSelect>
@@ -173,7 +173,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 									v-model="makeNotesHiddenBefore_selection"
 									:items="[
 										...makeNotesHiddenBefore_presets,
-										{ label: i18n.ts.custom, value: 'custom' },
+										{ label: $locale.env.custom, value: 'custom' },
 									]"
 								>
 								</MkSelect>
@@ -184,7 +184,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 									type="number"
 									:min="1"
 								>
-									<template #suffix>{{ i18n.ts._time.month }}</template>
+									<template #suffix>{{ $locale.env._time.month }}</template>
 								</MkInput>
 
 								<MkInput
@@ -198,12 +198,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 							</div>
 
 							<template #caption>
-								<div><SearchText>{{ i18n.ts._accountSettings.makeNotesHiddenBeforeDescription }}</SearchText></div>
+								<div><SearchText>{{ $locale.env._accountSettings.makeNotesHiddenBeforeDescription }}</SearchText></div>
 							</template>
 						</FormSlot>
 					</SearchMarker>
 
-					<MkInfo warn>{{ i18n.ts._accountSettings.mayNotEffectSomeSituations }}</MkInfo>
+					<MkInfo warn>{{ $locale.env._accountSettings.mayNotEffectSomeSituations }}</MkInfo>
 				</div>
 			</FormSection>
 		</SearchMarker>
@@ -212,13 +212,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef } from '@/i18n.js';
+
 import { ref, computed, watch } from 'vue';
 import type { MkSelectItem } from '@/components/MkSelect.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import FormSection from '@/components/form/section.vue';
 import { misskeyApi } from '@/utility/misskey-api.js';
-import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
 import { ensureSignin } from '@/i.js';
 import { definePage } from '@/page.js';
@@ -248,9 +249,9 @@ const {
 	def: followingVisibilityDef,
 } = useMkSelect({
 	items: [
-		{ label: i18n.ts.public, value: 'public' },
-		{ label: i18n.ts.followers, value: 'followers' },
-		{ label: i18n.ts.private, value: 'private' },
+		{ label: localeRef.value.env.public, value: 'public' },
+		{ label: localeRef.value.env.followers, value: 'followers' },
+		{ label: localeRef.value.env.private, value: 'private' },
 	],
 	initialValue: $i.followingVisibility,
 });
@@ -259,9 +260,9 @@ const {
 	def: followersVisibilityDef,
 } = useMkSelect({
 	items: [
-		{ label: i18n.ts.public, value: 'public' },
-		{ label: i18n.ts.followers, value: 'followers' },
-		{ label: i18n.ts.private, value: 'private' },
+		{ label: localeRef.value.env.public, value: 'public' },
+		{ label: localeRef.value.env.followers, value: 'followers' },
+		{ label: localeRef.value.env.private, value: 'private' },
 	],
 	initialValue: $i.followersVisibility,
 });
@@ -270,11 +271,11 @@ const {
 	def: chatScopeDef,
 } = useMkSelect({
 	items: [
-		{ label: i18n.ts._chat._chatAllowedUsers.everyone, value: 'everyone' },
-		{ label: i18n.ts._chat._chatAllowedUsers.followers, value: 'followers' },
-		{ label: i18n.ts._chat._chatAllowedUsers.following, value: 'following' },
-		{ label: i18n.ts._chat._chatAllowedUsers.mutual, value: 'mutual' },
-		{ label: i18n.ts._chat._chatAllowedUsers.none, value: 'none' },
+		{ label: localeRef.value.env._chat._chatAllowedUsers.everyone, value: 'everyone' },
+		{ label: localeRef.value.env._chat._chatAllowedUsers.followers, value: 'followers' },
+		{ label: localeRef.value.env._chat._chatAllowedUsers.following, value: 'following' },
+		{ label: localeRef.value.env._chat._chatAllowedUsers.mutual, value: 'mutual' },
+		{ label: localeRef.value.env._chat._chatAllowedUsers.none, value: 'none' },
 	],
 	initialValue: $i.chatScope,
 });
@@ -301,13 +302,13 @@ const makeNotesFollowersOnlyBefore_type = computed({
 });
 
 const makeNotesFollowersOnlyBefore_presets = [
-	{ label: i18n.ts.oneHour, value: -3600 },
-	{ label: i18n.ts.oneDay, value: -86400 },
-	{ label: i18n.ts.threeDays, value: -259200 },
-	{ label: i18n.ts.oneWeek, value: -604800 },
-	{ label: i18n.ts.oneMonth, value: -2592000 },
-	{ label: i18n.ts.threeMonths, value: -7776000 },
-	{ label: i18n.ts.oneYear, value: -31104000 },
+	{ label: localeRef.value.env.oneHour, value: -3600 },
+	{ label: localeRef.value.env.oneDay, value: -86400 },
+	{ label: localeRef.value.env.threeDays, value: -259200 },
+	{ label: localeRef.value.env.oneWeek, value: -604800 },
+	{ label: localeRef.value.env.oneMonth, value: -2592000 },
+	{ label: localeRef.value.env.threeMonths, value: -7776000 },
+	{ label: localeRef.value.env.oneYear, value: -31104000 },
 ] satisfies MkSelectItem[];
 
 const makeNotesFollowersOnlyBefore_isCustomMode = ref(
@@ -353,13 +354,13 @@ const makeNotesHiddenBefore_type = computed({
 });
 
 const makeNotesHiddenBefore_presets = [
-	{ label: i18n.ts.oneHour, value: -3600 },
-	{ label: i18n.ts.oneDay, value: -86400 },
-	{ label: i18n.ts.threeDays, value: -259200 },
-	{ label: i18n.ts.oneWeek, value: -604800 },
-	{ label: i18n.ts.oneMonth, value: -2592000 },
-	{ label: i18n.ts.threeMonths, value: -7776000 },
-	{ label: i18n.ts.oneYear, value: -31104000 },
+	{ label: localeRef.value.env.oneHour, value: -3600 },
+	{ label: localeRef.value.env.oneDay, value: -86400 },
+	{ label: localeRef.value.env.threeDays, value: -259200 },
+	{ label: localeRef.value.env.oneWeek, value: -604800 },
+	{ label: localeRef.value.env.oneMonth, value: -2592000 },
+	{ label: localeRef.value.env.threeMonths, value: -7776000 },
+	{ label: localeRef.value.env.oneYear, value: -31104000 },
 ] satisfies MkSelectItem[];
 
 const makeNotesHiddenBefore_isCustomMode = ref(
@@ -391,7 +392,7 @@ async function update_requireSigninToViewContents(value: boolean) {
 	if (value === true && instance.federation !== 'none') {
 		const { canceled } = await os.confirm({
 			type: 'warning',
-			text: i18n.ts.acknowledgeNotesAndEnable,
+			text: localeRef.value.env.acknowledgeNotesAndEnable,
 		});
 		if (canceled) return;
 	}
@@ -423,7 +424,7 @@ const headerActions = computed(() => []);
 const headerTabs = computed(() => []);
 
 definePage(() => ({
-	title: i18n.ts.privacy,
+	title: localeRef.value.env.privacy,
 	icon: 'ti ti-lock-open',
 }));
 </script>

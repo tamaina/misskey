@@ -4,19 +4,19 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<SearchMarker path="/settings/security" :label="i18n.ts.security" :keywords="['security']" icon="ti ti-lock" :inlining="['2fa']">
+<SearchMarker path="/settings/security" :label="$locale.env.security" :keywords="['security']" icon="ti ti-lock" :inlining="['2fa']">
 	<div class="_gaps_m">
 		<MkFeatureBanner icon="/client-assets/locked_with_key_3d.png" color="#ffbf00">
-			<SearchText>{{ i18n.ts._settings.securityBanner }}</SearchText>
+			<SearchText>{{ $locale.env._settings.securityBanner }}</SearchText>
 		</MkFeatureBanner>
 
 		<SearchMarker :keywords="['password']">
 			<FormSection first>
-				<template #label><SearchLabel>{{ i18n.ts.password }}</SearchLabel></template>
+				<template #label><SearchLabel>{{ $locale.env.password }}</SearchLabel></template>
 
 				<SearchMarker>
 					<MkButton primary @click="change()">
-						<SearchLabel>{{ i18n.ts.changePassword }}</SearchLabel>
+						<SearchLabel>{{ $locale.env.changePassword }}</SearchLabel>
 					</MkButton>
 				</SearchMarker>
 			</FormSection>
@@ -26,7 +26,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 		<SearchMarker :keywords="['signin', 'login', 'history', 'log']">
 			<FormSection>
-				<template #label><SearchLabel>{{ i18n.ts.signinHistory }}</SearchLabel></template>
+				<template #label><SearchLabel>{{ $locale.env.signinHistory }}</SearchLabel></template>
 				<MkPagination :paginator="paginator" withControl :forceDisableInfiniteScroll="true">
 					<template #default="{items}">
 						<div>
@@ -47,8 +47,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<SearchMarker :keywords="['regenerate', 'refresh', 'reset', 'token']">
 			<FormSection>
 				<FormSlot>
-					<MkButton danger @click="regenerateToken"><i class="ti ti-refresh"></i> <SearchLabel>{{ i18n.ts.regenerateLoginToken }}</SearchLabel></MkButton>
-					<template #caption>{{ i18n.ts.regenerateLoginTokenDescription }}</template>
+					<MkButton danger @click="regenerateToken"><i class="ti ti-refresh"></i> <SearchLabel>{{ $locale.env.regenerateLoginToken }}</SearchLabel></MkButton>
+					<template #caption>{{ $locale.env.regenerateLoginTokenDescription }}</template>
 				</FormSlot>
 			</FormSection>
 		</SearchMarker>
@@ -57,6 +57,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef } from '@/i18n.js';
+
 import { computed, markRaw } from 'vue';
 import X2fa from './2fa.vue';
 import FormSection from '@/components/form/section.vue';
@@ -65,7 +67,6 @@ import MkButton from '@/components/MkButton.vue';
 import MkPagination from '@/components/MkPagination.vue';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
-import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
 import MkFeatureBanner from '@/components/MkFeatureBanner.vue';
 import { Paginator } from '@/utility/paginator.js';
@@ -76,14 +77,14 @@ const paginator = markRaw(new Paginator('i/signin-history', {
 
 async function change() {
 	const { canceled: canceled2, result: newPassword } = await os.inputText({
-		title: i18n.ts.newPassword,
+		title: localeRef.value.env.newPassword,
 		type: 'password',
 		autocomplete: 'new-password',
 	});
 	if (canceled2 || newPassword == null) return;
 
 	const { canceled: canceled3, result: newPassword2 } = await os.inputText({
-		title: i18n.ts.newPasswordRetype,
+		title: localeRef.value.env.newPasswordRetype,
 		type: 'password',
 		autocomplete: 'new-password',
 	});
@@ -92,7 +93,7 @@ async function change() {
 	if (newPassword !== newPassword2) {
 		os.alert({
 			type: 'error',
-			text: i18n.ts.retypedNotMatch,
+			text: localeRef.value.env.retypedNotMatch,
 		});
 		return;
 	}
@@ -122,7 +123,7 @@ const headerActions = computed(() => []);
 const headerTabs = computed(() => []);
 
 definePage(() => ({
-	title: i18n.ts.security,
+	title: localeRef.value.env.security,
 	icon: 'ti ti-lock',
 }));
 </script>

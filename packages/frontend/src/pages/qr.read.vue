@@ -18,16 +18,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<video ref="videoEl" :class="$style.video" autoplay muted playsinline></video>
 				<div ref="overlayEl"></div>
 				<div :class="$style.controls">
-					<MkButton v-tooltip="i18n.ts._qr.scanFile" iconOnly @click="upload"><i class="ti ti-photo-plus"></i></MkButton>
+					<MkButton v-tooltip="$locale.env._qr.scanFile" iconOnly @click="upload"><i class="ti ti-photo-plus"></i></MkButton>
 
-					<MkButton v-if="qrStarted" v-tooltip="i18n.ts._qr.stopQr" iconOnly @click="stopQr"><i class="ti ti-player-play"></i></MkButton>
-					<MkButton v-else v-tooltip="i18n.ts._qr.startQr" iconOnly danger @click="startQr"><i class="ti ti-player-pause"></i></MkButton>
+					<MkButton v-if="qrStarted" v-tooltip="$locale.env._qr.stopQr" iconOnly @click="stopQr"><i class="ti ti-player-play"></i></MkButton>
+					<MkButton v-else v-tooltip="$locale.env._qr.startQr" iconOnly danger @click="startQr"><i class="ti ti-player-pause"></i></MkButton>
 
-					<MkButton v-tooltip="i18n.ts._qr.chooseCamera" iconOnly @click="chooseCamera"><i class="ti ti-camera-rotate"></i></MkButton>
+					<MkButton v-tooltip="$locale.env._qr.chooseCamera" iconOnly @click="chooseCamera"><i class="ti ti-camera-rotate"></i></MkButton>
 
-					<MkButton v-if="!flashCanToggle" v-tooltip="i18n.ts._qr.cannotToggleFlash" iconOnly disabled><i class="ti ti-bolt"></i></MkButton>
-					<MkButton v-else-if="!flash" v-tooltip="i18n.ts._qr.turnOnFlash" iconOnly @click="toggleFlash(true)"><i class="ti ti-bolt-off"></i></MkButton>
-					<MkButton v-else v-tooltip="i18n.ts._qr.turnOffFlash" iconOnly @click="toggleFlash(false)"><i class="ti ti-bolt-filled"></i></MkButton>
+					<MkButton v-if="!flashCanToggle" v-tooltip="$locale.env._qr.cannotToggleFlash" iconOnly disabled><i class="ti ti-bolt"></i></MkButton>
+					<MkButton v-else-if="!flash" v-tooltip="$locale.env._qr.turnOnFlash" iconOnly @click="toggleFlash(true)"><i class="ti ti-bolt-off"></i></MkButton>
+					<MkButton v-else v-tooltip="$locale.env._qr.turnOffFlash" iconOnly @click="toggleFlash(false)"><i class="ti ti-bolt-filled"></i></MkButton>
 				</div>
 			</div>
 		</template>
@@ -42,9 +42,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<MkTab
 						v-model="tab"
 						:tabs="[
-							{ key: 'users', label: i18n.ts.users },
-							{ key: 'notes', label: i18n.ts.notes },
-							{ key: 'all', label: i18n.ts.all },
+							{ key: 'users', label: $locale.env.users },
+							{ key: 'notes', label: $locale.env.notes },
+							{ key: 'all', label: $locale.env.all },
 						]"
 						:class="$style.tab"
 					>
@@ -66,13 +66,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef } from '@/i18n.js';
+
 import QrScanner from 'qr-scanner';
 import { onActivated, onDeactivated, onMounted, onUnmounted, ref, shallowRef, useTemplateRef, watch } from 'vue';
 import * as misskey from 'misskey-js';
 import { getScrollContainer } from '@@/js/scroll.js';
 import type { ApShowResponse } from 'misskey-js/entities.js';
 import * as os from '@/os.js';
-import { i18n } from '@/i18n.js';
 import MkUserInfo from '@/components/MkUserInfo.vue';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import MkNote from '@/components/MkNote.vue';
@@ -197,7 +198,7 @@ async function upload() {
 					if (err.toString().includes('No QR code found')) {
 						os.alert({
 							type: 'info',
-							text: i18n.ts._qr.noQrCodeFound,
+							text: localeRef.value.env._qr.noQrCodeFound,
 						});
 					} else {
 						os.alert({
@@ -222,7 +223,7 @@ async function chooseCamera() {
 	}
 
 	const select = await os.select({
-		title: i18n.ts._qr.chooseCamera,
+		title: localeRef.value.env._qr.chooseCamera,
 		items: cameras.map(camera => ({
 			label: camera.label,
 			value: camera.id,
@@ -273,7 +274,7 @@ onMounted(() => {
 	if (!videoEl.value || !overlayEl.value) {
 		os.alert({
 			type: 'error',
-			text: i18n.ts.somethingHappened,
+			text: localeRef.value.env.somethingHappened,
 		});
 		return;
 	}

@@ -31,9 +31,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 				<div :class="$style.itemInfo">
 					<span>{{ displayItem.item.file.type }}</span>
-					<span v-if="displayItem.item.compressedSize">({{ i18n.tsx._uploader.compressedToX({ x: bytes(displayItem.item.compressedSize) }) }} = {{ i18n.tsx._uploader.savedXPercent({ x: Math.round((1 - displayItem.item.compressedSize / displayItem.item.file.size) * 100) }) }})</span>
+					<span v-if="displayItem.item.compressedSize">({{ $l.env._uploader.compressedToX({ x: bytes(displayItem.item.compressedSize) }) }} = {{ $l.env._uploader.savedXPercent({ x: Math.round((1 - displayItem.item.compressedSize / displayItem.item.file.size) * 100) }) }})</span>
 					<span v-else>{{ bytes(displayItem.item.file.size) }}</span>
-					<span v-if="displayItem.item.preprocessing">{{ i18n.ts.preprocessing }}<MkLoading inline em style="margin-left: 0.5em;"/></span>
+					<span v-if="displayItem.item.preprocessing">{{ $locale.env.preprocessing }}<MkLoading inline em style="margin-left: 0.5em;"/></span>
 				</div>
 				<div>
 				</div>
@@ -49,11 +49,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+
 import { computed } from 'vue';
 import { isLink } from '@@/js/is-link.js';
 import { getUploadName } from '@/composables/use-uploader.js';
 import type { UploaderItem } from '@/composables/use-uploader.js';
-import { i18n } from '@/i18n.js';
 import MkButton from '@/components/MkButton.vue';
 import bytes from '@/filters/bytes.js';
 

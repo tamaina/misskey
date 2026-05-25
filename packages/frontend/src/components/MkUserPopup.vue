@@ -15,7 +15,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<MkError v-if="error" @retry="fetchUser()"/>
 		<div v-else-if="user != null">
 			<div :class="$style.banner" :style="user.bannerUrl ? { backgroundImage: `url(${prefer.s.disableShowingAnimatedImages ? getStaticImageUrl(user.bannerUrl) : user.bannerUrl})` } : ''">
-				<span v-if="$i && $i.id != user.id && user.isFollowed" :class="$style.followed">{{ i18n.ts.followsYou }}</span>
+				<span v-if="$i && $i.id != user.id && user.isFollowed" :class="$style.followed">{{ $locale.env.followsYou }}</span>
 			</div>
 			<svg viewBox="0 0 128 128" :class="$style.avatarBack">
 				<g transform="matrix(1.6,0,0,1.6,-38.4,-51.2)">
@@ -31,19 +31,19 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 			<div :class="$style.description">
 				<Mfm v-if="user.description" :class="$style.mfm" :text="user.description" :author="user"/>
-				<div v-else style="opacity: 0.7;">{{ i18n.ts.noAccountDescription }}</div>
+				<div v-else style="opacity: 0.7;">{{ $locale.env.noAccountDescription }}</div>
 			</div>
 			<div :class="$style.status">
 				<MkA :class="$style.statusItem" :to="userPage(user, 'notes')">
-					<div :class="$style.statusItemLabel">{{ i18n.ts.notes }}</div>
+					<div :class="$style.statusItemLabel">{{ $locale.env.notes }}</div>
 					<div>{{ number(user.notesCount) }}</div>
 				</MkA>
 				<MkA v-if="isFollowingVisibleForMe(user)" :class="$style.statusItem" :to="userPage(user, 'following')">
-					<div :class="$style.statusItemLabel">{{ i18n.ts.following }}</div>
+					<div :class="$style.statusItemLabel">{{ $locale.env.following }}</div>
 					<div>{{ number(user.followingCount) }}</div>
 				</MkA>
 				<MkA v-if="isFollowersVisibleForMe(user)" :class="$style.statusItem" :to="userPage(user, 'followers')">
-					<div :class="$style.statusItemLabel">{{ i18n.ts.followers }}</div>
+					<div :class="$style.statusItemLabel">{{ $locale.env.followers }}</div>
 					<div>{{ number(user.followersCount) }}</div>
 				</MkA>
 			</div>
@@ -58,6 +58,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+
 import { onMounted, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkFollowButton from '@/components/MkFollowButton.vue';
@@ -66,7 +67,6 @@ import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { getUserMenu } from '@/utility/get-user-menu.js';
 import number from '@/filters/number.js';
-import { i18n } from '@/i18n.js';
 import { prefer } from '@/preferences.js';
 import { $i } from '@/i.js';
 import { isFollowingVisibleForMe, isFollowersVisibleForMe } from '@/utility/isFfVisibleForMe.js';

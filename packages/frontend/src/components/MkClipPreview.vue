@@ -9,8 +9,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<b>{{ clip.name }}</b>
 		<div :class="$style.description">
 			<div v-if="clip.description"><Mfm :text="clip.description" :plain="true" :nowrap="true"/></div>
-			<div v-if="clip.lastClippedAt">{{ i18n.ts.updatedAt }}: <MkTime :time="clip.lastClippedAt" mode="detail"/></div>
-			<div v-if="clip.notesCount != null">{{ i18n.ts.notesCount }}: {{ number(clip.notesCount) }} / {{ $i?.policies.noteEachClipsLimit }} ({{ i18n.tsx.remainingN({ n: remaining }) }})</div>
+			<div v-if="clip.lastClippedAt">{{ $locale.env.updatedAt }}: <MkTime :time="clip.lastClippedAt" mode="detail"/></div>
+			<div v-if="clip.notesCount != null">{{ $locale.env.notesCount }}: {{ number(clip.notesCount) }} / {{ $i?.policies.noteEachClipsLimit }} ({{ $l.env.remainingN({ n: remaining }) }})</div>
 		</div>
 		<template v-if="!props.noUserInfo">
 			<div :class="$style.divider"></div>
@@ -23,9 +23,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef } from '@/i18n.js';
+
 import * as Misskey from 'misskey-js';
 import { computed } from 'vue';
-import { i18n } from '@/i18n.js';
 import { $i } from '@/i.js';
 import number from '@/filters/number.js';
 
@@ -37,7 +38,7 @@ const props = withDefaults(defineProps<{
 });
 
 const remaining = computed(() => {
-	return ($i?.policies && props.clip.notesCount != null) ? ($i.policies.noteEachClipsLimit - props.clip.notesCount) : i18n.ts.unknown;
+	return ($i?.policies && props.clip.notesCount != null) ? ($i.policies.noteEachClipsLimit - props.clip.notesCount) : localeRef.value.env.unknown;
 });
 </script>
 

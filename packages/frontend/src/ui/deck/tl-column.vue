@@ -7,15 +7,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 <XColumn :menu="menu" :column="column" :isStacked="isStacked" :refresher="async () => { await timeline?.reloadTimeline() }">
 	<template #header>
 		<i v-if="column.tl != null" :class="basicTimelineIconClass(column.tl)"></i>
-		<span style="margin-left: 8px;">{{ column.name || (column.tl ? i18n.ts._timelines[column.tl] : null) || i18n.ts._deck._columns.tl }}</span>
+		<span style="margin-left: 8px;">{{ column.name || (column.tl ? $locale.env._timelines[column.tl] : null) || $locale.env._deck._columns.tl }}</span>
 	</template>
 
 	<div v-if="!isAvailableBasicTimeline(column.tl)" :class="$style.disabled">
 		<p :class="$style.disabledTitle">
 			<i class="ti ti-circle-minus"></i>
-			{{ i18n.ts._disabledTimeline.title }}
+			{{ $locale.env._disabledTimeline.title }}
 		</p>
-		<p :class="$style.disabledDescription">{{ i18n.ts._disabledTimeline.description }}</p>
+		<p :class="$style.disabledDescription">{{ $locale.env._disabledTimeline.description }}</p>
 	</div>
 	<MkStreamingNotesTimeline
 		v-else-if="column.tl"
@@ -33,6 +33,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef } from '@/i18n.js';
+
 import { onMounted, watch, ref, useTemplateRef, computed } from 'vue';
 import XColumn from './column.vue';
 import type { Column } from '@/deck.js';
@@ -41,7 +43,6 @@ import type { SoundStore } from '@/preferences/def.js';
 import { removeColumn, updateColumn } from '@/deck.js';
 import MkStreamingNotesTimeline from '@/components/MkStreamingNotesTimeline.vue';
 import * as os from '@/os.js';
-import { i18n } from '@/i18n.js';
 import { hasWithReplies, isAvailableBasicTimeline, basicTimelineIconClass } from '@/timelines.js';
 import { soundSettingsButton } from '@/ui/deck/tl-note-notification.js';
 
@@ -94,15 +95,15 @@ onMounted(() => {
 
 async function setType() {
 	const { canceled, result: src } = await os.select({
-		title: i18n.ts.timeline,
+		title: localeRef.value.env.timeline,
 		items: [{
-			value: 'home', label: i18n.ts._timelines.home,
+			value: 'home', label: localeRef.value.env._timelines.home,
 		}, {
-			value: 'local', label: i18n.ts._timelines.local,
+			value: 'local', label: localeRef.value.env._timelines.local,
 		}, {
-			value: 'social', label: i18n.ts._timelines.social,
+			value: 'social', label: localeRef.value.env._timelines.social,
 		}, {
-			value: 'global', label: i18n.ts._timelines.global,
+			value: 'global', label: localeRef.value.env._timelines.global,
 		}],
 		default: props.column.tl,
 	});
@@ -123,22 +124,22 @@ const menu = computed<MenuItem[]>(() => {
 
 	menuItems.push({
 		icon: 'ti ti-pencil',
-		text: i18n.ts.timeline,
+		text: localeRef.value.env.timeline,
 		action: setType,
 	}, {
 		icon: 'ti ti-bell',
-		text: i18n.ts._deck.newNoteNotificationSettings,
+		text: localeRef.value.env._deck.newNoteNotificationSettings,
 		action: () => soundSettingsButton(soundSetting),
 	}, {
 		type: 'switch',
-		text: i18n.ts.showRenotes,
+		text: localeRef.value.env.showRenotes,
 		ref: withRenotes,
 	});
 
 	if (hasWithReplies(props.column.tl)) {
 		menuItems.push({
 			type: 'switch',
-			text: i18n.ts.showRepliesToOthersInTimeline,
+			text: localeRef.value.env.showRepliesToOthersInTimeline,
 			ref: withReplies,
 			disabled: onlyFiles,
 		});
@@ -146,12 +147,12 @@ const menu = computed<MenuItem[]>(() => {
 
 	menuItems.push({
 		type: 'switch',
-		text: i18n.ts.fileAttachedOnly,
+		text: localeRef.value.env.fileAttachedOnly,
 		ref: onlyFiles,
 		disabled: hasWithReplies(props.column.tl) ? withReplies : false,
 	}, {
 		type: 'switch',
-		text: i18n.ts.withSensitive,
+		text: localeRef.value.env.withSensitive,
 		ref: withSensitive,
 	});
 

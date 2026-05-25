@@ -12,36 +12,37 @@ SPDX-License-Identifier: AGPL-3.0-only
 >
 	<template v-if="!wait">
 		<template v-if="hasPendingFollowRequestFromYou && user.isLocked">
-			<span v-if="full" :class="$style.text">{{ i18n.ts.followRequestPending }}</span><i class="ti ti-hourglass-empty"></i>
+			<span v-if="full" :class="$style.text">{{ $locale.env.followRequestPending }}</span><i class="ti ti-hourglass-empty"></i>
 		</template>
 		<template v-else-if="hasPendingFollowRequestFromYou && !user.isLocked">
 			<!-- つまりリモートフォローの場合。 -->
-			<span v-if="full" :class="$style.text">{{ i18n.ts.processing }}</span><MkLoading :em="true" :colored="false"/>
+			<span v-if="full" :class="$style.text">{{ $locale.env.processing }}</span><MkLoading :em="true" :colored="false"/>
 		</template>
 		<template v-else-if="isFollowing">
-			<span v-if="full" :class="$style.text">{{ i18n.ts.youFollowing }}</span><i class="ti ti-minus"></i>
+			<span v-if="full" :class="$style.text">{{ $locale.env.youFollowing }}</span><i class="ti ti-minus"></i>
 		</template>
 		<template v-else-if="!isFollowing && user.isLocked">
-			<span v-if="full" :class="$style.text">{{ i18n.ts.followRequest }}</span><i class="ti ti-plus"></i>
+			<span v-if="full" :class="$style.text">{{ $locale.env.followRequest }}</span><i class="ti ti-plus"></i>
 		</template>
 		<template v-else-if="!isFollowing && !user.isLocked">
-			<span v-if="full" :class="$style.text">{{ i18n.ts.follow }}</span><i class="ti ti-plus"></i>
+			<span v-if="full" :class="$style.text">{{ $locale.env.follow }}</span><i class="ti ti-plus"></i>
 		</template>
 	</template>
 	<template v-else>
-		<span v-if="full" :class="$style.text">{{ i18n.ts.processing }}</span><MkLoading :em="true" :colored="false"/>
+		<span v-if="full" :class="$style.text">{{ $locale.env.processing }}</span><MkLoading :em="true" :colored="false"/>
 	</template>
 </button>
 </template>
 
 <script lang="ts" setup>
+import { $l as localizerRef } from '@/i18n.js';
+
 import { onBeforeUnmount, onMounted, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import { host } from '@@/js/config.js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { useStream } from '@/stream.js';
-import { i18n } from '@/i18n.js';
 import { claimAchievement } from '@/utility/achievements.js';
 import { pleaseLogin } from '@/utility/please-login.js';
 import { $i } from '@/i.js';
@@ -97,7 +98,7 @@ async function onClick() {
 		if (isFollowing.value) {
 			const { canceled } = await os.confirm({
 				type: 'warning',
-				text: i18n.tsx.unfollowConfirm({ name: props.user.name || props.user.username }),
+				text: localizerRef.value.env.unfollowConfirm({ name: props.user.name || props.user.username }),
 			});
 
 			if (canceled) {
@@ -111,7 +112,7 @@ async function onClick() {
 		} else if (hasPendingFollowRequestFromYou.value) {
 			const { canceled } = await os.confirm({
 				type: 'question',
-				text: i18n.tsx.cancelFollowRequestConfirm({ name: props.user.name || props.user.username }),
+				text: localizerRef.value.env.cancelFollowRequestConfirm({ name: props.user.name || props.user.username }),
 			});
 
 			if (canceled) {
@@ -127,7 +128,7 @@ async function onClick() {
 			if (prefer.s.alwaysConfirmFollow) {
 				const { canceled } = await os.confirm({
 					type: 'question',
-					text: i18n.tsx.followConfirm({ name: props.user.name || props.user.username }),
+					text: localizerRef.value.env.followConfirm({ name: props.user.name || props.user.username }),
 				});
 
 				if (canceled) {

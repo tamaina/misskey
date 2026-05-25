@@ -4,11 +4,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<SearchMarker path="/settings/deck" :label="i18n.ts.deck" :keywords="['deck', 'ui']" icon="ti ti-columns">
+<SearchMarker path="/settings/deck" :label="$locale.env.deck" :keywords="['deck', 'ui']" icon="ti ti-columns">
 	<div class="_gaps_m">
 		<SearchMarker :keywords="['sync', 'profiles', 'devices']">
 			<MkSwitch :modelValue="profilesSyncEnabled" @update:modelValue="changeProfilesSyncEnabled">
-				<template #label><i class="ti ti-cloud-cog"></i> <SearchLabel>{{ i18n.ts._deck.enableSyncBetweenDevicesForProfiles }}</SearchLabel></template>
+				<template #label><i class="ti ti-cloud-cog"></i> <SearchLabel>{{ $locale.env._deck.enableSyncBetweenDevicesForProfiles }}</SearchLabel></template>
 			</MkSwitch>
 		</SearchMarker>
 
@@ -17,7 +17,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<SearchMarker :keywords="['ui', 'root', 'page']">
 			<MkPreferenceContainer k="deck.useSimpleUiForNonRootPages">
 				<MkSwitch v-model="useSimpleUiForNonRootPages">
-					<template #label><SearchLabel>{{ i18n.ts._deck.useSimpleUiForNonRootPages }}</SearchLabel></template>
+					<template #label><SearchLabel>{{ $locale.env._deck.useSimpleUiForNonRootPages }}</SearchLabel></template>
 				</MkSwitch>
 			</MkPreferenceContainer>
 		</SearchMarker>
@@ -25,7 +25,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<SearchMarker :keywords="['default', 'navigation', 'behaviour', 'window']">
 			<MkPreferenceContainer k="deck.navWindow">
 				<MkSwitch v-model="navWindow">
-					<template #label><SearchLabel>{{ i18n.ts.defaultNavigationBehaviour }}</SearchLabel>: {{ i18n.ts.openInWindow }}</template>
+					<template #label><SearchLabel>{{ $locale.env.defaultNavigationBehaviour }}</SearchLabel>: {{ $locale.env.openInWindow }}</template>
 				</MkSwitch>
 			</MkPreferenceContainer>
 		</SearchMarker>
@@ -33,7 +33,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<SearchMarker :keywords="['always', 'show', 'main', 'column']">
 			<MkPreferenceContainer k="deck.alwaysShowMainColumn">
 				<MkSwitch v-model="alwaysShowMainColumn">
-					<template #label><SearchLabel>{{ i18n.ts._deck.alwaysShowMainColumn }}</SearchLabel></template>
+					<template #label><SearchLabel>{{ $locale.env._deck.alwaysShowMainColumn }}</SearchLabel></template>
 				</MkSwitch>
 			</MkPreferenceContainer>
 		</SearchMarker>
@@ -43,11 +43,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkRadios
 					v-model="columnAlign"
 					:options="[
-						{ value: 'left', label: i18n.ts.left },
-						{ value: 'center', label: i18n.ts.center },
+						{ value: 'left', label: $locale.env.left },
+						{ value: 'center', label: $locale.env.center },
 					]"
 				>
-					<template #label><SearchLabel>{{ i18n.ts._deck.columnAlign }}</SearchLabel></template>
+					<template #label><SearchLabel>{{ $locale.env._deck.columnAlign }}</SearchLabel></template>
 				</MkRadios>
 			</MkPreferenceContainer>
 		</SearchMarker>
@@ -57,11 +57,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkRadios
 					v-model="menuPosition"
 					:options="[
-						{ value: 'right', label: i18n.ts.right },
-						{ value: 'bottom', label: i18n.ts.bottom },
+						{ value: 'right', label: $locale.env.right },
+						{ value: 'bottom', label: $locale.env.bottom },
 					]"
 				>
-					<template #label><SearchLabel>{{ i18n.ts._deck.deckMenuPosition }}</SearchLabel></template>
+					<template #label><SearchLabel>{{ $locale.env._deck.deckMenuPosition }}</SearchLabel></template>
 				</MkRadios>
 			</MkPreferenceContainer>
 		</SearchMarker>
@@ -71,12 +71,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkRadios
 					v-model="navbarPosition"
 					:options="[
-						{ value: 'left', label: i18n.ts.left },
-						{ value: 'top', label: i18n.ts.top },
-						{ value: 'bottom', label: i18n.ts.bottom },
+						{ value: 'left', label: $locale.env.left },
+						{ value: 'top', label: $locale.env.top },
+						{ value: 'bottom', label: $locale.env.bottom },
 					]"
 				>
-					<template #label><SearchLabel>{{ i18n.ts._deck.navbarPosition }}</SearchLabel></template>
+					<template #label><SearchLabel>{{ $locale.env._deck.navbarPosition }}</SearchLabel></template>
 				</MkRadios>
 			</MkPreferenceContainer>
 		</SearchMarker>
@@ -84,15 +84,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<SearchMarker :keywords="['column', 'gap', 'margin']">
 			<MkPreferenceContainer k="deck.columnGap">
 				<MkRange v-model="columnGap" :min="3" :max="100" :step="1" :continuousUpdate="true">
-					<template #label><SearchLabel>{{ i18n.ts._deck.columnGap }}</SearchLabel></template>
+					<template #label><SearchLabel>{{ $locale.env._deck.columnGap }}</SearchLabel></template>
 				</MkRange>
 			</MkPreferenceContainer>
 		</SearchMarker>
 
 		<SearchMarker :keywords="['wallpaper']">
 			<MkPreferenceContainer k="deck.wallpaper">
-				<MkButton v-if="wallpaper == null" @click="setWallpaper"><SearchLabel>{{ i18n.ts.setWallpaper }}</SearchLabel></MkButton>
-				<MkButton v-else @click="wallpaper = null">{{ i18n.ts.removeWallpaper }}</MkButton>
+				<MkButton v-if="wallpaper == null" @click="setWallpaper"><SearchLabel>{{ $locale.env.setWallpaper }}</SearchLabel></MkButton>
+				<MkButton v-else @click="wallpaper = null">{{ $locale.env.removeWallpaper }}</MkButton>
 			</MkPreferenceContainer>
 		</SearchMarker>
 	</div>
@@ -100,12 +100,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef } from '@/i18n.js';
+
 import { computed, ref, watch } from 'vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkRadios from '@/components/MkRadios.vue';
 import MkRange from '@/components/MkRange.vue';
 import MkButton from '@/components/MkButton.vue';
-import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
 import { prefer } from '@/preferences.js';
 import MkPreferenceContainer from '@/components/MkPreferenceContainer.vue';
@@ -153,7 +154,7 @@ const headerActions = computed(() => []);
 const headerTabs = computed(() => []);
 
 definePage(() => ({
-	title: i18n.ts.deck,
+	title: localeRef.value.env.deck,
 	icon: 'ti ti-columns',
 }));
 </script>

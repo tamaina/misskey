@@ -65,6 +65,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script setup lang="ts">
+import { $locale as localeRef } from '@/i18n.js';
+
 import { nextTick, onBeforeUnmount, ref, shallowRef, useTemplateRef } from 'vue';
 import * as Misskey from 'misskey-js';
 import { browserSupportsWebAuthn } from '@simplewebauthn/browser';
@@ -73,7 +75,6 @@ import type { OpenOnRemoteOptions } from '@/utility/please-login.js';
 import type { PwResponse } from '@/components/MkSignin.password.vue';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { showSuspendedDialog } from '@/utility/show-suspended-dialog.js';
-import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
 
 import XInput from '@/components/MkSignin.input.vue';
@@ -176,8 +177,8 @@ async function onPasswordSubmitted(pw: PwResponse) {
 	if (userInfo.value == null) {
 		await os.alert({
 			type: 'error',
-			title: i18n.ts.noSuchUser,
-			text: i18n.ts.signinFailed,
+			title: localeRef.value.env.noSuchUser,
+			text: localeRef.value.env.signinFailed,
 		});
 		waiting.value = false;
 		return;
@@ -200,8 +201,8 @@ async function onTotpSubmitted(token: string) {
 	if (userInfo.value == null) {
 		await os.alert({
 			type: 'error',
-			title: i18n.ts.noSuchUser,
-			text: i18n.ts.signinFailed,
+			title: localeRef.value.env.noSuchUser,
+			text: localeRef.value.env.signinFailed,
 		});
 		waiting.value = false;
 		return;
@@ -289,16 +290,16 @@ function onSigninApiError(err?: any): void {
 		case '6cc579cc-885d-43d8-95c2-b8c7fc963280': {
 			os.alert({
 				type: 'error',
-				title: i18n.ts.loginFailed,
-				text: i18n.ts.noSuchUser,
+				title: localeRef.value.env.loginFailed,
+				text: localeRef.value.env.noSuchUser,
 			});
 			break;
 		}
 		case '932c904e-9460-45b7-9ce6-7ed33be7eb2c': {
 			os.alert({
 				type: 'error',
-				title: i18n.ts.loginFailed,
-				text: i18n.ts.incorrectPassword,
+				title: localeRef.value.env.loginFailed,
+				text: localeRef.value.env.incorrectPassword,
 			});
 			break;
 		}
@@ -309,48 +310,48 @@ function onSigninApiError(err?: any): void {
 		case '22d05606-fbcf-421a-a2db-b32610dcfd1b': {
 			os.alert({
 				type: 'error',
-				title: i18n.ts.loginFailed,
-				text: i18n.ts.rateLimitExceeded,
+				title: localeRef.value.env.loginFailed,
+				text: localeRef.value.env.rateLimitExceeded,
 			});
 			break;
 		}
 		case 'cdf1235b-ac71-46d4-a3a6-84ccce48df6f': {
 			os.alert({
 				type: 'error',
-				title: i18n.ts.loginFailed,
-				text: i18n.ts.incorrectTotp,
+				title: localeRef.value.env.loginFailed,
+				text: localeRef.value.env.incorrectTotp,
 			});
 			break;
 		}
 		case '36b96a7d-b547-412d-aeed-2d611cdc8cdc': {
 			os.alert({
 				type: 'error',
-				title: i18n.ts.loginFailed,
-				text: i18n.ts.unknownWebAuthnKey,
+				title: localeRef.value.env.loginFailed,
+				text: localeRef.value.env.unknownWebAuthnKey,
 			});
 			break;
 		}
 		case '93b86c4b-72f9-40eb-9815-798928603d1e': {
 			os.alert({
 				type: 'error',
-				title: i18n.ts.loginFailed,
-				text: i18n.ts.passkeyVerificationFailed,
+				title: localeRef.value.env.loginFailed,
+				text: localeRef.value.env.passkeyVerificationFailed,
 			});
 			break;
 		}
 		case 'b18c89a7-5b5e-4cec-bb5b-0419f332d430': {
 			os.alert({
 				type: 'error',
-				title: i18n.ts.loginFailed,
-				text: i18n.ts.passkeyVerificationFailed,
+				title: localeRef.value.env.loginFailed,
+				text: localeRef.value.env.passkeyVerificationFailed,
 			});
 			break;
 		}
 		case '2d84773e-f7b7-4d0b-8f72-bb69b584c912': {
 			os.alert({
 				type: 'error',
-				title: i18n.ts.loginFailed,
-				text: i18n.ts.passkeyVerificationSucceededButPasswordlessLoginDisabled,
+				title: localeRef.value.env.loginFailed,
+				text: localeRef.value.env.passkeyVerificationSucceededButPasswordlessLoginDisabled,
 			});
 			break;
 		}
@@ -358,7 +359,7 @@ function onSigninApiError(err?: any): void {
 			console.error(err);
 			os.alert({
 				type: 'error',
-				title: i18n.ts.loginFailed,
+				title: localeRef.value.env.loginFailed,
 				text: JSON.stringify(err),
 			});
 		}

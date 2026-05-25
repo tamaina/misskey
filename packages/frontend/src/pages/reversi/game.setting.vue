@@ -10,16 +10,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 		<div :class="{ [$style.disallow]: isReady }">
 			<div class="_gaps" :class="{ [$style.disallowInner]: isReady }">
-				<div style="font-size: 1.5em; text-align: center;">{{ i18n.ts._reversi.gameSettings }}</div>
+				<div style="font-size: 1.5em; text-align: center;">{{ $locale.env._reversi.gameSettings }}</div>
 
 				<template v-if="game.noIrregularRules">
-					<div>{{ i18n.ts._reversi.disallowIrregularRules }}</div>
+					<div>{{ $locale.env._reversi.disallowIrregularRules }}</div>
 				</template>
 				<template v-else>
 					<div class="_panel">
 						<div style="display: flex; align-items: center; padding: 16px; border-bottom: solid 1px var(--MI_THEME-divider);">
 							<div>{{ mapName }}</div>
-							<MkButton style="margin-left: auto;" @click="chooseMap">{{ i18n.ts._reversi.chooseBoard }}</MkButton>
+							<MkButton style="margin-left: auto;" @click="chooseMap">{{ $locale.env._reversi.chooseBoard }}</MkButton>
 						</div>
 
 						<div style="padding: 16px;">
@@ -33,25 +33,25 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</div>
 
 					<MkFolder :defaultOpen="true">
-						<template #label>{{ i18n.ts._reversi.blackOrWhite }}</template>
+						<template #label>{{ $locale.env._reversi.blackOrWhite }}</template>
 
 						<MkRadios
 							v-model="game.bw"
 							:options="[
-								{ value: 'random', label: i18n.ts.random },
+								{ value: 'random', label: $locale.env.random },
 								{ value: '1', slotId: 'user1' },
 								{ value: '2', slotId: 'user2' },
 							]"
 						>
 							<template #option-user1>
-								<I18n :src="i18n.ts._reversi.blackIs" tag="span">
+								<I18n :src="$locale.env._reversi.blackIs" tag="span">
 									<template #name>
 										<b><MkUserName :user="game.user1"/></b>
 									</template>
 								</I18n>
 							</template>
 							<template #option-user2>
-								<I18n :src="i18n.ts._reversi.blackIs" tag="span">
+								<I18n :src="$locale.env._reversi.blackIs" tag="span">
 									<template #name>
 										<b><MkUserName :user="game.user2"/></b>
 									</template>
@@ -61,8 +61,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</MkFolder>
 
 					<MkFolder :defaultOpen="true">
-						<template #label>{{ i18n.ts._reversi.timeLimitForEachTurn }}</template>
-						<template #suffix>{{ game.timeLimitForEachTurn }}{{ i18n.ts._time.second }}</template>
+						<template #label>{{ $locale.env._reversi.timeLimitForEachTurn }}</template>
+						<template #suffix>{{ game.timeLimitForEachTurn }}{{ $locale.env._time.second }}</template>
 
 						<MkRadios
 							v-model="game.timeLimitForEachTurn"
@@ -72,12 +72,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</MkFolder>
 
 					<MkFolder :defaultOpen="true">
-						<template #label>{{ i18n.ts._reversi.rules }}</template>
+						<template #label>{{ $locale.env._reversi.rules }}</template>
 
 						<div class="_gaps_s">
-							<MkSwitch v-model="game.isLlotheo" @update:modelValue="updateSettings('isLlotheo')">{{ i18n.ts._reversi.isLlotheo }}</MkSwitch>
-							<MkSwitch v-model="game.loopedBoard" @update:modelValue="updateSettings('loopedBoard')">{{ i18n.ts._reversi.loopedMap }}</MkSwitch>
-							<MkSwitch v-model="game.canPutEverywhere" @update:modelValue="updateSettings('canPutEverywhere')">{{ i18n.ts._reversi.canPutEverywhere }}</MkSwitch>
+							<MkSwitch v-model="game.isLlotheo" @update:modelValue="updateSettings('isLlotheo')">{{ $locale.env._reversi.isLlotheo }}</MkSwitch>
+							<MkSwitch v-model="game.loopedBoard" @update:modelValue="updateSettings('loopedBoard')">{{ $locale.env._reversi.loopedMap }}</MkSwitch>
+							<MkSwitch v-model="game.canPutEverywhere" @update:modelValue="updateSettings('canPutEverywhere')">{{ $locale.env._reversi.canPutEverywhere }}</MkSwitch>
 						</div>
 					</MkFolder>
 				</template>
@@ -88,20 +88,20 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div :class="$style.footer">
 			<div class="_spacer" style="--MI_SPACER-w: 700px; --MI_SPACER-min: 16px; --MI_SPACER-max: 16px;">
 				<div style="text-align: center;" class="_gaps_s">
-					<div v-if="opponentHasSettingsChanged" style="color: var(--MI_THEME-warn);">{{ i18n.ts._reversi.opponentHasSettingsChanged }}</div>
+					<div v-if="opponentHasSettingsChanged" style="color: var(--MI_THEME-warn);">{{ $locale.env._reversi.opponentHasSettingsChanged }}</div>
 					<div>
-						<template v-if="isReady && isOpReady">{{ i18n.ts._reversi.thisGameIsStartedSoon }}<MkEllipsis/></template>
-						<template v-if="isReady && !isOpReady">{{ i18n.ts._reversi.waitingForOther }}<MkEllipsis/></template>
-						<template v-if="!isReady && isOpReady">{{ i18n.ts._reversi.waitingForMe }}</template>
-						<template v-if="!isReady && !isOpReady">{{ i18n.ts._reversi.waitingBoth }}<MkEllipsis/></template>
+						<template v-if="isReady && isOpReady">{{ $locale.env._reversi.thisGameIsStartedSoon }}<MkEllipsis/></template>
+						<template v-if="isReady && !isOpReady">{{ $locale.env._reversi.waitingForOther }}<MkEllipsis/></template>
+						<template v-if="!isReady && isOpReady">{{ $locale.env._reversi.waitingForMe }}</template>
+						<template v-if="!isReady && !isOpReady">{{ $locale.env._reversi.waitingBoth }}<MkEllipsis/></template>
 					</div>
 					<div class="_buttonsCenter">
-						<MkButton rounded danger @click="cancel">{{ i18n.ts.cancel }}</MkButton>
-						<MkButton v-if="!isReady" rounded primary @click="ready">{{ i18n.ts._reversi.ready }}</MkButton>
-						<MkButton v-if="isReady" rounded @click="unready">{{ i18n.ts._reversi.cancelReady }}</MkButton>
+						<MkButton rounded danger @click="cancel">{{ $locale.env.cancel }}</MkButton>
+						<MkButton v-if="!isReady" rounded primary @click="ready">{{ $locale.env._reversi.ready }}</MkButton>
+						<MkButton v-if="isReady" rounded @click="unready">{{ $locale.env._reversi.cancelReady }}</MkButton>
 					</div>
 					<div>
-						<MkSwitch v-model="shareWhenStart">{{ i18n.ts._reversi.shareToTlTheGameWhenStart }}</MkSwitch>
+						<MkSwitch v-model="shareWhenStart">{{ $locale.env._reversi.shareToTlTheGameWhenStart }}</MkSwitch>
 					</div>
 				</div>
 			</div>
@@ -111,11 +111,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef } from '@/i18n.js';
+
 import { computed, watch, ref, onUnmounted } from 'vue';
 import * as Misskey from 'misskey-js';
 import * as Reversi from 'misskey-reversi';
 import type { MenuItem } from '@/types/menu.js';
-import { i18n } from '@/i18n.js';
 import { $i } from '@/i.js';
 import { deepClone } from '@/utility/clone.js';
 import MkButton from '@/components/MkButton.vue';
@@ -140,14 +141,14 @@ const shareWhenStart = defineModel<boolean>('shareWhenStart', { default: false }
 const game = ref<Misskey.entities.ReversiGameDetailed>(deepClone(props.game));
 
 const gameTurnOptionsDef = [
-	{ value: 5, label: '5' + i18n.ts._time.second },
-	{ value: 10, label: '10' + i18n.ts._time.second },
-	{ value: 30, label: '30' + i18n.ts._time.second },
-	{ value: 60, label: '60' + i18n.ts._time.second },
-	{ value: 90, label: '90' + i18n.ts._time.second },
-	{ value: 120, label: '120' + i18n.ts._time.second },
-	{ value: 180, label: '180' + i18n.ts._time.second },
-	{ value: 3600, label: '3600' + i18n.ts._time.second },
+	{ value: 5, label: '5' + localeRef.value.env._time.second },
+	{ value: 10, label: '10' + localeRef.value.env._time.second },
+	{ value: 30, label: '30' + localeRef.value.env._time.second },
+	{ value: 60, label: '60' + localeRef.value.env._time.second },
+	{ value: 90, label: '90' + localeRef.value.env._time.second },
+	{ value: 120, label: '120' + localeRef.value.env._time.second },
+	{ value: 180, label: '180' + localeRef.value.env._time.second },
+	{ value: 3600, label: '3600' + localeRef.value.env._time.second },
 ] as MkRadiosOption<number>[];
 
 const mapName = computed(() => {
@@ -205,7 +206,7 @@ function chooseMap(ev: PointerEvent) {
 async function cancel() {
 	const { canceled } = await os.confirm({
 		type: 'warning',
-		text: i18n.ts.areYouSure,
+		text: localeRef.value.env.areYouSure,
 	});
 	if (canceled) return;
 

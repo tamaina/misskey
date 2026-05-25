@@ -46,6 +46,21 @@
 		"jsx": "preserve"
 	},
 	"compileOnSave": false,
+	"vueCompilerOptions": {
+		"plugins": [
+			{
+				"name": "vite-vue-internationalization/volar",
+				"primaryLocale": "ja-JP",
+				"global": {
+					"ja-JP": "../../locales/ja-JP.yml"
+				},
+				"globalType": "runtime",
+				"messageSyntax": "vue",
+				"buildStrategy": "virtual",
+				"sfcTransform": "all"
+			}
+		]
+	},
 	"include": [
 		"./src/**/*.ts",
 		"./src/**/*.vue",

@@ -31,7 +31,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div v-show="showBody" ref="contentEl" :class="[$style.content, { [$style.omitted]: omitted }]">
 			<slot></slot>
 			<button v-if="omitted" :class="$style.fade" class="_button" @click="showMore">
-				<span :class="$style.fadeLabel">{{ i18n.ts.showMore }}</span>
+				<span :class="$style.fadeLabel">{{ $locale.env.showMore }}</span>
 			</button>
 		</div>
 	</Transition>
@@ -39,9 +39,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+
 import { onMounted, onUnmounted, ref, useTemplateRef, watch } from 'vue';
 import { prefer } from '@/preferences.js';
-import { i18n } from '@/i18n.js';
 
 const props = withDefaults(defineProps<{
 	showHeader?: boolean;

@@ -22,14 +22,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 						</div>
 						<div class="actions">
 							<div class="like">
-								<MkButton v-if="post.isLiked" v-tooltip="i18n.ts._gallery.unlike" class="button" primary @click="unlike()"><i class="ti ti-heart-off"></i><span v-if="post.likedCount > 0" class="count">{{ post.likedCount }}</span></MkButton>
-								<MkButton v-else v-tooltip="i18n.ts._gallery.like" class="button" @click="like()"><i class="ti ti-heart"></i><span v-if="post.likedCount > 0" class="count">{{ post.likedCount }}</span></MkButton>
+								<MkButton v-if="post.isLiked" v-tooltip="$locale.env._gallery.unlike" class="button" primary @click="unlike()"><i class="ti ti-heart-off"></i><span v-if="post.likedCount > 0" class="count">{{ post.likedCount }}</span></MkButton>
+								<MkButton v-else v-tooltip="$locale.env._gallery.like" class="button" @click="like()"><i class="ti ti-heart"></i><span v-if="post.likedCount > 0" class="count">{{ post.likedCount }}</span></MkButton>
 							</div>
 							<div class="other">
-								<button v-if="$i && $i.id === post.user.id" v-tooltip="i18n.ts.edit" v-click-anime class="_button" @click="edit"><i class="ti ti-pencil ti-fw"></i></button>
-								<button v-tooltip="i18n.ts.shareWithNote" v-click-anime class="_button" @click="shareWithNote"><i class="ti ti-repeat ti-fw"></i></button>
-								<button v-tooltip="i18n.ts.copyLink" v-click-anime class="_button" @click="copyLink"><i class="ti ti-link ti-fw"></i></button>
-								<button v-if="isSupportShare()" v-tooltip="i18n.ts.share" v-click-anime class="_button" @click="share"><i class="ti ti-share ti-fw"></i></button>
+								<button v-if="$i && $i.id === post.user.id" v-tooltip="$locale.env.edit" v-click-anime class="_button" @click="edit"><i class="ti ti-pencil ti-fw"></i></button>
+								<button v-tooltip="$locale.env.shareWithNote" v-click-anime class="_button" @click="shareWithNote"><i class="ti ti-repeat ti-fw"></i></button>
+								<button v-tooltip="$locale.env.copyLink" v-click-anime class="_button" @click="copyLink"><i class="ti ti-link ti-fw"></i></button>
+								<button v-if="isSupportShare()" v-tooltip="$locale.env.share" v-click-anime class="_button" @click="share"><i class="ti ti-share ti-fw"></i></button>
 								<button v-if="$i && $i.id !== post.user.id" v-click-anime class="_button" @click="showMenu"><i class="ti ti-dots ti-fw"></i></button>
 							</div>
 						</div>
@@ -45,7 +45,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<MkAd :preferForms="['horizontal', 'horizontal-big']"/>
 					<MkContainer :max-height="300" :foldable="true" class="other">
 						<template #icon><i class="ti ti-clock"></i></template>
-						<template #header>{{ i18n.ts.recentPosts }}</template>
+						<template #header>{{ $locale.env.recentPosts }}</template>
 						<MkPagination v-slot="{items}" :paginator="otherPostsPaginator">
 							<div class="sdrarzaf">
 								<MkGalleryPostPreview v-for="post in items" :key="post.id" :post="post" class="post"/>
@@ -62,6 +62,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef } from '@/i18n.js';
+
 import { computed, watch, ref, defineAsyncComponent, markRaw } from 'vue';
 import * as Misskey from 'misskey-js';
 import { url } from '@@/js/config.js';
@@ -73,7 +75,6 @@ import MkContainer from '@/components/MkContainer.vue';
 import MkPagination from '@/components/MkPagination.vue';
 import MkGalleryPostPreview from '@/components/MkGalleryPostPreview.vue';
 import MkFollowButton from '@/components/MkFollowButton.vue';
-import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
 import { prefer } from '@/preferences.js';
 import { $i } from '@/i.js';
@@ -143,7 +144,7 @@ async function unlike() {
 	if (!post.value) return;
 	const confirm = await os.confirm({
 		type: 'warning',
-		text: i18n.ts.unlikeConfirm,
+		text: localeRef.value.env.unlikeConfirm,
 	});
 	if (confirm.canceled) return;
 	os.apiWithDialog('gallery/posts/unlike', {
@@ -183,7 +184,7 @@ function showMenu(ev: PointerEvent) {
 	if ($i && $i.id !== post.value.userId) {
 		menuItems.push({
 			icon: 'ti ti-exclamation-circle',
-			text: i18n.ts.reportAbuse,
+			text: localeRef.value.env.reportAbuse,
 			action: reportAbuse,
 		});
 
@@ -192,11 +193,11 @@ function showMenu(ev: PointerEvent) {
 				type: 'divider',
 			}, {
 				icon: 'ti ti-trash',
-				text: i18n.ts.delete,
+				text: localeRef.value.env.delete,
 				danger: true,
 				action: () => os.confirm({
 					type: 'warning',
-					text: i18n.ts.deleteConfirm,
+					text: localeRef.value.env.deleteConfirm,
 				}).then(({ canceled }) => {
 					if (canceled || !post.value) return;
 
@@ -216,7 +217,7 @@ const headerActions = computed(() => []);
 const headerTabs = computed(() => []);
 
 definePage(() => ({
-	title: post.value ? post.value.title : i18n.ts.gallery,
+	title: post.value ? post.value.title : localeRef.value.env.gallery,
 	...post.value ? {
 		avatar: post.value.user,
 	} : {},

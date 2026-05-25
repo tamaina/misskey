@@ -12,11 +12,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<FormSection>
 					<div class="_gaps_s">
 						<MkKeyValue>
-							<template #key>{{ i18n.ts._externalResourceInstaller._vendorInfo.endpoint }}</template>
+							<template #key>{{ $locale.env._externalResourceInstaller._vendorInfo.endpoint }}</template>
 							<template #value><MkUrl v-if="url" :url="url" :showUrlPreview="false"></MkUrl></template>
 						</MkKeyValue>
 						<MkKeyValue>
-							<template #key>{{ i18n.ts._externalResourceInstaller._vendorInfo.hashVerify }}</template>
+							<template #key>{{ $locale.env._externalResourceInstaller._vendorInfo.hashVerify }}</template>
 							<template #value>
 								<!-- この画面が出ている時点でハッシュの検証には成功している -->
 								<i class="ti ti-check" style="color: var(--MI_THEME-accent)"></i>
@@ -33,7 +33,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<h2 :class="$style.extInstallerTitle">{{ errorKV?.title }}</h2>
 			<div :class="$style.extInstallerNormDesc">{{ errorKV?.description }}</div>
 			<div class="_buttonsCenter">
-				<MkButton @click="close_()">{{ i18n.ts.close }}</MkButton>
+				<MkButton @click="close_()">{{ $locale.env.close }}</MkButton>
 			</div>
 		</div>
 	</div>
@@ -41,6 +41,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef } from '@/i18n.js';
+
 import { ref, computed, nextTick } from 'vue';
 import type { Extension } from '@/components/MkExtensionInstaller.vue';
 import type { AiScriptPluginMeta } from '@/plugin.js';
@@ -56,7 +58,6 @@ import { parsePluginMeta, installPlugin } from '@/plugin.js';
 import { installTheme } from '@/theme.js';
 import { parseThemeCode } from '@@/js/theme.js';
 import { unisonReload } from '@/utility/unison-reload.js';
-import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
 
 const uiPhase = ref<'fetching' | 'confirm' | 'error'>('fetching');
@@ -84,8 +85,8 @@ function close_(): void {
 async function _fetch_() {
 	if (!url.value || !hash.value) {
 		errorKV.value = {
-			title: i18n.ts._externalResourceInstaller._errors._invalidParams.title,
-			description: i18n.ts._externalResourceInstaller._errors._invalidParams.description,
+			title: localeRef.value.env._externalResourceInstaller._errors._invalidParams.title,
+			description: localeRef.value.env._externalResourceInstaller._errors._invalidParams.description,
 		};
 		uiPhase.value = 'error';
 		return;
@@ -97,22 +98,22 @@ async function _fetch_() {
 		switch (err.id) {
 			case 'bb774091-7a15-4a70-9dc5-6ac8cf125856':
 				errorKV.value = {
-					title: i18n.ts._externalResourceInstaller._errors._failedToFetch.title,
-					description: i18n.ts._externalResourceInstaller._errors._failedToFetch.parseErrorDescription,
+					title: localeRef.value.env._externalResourceInstaller._errors._failedToFetch.title,
+					description: localeRef.value.env._externalResourceInstaller._errors._failedToFetch.parseErrorDescription,
 				};
 				uiPhase.value = 'error';
 				break;
 			case '693ba8ba-b486-40df-a174-72f8279b56a4':
 				errorKV.value = {
-					title: i18n.ts._externalResourceInstaller._errors._hashUnmatched.title,
-					description: i18n.ts._externalResourceInstaller._errors._hashUnmatched.description,
+					title: localeRef.value.env._externalResourceInstaller._errors._hashUnmatched.title,
+					description: localeRef.value.env._externalResourceInstaller._errors._hashUnmatched.description,
 				};
 				uiPhase.value = 'error';
 				break;
 			default:
 				errorKV.value = {
-					title: i18n.ts._externalResourceInstaller._errors._failedToFetch.title,
-					description: i18n.ts._externalResourceInstaller._errors._failedToFetch.fetchErrorDescription,
+					title: localeRef.value.env._externalResourceInstaller._errors._failedToFetch.title,
+					description: localeRef.value.env._externalResourceInstaller._errors._failedToFetch.fetchErrorDescription,
 				};
 				uiPhase.value = 'error';
 				break;
@@ -122,8 +123,8 @@ async function _fetch_() {
 
 	if (!res) {
 		errorKV.value = {
-			title: i18n.ts._externalResourceInstaller._errors._failedToFetch.title,
-			description: i18n.ts._externalResourceInstaller._errors._failedToFetch.fetchErrorDescription,
+			title: localeRef.value.env._externalResourceInstaller._errors._failedToFetch.title,
+			description: localeRef.value.env._externalResourceInstaller._errors._failedToFetch.fetchErrorDescription,
 		};
 		uiPhase.value = 'error';
 		return;
@@ -140,8 +141,8 @@ async function _fetch_() {
 				};
 			} catch (err) {
 				errorKV.value = {
-					title: i18n.ts._externalResourceInstaller._errors._pluginParseFailed.title,
-					description: i18n.ts._externalResourceInstaller._errors._pluginParseFailed.description,
+					title: localeRef.value.env._externalResourceInstaller._errors._pluginParseFailed.title,
+					description: localeRef.value.env._externalResourceInstaller._errors._pluginParseFailed.description,
 				};
 				console.error(err);
 				uiPhase.value = 'error';
@@ -170,15 +171,15 @@ async function _fetch_() {
 				switch (err.message.toLowerCase()) {
 					case 'this theme is already installed':
 						errorKV.value = {
-							title: i18n.ts._externalResourceInstaller._errors._themeParseFailed.title,
-							description: i18n.ts._theme.alreadyInstalled,
+							title: localeRef.value.env._externalResourceInstaller._errors._themeParseFailed.title,
+							description: localeRef.value.env._theme.alreadyInstalled,
 						};
 						break;
 
 					default:
 						errorKV.value = {
-							title: i18n.ts._externalResourceInstaller._errors._themeParseFailed.title,
-							description: i18n.ts._externalResourceInstaller._errors._themeParseFailed.description,
+							title: localeRef.value.env._externalResourceInstaller._errors._themeParseFailed.title,
+							description: localeRef.value.env._externalResourceInstaller._errors._themeParseFailed.description,
 						};
 						break;
 				}
@@ -190,8 +191,8 @@ async function _fetch_() {
 
 		default:
 			errorKV.value = {
-				title: i18n.ts._externalResourceInstaller._errors._resourceTypeNotSupported.title,
-				description: i18n.ts._externalResourceInstaller._errors._resourceTypeNotSupported.description,
+				title: localeRef.value.env._externalResourceInstaller._errors._resourceTypeNotSupported.title,
+				description: localeRef.value.env._externalResourceInstaller._errors._resourceTypeNotSupported.description,
 			};
 			uiPhase.value = 'error';
 			return;
@@ -214,8 +215,8 @@ async function install() {
 				}, 3000);
 			} catch (err) {
 				errorKV.value = {
-					title: i18n.ts._externalResourceInstaller._errors._pluginInstallFailed.title,
-					description: i18n.ts._externalResourceInstaller._errors._pluginInstallFailed.description,
+					title: localeRef.value.env._externalResourceInstaller._errors._pluginInstallFailed.title,
+					description: localeRef.value.env._externalResourceInstaller._errors._pluginInstallFailed.description,
 				};
 				console.error(err);
 				uiPhase.value = 'error';
@@ -237,7 +238,7 @@ hash.value = urlParams.get('hash');
 _fetch_();
 
 definePage(() => ({
-	title: i18n.ts._externalResourceInstaller.title,
+	title: localeRef.value.env._externalResourceInstaller.title,
 	icon: 'ti ti-download',
 }));
 </script>

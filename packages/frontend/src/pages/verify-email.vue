@@ -18,18 +18,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 				:leaveToClass="$style.transition_leaveTo"
 			>
 				<div v-if="!succeeded" key="input" class="_gaps_m" style="padding: 32px;">
-					<div :class="$style.mainText">{{ i18n.tsx.clickToFinishEmailVerification({ ok: i18n.ts.gotIt }) }}</div>
+					<div :class="$style.mainText">{{ $l.env.clickToFinishEmailVerification({ ok: $locale.env.gotIt }) }}</div>
 					<div>
 						<MkButton gradate large rounded type="submit" :disabled="submitting" style="margin: 0 auto;">
-							{{ submitting ? i18n.ts.processing : i18n.ts.gotIt }}<MkEllipsis v-if="submitting"/>
+							{{ submitting ? $locale.env.processing : $locale.env.gotIt }}<MkEllipsis v-if="submitting"/>
 						</MkButton>
 					</div>
 				</div>
 				<div v-else key="success" class="_gaps_m" style="padding: 32px;">
-					<div :class="$style.mainText">{{ i18n.ts.emailVerified }}</div>
+					<div :class="$style.mainText">{{ $locale.env.emailVerified }}</div>
 					<div>
 						<MkButton large rounded type="routerLink" to="/" linkBehavior="browser" style="margin: 0 auto;">
-							{{ i18n.ts.goToMisskey }}
+							{{ $locale.env.goToMisskey }}
 						</MkButton>
 					</div>
 				</div>
@@ -40,9 +40,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef } from '@/i18n.js';
+
 import { ref } from 'vue';
 import MkButton from '@/components/MkButton.vue';
-import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 
@@ -67,8 +68,8 @@ function submit() {
 
 		os.alert({
 			type: 'error',
-			title: i18n.ts.somethingHappened,
-			text: i18n.ts.emailVerificationFailedError,
+			title: localeRef.value.env.somethingHappened,
+			text: localeRef.value.env.emailVerificationFailedError,
 		});
 	});
 }

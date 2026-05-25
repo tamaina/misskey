@@ -9,8 +9,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 		v-if="instance.federation !== 'none'"
 		v-model="origin"
 		:tabs="[
-			{ key: 'local', label: i18n.ts.local },
-			{ key: 'remote', label: i18n.ts.remote },
+			{ key: 'local', label: $locale.env.local },
+			{ key: 'remote', label: $locale.env.remote },
 		]"
 		style="margin-bottom: var(--MI-margin);"
 	>
@@ -18,26 +18,26 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div v-if="origin === 'local'">
 		<template v-if="tag == null">
 			<MkFoldableSection class="_margin" persistKey="explore-pinned-users">
-				<template #header><i class="ti ti-bookmark ti-fw" style="margin-right: 0.5em;"></i>{{ i18n.ts.pinnedUsers }}</template>
+				<template #header><i class="ti ti-bookmark ti-fw" style="margin-right: 0.5em;"></i>{{ $locale.env.pinnedUsers }}</template>
 				<MkUserList :paginator="pinnedUsersPaginator"/>
 			</MkFoldableSection>
 			<MkFoldableSection class="_margin" persistKey="explore-popular-users">
-				<template #header><i class="ti ti-chart-line ti-fw" style="margin-right: 0.5em;"></i>{{ i18n.ts.popularUsers }}</template>
+				<template #header><i class="ti ti-chart-line ti-fw" style="margin-right: 0.5em;"></i>{{ $locale.env.popularUsers }}</template>
 				<MkUserList :paginator="popularUsersPaginator"/>
 			</MkFoldableSection>
 			<MkFoldableSection class="_margin" persistKey="explore-recently-updated-users">
-				<template #header><i class="ti ti-message ti-fw" style="margin-right: 0.5em;"></i>{{ i18n.ts.recentlyUpdatedUsers }}</template>
+				<template #header><i class="ti ti-message ti-fw" style="margin-right: 0.5em;"></i>{{ $locale.env.recentlyUpdatedUsers }}</template>
 				<MkUserList :paginator="recentlyUpdatedUsersPaginator"/>
 			</MkFoldableSection>
 			<MkFoldableSection class="_margin" persistKey="explore-recently-registered-users">
-				<template #header><i class="ti ti-plus ti-fw" style="margin-right: 0.5em;"></i>{{ i18n.ts.recentlyRegisteredUsers }}</template>
+				<template #header><i class="ti ti-plus ti-fw" style="margin-right: 0.5em;"></i>{{ $locale.env.recentlyRegisteredUsers }}</template>
 				<MkUserList :paginator="recentlyRegisteredUsersPaginator"/>
 			</MkFoldableSection>
 		</template>
 	</div>
 	<div v-else>
 		<MkFoldableSection :foldable="true" :expanded="false" class="_margin">
-			<template #header><i class="ti ti-hash ti-fw" style="margin-right: 0.5em;"></i>{{ i18n.ts.popularTags }}</template>
+			<template #header><i class="ti ti-hash ti-fw" style="margin-right: 0.5em;"></i>{{ $locale.env.popularTags }}</template>
 
 			<div>
 				<MkA v-for="tag in tagsLocal" :key="'local:' + tag.tag" :to="`/user-tags/${tag.tag}`" style="margin-right: 16px; font-weight: bold;">{{ tag.tag }}</MkA>
@@ -52,15 +52,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 		<template v-if="tag == null">
 			<MkFoldableSection class="_margin">
-				<template #header><i class="ti ti-chart-line ti-fw" style="margin-right: 0.5em;"></i>{{ i18n.ts.popularUsers }}</template>
+				<template #header><i class="ti ti-chart-line ti-fw" style="margin-right: 0.5em;"></i>{{ $locale.env.popularUsers }}</template>
 				<MkUserList :paginator="popularUsersFPaginator"/>
 			</MkFoldableSection>
 			<MkFoldableSection class="_margin">
-				<template #header><i class="ti ti-message ti-fw" style="margin-right: 0.5em;"></i>{{ i18n.ts.recentlyUpdatedUsers }}</template>
+				<template #header><i class="ti ti-message ti-fw" style="margin-right: 0.5em;"></i>{{ $locale.env.recentlyUpdatedUsers }}</template>
 				<MkUserList :paginator="recentlyUpdatedUsersFPaginator"/>
 			</MkFoldableSection>
 			<MkFoldableSection class="_margin">
-				<template #header><i class="ti ti-rocket ti-fw" style="margin-right: 0.5em;"></i>{{ i18n.ts.recentlyDiscoveredUsers }}</template>
+				<template #header><i class="ti ti-rocket ti-fw" style="margin-right: 0.5em;"></i>{{ $locale.env.recentlyDiscoveredUsers }}</template>
 				<MkUserList :paginator="recentlyRegisteredUsersFPaginator"/>
 			</MkFoldableSection>
 		</template>
@@ -69,6 +69,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+
 import { watch, ref, useTemplateRef, computed, markRaw } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkUserList from '@/components/MkUserList.vue';
@@ -76,7 +77,6 @@ import MkFoldableSection from '@/components/MkFoldableSection.vue';
 import MkTab from '@/components/MkTab.vue';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { instance } from '@/instance.js';
-import { i18n } from '@/i18n.js';
 import { Paginator } from '@/utility/paginator.js';
 
 const props = defineProps<{

@@ -5,23 +5,23 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div class="_gaps_m">
-	<MkInfo>{{ i18n.ts._instanceMute.title }}</MkInfo>
+	<MkInfo>{{ $locale.env._instanceMute.title }}</MkInfo>
 	<MkTextarea v-model="instanceMutes">
-		<template #label>{{ i18n.ts._instanceMute.heading }}</template>
-		<template #caption>{{ i18n.ts._instanceMute.instanceMuteDescription }}<br>{{ i18n.ts._instanceMute.instanceMuteDescription2 }}</template>
+		<template #label>{{ $locale.env._instanceMute.heading }}</template>
+		<template #caption>{{ $locale.env._instanceMute.instanceMuteDescription }}<br>{{ $locale.env._instanceMute.instanceMuteDescription2 }}</template>
 	</MkTextarea>
-	<MkButton primary :disabled="!changed" @click="save()"><i class="ti ti-device-floppy"></i> {{ i18n.ts.save }}</MkButton>
+	<MkButton primary :disabled="!changed" @click="save()"><i class="ti ti-device-floppy"></i> {{ $locale.env.save }}</MkButton>
 </div>
 </template>
 
 <script lang="ts" setup>
+
 import { ref, watch } from 'vue';
 import MkTextarea from '@/components/MkTextarea.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import MkButton from '@/components/MkButton.vue';
 import { ensureSignin } from '@/i.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
-import { i18n } from '@/i18n.js';
 
 const $i = ensureSignin();
 

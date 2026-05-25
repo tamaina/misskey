@@ -18,26 +18,26 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<template #caption>{{ token.description }}</template>
 					<template v-if="token.lastUsedAt != null" #suffix><MkTime :time="token.lastUsedAt"/></template>
 					<template #footer>
-						<MkButton danger @click="revoke(token)"><i class="ti ti-trash"></i> {{ i18n.ts.delete }}</MkButton>
+						<MkButton danger @click="revoke(token)"><i class="ti ti-trash"></i> {{ $locale.env.delete }}</MkButton>
 					</template>
 
 					<div class="_gaps_s">
 						<div v-if="token.description">{{ token.description }}</div>
 						<div>
 							<MkKeyValue oneline>
-								<template #key>{{ i18n.ts.installedDate }}</template>
+								<template #key>{{ $locale.env.installedDate }}</template>
 								<template #value><MkTime :time="token.createdAt" :mode="'detail'"/></template>
 							</MkKeyValue>
 							<MkKeyValue v-if="token.lastUsedAt != null" oneline>
-								<template #key>{{ i18n.ts.lastUsedDate }}</template>
+								<template #key>{{ $locale.env.lastUsedDate }}</template>
 								<template #value><MkTime :time="token.lastUsedAt" :mode="'detail'"/></template>
 							</MkKeyValue>
 						</div>
 						<MkFolder>
-							<template #label>{{ i18n.ts.permission }}</template>
-							<template #suffix>{{ Object.keys(token.permission).length === 0 ? i18n.ts.none : Object.keys(token.permission).length }}</template>
+							<template #label>{{ $locale.env.permission }}</template>
+							<template #suffix>{{ Object.keys(token.permission).length === 0 ? $locale.env.none : Object.keys(token.permission).length }}</template>
 							<ul>
-								<li v-for="p in token.permission" :key="p">{{ (i18n.ts._permissions as any)[p] ?? p }}</li>
+								<li v-for="p in token.permission" :key="p">{{ ($locale.env._permissions as any)[p] ?? p }}</li>
 							</ul>
 						</MkFolder>
 					</div>
@@ -49,11 +49,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef } from '@/i18n.js';
+
 import { ref, computed, markRaw } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkPagination from '@/components/MkPagination.vue';
 import { misskeyApi } from '@/utility/misskey-api.js';
-import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
 import MkKeyValue from '@/components/MkKeyValue.vue';
 import MkButton from '@/components/MkButton.vue';
@@ -79,7 +80,7 @@ const headerActions = computed(() => []);
 const headerTabs = computed(() => []);
 
 definePage(() => ({
-	title: i18n.ts.installedApps,
+	title: localeRef.value.env.installedApps,
 	icon: 'ti ti-plug',
 }));
 </script>

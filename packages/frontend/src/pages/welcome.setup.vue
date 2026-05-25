@@ -50,41 +50,41 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div style="padding: 16px 32px 32px 32px;">
 				<form v-if="!accountCreated" class="_gaps_m" @submit.prevent="createAccount()">
 					<div style="text-align: center;" class="_gaps_s">
-						<div><b>{{ i18n.ts._serverSetupWizard.installCompleted }}</b></div>
-						<div>{{ i18n.ts._serverSetupWizard.firstCreateAccount }}</div>
+						<div><b>{{ $locale.env._serverSetupWizard.installCompleted }}</b></div>
+						<div>{{ $locale.env._serverSetupWizard.firstCreateAccount }}</div>
 					</div>
 					<MkInput v-model="setupPassword" type="password" data-cy-admin-initial-password>
-						<template #label>{{ i18n.ts.initialPasswordForSetup }} <div v-tooltip:dialog="i18n.ts.initialPasswordForSetupDescription" class="_button _help"><i class="ti ti-help-circle"></i></div></template>
+						<template #label>{{ $locale.env.initialPasswordForSetup }} <div v-tooltip:dialog="$locale.env.initialPasswordForSetupDescription" class="_button _help"><i class="ti ti-help-circle"></i></div></template>
 						<template #prefix><i class="ti ti-lock"></i></template>
 					</MkInput>
 					<MkInput v-model="username" pattern="^[a-zA-Z0-9_]{1,20}$" :spellcheck="false" required data-cy-admin-username>
-						<template #label>{{ i18n.ts.username }} <div v-tooltip:dialog="i18n.ts.usernameInfo" class="_button _help"><i class="ti ti-help-circle"></i></div></template>
+						<template #label>{{ $locale.env.username }} <div v-tooltip:dialog="$locale.env.usernameInfo" class="_button _help"><i class="ti ti-help-circle"></i></div></template>
 						<template #prefix>@</template>
 						<template #suffix>@{{ host }}</template>
 					</MkInput>
 					<MkInput v-model="password" type="password" data-cy-admin-password>
-						<template #label>{{ i18n.ts.password }}</template>
+						<template #label>{{ $locale.env.password }}</template>
 						<template #prefix><i class="ti ti-lock"></i></template>
 					</MkInput>
 					<div>
 						<MkButton gradate large rounded :disabled="accountCreating" data-cy-admin-ok style="margin: 0 auto;" type="submit">
-							{{ accountCreating ? i18n.ts.processing : i18n.ts.next }}<MkEllipsis v-if="accountCreating"/>
+							{{ accountCreating ? $locale.env.processing : $locale.env.next }}<MkEllipsis v-if="accountCreating"/>
 						</MkButton>
 					</div>
 				</form>
 				<div v-else-if="step === 0" class="_gaps_m">
 					<div style="text-align: center;" class="_gaps_s">
-						<div><b>{{ i18n.ts._serverSetupWizard.accountCreated }}</b></div>
+						<div><b>{{ $locale.env._serverSetupWizard.accountCreated }}</b></div>
 					</div>
 					<MkButton gradate large rounded data-cy-next style="margin: 0 auto;" @click="step++">
-						{{ i18n.ts.next }}
+						{{ $locale.env.next }}
 					</MkButton>
 				</div>
 				<div v-else-if="step === 1" class="_gaps_m">
 					<div style="text-align: center;" class="_gaps_s">
-						<div style="font-size: 120%;"><b>{{ i18n.ts._serverSetupWizard.serverSetting }}</b></div>
-						<div>{{ i18n.ts._serverSetupWizard.youCanEasilyConfigureOptimalServerSettingsWithThisWizard }}</div>
-						<div>{{ i18n.ts._serverSetupWizard.settingsYouMakeHereCanBeChangedLater }}</div>
+						<div style="font-size: 120%;"><b>{{ $locale.env._serverSetupWizard.serverSetting }}</b></div>
+						<div>{{ $locale.env._serverSetupWizard.youCanEasilyConfigureOptimalServerSettingsWithThisWizard }}</div>
+						<div>{{ $locale.env._serverSetupWizard.settingsYouMakeHereCanBeChangedLater }}</div>
 					</div>
 
 					<Suspense>
@@ -97,23 +97,23 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</Suspense>
 
 					<MkButton rounded style="margin: 0 auto;" @click="skipSettings">
-						{{ i18n.ts._serverSetupWizard.skipSettings }}
+						{{ $locale.env._serverSetupWizard.skipSettings }}
 					</MkButton>
 				</div>
 				<div v-else-if="step === 2" class="_gaps_m">
 					<div style="text-align: center;" class="_gaps_s">
-						<div><b>{{ i18n.ts._serverSetupWizard.settingsCompleted }}</b></div>
-						<div>{{ i18n.ts._serverSetupWizard.settingsCompleted_description }}</div>
-						<div>{{ i18n.ts._serverSetupWizard.settingsCompleted_description2 }}</div>
+						<div><b>{{ $locale.env._serverSetupWizard.settingsCompleted }}</b></div>
+						<div>{{ $locale.env._serverSetupWizard.settingsCompleted_description }}</div>
+						<div>{{ $locale.env._serverSetupWizard.settingsCompleted_description2 }}</div>
 					</div>
 					<div class="_gaps_s" :class="$style.donation">
-						<div><b>{{ i18n.ts._serverSetupWizard.donationRequest }}</b></div>
-						<div>{{ i18n.ts._serverSetupWizard._donationRequest.text1 }}<br>{{ i18n.ts._serverSetupWizard._donationRequest.text2 }}<br>{{ i18n.ts._serverSetupWizard._donationRequest.text3 }}</div>
-						<MkLink target="_blank" url="https://misskey-hub.net/docs/donate/" style="margin: 0 auto;">{{ i18n.ts.learnMore }}</MkLink>
+						<div><b>{{ $locale.env._serverSetupWizard.donationRequest }}</b></div>
+						<div>{{ $locale.env._serverSetupWizard._donationRequest.text1 }}<br>{{ $locale.env._serverSetupWizard._donationRequest.text2 }}<br>{{ $locale.env._serverSetupWizard._donationRequest.text3 }}</div>
+						<MkLink target="_blank" url="https://misskey-hub.net/docs/donate/" style="margin: 0 auto;">{{ $locale.env.learnMore }}</MkLink>
 					</div>
 					<div class="_buttonsCenter">
 						<MkButton gradate large rounded data-cy-next style="margin: 0 auto;" @click="finish">
-							{{ i18n.ts.start }}
+							{{ $locale.env.start }}
 						</MkButton>
 					</div>
 				</div>
@@ -124,13 +124,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef } from '@/i18n.js';
+
 import { ref } from 'vue';
 import { host, version } from '@@/js/config.js';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
-import { i18n } from '@/i18n.js';
 import { login } from '@/accounts.js';
 import MkLink from '@/components/MkLink.vue';
 import MkServerSetupWizard from '@/components/MkServerSetupWizard.vue';
@@ -160,15 +161,15 @@ function createAccount() {
 	}).catch((err) => {
 		accountCreating.value = false;
 
-		let title = i18n.ts.somethingHappened;
+		let title = localeRef.value.env.somethingHappened;
 		let text = err.message + '\n' + err.id;
 
 		if (err.code === 'ACCESS_DENIED') {
-			title = i18n.ts.permissionDeniedError;
-			text = i18n.ts.operationForbidden;
+			title = localeRef.value.env.permissionDeniedError;
+			text = localeRef.value.env.operationForbidden;
 		} else if (err.code === 'INCORRECT_INITIAL_PASSWORD') {
-			title = i18n.ts.permissionDeniedError;
-			text = i18n.ts.incorrectPassword;
+			title = localeRef.value.env.permissionDeniedError;
+			text = localeRef.value.env.incorrectPassword;
 		}
 
 		os.alert({

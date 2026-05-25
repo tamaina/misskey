@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div class="_spacer" style="--MI_SPACER-w: 900px;">
 		<div class="_gaps">
 			<MkFoldableSection v-for="category in Object.keys(groupedDecorations)" :key="category" :expanded="true">
-				<template #header>{{ category || i18n.ts.other }}</template>
+				<template #header>{{ category || $locale.env.other }}</template>
 				<div :class="$style.decorations">
 					<div
 						v-for="avatarDecoration in groupedDecorations[category]"
@@ -28,12 +28,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef } from '@/i18n.js';
+
 import { ref, computed, defineAsyncComponent } from 'vue';
 import * as Misskey from 'misskey-js';
 import { ensureSignin } from '@/i.js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
-import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';
 import { groupAvatarDecorations } from '@/utility/group-avatar-decorations.js';
@@ -87,14 +88,14 @@ async function edit(avatarDecoration: Misskey.entities.AdminAvatarDecorationsLis
 const headerActions = computed(() => [{
 	asFullButton: true,
 	icon: 'ti ti-plus',
-	text: i18n.ts.add,
+	text: localeRef.value.env.add,
 	handler: add,
 }]);
 
 const headerTabs = computed(() => []);
 
 definePage(() => ({
-	title: i18n.ts.avatarDecorations,
+	title: localeRef.value.env.avatarDecorations,
 	icon: 'ti ti-sparkles',
 }));
 </script>

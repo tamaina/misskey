@@ -6,7 +6,7 @@
 import shader from './chromaticAberration.glsl';
 import type { ImageEffectorUiDefinition } from '../image-effector/ImageEffector.js';
 import { defineImageCompositorFunction } from '@/lib/ImageCompositor.js';
-import { i18n } from '@/i18n.js';
+import { $locale, $l } from '@/i18n.js';
 
 export const fn = defineImageCompositorFunction<{
 	normalize: boolean;
@@ -20,15 +20,15 @@ export const fn = defineImageCompositorFunction<{
 });
 
 export const uiDefinition = {
-	name: i18n.ts._imageEffector._fxs.chromaticAberration,
+	name: $locale.value.env._imageEffector._fxs.chromaticAberration,
 	params: {
 		normalize: {
-			label: i18n.ts._imageEffector._fxProps.normalize,
+			label: $locale.value.env._imageEffector._fxProps.normalize,
 			type: 'boolean',
 			default: false,
 		},
 		amount: {
-			label: i18n.ts._imageEffector._fxProps.amount,
+			label: $locale.value.env._imageEffector._fxProps.amount,
 			type: 'number',
 			default: 0.1,
 			min: 0.0,

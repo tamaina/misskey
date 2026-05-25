@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div :class="[$style.textCountRoot]">
-	<div :class="$style.textCountLabel">{{ i18n.ts.textCount }}</div>
+	<div :class="$style.textCountLabel">{{ $locale.env.textCount }}</div>
 	<div
 		:class="[$style.textCount,
 			{ [$style.danger]: textCountPercentage > 100 },
@@ -19,9 +19,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+
 import { computed, useTemplateRef } from 'vue';
 import { instance } from '@/instance.js';
-import { i18n } from '@/i18n.js';
 import number from '@/filters/number.js';
 
 const props = defineProps<{

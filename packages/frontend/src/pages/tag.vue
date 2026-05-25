@@ -11,7 +11,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<template v-if="$i" #footer>
 		<div :class="$style.footer">
 			<div class="_spacer" style="--MI_SPACER-w: 800px; --MI_SPACER-min: 16px; --MI_SPACER-max: 16px;">
-				<MkButton rounded primary :class="$style.button" @click="post()"><i class="ti ti-pencil"></i>{{ i18n.ts.postToHashtag }}</MkButton>
+				<MkButton rounded primary :class="$style.button" @click="post()"><i class="ti ti-pencil"></i>{{ $locale.env.postToHashtag }}</MkButton>
 			</div>
 		</div>
 	</template>
@@ -19,12 +19,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef } from '@/i18n.js';
+
 import { computed, markRaw, ref } from 'vue';
 import type { PageHeaderItem } from '@/types/page-header.js';
 import MkNotesTimeline from '@/components/MkNotesTimeline.vue';
 import MkButton from '@/components/MkButton.vue';
 import { definePage } from '@/page.js';
-import { i18n } from '@/i18n.js';
 import { $i } from '@/i.js';
 import { store } from '@/store.js';
 import * as os from '@/os.js';
@@ -53,10 +54,10 @@ async function post() {
 
 const headerActions = computed<PageHeaderItem[]>(() => [{
 	icon: 'ti ti-dots',
-	text: i18n.ts.more,
+	text: localeRef.value.env.more,
 	handler: (ev) => {
 		os.popupMenu([{
-			text: i18n.ts.embed,
+			text: localeRef.value.env.embed,
 			icon: 'ti ti-code',
 			action: () => {
 				genEmbedCode('tags', props.tag);

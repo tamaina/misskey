@@ -6,8 +6,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <div :class="$style.root" class="_pageScrollable">
 	<div class="_spacer" :class="$style.main">
-		<MkButton v-if="read" :class="$style.button" rounded @click="read = false"><i class="ti ti-qrcode"></i> {{ i18n.ts._qr.showTabTitle }}</MkButton>
-		<MkButton v-else :class="$style.button" rounded @click="read = true"><i class="ti ti-scan"></i> {{ i18n.ts._qr.readTabTitle }}</MkButton>
+		<MkButton v-if="read" :class="$style.button" rounded @click="read = false"><i class="ti ti-qrcode"></i> {{ $locale.env._qr.showTabTitle }}</MkButton>
+		<MkButton v-else :class="$style.button" rounded @click="read = true"><i class="ti ti-scan"></i> {{ $locale.env._qr.readTabTitle }}</MkButton>
 
 		<MkQrRead v-if="read"/>
 		<MkQrShow v-else/>
@@ -17,10 +17,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef } from '@/i18n.js';
+
 import { defineAsyncComponent, ref, shallowRef } from 'vue';
 import MkQrShow from './qr.show.vue';
 import { definePage } from '@/page.js';
-import { i18n } from '@/i18n.js';
 import { ensureSignin } from '@/i';
 import MkButton from '@/components/MkButton.vue';
 import MkPolkadots from '@/components/MkPolkadots.vue';
@@ -33,7 +34,7 @@ const read = ref(false);
 const MkQrRead = defineAsyncComponent(() => import('./qr.read.vue'));
 
 definePage(() => ({
-	title: i18n.ts.qr,
+	title: localeRef.value.env.qr,
 	icon: 'ti ti-qrcode',
 }));
 </script>

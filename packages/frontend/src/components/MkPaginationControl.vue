@@ -9,10 +9,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<MkSelect v-model="order" :class="$style.order" :items="orderDef">
 			<template #prefix><i class="ti ti-arrows-sort"></i></template>
 		</MkSelect>
-		<MkButton v-if="paginator.canSearch" v-tooltip="i18n.ts.search" iconOnly transparent rounded :active="searchOpened" @click="searchOpened = !searchOpened"><i class="ti ti-search"></i></MkButton>
-		<MkButton v-if="canFilter" v-tooltip="i18n.ts.filter" iconOnly transparent rounded :active="filterOpened" @click="filterOpened = !filterOpened"><i class="ti ti-filter"></i></MkButton>
-		<MkButton v-tooltip="i18n.ts.dateAndTime" iconOnly transparent rounded :active="date != null" @click="date = date == null ? Date.now() : null"><i class="ti ti-calendar-clock"></i></MkButton>
-		<MkButton v-tooltip="i18n.ts.reload" iconOnly transparent rounded @click="paginator.reload()"><i class="ti ti-refresh"></i></MkButton>
+		<MkButton v-if="paginator.canSearch" v-tooltip="$locale.env.search" iconOnly transparent rounded :active="searchOpened" @click="searchOpened = !searchOpened"><i class="ti ti-search"></i></MkButton>
+		<MkButton v-if="canFilter" v-tooltip="$locale.env.filter" iconOnly transparent rounded :active="filterOpened" @click="filterOpened = !filterOpened"><i class="ti ti-filter"></i></MkButton>
+		<MkButton v-tooltip="$locale.env.dateAndTime" iconOnly transparent rounded :active="date != null" @click="date = date == null ? Date.now() : null"><i class="ti ti-calendar-clock"></i></MkButton>
+		<MkButton v-tooltip="$locale.env.reload" iconOnly transparent rounded @click="paginator.reload()"><i class="ti ti-refresh"></i></MkButton>
 	</div>
 
 	<MkInput
@@ -21,7 +21,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		type="search"
 		debounce
 	>
-		<template #label>{{ i18n.ts.search }}</template>
+		<template #label>{{ $locale.env.search }}</template>
 		<template #prefix><i class="ti ti-search"></i></template>
 	</MkInput>
 
@@ -38,10 +38,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup generic="T extends IPaginator">
+import { $locale as localeRef } from '@/i18n.js';
+
 import { ref, watch } from 'vue';
 import type { IPaginator } from '@/utility/paginator.js';
 import MkButton from '@/components/MkButton.vue';
-import { i18n } from '@/i18n.js';
 import MkSelect from '@/components/MkSelect.vue';
 import MkInput from '@/components/MkInput.vue';
 import { formatDateTimeString } from '@/utility/format-time-string.js';
@@ -64,8 +65,8 @@ const {
 	def: orderDef,
 } = useMkSelect({
 	items: [
-		{ label: i18n.ts._order.newest, value: 'newest' },
-		{ label: i18n.ts._order.oldest, value: 'oldest' },
+		{ label: localeRef.value.env._order.newest, value: 'newest' },
+		{ label: localeRef.value.env._order.oldest, value: 'oldest' },
 	],
 	initialValue: 'newest',
 });

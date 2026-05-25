@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <div class="_gaps">
 	<MkSelect v-model="sortModeSelect" :items="sortModeSelectDef">
-		<template #label>{{ i18n.ts.sort }}</template>
+		<template #label>{{ $locale.env.sort }}</template>
 	</MkSelect>
 	<div v-if="!fetching">
 		<MkPagination v-slot="{items}" :paginator="paginator">
@@ -18,7 +18,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					@contextmenu.stop="$event => onContextMenu($event, file)"
 				>
 					<div :class="$style.file">
-						<div v-if="file.isSensitive" class="sensitive-label">{{ i18n.ts.sensitive }}</div>
+						<div v-if="file.isSensitive" class="sensitive-label">{{ $locale.env.sensitive }}</div>
 						<MkDriveFileThumbnail :class="$style.fileThumbnail" :file="file" fit="contain"/>
 						<div :class="$style.fileBody">
 							<div style="margin-bottom: 4px;">
@@ -29,7 +29,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 								<span>{{ bytes(file.size) }}</span>
 							</div>
 							<div>
-								<span>{{ i18n.ts.registeredDate }}: <MkTime :time="file.createdAt" mode="detail"/></span>
+								<span>{{ $locale.env.registeredDate }}: <MkTime :time="file.createdAt" mode="detail"/></span>
 							</div>
 							<div v-if="sortModeSelect === 'sizeDesc'">
 								<div :class="$style.meter"><div :class="$style.meterValue" :style="genUsageBar(file.size)"></div></div>
@@ -47,6 +47,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script setup lang="ts">
+import { $locale as localeRef } from '@/i18n.js';
+
 import * as Misskey from 'misskey-js';
 import { computed, markRaw, ref, watch } from 'vue';
 import tinycolor from 'tinycolor2';
@@ -55,7 +57,6 @@ import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import MkPagination from '@/components/MkPagination.vue';
 import MkDriveFileThumbnail from '@/components/MkDriveFileThumbnail.vue';
-import { i18n } from '@/i18n.js';
 import bytes from '@/filters/bytes.js';
 import { definePage } from '@/page.js';
 import MkSelect from '@/components/MkSelect.vue';
@@ -78,8 +79,8 @@ const {
 	def: sortModeSelectDef,
 } = useMkSelect({
 	items: [
-		{ label: i18n.ts._drivecleaner.orderBySizeDesc, value: 'sizeDesc' },
-		{ label: i18n.ts._drivecleaner.orderByCreatedAtAsc, value: 'createdAtAsc' },
+		{ label: localeRef.value.env._drivecleaner.orderBySizeDesc, value: 'sizeDesc' },
+		{ label: localeRef.value.env._drivecleaner.orderByCreatedAtAsc, value: 'createdAtAsc' },
 	],
 	initialValue: 'sizeDesc',
 });
@@ -131,7 +132,7 @@ useGlobalEvent('driveFilesDeleted', (files) => {
 });
 
 definePage(() => ({
-	title: i18n.ts.drivecleaner,
+	title: localeRef.value.env.drivecleaner,
 	icon: 'ti ti-trash',
 }));
 </script>

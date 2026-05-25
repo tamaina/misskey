@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <MkContainer :showHeader="widgetProps.showHeader" data-cy-mkw-trends class="mkw-trends">
 	<template #icon><i class="ti ti-hash"></i></template>
-	<template #header>{{ i18n.ts._widgets.trends }}</template>
+	<template #header>{{ $locale.env._widgets.trends }}</template>
 
 	<div class="wbrkwala">
 		<MkLoading v-if="fetching"/>
@@ -14,7 +14,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div v-for="stat in stats" :key="stat.tag">
 				<div class="tag">
 					<MkA class="a" :to="`/tags/${ encodeURIComponent(stat.tag) }`" :title="stat.tag">#{{ stat.tag }}</MkA>
-					<p>{{ i18n.tsx.nUsersMentioned({ n: stat.usersCount }) }}</p>
+					<p>{{ $l.env.nUsersMentioned({ n: stat.usersCount }) }}</p>
 				</div>
 				<MkMiniChart class="chart" :src="stat.chart"/>
 			</div>
@@ -24,6 +24,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef } from '@/i18n.js';
+
 import { ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import { useInterval } from '@@/js/use-interval.js';
@@ -33,7 +35,6 @@ import type { FormWithDefault, GetFormResultType } from '@/utility/form.js';
 import MkContainer from '@/components/MkContainer.vue';
 import MkMiniChart from '@/components/MkMiniChart.vue';
 import { misskeyApiGet } from '@/utility/misskey-api.js';
-import { i18n } from '@/i18n.js';
 import { prefer } from '@/preferences.js';
 
 const name = 'trends';
@@ -41,7 +42,7 @@ const name = 'trends';
 const widgetPropsDef = {
 	showHeader: {
 		type: 'boolean',
-		label: i18n.ts._widgetOptions.showHeader,
+		label: localeRef.value.env._widgetOptions.showHeader,
 		default: true,
 	},
 } satisfies FormWithDefault;

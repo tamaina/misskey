@@ -6,11 +6,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <PageWithHeader :actions="headerActions" :tabs="headerTabs">
 	<div class="_spacer" style="--MI_SPACER-w: 700px; --MI_SPACER-min: 16px; --MI_SPACER-max: 32px;">
-		<SearchMarker path="/admin/external-services" :label="i18n.ts.externalServices" :keywords="['external', 'services', 'thirdparty']" icon="ti ti-link">
+		<SearchMarker path="/admin/external-services" :label="$locale.env.externalServices" :keywords="['external', 'services', 'thirdparty']" icon="ti ti-link">
 			<div class="_gaps_m">
 				<SearchMarker v-slot="slotProps">
 					<MkFolder :defaultOpen="slotProps.isParentOfTarget">
-						<template #label><SearchLabel>Google Analytics</SearchLabel><span class="_beta">{{ i18n.ts.beta }}</span></template>
+						<template #label><SearchLabel>Google Analytics</SearchLabel><span class="_beta">{{ $locale.env.beta }}</span></template>
 
 						<div class="_gaps_m">
 							<SearchMarker>
@@ -54,6 +54,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef } from '@/i18n.js';
+
 import { ref, computed } from 'vue';
 import MkInput from '@/components/MkInput.vue';
 import MkButton from '@/components/MkButton.vue';
@@ -61,7 +63,6 @@ import MkSwitch from '@/components/MkSwitch.vue';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { fetchInstance } from '@/instance.js';
-import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
 import MkFolder from '@/components/MkFolder.vue';
 
@@ -93,7 +94,7 @@ const headerActions = computed(() => []);
 const headerTabs = computed(() => []);
 
 definePage(() => ({
-	title: i18n.ts.externalServices,
+	title: localeRef.value.env.externalServices,
 	icon: 'ti ti-link',
 }));
 </script>

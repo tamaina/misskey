@@ -8,27 +8,27 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div class="_spacer" style="--MI_SPACER-w: 900px;">
 		<div class="_gaps">
 			<div :class="$style.inputs">
-				<MkButton style="margin-left: auto" @click="resetQuery">{{ i18n.ts.reset }}</MkButton>
+				<MkButton style="margin-left: auto" @click="resetQuery">{{ $locale.env.reset }}</MkButton>
 			</div>
 			<div :class="$style.inputs">
 				<MkSelect v-model="sort" :items="sortDef" style="flex: 1;">
-					<template #label>{{ i18n.ts.sort }}</template>
+					<template #label>{{ $locale.env.sort }}</template>
 				</MkSelect>
 				<MkSelect v-model="state" :items="stateDef" style="flex: 1;">
-					<template #label>{{ i18n.ts.state }}</template>
+					<template #label>{{ $locale.env.state }}</template>
 				</MkSelect>
 				<MkSelect v-model="origin" :items="originDef" style="flex: 1;">
-					<template #label>{{ i18n.ts.instance }}</template>
+					<template #label>{{ $locale.env.instance }}</template>
 				</MkSelect>
 			</div>
 			<div :class="$style.inputs">
 				<MkInput v-model="searchUsername" style="flex: 1;" type="text" :spellcheck="false">
 					<template #prefix>@</template>
-					<template #label>{{ i18n.ts.username }}</template>
+					<template #label>{{ $locale.env.username }}</template>
 				</MkInput>
 				<MkInput v-model="searchHost" style="flex: 1;" type="text" :spellcheck="false" :disabled="paginator.computedParams?.value?.origin === 'local'">
 					<template #prefix>@</template>
-					<template #label>{{ i18n.ts.host }}</template>
+					<template #label>{{ $locale.env.host }}</template>
 				</MkInput>
 			</div>
 
@@ -45,6 +45,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef } from '@/i18n.js';
+
 import { computed, markRaw, ref, watchEffect } from 'vue';
 import * as Misskey from 'misskey-js';
 import { defaultMemoryStorage } from '@/memory-storage';
@@ -54,7 +56,6 @@ import MkSelect from '@/components/MkSelect.vue';
 import MkPagination from '@/components/MkPagination.vue';
 import * as os from '@/os.js';
 import { lookupUser } from '@/utility/admin-lookup.js';
-import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
 import { useMkSelect } from '@/composables/use-mkselect.js';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
@@ -76,10 +77,10 @@ const {
 	def: sortDef,
 } = useMkSelect({
 	items: [
-		{ label: `${i18n.ts.registeredDate} (${i18n.ts.ascendingOrder})`, value: '-createdAt' },
-		{ label: `${i18n.ts.registeredDate} (${i18n.ts.descendingOrder})`, value: '+createdAt' },
-		{ label: `${i18n.ts.lastUsed} (${i18n.ts.ascendingOrder})`, value: '-updatedAt' },
-		{ label: `${i18n.ts.lastUsed} (${i18n.ts.descendingOrder})`, value: '+updatedAt' },
+		{ label: `${localeRef.value.env.registeredDate} (${localeRef.value.env.ascendingOrder})`, value: '-createdAt' },
+		{ label: `${localeRef.value.env.registeredDate} (${localeRef.value.env.descendingOrder})`, value: '+createdAt' },
+		{ label: `${localeRef.value.env.lastUsed} (${localeRef.value.env.ascendingOrder})`, value: '-updatedAt' },
+		{ label: `${localeRef.value.env.lastUsed} (${localeRef.value.env.descendingOrder})`, value: '+updatedAt' },
 	],
 	initialValue: storedQuery.sort ?? '+createdAt',
 });
@@ -88,11 +89,11 @@ const {
 	def: stateDef,
 } = useMkSelect({
 	items: [
-		{ label: i18n.ts.all, value: 'all' },
-		{ label: i18n.ts.normal, value: 'available' },
-		{ label: i18n.ts.administrator, value: 'admin' },
-		{ label: i18n.ts.moderator, value: 'moderator' },
-		{ label: i18n.ts.suspend, value: 'suspended' },
+		{ label: localeRef.value.env.all, value: 'all' },
+		{ label: localeRef.value.env.normal, value: 'available' },
+		{ label: localeRef.value.env.administrator, value: 'admin' },
+		{ label: localeRef.value.env.moderator, value: 'moderator' },
+		{ label: localeRef.value.env.suspend, value: 'suspended' },
 	],
 	initialValue: storedQuery.state ?? 'all',
 });
@@ -101,9 +102,9 @@ const {
 	def: originDef,
 } = useMkSelect({
 	items: [
-		{ label: i18n.ts.all, value: 'combined' },
-		{ label: i18n.ts.local, value: 'local' },
-		{ label: i18n.ts.remote, value: 'remote' },
+		{ label: localeRef.value.env.all, value: 'combined' },
+		{ label: localeRef.value.env.local, value: 'local' },
+		{ label: localeRef.value.env.remote, value: 'remote' },
 	],
 	initialValue: storedQuery.origin ?? 'local',
 });
@@ -129,12 +130,12 @@ function searchUser() {
 
 async function addUser() {
 	const { canceled: canceled1, result: username } = await os.inputText({
-		title: i18n.ts.username,
+		title: localeRef.value.env.username,
 	});
 	if (canceled1 || username == null) return;
 
 	const { canceled: canceled2, result: password } = await os.inputText({
-		title: i18n.ts.password,
+		title: localeRef.value.env.password,
 		type: 'password',
 	});
 	if (canceled2 || password == null) return;
@@ -161,17 +162,17 @@ function resetQuery() {
 
 const headerActions = computed(() => [{
 	icon: 'ti ti-search',
-	text: i18n.ts.search,
+	text: localeRef.value.env.search,
 	handler: searchUser,
 }, {
 	asFullButton: true,
 	icon: 'ti ti-plus',
-	text: i18n.ts.addUser,
+	text: localeRef.value.env.addUser,
 	handler: addUser,
 }, {
 	asFullButton: true,
 	icon: 'ti ti-search',
-	text: i18n.ts.lookup,
+	text: localeRef.value.env.lookup,
 	handler: lookupUser,
 }]);
 
@@ -188,7 +189,7 @@ watchEffect(() => {
 });
 
 definePage(() => ({
-	title: i18n.ts.users,
+	title: localeRef.value.env.users,
 	icon: 'ti ti-users',
 }));
 </script>

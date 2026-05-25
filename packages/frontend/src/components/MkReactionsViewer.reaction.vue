@@ -18,6 +18,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef, $l as localizerRef } from '@/i18n.js';
+
 import { computed, inject, onMounted, useTemplateRef, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import { getUnicodeEmojiOrNull } from '@@/js/emojilist.js';
@@ -30,7 +32,6 @@ import { misskeyApi, misskeyApiGet } from '@/utility/misskey-api.js';
 import { useTooltip } from '@/composables/use-tooltip.js';
 import { $i } from '@/i.js';
 import MkReactionEffect from '@/components/MkReactionEffect.vue';
-import { i18n } from '@/i18n.js';
 import * as sound from '@/utility/sound.js';
 import { checkReactionPermissions } from '@/utility/check-reaction-permissions.js';
 import { customEmojisMap } from '@/custom-emojis.js';
@@ -79,7 +80,7 @@ async function toggleReaction() {
 	if (oldReaction) {
 		const confirm = await os.confirm({
 			type: 'warning',
-			text: oldReaction !== props.reaction ? i18n.ts.changeReactionConfirm : i18n.ts.cancelReactionConfirm,
+			text: oldReaction !== props.reaction ? localeRef.value.env.changeReactionConfirm : localeRef.value.env.cancelReactionConfirm,
 		});
 		if (confirm.canceled) return;
 
@@ -121,7 +122,7 @@ async function toggleReaction() {
 		if (prefer.s.confirmOnReact) {
 			const confirm = await os.confirm({
 				type: 'question',
-				text: i18n.tsx.reactAreYouSure({ emoji: props.reaction.replace('@.', '') }),
+				text: localizerRef.value.env.reactAreYouSure({ emoji: props.reaction.replace('@.', '') }),
 			});
 
 			if (confirm.canceled) return;
@@ -162,7 +163,7 @@ async function menu(ev: PointerEvent) {
 
 	if (canGetInfo.value) {
 		menuItems.push({
-			text: i18n.ts.info,
+			text: localeRef.value.env.info,
 			icon: 'ti ti-info-circle',
 			action: async () => {
 				const { dispose } = os.popup(MkCustomEmojiDetailedDialog, {
@@ -178,12 +179,12 @@ async function menu(ev: PointerEvent) {
 
 	if (isEmojiMuted(props.reaction).value) {
 		menuItems.push({
-			text: i18n.ts.emojiUnmute,
+			text: localeRef.value.env.emojiUnmute,
 			icon: 'ti ti-mood-smile',
 			action: () => {
 				os.confirm({
 					type: 'question',
-					title: i18n.tsx.unmuteX({ x: isLocalCustomEmoji ? `:${emojiName.value}:` : props.reaction }),
+					title: localizerRef.value.env.unmuteX({ x: isLocalCustomEmoji ? `:${emojiName.value}:` : props.reaction }),
 				}).then(({ canceled }) => {
 					if (canceled) return;
 					unmuteEmoji(props.reaction);
@@ -192,12 +193,12 @@ async function menu(ev: PointerEvent) {
 		});
 	} else {
 		menuItems.push({
-			text: i18n.ts.emojiMute,
+			text: localeRef.value.env.emojiMute,
 			icon: 'ti ti-mood-off',
 			action: () => {
 				os.confirm({
 					type: 'question',
-					title: i18n.tsx.muteX({ x: isLocalCustomEmoji ? `:${emojiName.value}:` : props.reaction }),
+					title: localizerRef.value.env.muteX({ x: isLocalCustomEmoji ? `:${emojiName.value}:` : props.reaction }),
 				}).then(({ canceled }) => {
 					if (canceled) return;
 					muteEmoji(props.reaction);

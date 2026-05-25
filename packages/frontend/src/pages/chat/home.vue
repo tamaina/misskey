@@ -16,12 +16,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef } from '@/i18n.js';
+
 import { computed, ref } from 'vue';
 import XHome from './home.home.vue';
 import XInvitations from './home.invitations.vue';
 import XJoiningRooms from './home.joiningRooms.vue';
 import XOwnedRooms from './home.ownedRooms.vue';
-import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
 import MkPolkadots from '@/components/MkPolkadots.vue';
 
@@ -31,24 +32,24 @@ const headerActions = computed(() => []);
 
 const headerTabs = computed(() => [{
 	key: 'home',
-	title: i18n.ts._chat.home,
+	title: localeRef.value.env._chat.home,
 	icon: 'ti ti-home',
 }, {
 	key: 'invitations',
-	title: i18n.ts._chat.invitations,
+	title: localeRef.value.env._chat.invitations,
 	icon: 'ti ti-ticket',
 }, {
 	key: 'joiningRooms',
-	title: i18n.ts._chat.joiningRooms,
+	title: localeRef.value.env._chat.joiningRooms,
 	icon: 'ti ti-users-group',
 }, {
 	key: 'ownedRooms',
-	title: i18n.ts._chat.yourRooms,
+	title: localeRef.value.env._chat.yourRooms,
 	icon: 'ti ti-settings',
 }]);
 
 definePage(() => ({
-	title: i18n.ts.directMessage,
+	title: localeRef.value.env.directMessage,
 	icon: 'ti ti-messages',
 }));
 </script>

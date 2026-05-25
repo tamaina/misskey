@@ -21,9 +21,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 >
 	<button v-if="hide" :class="$style.hidden" @click="reveal">
 		<div :class="$style.hiddenTextWrapper">
-			<b v-if="video.isSensitive" style="display: block;"><i class="ti ti-eye-exclamation"></i> {{ i18n.ts.sensitive }}{{ prefer.s.dataSaver.media ? ` (${i18n.ts.video}${video.size ? ' ' + bytes(video.size) : ''})` : '' }}</b>
-			<b v-else style="display: block;"><i class="ti ti-movie"></i> {{ prefer.s.dataSaver.media && video.size ? bytes(video.size) : i18n.ts.video }}</b>
-			<span style="display: block;">{{ i18n.ts.clickToShow }}</span>
+			<b v-if="video.isSensitive" style="display: block;"><i class="ti ti-eye-exclamation"></i> {{ $locale.env.sensitive }}{{ prefer.s.dataSaver.media ? ` (${$locale.env.video}${video.size ? ' ' + bytes(video.size) : ''})` : '' }}</b>
+			<b v-else style="display: block;"><i class="ti ti-movie"></i> {{ prefer.s.dataSaver.media && video.size ? bytes(video.size) : $locale.env.video }}</b>
+			<span style="display: block;">{{ $locale.env.clickToShow }}</span>
 		</div>
 	</button>
 
@@ -43,7 +43,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<i class="ti ti-eye-off" :class="$style.hide" @click="hide = true"></i>
 		<div :class="$style.indicators">
 			<div v-if="video.comment" :class="$style.indicator">ALT</div>
-			<div v-if="video.isSensitive" :class="$style.indicator" style="color: var(--MI_THEME-warn);" :title="i18n.ts.sensitive"><i class="ti ti-eye-exclamation"></i></div>
+			<div v-if="video.isSensitive" :class="$style.indicator" style="color: var(--MI_THEME-warn);" :title="$locale.env.sensitive"><i class="ti ti-eye-exclamation"></i></div>
 		</div>
 	</div>
 
@@ -68,7 +68,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<i class="ti ti-eye-off" :class="$style.hide" @click="hide = true"></i>
 		<div :class="$style.indicators">
 			<div v-if="video.comment" :class="$style.indicator">ALT</div>
-			<div v-if="video.isSensitive" :class="$style.indicator" style="color: var(--MI_THEME-warn);" :title="i18n.ts.sensitive"><i class="ti ti-eye-exclamation"></i></div>
+			<div v-if="video.isSensitive" :class="$style.indicator" style="color: var(--MI_THEME-warn);" :title="$locale.env.sensitive"><i class="ti ti-eye-exclamation"></i></div>
 		</div>
 		<div :class="$style.videoControls" @click.self="togglePlayPause">
 			<div :class="[$style.controlsChild, $style.controlsLeft]">
@@ -110,6 +110,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef } from '@/i18n.js';
+
 import { ref, useTemplateRef, computed, watch, onDeactivated, onActivated, onMounted } from 'vue';
 import * as Misskey from 'misskey-js';
 import type { MenuItem } from '@/types/menu.js';
@@ -117,7 +119,6 @@ import type { Keymap } from '@/utility/hotkey.js';
 import { copyToClipboard } from '@/utility/copy-to-clipboard';
 import bytes from '@/filters/bytes.js';
 import { hms } from '@/filters/hms.js';
-import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
 import { exitFullscreen, requestFullscreen } from '@/utility/fullscreen.js';
 import hasAudio from '@/utility/media-has-audio.js';
@@ -195,13 +196,13 @@ function showMenu(ev: PointerEvent) {
 		// TODO: 再生キューに追加
 		{
 			type: 'switch',
-			text: i18n.ts._mediaControls.loop,
+			text: localeRef.value.env._mediaControls.loop,
 			icon: 'ti ti-repeat',
 			ref: loop,
 		},
 		{
 			type: 'radio',
-			text: i18n.ts._mediaControls.playbackRate,
+			text: localeRef.value.env._mediaControls.playbackRate,
 			icon: 'ti ti-clock-play',
 			ref: speed,
 			options: [{
@@ -228,7 +229,7 @@ function showMenu(ev: PointerEvent) {
 			}],
 		},
 		...(window.document.pictureInPictureEnabled ? [{
-			text: i18n.ts._mediaControls.pip,
+			text: localeRef.value.env._mediaControls.pip,
 			icon: 'ti ti-picture-in-picture',
 			action: togglePictureInPicture,
 		}] : []),
@@ -236,7 +237,7 @@ function showMenu(ev: PointerEvent) {
 			type: 'divider',
 		},
 		{
-			text: i18n.ts.hide,
+			text: localeRef.value.env.hide,
 			icon: 'ti ti-eye-off',
 			action: () => {
 				hide.value = true;
@@ -246,7 +247,7 @@ function showMenu(ev: PointerEvent) {
 
 	if (iAmModerator) {
 		menu.push({
-			text: props.video.isSensitive ? i18n.ts.unmarkAsSensitive : i18n.ts.markAsSensitive,
+			text: props.video.isSensitive ? localeRef.value.env.unmarkAsSensitive : localeRef.value.env.markAsSensitive,
 			icon: props.video.isSensitive ? 'ti ti-eye' : 'ti ti-eye-exclamation',
 			danger: true,
 			action: () => toggleSensitive(props.video),
@@ -257,7 +258,7 @@ function showMenu(ev: PointerEvent) {
 	if ($i?.id === props.video.userId) {
 		details.push({
 			type: 'link',
-			text: i18n.ts._fileViewer.title,
+			text: localeRef.value.env._fileViewer.title,
 			icon: 'ti ti-info-circle',
 			to: `/my/drive/file/${props.video.id}`,
 		});
@@ -266,7 +267,7 @@ function showMenu(ev: PointerEvent) {
 	if (iAmModerator) {
 		details.push({
 			type: 'link',
-			text: i18n.ts.moderation,
+			text: localeRef.value.env.moderation,
 			icon: 'ti ti-photo-exclamation',
 			to: `/admin/file/${props.video.id}`,
 		});
@@ -279,7 +280,7 @@ function showMenu(ev: PointerEvent) {
 	if (prefer.s.devMode) {
 		menu.push({ type: 'divider' }, {
 			icon: 'ti ti-hash',
-			text: i18n.ts.copyFileId,
+			text: localeRef.value.env.copyFileId,
 			action: () => {
 				copyToClipboard(props.video.id);
 			},
@@ -298,7 +299,7 @@ function showMenu(ev: PointerEvent) {
 async function toggleSensitive(file: Misskey.entities.DriveFile) {
 	const { canceled } = await os.confirm({
 		type: 'warning',
-		text: file.isSensitive ? i18n.ts.unmarkAsSensitiveConfirm : i18n.ts.markAsSensitiveConfirm,
+		text: file.isSensitive ? localeRef.value.env.unmarkAsSensitiveConfirm : localeRef.value.env.markAsSensitiveConfirm,
 	});
 
 	if (canceled) return;

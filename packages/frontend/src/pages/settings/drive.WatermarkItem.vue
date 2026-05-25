@@ -6,10 +6,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <MkFolder :defaultOpen="false" :canPage="false">
 	<template #icon><i class="ti ti-pencil"></i></template>
-	<template #label>{{ i18n.ts.preset }}: {{ preset.name === '' ? '(' + i18n.ts.noName + ')' : preset.name }}</template>
+	<template #label>{{ $locale.env.preset }}: {{ preset.name === '' ? '(' + $locale.env.noName + ')' : preset.name }}</template>
 	<template #footer>
 		<div class="_buttons">
-			<MkButton @click="edit"><i class="ti ti-pencil"></i> {{ i18n.ts.edit }}</MkButton>
+			<MkButton @click="edit"><i class="ti ti-pencil"></i> {{ $locale.env.edit }}</MkButton>
 			<MkButton danger iconOnly style="margin-left: auto;" @click="del"><i class="ti ti-trash"></i></MkButton>
 		</div>
 	</template>
@@ -21,12 +21,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef } from '@/i18n.js';
+
 import { defineAsyncComponent, onMounted, onUnmounted, ref, useTemplateRef, watch } from 'vue';
 import type { WatermarkPreset } from '@/utility/watermark/WatermarkRenderer.js';
 import { WatermarkRenderer } from '@/utility/watermark/WatermarkRenderer.js';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os.js';
-import { i18n } from '@/i18n.js';
 import { deepClone } from '@/utility/clone.js';
 import MkFolder from '@/components/MkFolder.vue';
 
@@ -54,7 +55,7 @@ async function edit() {
 
 function del(ev: PointerEvent) {
 	os.popupMenu([{
-		text: i18n.ts.delete,
+		text: localeRef.value.env.delete,
 		action: () => {
 			emit('del');
 		},

@@ -25,12 +25,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef } from '@/i18n.js';
+
 import { defineAsyncComponent, computed, watch, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import { acct as getAcct } from '@/filters/user.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { definePage } from '@/page.js';
-import { i18n } from '@/i18n.js';
 import { $i } from '@/i.js';
 import { serverContext, assertServerContext } from '@/server-context.js';
 
@@ -91,39 +92,39 @@ const headerActions = computed(() => []);
 
 const headerTabs = computed(() => user.value ? [{
 	key: 'home',
-	title: i18n.ts.overview,
+	title: localeRef.value.env.overview,
 	icon: 'ti ti-home',
 }, {
 	key: 'notes',
-	title: i18n.ts.notes,
+	title: localeRef.value.env.notes,
 	icon: 'ti ti-pencil',
 }, {
 	key: 'files',
-	title: i18n.ts.files,
+	title: localeRef.value.env.files,
 	icon: 'ti ti-photo',
 }, {
 	key: 'activity',
-	title: i18n.ts.activity,
+	title: localeRef.value.env.activity,
 	icon: 'ti ti-chart-line',
 }, ...(user.value.host == null ? [{
 	key: 'achievements',
-	title: i18n.ts.achievements,
+	title: localeRef.value.env.achievements,
 	icon: 'ti ti-medal',
 }] : []), ...($i && ($i.id === user.value.id || $i.isAdmin || $i.isModerator)) || user.value.publicReactions ? [{
 	key: 'reactions',
-	title: i18n.ts.reaction,
+	title: localeRef.value.env.reaction,
 	icon: 'ti ti-mood-happy',
 }] : [], {
 	key: 'clips',
-	title: i18n.ts.clips,
+	title: localeRef.value.env.clips,
 	icon: 'ti ti-paperclip',
 }, {
 	key: 'lists',
-	title: i18n.ts.lists,
+	title: localeRef.value.env.lists,
 	icon: 'ti ti-list',
 }, {
 	key: 'pages',
-	title: i18n.ts.pages,
+	title: localeRef.value.env.pages,
 	icon: 'ti ti-news',
 }, {
 	key: 'flashs',
@@ -131,7 +132,7 @@ const headerTabs = computed(() => user.value ? [{
 	icon: 'ti ti-player-play',
 }, {
 	key: 'gallery',
-	title: i18n.ts.gallery,
+	title: localeRef.value.env.gallery,
 	icon: 'ti ti-icons',
 }, {
 	key: 'raw',
@@ -140,7 +141,7 @@ const headerTabs = computed(() => user.value ? [{
 }] : []);
 
 definePage(() => ({
-	title: i18n.ts.user,
+	title: localeRef.value.env.user,
 	icon: 'ti ti-user',
 	...user.value ? {
 		title: user.value.name ? `${user.value.name} (@${user.value.username})` : `@${user.value.username}`,

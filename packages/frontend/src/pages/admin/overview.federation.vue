@@ -25,7 +25,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<div class="body">
 					<div v-if="federationSubActive != null" class="value">
 						{{ number(federationSubActive) }}
-						<MkNumberDiff v-if="federationSubActiveDiff != null" v-tooltip="i18n.ts.dayOverDayChanges" class="diff" :value="federationSubActiveDiff"></MkNumberDiff>
+						<MkNumberDiff v-if="federationSubActiveDiff != null" v-tooltip="$locale.env.dayOverDayChanges" class="diff" :value="federationSubActiveDiff"></MkNumberDiff>
 					</div>
 					<div class="label">Sub</div>
 				</div>
@@ -35,7 +35,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<div class="body">
 					<div v-if="federationPubActive != null" class="value">
 						{{ number(federationPubActive) }}
-						<MkNumberDiff v-if="federationPubActiveDiff != null" v-tooltip="i18n.ts.dayOverDayChanges" class="diff" :value="federationPubActiveDiff"></MkNumberDiff>
+						<MkNumberDiff v-if="federationPubActiveDiff != null" v-tooltip="$locale.env.dayOverDayChanges" class="diff" :value="federationPubActiveDiff"></MkNumberDiff>
 					</div>
 					<div class="label">Pub</div>
 				</div>
@@ -46,6 +46,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+
 import { onMounted, ref } from 'vue';
 import XPie from './overview.pie.vue';
 import type { InstanceForPie } from './overview.pie.vue';
@@ -53,7 +54,6 @@ import * as os from '@/os.js';
 import { misskeyApiGet } from '@/utility/misskey-api.js';
 import number from '@/filters/number.js';
 import MkNumberDiff from '@/components/MkNumberDiff.vue';
-import { i18n } from '@/i18n.js';
 import { useChartTooltip } from '@/composables/use-chart-tooltip.js';
 
 const topSubInstancesForPie = ref<InstanceForPie[] | null>(null);

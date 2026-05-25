@@ -10,14 +10,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div>
 				<MkInput v-model="host" :debounce="true" class="">
 					<template #prefix><i class="ti ti-search"></i></template>
-					<template #label>{{ i18n.ts.host }}</template>
+					<template #label>{{ $locale.env.host }}</template>
 				</MkInput>
 				<FormSplit style="margin-top: var(--MI-margin);">
 					<MkSelect v-model="state" :items="stateDef">
-						<template #label>{{ i18n.ts.state }}</template>
+						<template #label>{{ $locale.env.state }}</template>
 					</MkSelect>
 					<MkSelect v-model="sort" :items="sortDef">
-						<template #label>{{ i18n.ts.sort }}</template>
+						<template #label>{{ $locale.env.sort }}</template>
 					</MkSelect>
 				</FormSplit>
 			</div>
@@ -35,6 +35,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef } from '@/i18n.js';
+
 import * as Misskey from 'misskey-js';
 import { computed, markRaw, ref } from 'vue';
 import MkInput from '@/components/MkInput.vue';
@@ -42,7 +44,6 @@ import MkSelect from '@/components/MkSelect.vue';
 import MkPagination from '@/components/MkPagination.vue';
 import MkInstanceCardMini from '@/components/MkInstanceCardMini.vue';
 import FormSplit from '@/components/form/split.vue';
-import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
 import { useMkSelect } from '@/composables/use-mkselect.js';
 import { Paginator } from '@/utility/paginator.js';
@@ -53,14 +54,14 @@ const {
 	def: stateDef,
 } = useMkSelect({
 	items: [
-		{ label: i18n.ts.all, value: 'all' },
-		{ label: i18n.ts.federating, value: 'federating' },
-		{ label: i18n.ts.subscribing, value: 'subscribing' },
-		{ label: i18n.ts.publishing, value: 'publishing' },
-		{ label: i18n.ts.suspended, value: 'suspended' },
-		{ label: i18n.ts.blocked, value: 'blocked' },
-		{ label: i18n.ts.silence, value: 'silenced' },
-		{ label: i18n.ts.notResponding, value: 'notResponding' },
+		{ label: localeRef.value.env.all, value: 'all' },
+		{ label: localeRef.value.env.federating, value: 'federating' },
+		{ label: localeRef.value.env.subscribing, value: 'subscribing' },
+		{ label: localeRef.value.env.publishing, value: 'publishing' },
+		{ label: localeRef.value.env.suspended, value: 'suspended' },
+		{ label: localeRef.value.env.blocked, value: 'blocked' },
+		{ label: localeRef.value.env.silence, value: 'silenced' },
+		{ label: localeRef.value.env.notResponding, value: 'notResponding' },
 	],
 	initialValue: 'federating',
 });
@@ -69,18 +70,18 @@ const {
 	def: sortDef,
 } = useMkSelect({
 	items: [
-		{ label: `${i18n.ts.pubSub} (${i18n.ts.descendingOrder})`, value: '+pubSub' },
-		{ label: `${i18n.ts.pubSub} (${i18n.ts.ascendingOrder})`, value: '-pubSub' },
-		{ label: `${i18n.ts.notes} (${i18n.ts.descendingOrder})`, value: '+notes' },
-		{ label: `${i18n.ts.notes} (${i18n.ts.ascendingOrder})`, value: '-notes' },
-		{ label: `${i18n.ts.users} (${i18n.ts.descendingOrder})`, value: '+users' },
-		{ label: `${i18n.ts.users} (${i18n.ts.ascendingOrder})`, value: '-users' },
-		{ label: `${i18n.ts.following} (${i18n.ts.descendingOrder})`, value: '+following' },
-		{ label: `${i18n.ts.following} (${i18n.ts.ascendingOrder})`, value: '-following' },
-		{ label: `${i18n.ts.followers} (${i18n.ts.descendingOrder})`, value: '+followers' },
-		{ label: `${i18n.ts.followers} (${i18n.ts.ascendingOrder})`, value: '-followers' },
-		{ label: `${i18n.ts.registeredAt} (${i18n.ts.descendingOrder})`, value: '+firstRetrievedAt' },
-		{ label: `${i18n.ts.registeredAt} (${i18n.ts.ascendingOrder})`, value: '-firstRetrievedAt' },
+		{ label: `${localeRef.value.env.pubSub} (${localeRef.value.env.descendingOrder})`, value: '+pubSub' },
+		{ label: `${localeRef.value.env.pubSub} (${localeRef.value.env.ascendingOrder})`, value: '-pubSub' },
+		{ label: `${localeRef.value.env.notes} (${localeRef.value.env.descendingOrder})`, value: '+notes' },
+		{ label: `${localeRef.value.env.notes} (${localeRef.value.env.ascendingOrder})`, value: '-notes' },
+		{ label: `${localeRef.value.env.users} (${localeRef.value.env.descendingOrder})`, value: '+users' },
+		{ label: `${localeRef.value.env.users} (${localeRef.value.env.ascendingOrder})`, value: '-users' },
+		{ label: `${localeRef.value.env.following} (${localeRef.value.env.descendingOrder})`, value: '+following' },
+		{ label: `${localeRef.value.env.following} (${localeRef.value.env.ascendingOrder})`, value: '-following' },
+		{ label: `${localeRef.value.env.followers} (${localeRef.value.env.descendingOrder})`, value: '+followers' },
+		{ label: `${localeRef.value.env.followers} (${localeRef.value.env.ascendingOrder})`, value: '-followers' },
+		{ label: `${localeRef.value.env.registeredAt} (${localeRef.value.env.descendingOrder})`, value: '+firstRetrievedAt' },
+		{ label: `${localeRef.value.env.registeredAt} (${localeRef.value.env.ascendingOrder})`, value: '-firstRetrievedAt' },
 	],
 	initialValue: '+pubSub',
 });
@@ -124,7 +125,7 @@ const headerActions = computed(() => []);
 const headerTabs = computed(() => []);
 
 definePage(() => ({
-	title: i18n.ts.federation,
+	title: localeRef.value.env.federation,
 	icon: 'ti ti-whirl',
 }));
 </script>

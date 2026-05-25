@@ -44,18 +44,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</MkInput>
 	</div>
 	<div v-if="Object.keys(paramDefs).length === 0" :class="$style.nothingToConfigure">
-		{{ i18n.ts.nothingToConfigure }}
+		{{ $locale.env.nothingToConfigure }}
 	</div>
 </div>
 </template>
 
 <script setup lang="ts">
+
 import type { ImageEffectorRGB, ImageEffectorFxParamDefs } from '@/utility/image-effector/ImageEffector.js';
 import MkInput from '@/components/MkInput.vue';
 import MkRadios from '@/components/MkRadios.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkRange from '@/components/MkRange.vue';
-import { i18n } from '@/i18n.js';
 
 defineProps<{
 	paramDefs: ImageEffectorFxParamDefs;

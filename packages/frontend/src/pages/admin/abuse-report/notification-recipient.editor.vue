@@ -14,27 +14,27 @@ SPDX-License-Identifier: AGPL-3.0-only
 	@closed="emit('closed')"
 >
 	<template #header>
-		{{ mode === 'create' ? i18n.ts._abuseReport._notificationRecipient.createRecipient : i18n.ts._abuseReport._notificationRecipient.modifyRecipient }}
+		{{ mode === 'create' ? $locale.env._abuseReport._notificationRecipient.createRecipient : $locale.env._abuseReport._notificationRecipient.modifyRecipient }}
 	</template>
 	<div v-if="loading === 0" style="display: flex; flex-direction: column; min-height: 100%;">
 		<div class="_spacer" style="--MI_SPACER-min: 20px; --MI_SPACER-max: 28px; flex-grow: 1;">
 			<div :class="$style.root" class="_gaps_m">
 				<MkInput v-model="title">
-					<template #label>{{ i18n.ts.title }}</template>
+					<template #label>{{ $locale.env.title }}</template>
 				</MkInput>
 				<MkSelect v-model="method" :items="methodDef">
-					<template #label>{{ i18n.ts._abuseReport._notificationRecipient.recipientType }}</template>
+					<template #label>{{ $locale.env._abuseReport._notificationRecipient.recipientType }}</template>
 					<template #caption>
 						{{ methodCaption }}
 					</template>
 				</MkSelect>
 				<div>
 					<MkSelect v-if="method === 'email'" v-model="userId" :items="userIdDef">
-						<template #label>{{ i18n.ts._abuseReport._notificationRecipient.notifiedUser }}</template>
+						<template #label>{{ $locale.env._abuseReport._notificationRecipient.notifiedUser }}</template>
 					</MkSelect>
 					<div v-else-if="method === 'webhook'" :class="$style.systemWebhook">
 						<MkSelect v-model="systemWebhookId" :items="systemWebhookIdDef" style="flex: 1">
-							<template #label>{{ i18n.ts._abuseReport._notificationRecipient.notifiedWebhook }}</template>
+							<template #label>{{ $locale.env._abuseReport._notificationRecipient.notifiedWebhook }}</template>
 						</MkSelect>
 						<MkButton rounded :class="$style.systemWebhookEditButton" @click="onEditSystemWebhookClicked">
 							<span v-if="systemWebhookId === null" class="ti ti-plus" style="line-height: normal"></span>
@@ -46,14 +46,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkDivider/>
 
 				<MkSwitch v-model="isActive">
-					<template #label>{{ i18n.ts.enable }}</template>
+					<template #label>{{ $locale.env.enable }}</template>
 				</MkSwitch>
 			</div>
 		</div>
 
 		<div :class="$style.footer" class="_buttonsCenter">
-			<MkButton primary rounded :disabled="disableSubmitButton" @click="onSubmitClicked"><i class="ti ti-check"></i> {{ i18n.ts.ok }}</MkButton>
-			<MkButton rounded @click="onCancelClicked"><i class="ti ti-x"></i> {{ i18n.ts.cancel }}</MkButton>
+			<MkButton primary rounded :disabled="disableSubmitButton" @click="onSubmitClicked"><i class="ti ti-check"></i> {{ $locale.env.ok }}</MkButton>
+			<MkButton rounded @click="onCancelClicked"><i class="ti ti-x"></i> {{ $locale.env.cancel }}</MkButton>
 		</div>
 	</div>
 	<div v-else>
@@ -63,12 +63,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef } from '@/i18n.js';
+
 import { computed, onMounted, ref, useTemplateRef, toRefs } from 'vue';
 import { entities } from 'misskey-js';
 import type { MkSystemWebhookResult } from '@/components/MkSystemWebhookEditor.impl.js';
 import MkButton from '@/components/MkButton.vue';
 import MkModalWindow from '@/components/MkModalWindow.vue';
-import { i18n } from '@/i18n.js';
 import MkInput from '@/components/MkInput.vue';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { useMkSelect } from '@/composables/use-mkselect.js';
@@ -101,8 +102,8 @@ const {
 	def: methodDef,
 } = useMkSelect({
 	items: [
-		{ label: i18n.ts._abuseReport._notificationRecipient._recipientType.mail, value: 'email' },
-		{ label: i18n.ts._abuseReport._notificationRecipient._recipientType.webhook, value: 'webhook' },
+		{ label: localeRef.value.env._abuseReport._notificationRecipient._recipientType.mail, value: 'email' },
+		{ label: localeRef.value.env._abuseReport._notificationRecipient._recipientType.webhook, value: 'webhook' },
 	],
 	initialValue: 'email',
 });
@@ -126,10 +127,10 @@ const systemWebhooks = ref<(entities.SystemWebhook | { id: null, name: string })
 const methodCaption = computed(() => {
 	switch (method.value) {
 		case 'email': {
-			return i18n.ts._abuseReport._notificationRecipient._recipientType._captions.mail;
+			return localeRef.value.env._abuseReport._notificationRecipient._recipientType._captions.mail;
 		}
 		case 'webhook': {
-			return i18n.ts._abuseReport._notificationRecipient._recipientType._captions.webhook;
+			return localeRef.value.env._abuseReport._notificationRecipient._recipientType._captions.webhook;
 		}
 		default: {
 			return '';
@@ -184,8 +185,8 @@ async function onSubmitClicked() {
 			emit('submitted');
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		} catch (ex: any) {
-			const msg = ex.message ?? i18n.ts.internalServerErrorDescription;
-			await os.alert({ type: 'error', title: i18n.ts.error, text: msg });
+			const msg = ex.message ?? localeRef.value.env.internalServerErrorDescription;
+			await os.alert({ type: 'error', title: localeRef.value.env.error, text: msg });
 			dialogEl.value?.close();
 			emit('canceled');
 		}
@@ -220,7 +221,7 @@ async function onEditSystemWebhookClicked() {
 async function fetchSystemWebhooks() {
 	await loadingScope(async () => {
 		systemWebhooks.value = [
-			{ id: null, name: i18n.ts.createNew },
+			{ id: null, name: localeRef.value.env.createNew },
 			...await misskeyApi('admin/system-webhook/list', { }),
 		];
 	});
@@ -277,8 +278,8 @@ onMounted(async () => {
 				isActive.value = res.isActive;
 				// eslint-disable-next-line
 			} catch (ex: any) {
-				const msg = ex.message ?? i18n.ts.internalServerErrorDescription;
-				await os.alert({ type: 'error', title: i18n.ts.error, text: msg });
+				const msg = ex.message ?? localeRef.value.env.internalServerErrorDescription;
+				await os.alert({ type: 'error', title: localeRef.value.env.error, text: msg });
 				dialogEl.value?.close();
 				emit('canceled');
 			}

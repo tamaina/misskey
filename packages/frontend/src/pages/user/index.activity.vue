@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <MkContainer>
 	<template #icon><i class="ti ti-chart-line"></i></template>
-	<template #header>{{ i18n.ts.activity }}</template>
+	<template #header>{{ $locale.env.activity }}</template>
 	<template #func="{ buttonStyleClass }">
 		<button class="_button" :class="buttonStyleClass" @click="showMenu">
 			<i class="ti ti-dots"></i>
@@ -20,12 +20,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef } from '@/i18n.js';
+
 import { ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkContainer from '@/components/MkContainer.vue';
 import MkChart from '@/components/MkChart.vue';
 import * as os from '@/os.js';
-import { i18n } from '@/i18n.js';
 
 const props = withDefaults(defineProps<{
 	user: Misskey.entities.User;
@@ -38,24 +39,24 @@ const chartSrc = ref<'per-user-notes' | 'per-user-pv'>('per-user-notes');
 
 function showMenu(ev: PointerEvent) {
 	os.popupMenu([{
-		text: i18n.ts.notes,
+		text: localeRef.value.env.notes,
 		active: chartSrc.value === 'per-user-notes',
 		action: () => {
 			chartSrc.value = 'per-user-notes';
 		},
 	}, {
-		text: i18n.ts.numberOfProfileView,
+		text: localeRef.value.env.numberOfProfileView,
 		active: chartSrc.value === 'per-user-pv',
 		action: () => {
 			chartSrc.value = 'per-user-pv';
 		},
 	}, /*, {
-		text: i18n.ts.following,
+		text: localeRef.value.env.following,
 		action: () => {
 			chartSrc = 'per-user-following';
 		}
 	}, {
-		text: i18n.ts.followers,
+		text: localeRef.value.env.followers,
 		action: () => {
 			chartSrc = 'per-user-followers';
 		}

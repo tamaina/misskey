@@ -15,13 +15,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 						</div>
 						<div class="actions _panel">
 							<div class="items">
-								<MkButton v-tooltip="i18n.ts.reload" class="button" rounded @click="reset"><i class="ti ti-reload"></i></MkButton>
+								<MkButton v-tooltip="$locale.env.reload" class="button" rounded @click="reset"><i class="ti ti-reload"></i></MkButton>
 							</div>
 							<div class="items">
-								<MkButton v-if="flash.isLiked" v-tooltip="i18n.ts.unlike" asLike class="button" rounded primary @click="unlike()"><i class="ti ti-heart"></i><span v-if="flash?.likedCount && flash.likedCount > 0" style="margin-left: 6px;">{{ flash.likedCount }}</span></MkButton>
-								<MkButton v-else v-tooltip="i18n.ts.like" asLike class="button" rounded @click="like()"><i class="ti ti-heart"></i><span v-if="flash?.likedCount && flash.likedCount > 0" style="margin-left: 6px;">{{ flash.likedCount }}</span></MkButton>
-								<MkButton v-tooltip="i18n.ts.copyLink" class="button" rounded @click="copyLink"><i class="ti ti-link ti-fw"></i></MkButton>
-								<MkButton v-tooltip="i18n.ts.share" class="button" rounded @click="share"><i class="ti ti-share ti-fw"></i></MkButton>
+								<MkButton v-if="flash.isLiked" v-tooltip="$locale.env.unlike" asLike class="button" rounded primary @click="unlike()"><i class="ti ti-heart"></i><span v-if="flash?.likedCount && flash.likedCount > 0" style="margin-left: 6px;">{{ flash.likedCount }}</span></MkButton>
+								<MkButton v-else v-tooltip="$locale.env.like" asLike class="button" rounded @click="like()"><i class="ti ti-heart"></i><span v-if="flash?.likedCount && flash.likedCount > 0" style="margin-left: 6px;">{{ flash.likedCount }}</span></MkButton>
+								<MkButton v-tooltip="$locale.env.copyLink" class="button" rounded @click="copyLink"><i class="ti ti-link ti-fw"></i></MkButton>
+								<MkButton v-tooltip="$locale.env.share" class="button" rounded @click="share"><i class="ti ti-share ti-fw"></i></MkButton>
 								<MkButton v-if="$i && $i.id !== flash.user.id" class="button" rounded @mousedown="showMenu"><i class="ti ti-dots ti-fw"></i></MkButton>
 							</div>
 						</div>
@@ -32,25 +32,25 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<div class="summary"><Mfm :text="flash.summary"/></div>
 							<MkButton class="start" gradate rounded large @click="start">Play</MkButton>
 							<div class="info">
-								<span v-tooltip="i18n.ts.numberOfLikes"><i class="ti ti-heart"></i> {{ flash.likedCount }}</span>
+								<span v-tooltip="$locale.env.numberOfLikes"><i class="ti ti-heart"></i> {{ flash.likedCount }}</span>
 							</div>
 						</div>
 					</div>
 				</Transition>
 				<MkFolder :defaultOpen="false" :max-height="280" class="_margin">
 					<template #icon><i class="ti ti-code"></i></template>
-					<template #label>{{ i18n.ts._play.viewSource }}</template>
+					<template #label>{{ $locale.env._play.viewSource }}</template>
 
 					<MkCode :code="flash.script" lang="is" class="_monospace"/>
 				</MkFolder>
 				<div :class="$style.footer">
 					<Mfm :text="`By @${flash.user.username}`"/>
 					<div class="date">
-						<div v-if="flash.createdAt != flash.updatedAt"><i class="ti ti-clock"></i> {{ i18n.ts.updatedAt }}: <MkTime :time="flash.updatedAt" mode="detail"/></div>
-						<div><i class="ti ti-clock"></i> {{ i18n.ts.createdAt }}: <MkTime :time="flash.createdAt" mode="detail"/></div>
+						<div v-if="flash.createdAt != flash.updatedAt"><i class="ti ti-clock"></i> {{ $locale.env.updatedAt }}: <MkTime :time="flash.updatedAt" mode="detail"/></div>
+						<div><i class="ti ti-clock"></i> {{ $locale.env.createdAt }}: <MkTime :time="flash.createdAt" mode="detail"/></div>
 					</div>
 				</div>
-				<MkA v-if="$i && $i.id === flash.userId" :to="`/play/${flash.id}/edit`" style="color: var(--MI_THEME-accent);">{{ i18n.ts._play.editThisPage }}</MkA>
+				<MkA v-if="$i && $i.id === flash.userId" :to="`/play/${flash.id}/edit`" style="color: var(--MI_THEME-accent);">{{ $locale.env._play.editThisPage }}</MkA>
 				<MkAd :preferForms="['horizontal', 'horizontal-big']"/>
 			</div>
 			<MkError v-else-if="error" @retry="fetchFlash()"/>
@@ -61,6 +61,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef } from '@/i18n.js';
+
 import { computed, onDeactivated, onUnmounted, ref, watch, shallowRef, defineAsyncComponent } from 'vue';
 import * as Misskey from 'misskey-js';
 import { utils } from '@syuilo/aiscript';
@@ -73,7 +75,6 @@ import type { Interpreter } from '@syuilo/aiscript';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
-import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
 import MkAsUi from '@/components/MkAsUi.vue';
 import { registerAsUiLib } from '@/aiscript/ui.js';
@@ -110,14 +111,14 @@ function share(ev: PointerEvent) {
 	const menuItems: MenuItem[] = [];
 
 	menuItems.push({
-		text: i18n.ts.shareWithNote,
+		text: localeRef.value.env.shareWithNote,
 		icon: 'ti ti-pencil',
 		action: shareWithNote,
 	});
 
 	if (isSupportShare()) {
 		menuItems.push({
-			text: i18n.ts.share,
+			text: localeRef.value.env.share,
 			icon: 'ti ti-share',
 			action: shareWithNavigator,
 		});
@@ -173,7 +174,7 @@ async function unlike() {
 
 	const confirm = await os.confirm({
 		type: 'warning',
-		text: i18n.ts.unlikeConfirm,
+		text: localeRef.value.env.unlikeConfirm,
 	});
 	if (confirm.canceled) return;
 	os.apiWithDialog('flash/unlike', {
@@ -280,7 +281,7 @@ function showMenu(ev: PointerEvent) {
 		...($i && $i.id !== flash.value.userId ? [
 			{
 				icon: 'ti ti-exclamation-circle',
-				text: i18n.ts.reportAbuse,
+				text: localeRef.value.env.reportAbuse,
 				action: reportAbuse,
 			},
 			...($i.isModerator || $i.isAdmin ? [
@@ -289,11 +290,11 @@ function showMenu(ev: PointerEvent) {
 				},
 				{
 					icon: 'ti ti-trash',
-					text: i18n.ts.delete,
+					text: localeRef.value.env.delete,
 					danger: true,
 					action: () => os.confirm({
 						type: 'warning',
-						text: i18n.ts.deleteConfirm,
+						text: localeRef.value.env.deleteConfirm,
 					}).then(({ canceled }) => {
 						if (canceled || !flash.value) return;
 

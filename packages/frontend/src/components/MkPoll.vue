@@ -11,22 +11,24 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<span :class="$style.fg">
 				<template v-if="choice.isVoted"><i class="ti ti-check" style="margin-right: 4px; color: var(--MI_THEME-accent);"></i></template>
 				<Mfm :text="choice.text" :plain="true" :author="author" :emojiUrls="emojiUrls"/>
-				<span v-if="showResult" style="margin-left: 4px; opacity: 0.7;">({{ i18n.tsx._poll.votesCount({ n: choice.votes }) }})</span>
+				<span v-if="showResult" style="margin-left: 4px; opacity: 0.7;">({{ $l.env._poll.votesCount({ n: choice.votes }) }})</span>
 			</span>
 		</li>
 	</ul>
 	<p v-if="!readOnly" :class="$style.info">
-		<span>{{ i18n.tsx._poll.totalVotes({ n: total }) }}</span>
+		<span>{{ $l.env._poll.totalVotes({ n: total }) }}</span>
 		<span> · </span>
-		<a v-if="!closed && !isVoted" style="color: inherit;" @click="showResult = !showResult">{{ showResult ? i18n.ts._poll.vote : i18n.ts._poll.showResult }}</a>
-		<span v-if="isVoted">{{ i18n.ts._poll.voted }}</span>
-		<span v-else-if="closed">{{ i18n.ts._poll.closed }}</span>
+		<a v-if="!closed && !isVoted" style="color: inherit;" @click="showResult = !showResult">{{ showResult ? $locale.env._poll.vote : $locale.env._poll.showResult }}</a>
+		<span v-if="isVoted">{{ $locale.env._poll.voted }}</span>
+		<span v-else-if="closed">{{ $locale.env._poll.closed }}</span>
 		<span v-if="remaining > 0"> · {{ timer }}</span>
 	</p>
 </div>
 </template>
 
 <script lang="ts" setup>
+import { $l as localizerRef } from '@/i18n.js';
+
 import { computed, ref, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import { host } from '@@/js/config.js';
@@ -35,7 +37,6 @@ import { sum } from '@/utility/array.js';
 import { pleaseLogin } from '@/utility/please-login.js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
-import { i18n } from '@/i18n.js';
 import { useLowresTime } from '@/composables/use-lowres-time.js';
 
 const props = defineProps<{
@@ -60,7 +61,7 @@ const remaining = computed(() => {
 const total = computed(() => sum(props.choices.map(x => x.votes)));
 const closed = computed(() => props.expiresAt != null && remaining.value <= 0);
 const isVoted = computed(() => !props.multiple && props.choices.some(c => c.isVoted));
-const timer = computed(() => i18n.tsx._poll[
+const timer = computed(() => localizerRef.value.env._poll[
 	remaining.value >= 86400 ? 'remainingDays' :
 	remaining.value >= 3600 ? 'remainingHours' :
 	remaining.value >= 60 ? 'remainingMinutes' : 'remainingSeconds'
@@ -95,7 +96,7 @@ const vote = async (id: number) => {
 
 	const { canceled } = await os.confirm({
 		type: 'question',
-		text: i18n.tsx.voteConfirm({ choice: props.choices[id].text }),
+		text: localizerRef.value.env.voteConfirm({ choice: props.choices[id].text }),
 	});
 	if (canceled) return;
 

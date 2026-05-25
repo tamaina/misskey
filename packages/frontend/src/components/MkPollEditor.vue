@@ -6,36 +6,36 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <div class="zmdxowus">
 	<p v-if="choices.length < 2" class="caution">
-		<i class="ti ti-alert-triangle"></i>{{ i18n.ts._poll.noOnlyOneChoice }}
+		<i class="ti ti-alert-triangle"></i>{{ $locale.env._poll.noOnlyOneChoice }}
 	</p>
 	<ul>
 		<li v-for="(choice, i) in choices" :key="i">
-			<MkInput class="input" small :modelValue="choice" :placeholder="i18n.tsx._poll.choiceN({ n: i + 1 })" @update:modelValue="onInput(i, $event)">
+			<MkInput class="input" small :modelValue="choice" :placeholder="$l.env._poll.choiceN({ n: i + 1 })" @update:modelValue="onInput(i, $event)">
 			</MkInput>
 			<button class="_button" @click="remove(i)">
 				<i class="ti ti-x"></i>
 			</button>
 		</li>
 	</ul>
-	<MkButton v-if="choices.length < 10" class="add" @click="add">{{ i18n.ts.add }}</MkButton>
-	<MkButton v-else class="add" disabled>{{ i18n.ts._poll.noMore }}</MkButton>
-	<MkSwitch v-model="multiple">{{ i18n.ts._poll.canMultipleVote }}</MkSwitch>
+	<MkButton v-if="choices.length < 10" class="add" @click="add">{{ $locale.env.add }}</MkButton>
+	<MkButton v-else class="add" disabled>{{ $locale.env._poll.noMore }}</MkButton>
+	<MkSwitch v-model="multiple">{{ $locale.env._poll.canMultipleVote }}</MkSwitch>
 	<section>
 		<div>
 			<MkSelect v-model="expiration" :items="expirationDef" small>
-				<template #label>{{ i18n.ts._poll.expiration }}</template>
+				<template #label>{{ $locale.env._poll.expiration }}</template>
 			</MkSelect>
 			<section v-if="expiration === 'at'">
 				<MkInput v-model="atDate" small type="date" class="input">
-					<template #label>{{ i18n.ts._poll.deadlineDate }}</template>
+					<template #label>{{ $locale.env._poll.deadlineDate }}</template>
 				</MkInput>
 				<MkInput v-model="atTime" small type="time" class="input">
-					<template #label>{{ i18n.ts._poll.deadlineTime }}</template>
+					<template #label>{{ $locale.env._poll.deadlineTime }}</template>
 				</MkInput>
 			</section>
 			<section v-else-if="expiration === 'after'">
 				<MkInput v-model="after" small type="number" :min="1" class="input">
-					<template #label>{{ i18n.ts._poll.duration }}</template>
+					<template #label>{{ $locale.env._poll.duration }}</template>
 				</MkInput>
 				<MkSelect v-model="unit" :items="unitDef" small></MkSelect>
 			</section>
@@ -45,6 +45,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef } from '@/i18n.js';
+
 import { ref, watch } from 'vue';
 import MkInput from './MkInput.vue';
 import MkSelect from './MkSelect.vue';
@@ -52,7 +54,6 @@ import MkSwitch from './MkSwitch.vue';
 import MkButton from './MkButton.vue';
 import { formatDateTimeString } from '@/utility/format-time-string.js';
 import { addTime } from '@/utility/time.js';
-import { i18n } from '@/i18n.js';
 import { useMkSelect } from '@/composables/use-mkselect.js';
 
 export type PollEditorModelValue = {
@@ -76,9 +77,9 @@ const {
 	def: expirationDef,
 } = useMkSelect({
 	items: [
-		{ label: i18n.ts._poll.infinite, value: 'infinite' },
-		{ label: i18n.ts._poll.at, value: 'at' },
-		{ label: i18n.ts._poll.after, value: 'after' },
+		{ label: localeRef.value.env._poll.infinite, value: 'infinite' },
+		{ label: localeRef.value.env._poll.at, value: 'at' },
+		{ label: localeRef.value.env._poll.after, value: 'after' },
 	],
 	initialValue: 'infinite',
 });
@@ -90,10 +91,10 @@ const {
 	def: unitDef,
 } = useMkSelect({
 	items: [
-		{ label: i18n.ts._time.second, value: 'second' },
-		{ label: i18n.ts._time.minute, value: 'minute' },
-		{ label: i18n.ts._time.hour, value: 'hour' },
-		{ label: i18n.ts._time.day, value: 'day' },
+		{ label: localeRef.value.env._time.second, value: 'second' },
+		{ label: localeRef.value.env._time.minute, value: 'minute' },
+		{ label: localeRef.value.env._time.hour, value: 'hour' },
+		{ label: localeRef.value.env._time.day, value: 'day' },
 	],
 	initialValue: 'second',
 });

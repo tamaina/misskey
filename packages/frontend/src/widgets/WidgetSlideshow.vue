@@ -7,9 +7,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 <div data-cy-mkw-slideshow class="kvausudm _panel mkw-slideshow" :style="{ height: widgetProps.height + 'px' }">
 	<div @click="choose">
 		<p v-if="widgetProps.folderId == null">
-			{{ i18n.ts.folder }}
+			{{ $locale.env.folder }}
 		</p>
-		<p v-if="widgetProps.folderId != null && images.length === 0 && !fetching">{{ i18n.ts.nothing }}</p>
+		<p v-if="widgetProps.folderId != null && images.length === 0 && !fetching">{{ $locale.env.nothing }}</p>
 		<div ref="slideA" class="slide a"></div>
 		<div ref="slideB" class="slide b"></div>
 	</div>
@@ -17,6 +17,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef } from '@/i18n.js';
+
 import { onMounted, ref, useTemplateRef } from 'vue';
 import * as Misskey from 'misskey-js';
 import { useInterval } from '@@/js/use-interval.js';
@@ -25,7 +27,6 @@ import type { WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps 
 import type { FormWithDefault, GetFormResultType } from '@/utility/form.js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
-import { i18n } from '@/i18n.js';
 import { selectDriveFolder } from '@/utility/drive.js';
 
 const name = 'slideshow';
@@ -33,7 +34,7 @@ const name = 'slideshow';
 const widgetPropsDef = {
 	height: {
 		type: 'number',
-		label: i18n.ts._widgetOptions.height,
+		label: localeRef.value.env._widgetOptions.height,
 		default: 300,
 	},
 	folderId: {

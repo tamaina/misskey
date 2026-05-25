@@ -6,7 +6,7 @@
 import * as Misskey from 'misskey-js';
 import * as os from '@/os.js';
 import { prefer } from '@/preferences.js';
-import { i18n } from '@/i18n.js';
+import { $locale, $l } from '@/i18n.js';
 
 export function shouldHideFileByDefault(file: Misskey.entities.DriveFile): boolean {
 	if (prefer.s.nsfw === 'force' || prefer.s.dataSaver.media) {
@@ -24,7 +24,7 @@ export async function canRevealFile(file: Misskey.entities.DriveFile): Promise<b
 	if (file.isSensitive && prefer.s.confirmWhenRevealingSensitiveMedia) {
 		const { canceled } = await os.confirm({
 			type: 'question',
-			text: i18n.ts.sensitiveMediaRevealConfirm,
+			text: $locale.value.env.sensitiveMediaRevealConfirm,
 		});
 		if (canceled) return false;
 	}

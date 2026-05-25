@@ -4,14 +4,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<SearchMarker path="/settings/emoji-palette" :label="i18n.ts.emojiPalette" :keywords="['emoji', 'palette']" icon="ti ti-mood-happy">
+<SearchMarker path="/settings/emoji-palette" :label="$locale.env.emojiPalette" :keywords="['emoji', 'palette']" icon="ti ti-mood-happy">
 	<div class="_gaps_m">
 		<MkFeatureBanner icon="/client-assets/artist_palette_3d.png" color="#ff9100">
-			<SearchText>{{ i18n.ts._settings.emojiPaletteBanner }}</SearchText>
+			<SearchText>{{ $locale.env._settings.emojiPaletteBanner }}</SearchText>
 		</MkFeatureBanner>
 
 		<FormSection first>
-			<template #label>{{ i18n.ts._emojiPalette.palettes }}</template>
+			<template #label>{{ $locale.env._emojiPalette.palettes }}</template>
 
 			<div class="_gaps_s">
 				<XPalette
@@ -30,7 +30,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div class="_gaps_m">
 				<SearchMarker :keywords="['sync', 'palettes', 'devices']">
 					<MkSwitch :modelValue="palettesSyncEnabled" @update:modelValue="changePalettesSyncEnabled">
-						<template #label><i class="ti ti-cloud-cog"></i> <SearchLabel>{{ i18n.ts._emojiPalette.enableSyncBetweenDevicesForPalettes }}</SearchLabel></template>
+						<template #label><i class="ti ti-cloud-cog"></i> <SearchLabel>{{ $locale.env._emojiPalette.enableSyncBetweenDevicesForPalettes }}</SearchLabel></template>
 					</MkSwitch>
 				</SearchMarker>
 			</div>
@@ -41,7 +41,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<SearchMarker :keywords="['main', 'palette']">
 					<MkPreferenceContainer k="emojiPaletteForMain">
 						<MkSelect v-model="emojiPaletteForMain" :items="emojiPaletteForMainDef">
-							<template #label><SearchLabel>{{ i18n.ts._emojiPalette.paletteForMain }}</SearchLabel></template>
+							<template #label><SearchLabel>{{ $locale.env._emojiPalette.paletteForMain }}</SearchLabel></template>
 						</MkSelect>
 					</MkPreferenceContainer>
 				</SearchMarker>
@@ -49,7 +49,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<SearchMarker :keywords="['reaction', 'palette']">
 					<MkPreferenceContainer k="emojiPaletteForReaction">
 						<MkSelect v-model="emojiPaletteForReaction" :items="emojiPaletteForReactionDef">
-							<template #label><SearchLabel>{{ i18n.ts._emojiPalette.paletteForReaction }}</SearchLabel></template>
+							<template #label><SearchLabel>{{ $locale.env._emojiPalette.paletteForReaction }}</SearchLabel></template>
 						</MkSelect>
 					</MkPreferenceContainer>
 				</SearchMarker>
@@ -58,7 +58,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 		<SearchMarker :keywords="['emoji', 'picker', 'display']">
 			<FormSection>
-				<template #label><SearchLabel>{{ i18n.ts.emojiPickerDisplay }}</SearchLabel></template>
+				<template #label><SearchLabel>{{ $locale.env.emojiPickerDisplay }}</SearchLabel></template>
 
 				<div class="_gaps_m">
 					<SearchMarker :keywords="['emoji', 'picker', 'scale', 'size']">
@@ -67,7 +67,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 								v-model="emojiPickerScale"
 								:options="emojiPickerScaleDef"
 							>
-								<template #label><SearchLabel>{{ i18n.ts.size }}</SearchLabel></template>
+								<template #label><SearchLabel>{{ $locale.env.size }}</SearchLabel></template>
 							</MkRadios>
 						</MkPreferenceContainer>
 					</SearchMarker>
@@ -78,7 +78,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 								v-model="emojiPickerWidth"
 								:options="emojiPickerWidthDef"
 							>
-								<template #label><SearchLabel>{{ i18n.ts.numberOfColumn }}</SearchLabel></template>
+								<template #label><SearchLabel>{{ $locale.env.numberOfColumn }}</SearchLabel></template>
 							</MkRadios>
 						</MkPreferenceContainer>
 					</SearchMarker>
@@ -89,7 +89,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 								v-model="emojiPickerHeight"
 								:options="emojiPickerHeightDef"
 							>
-								<template #label><SearchLabel>{{ i18n.ts.height }}</SearchLabel></template>
+								<template #label><SearchLabel>{{ $locale.env.height }}</SearchLabel></template>
 							</MkRadios>
 						</MkPreferenceContainer>
 					</SearchMarker>
@@ -98,18 +98,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<MkPreferenceContainer k="emojiPickerStyle">
 							<MkSelect
 								v-model="emojiPickerStyle" :items="[
-									{ label: i18n.ts.auto, value: 'auto' },
-									{ label: i18n.ts.popup, value: 'popup' },
-									{ label: i18n.ts.drawer, value: 'drawer' },
+									{ label: $locale.env.auto, value: 'auto' },
+									{ label: $locale.env.popup, value: 'popup' },
+									{ label: $locale.env.drawer, value: 'drawer' },
 								]"
 							>
-								<template #label><SearchLabel>{{ i18n.ts.style }}</SearchLabel></template>
-								<template #caption>{{ i18n.ts.needReloadToApply }}</template>
+								<template #label><SearchLabel>{{ $locale.env.style }}</SearchLabel></template>
+								<template #caption>{{ $locale.env.needReloadToApply }}</template>
 							</MkSelect>
 						</MkPreferenceContainer>
 					</SearchMarker>
 
-					<MkButton @click="previewPicker"><i class="ti ti-eye"></i> {{ i18n.ts.preview }}</MkButton>
+					<MkButton @click="previewPicker"><i class="ti ti-eye"></i> {{ $locale.env.preview }}</MkButton>
 				</div>
 			</FormSection>
 		</SearchMarker>
@@ -118,6 +118,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef } from '@/i18n.js';
+
 import { computed, ref, watch } from 'vue';
 import XPalette from './emoji-palette.palette.vue';
 import type { MkSelectItem } from '@/components/MkSelect.vue';
@@ -129,7 +131,6 @@ import MkButton from '@/components/MkButton.vue';
 import FormSection from '@/components/form/section.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import * as os from '@/os.js';
-import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
 import MkFolder from '@/components/MkFolder.vue';
 import { prefer } from '@/preferences.js';
@@ -139,27 +140,27 @@ import { emojiPicker } from '@/utility/emoji-picker.js';
 
 const emojiPaletteForReaction = prefer.model('emojiPaletteForReaction');
 const emojiPaletteForReactionDef = computed<MkSelectItem[]>(() => [
-	{ label: `(${i18n.ts.auto})`, value: null },
+	{ label: `(${localeRef.value.env.auto})`, value: null },
 	...prefer.s.emojiPalettes.map(palette => ({
-		label: palette.name === '' ? `(${i18n.ts.noName})` : palette.name,
+		label: palette.name === '' ? `(${localeRef.value.env.noName})` : palette.name,
 		value: palette.id,
 	})),
 ]);
 const emojiPaletteForMain = prefer.model('emojiPaletteForMain');
 const emojiPaletteForMainDef = computed<MkSelectItem[]>(() => [
-	{ label: `(${i18n.ts.auto})`, value: null },
+	{ label: `(${localeRef.value.env.auto})`, value: null },
 	...prefer.s.emojiPalettes.map(palette => ({
-		label: palette.name === '' ? `(${i18n.ts.noName})` : palette.name,
+		label: palette.name === '' ? `(${localeRef.value.env.noName})` : palette.name,
 		value: palette.id,
 	})),
 ]);
 const emojiPickerScale = prefer.model('emojiPickerScale');
 const emojiPickerScaleDef = [
-	{ label: i18n.ts.small, value: 1 },
-	{ label: i18n.ts.medium, value: 2 },
-	{ label: i18n.ts.large, value: 3 },
-	{ label: i18n.ts.large + '+', value: 4 },
-	{ label: i18n.ts.large + '++', value: 5 },
+	{ label: localeRef.value.env.small, value: 1 },
+	{ label: localeRef.value.env.medium, value: 2 },
+	{ label: localeRef.value.env.large, value: 3 },
+	{ label: localeRef.value.env.large + '+', value: 4 },
+	{ label: localeRef.value.env.large + '++', value: 5 },
 ] as MkRadiosOption<number>[];
 
 const emojiPickerWidth = prefer.model('emojiPickerWidth');
@@ -173,10 +174,10 @@ const emojiPickerWidthDef = [
 
 const emojiPickerHeight = prefer.model('emojiPickerHeight');
 const emojiPickerHeightDef = [
-	{ label: i18n.ts.small, value: 1 },
-	{ label: i18n.ts.medium, value: 2 },
-	{ label: i18n.ts.large, value: 3 },
-	{ label: i18n.ts.large + '+', value: 4 },
+	{ label: localeRef.value.env.small, value: 1 },
+	{ label: localeRef.value.env.medium, value: 2 },
+	{ label: localeRef.value.env.large, value: 3 },
+	{ label: localeRef.value.env.large + '+', value: 4 },
 ] as MkRadiosOption<number>[];
 
 const emojiPickerStyle = prefer.model('emojiPickerStyle');
@@ -255,7 +256,7 @@ function previewPicker(ev: PointerEvent) {
 }
 
 definePage(() => ({
-	title: i18n.ts.emojiPalette,
+	title: localeRef.value.env.emojiPalette,
 	icon: 'ti ti-mood-happy',
 }));
 </script>

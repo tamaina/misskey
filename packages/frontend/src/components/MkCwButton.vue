@@ -4,15 +4,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkButton rounded full small @click="toggle"><b>{{ modelValue ? i18n.ts._cw.hide : i18n.ts._cw.show }}</b><span v-if="!modelValue" :class="$style.label">{{ label }}</span></MkButton>
+<MkButton rounded full small @click="toggle"><b>{{ modelValue ? $locale.env._cw.hide : $locale.env._cw.show }}</b><span v-if="!modelValue" :class="$style.label">{{ label }}</span></MkButton>
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef, $l as localizerRef } from '@/i18n.js';
+
 import { computed } from 'vue';
 import * as Misskey from 'misskey-js';
 import type { PollEditorModelValue } from '@/components/MkPollEditor.vue';
 import { concat } from '@/utility/array.js';
-import { i18n } from '@/i18n.js';
 import MkButton from '@/components/MkButton.vue';
 
 const props = defineProps<{
@@ -29,10 +30,10 @@ const emit = defineEmits<{
 
 const label = computed(() => {
 	return concat([
-		props.text ? [i18n.tsx._cw.chars({ count: props.text.length })] : [],
-		props.renote ? [i18n.ts.quote] : [],
-		props.files && props.files.length !== 0 ? [i18n.tsx._cw.files({ count: props.files.length })] : [],
-		props.poll != null ? [i18n.ts.poll] : [],
+		props.text ? [localizerRef.value.env._cw.chars({ count: props.text.length })] : [],
+		props.renote ? [localeRef.value.env.quote] : [],
+		props.files && props.files.length !== 0 ? [localizerRef.value.env._cw.files({ count: props.files.length })] : [],
+		props.poll != null ? [localeRef.value.env.poll] : [],
 	] as string[][]).join(' / ');
 });
 

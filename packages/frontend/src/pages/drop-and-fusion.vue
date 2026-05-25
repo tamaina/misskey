@@ -25,14 +25,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<div class="_gaps" style="padding: 16px;">
 							<MkSelect v-model="gameMode" :items="gameModeDef">
 							</MkSelect>
-							<MkButton primary gradate large rounded inline @click="start">{{ i18n.ts.start }}</MkButton>
+							<MkButton primary gradate large rounded inline @click="start">{{ $locale.env.start }}</MkButton>
 						</div>
 					</div>
 					<div class="_woodenFrameInner">
 						<div class="_gaps" style="padding: 16px;">
-							<div style="font-size: 90%;"><i class="ti ti-music"></i> {{ i18n.ts.soundWillBePlayed }}</div>
+							<div style="font-size: 90%;"><i class="ti ti-music"></i> {{ $locale.env.soundWillBePlayed }}</div>
 							<MkSwitch v-model="mute">
-								<template #label>{{ i18n.ts.mute }}</template>
+								<template #label>{{ $locale.env.mute }}</template>
 							</MkSwitch>
 						</div>
 					</div>
@@ -40,7 +40,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<div class="_woodenFrame">
 					<div class="_woodenFrameInner">
 						<div class="_gaps_s" style="padding: 16px;">
-							<div><b>{{ i18n.tsx.lastNDays({ n: 7 }) }} {{ i18n.ts.ranking }}</b> ({{ gameMode.toUpperCase() }})</div>
+							<div><b>{{ $l.env.lastNDays({ n: 7 }) }} {{ $locale.env.ranking }}</b> ({{ gameMode.toUpperCase() }})</div>
 							<div v-if="ranking" class="_gaps_s">
 								<div v-for="r in ranking" :key="r.id" :class="$style.rankingRecord">
 									<MkAvatar v-if="r.user" :link="true" style="width: 24px; height: 24px; margin-right: 4px;" :user="r.user"/>
@@ -48,17 +48,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 									<b style="margin-left: auto;">{{ r.score.toLocaleString() }} {{ getScoreUnit(gameMode) }}</b>
 								</div>
 							</div>
-							<div v-else>{{ i18n.ts.loading }}</div>
+							<div v-else>{{ $locale.env.loading }}</div>
 						</div>
 					</div>
 				</div>
 				<div class="_woodenFrame">
 					<div class="_woodenFrameInner" style="padding: 16px;">
-						<div style="font-weight: bold;">{{ i18n.ts._bubbleGame.howToPlay }}</div>
+						<div style="font-weight: bold;">{{ $locale.env._bubbleGame.howToPlay }}</div>
 						<ol>
-							<li>{{ i18n.ts._bubbleGame._howToPlay.section1 }}</li>
-							<li>{{ i18n.ts._bubbleGame._howToPlay.section2 }}</li>
-							<li>{{ i18n.ts._bubbleGame._howToPlay.section3 }}</li>
+							<li>{{ $locale.env._bubbleGame._howToPlay.section1 }}</li>
+							<li>{{ $locale.env._bubbleGame._howToPlay.section2 }}</li>
+							<li>{{ $locale.env._bubbleGame._howToPlay.section3 }}</li>
 						</ol>
 					</div>
 				</div>
@@ -81,12 +81,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef } from '@/i18n.js';
+
 import { computed, ref, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import XGame from './drop-and-fusion.game.vue';
 import { definePage } from '@/page.js';
 import MkButton from '@/components/MkButton.vue';
-import { i18n } from '@/i18n.js';
 import { useMkSelect } from '@/composables/use-mkselect.js';
 import MkSelect from '@/components/MkSelect.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
@@ -131,7 +132,7 @@ function onGameEnd() {
 }
 
 definePage(() => ({
-	title: i18n.ts.bubbleGame,
+	title: localeRef.value.env.bubbleGame,
 	icon: 'ti ti-device-gamepad',
 }));
 </script>

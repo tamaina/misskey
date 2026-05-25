@@ -12,9 +12,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef } from '@/i18n.js';
+
 import { onActivated, onDeactivated, onMounted, onUnmounted } from 'vue';
 import MkAchievements from '@/components/MkAchievements.vue';
-import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
 import { ensureSignin } from '@/i.js';
 import { claimAchievement } from '@/utility/achievements.js';
@@ -50,7 +51,7 @@ onDeactivated(() => {
 });
 
 definePage(() => ({
-	title: i18n.ts.achievements,
+	title: localeRef.value.env.achievements,
 	icon: 'ti ti-medal',
 }));
 </script>

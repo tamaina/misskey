@@ -12,7 +12,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	@close="close()"
 	@closed="emit('closed')"
 >
-	<template #header>{{ antenna == null ? i18n.ts.createAntenna : i18n.ts.editAntenna }}</template>
+	<template #header>{{ antenna == null ? $locale.env.createAntenna : $locale.env.editAntenna }}</template>
 	<XAntennaEditor
 		:antenna="antenna"
 		@created="onAntennaCreated"
@@ -23,11 +23,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+
 import { useTemplateRef } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import XAntennaEditor from '@/components/MkAntennaEditor.vue';
-import { i18n } from '@/i18n.js';
 
 defineProps<{
 	antenna?: Misskey.entities.Antenna;

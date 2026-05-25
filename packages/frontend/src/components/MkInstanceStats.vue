@@ -55,6 +55,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef } from '@/i18n.js';
+
 import { onMounted, computed, useTemplateRef } from 'vue';
 import { Chart } from 'chart.js';
 import type { MkSelectItem, ItemOption } from '@/components/MkSelect.vue';
@@ -66,7 +68,6 @@ import { $i } from '@/i.js';
 import * as os from '@/os.js';
 import { misskeyApiGet } from '@/utility/misskey-api.js';
 import { instance } from '@/instance.js';
-import { i18n } from '@/i18n.js';
 import MkHeatmap from '@/components/MkHeatmap.vue';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';
 import MkRetentionHeatmap from '@/components/MkRetentionHeatmap.vue';
@@ -85,8 +86,8 @@ const {
 	def: chartSpanDef,
 } = useMkSelect({
 	items: [
-		{ value: 'hour', label: i18n.ts.perHour },
-		{ value: 'day', label: i18n.ts.perDay },
+		{ value: 'hour', label: localeRef.value.env.perHour },
+		{ value: 'day', label: localeRef.value.env.perDay },
 	],
 	initialValue: 'hour',
 });
@@ -100,47 +101,47 @@ const {
 		if (shouldShowFederation.value) {
 			items.push({
 				type: 'group',
-				label: i18n.ts.federation,
+				label: localeRef.value.env.federation,
 				items: [
-					{ value: 'federation', label: i18n.ts._charts.federation },
-					{ value: 'ap-request', label: i18n.ts._charts.apRequest },
+					{ value: 'federation', label: localeRef.value.env._charts.federation },
+					{ value: 'ap-request', label: localeRef.value.env._charts.apRequest },
 				],
 			});
 		}
 
 		items.push({
 			type: 'group',
-			label: i18n.ts.users,
+			label: localeRef.value.env.users,
 			items: [
-				{ value: 'users', label: i18n.ts._charts.usersIncDec },
-				{ value: 'users-total', label: i18n.ts._charts.usersTotal },
-				{ value: 'active-users', label: i18n.ts._charts.activeUsers },
+				{ value: 'users', label: localeRef.value.env._charts.usersIncDec },
+				{ value: 'users-total', label: localeRef.value.env._charts.usersTotal },
+				{ value: 'active-users', label: localeRef.value.env._charts.activeUsers },
 			],
 		});
 
 		const notesItems: ItemOption<ChartSrc>[] = [
-			{ value: 'notes', label: i18n.ts._charts.notesIncDec },
-			{ value: 'local-notes', label: i18n.ts._charts.localNotesIncDec },
+			{ value: 'notes', label: localeRef.value.env._charts.notesIncDec },
+			{ value: 'local-notes', label: localeRef.value.env._charts.localNotesIncDec },
 		];
 
-		if (shouldShowFederation.value) notesItems.push({ value: 'remote-notes', label: i18n.ts._charts.remoteNotesIncDec });
+		if (shouldShowFederation.value) notesItems.push({ value: 'remote-notes', label: localeRef.value.env._charts.remoteNotesIncDec });
 
 		notesItems.push(
-			{ value: 'notes-total', label: i18n.ts._charts.notesTotal },
+			{ value: 'notes-total', label: localeRef.value.env._charts.notesTotal },
 		);
 
 		items.push({
 			type: 'group',
-			label: i18n.ts.notes,
+			label: localeRef.value.env.notes,
 			items: notesItems,
 		});
 
 		items.push({
 			type: 'group',
-			label: i18n.ts.drive,
+			label: localeRef.value.env.drive,
 			items: [
-				{ value: 'drive-files', label: i18n.ts._charts.filesIncDec },
-				{ value: 'drive', label: i18n.ts._charts.storageUsageIncDec },
+				{ value: 'drive-files', label: localeRef.value.env._charts.filesIncDec },
+				{ value: 'drive', label: localeRef.value.env._charts.storageUsageIncDec },
 			],
 		});
 

@@ -12,8 +12,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script setup lang="ts">
+import { $locale as localeRef } from '@/i18n.js';
+
 import { computed, ref } from 'vue';
-import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
 import XGridLocalComponent from '@/pages/admin/custom-emojis-manager.local.list.vue';
 import XGridRemoteComponent from '@/pages/admin/custom-emojis-manager.remote.vue';
@@ -25,17 +26,17 @@ const headerTab = ref<PageMode>('local');
 
 const headerTabs = computed(() => [{
 	key: 'local',
-	title: i18n.ts.local,
+	title: localeRef.value.env.local,
 }, {
 	key: 'remote',
-	title: i18n.ts.remote,
+	title: localeRef.value.env.remote,
 }, {
 	key: 'register',
-	title: i18n.ts._customEmojisManager._local.tabTitleRegister,
+	title: localeRef.value.env._customEmojisManager._local.tabTitleRegister,
 }]);
 
 definePage(computed(() => ({
-	title: i18n.ts.customEmojis,
+	title: localeRef.value.env.customEmojis,
 	icon: 'ti ti-icons',
 	needWideArea: true,
 })));

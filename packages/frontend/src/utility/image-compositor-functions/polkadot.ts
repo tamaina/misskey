@@ -6,7 +6,7 @@
 import shader from './polkadot.glsl';
 import type { ImageEffectorUiDefinition } from '../image-effector/ImageEffector.js';
 import { defineImageCompositorFunction } from '@/lib/ImageCompositor.js';
-import { i18n } from '@/i18n.js';
+import { $locale, $l } from '@/i18n.js';
 
 export const fn = defineImageCompositorFunction<{
 	angle: number;
@@ -32,10 +32,10 @@ export const fn = defineImageCompositorFunction<{
 });
 
 export const uiDefinition = {
-	name: i18n.ts._imageEffector._fxs.polkadot,
+	name: $locale.value.env._imageEffector._fxs.polkadot,
 	params: {
 		angle: {
-			label: i18n.ts._imageEffector._fxProps.angle,
+			label: $locale.value.env._imageEffector._fxProps.angle,
 			type: 'number',
 			default: 0,
 			min: -1.0,
@@ -44,7 +44,7 @@ export const uiDefinition = {
 			toViewValue: v => Math.round(v * 90) + '°',
 		},
 		scale: {
-			label: i18n.ts._imageEffector._fxProps.scale,
+			label: $locale.value.env._imageEffector._fxProps.scale,
 			type: 'number',
 			default: 3.0,
 			min: 1.0,
@@ -52,7 +52,7 @@ export const uiDefinition = {
 			step: 0.1,
 		},
 		majorRadius: {
-			label: i18n.ts._watermarkEditor.polkadotMainDotRadius,
+			label: $locale.value.env._watermarkEditor.polkadotMainDotRadius,
 			type: 'number',
 			default: 0.1,
 			min: 0.0,
@@ -60,7 +60,7 @@ export const uiDefinition = {
 			step: 0.01,
 		},
 		majorOpacity: {
-			label: i18n.ts._watermarkEditor.polkadotMainDotOpacity,
+			label: $locale.value.env._watermarkEditor.polkadotMainDotOpacity,
 			type: 'number',
 			default: 0.75,
 			min: 0.0,
@@ -69,7 +69,7 @@ export const uiDefinition = {
 			toViewValue: v => Math.round(v * 100) + '%',
 		},
 		minorDivisions: {
-			label: i18n.ts._watermarkEditor.polkadotSubDotDivisions,
+			label: $locale.value.env._watermarkEditor.polkadotSubDotDivisions,
 			type: 'number',
 			default: 4,
 			min: 0,
@@ -77,7 +77,7 @@ export const uiDefinition = {
 			step: 1,
 		},
 		minorRadius: {
-			label: i18n.ts._watermarkEditor.polkadotSubDotRadius,
+			label: $locale.value.env._watermarkEditor.polkadotSubDotRadius,
 			type: 'number',
 			default: 0.25,
 			min: 0.0,
@@ -85,7 +85,7 @@ export const uiDefinition = {
 			step: 0.01,
 		},
 		minorOpacity: {
-			label: i18n.ts._watermarkEditor.polkadotSubDotOpacity,
+			label: $locale.value.env._watermarkEditor.polkadotSubDotOpacity,
 			type: 'number',
 			default: 0.5,
 			min: 0.0,
@@ -94,7 +94,7 @@ export const uiDefinition = {
 			toViewValue: v => Math.round(v * 100) + '%',
 		},
 		color: {
-			label: i18n.ts._imageEffector._fxProps.color,
+			label: $locale.value.env._imageEffector._fxProps.color,
 			type: 'color',
 			default: [1, 1, 1],
 		},

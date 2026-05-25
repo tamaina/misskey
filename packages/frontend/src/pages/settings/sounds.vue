@@ -4,16 +4,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<SearchMarker path="/settings/sounds" :label="i18n.ts.sounds" :keywords="['sounds']" icon="ti ti-music">
+<SearchMarker path="/settings/sounds" :label="$locale.env.sounds" :keywords="['sounds']" icon="ti ti-music">
 	<div class="_gaps_m">
 		<MkFeatureBanner icon="/client-assets/speaker_high_volume_3d.png" color="#ff006f">
-			<SearchText>{{ i18n.ts._settings.soundsBanner }}</SearchText>
+			<SearchText>{{ $locale.env._settings.soundsBanner }}</SearchText>
 		</MkFeatureBanner>
 
 		<SearchMarker :keywords="['mute']">
 			<MkPreferenceContainer k="sound.notUseSound">
 				<MkSwitch v-model="notUseSound">
-					<template #label><SearchLabel>{{ i18n.ts.notUseSound }}</SearchLabel></template>
+					<template #label><SearchLabel>{{ $locale.env.notUseSound }}</SearchLabel></template>
 				</MkSwitch>
 			</MkPreferenceContainer>
 		</SearchMarker>
@@ -21,7 +21,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<SearchMarker :keywords="['active', 'mute']">
 			<MkPreferenceContainer k="sound.useSoundOnlyWhenActive">
 				<MkSwitch v-model="useSoundOnlyWhenActive">
-					<template #label><SearchLabel>{{ i18n.ts.useSoundOnlyWhenActive }}</SearchLabel></template>
+					<template #label><SearchLabel>{{ $locale.env.useSoundOnlyWhenActive }}</SearchLabel></template>
 				</MkSwitch>
 			</MkPreferenceContainer>
 		</SearchMarker>
@@ -29,16 +29,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<SearchMarker :keywords="['volume', 'master']">
 			<MkPreferenceContainer k="sound.masterVolume">
 				<MkRange v-model="masterVolume" :min="0" :max="1" :step="0.05" :textConverter="(v) => `${Math.floor(v * 100)}%`">
-					<template #label><SearchLabel>{{ i18n.ts.masterVolume }}</SearchLabel></template>
+					<template #label><SearchLabel>{{ $locale.env.masterVolume }}</SearchLabel></template>
 				</MkRange>
 			</MkPreferenceContainer>
 		</SearchMarker>
 
 		<FormSection>
-			<template #label>{{ i18n.ts.sounds }}</template>
+			<template #label>{{ $locale.env.sounds }}</template>
 			<div class="_gaps_s">
 				<MkFolder v-for="type in operationTypes" :key="type">
-					<template #label>{{ i18n.ts._sfx[type] }}</template>
+					<template #label>{{ $locale.env._sfx[type] }}</template>
 					<template #suffix>{{ getSoundTypeName(sounds[type].type) }}</template>
 					<Suspense>
 						<template #default>
@@ -52,12 +52,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 		</FormSection>
 
-		<MkButton danger @click="reset()"><i class="ti ti-reload"></i> {{ i18n.ts.default }}</MkButton>
+		<MkButton danger @click="reset()"><i class="ti ti-reload"></i> {{ $locale.env.default }}</MkButton>
 	</div>
 </SearchMarker>
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef } from '@/i18n.js';
+
 import { computed, ref } from 'vue';
 import XSound from './sounds.sound.vue';
 import type { Ref } from 'vue';
@@ -68,7 +70,6 @@ import MkRange from '@/components/MkRange.vue';
 import MkButton from '@/components/MkButton.vue';
 import FormSection from '@/components/form/section.vue';
 import MkFolder from '@/components/MkFolder.vue';
-import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
 import { operationTypes } from '@/utility/sound.js';
 import MkSwitch from '@/components/MkSwitch.vue';
@@ -92,9 +93,9 @@ const sounds = ref<Record<OperationType, Ref<SoundStore>>>({
 function getSoundTypeName(f: SoundType): string {
 	switch (f) {
 		case null:
-			return i18n.ts.none;
+			return localeRef.value.env.none;
 		case '_driveFile_':
-			return i18n.ts._soundSettings.driveFile;
+			return localeRef.value.env._soundSettings.driveFile;
 		default:
 			return f;
 	}
@@ -128,7 +129,7 @@ const headerActions = computed(() => []);
 const headerTabs = computed(() => []);
 
 definePage(() => ({
-	title: i18n.ts.sounds,
+	title: localeRef.value.env.sounds,
 	icon: 'ti ti-music',
 }));
 </script>

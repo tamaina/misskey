@@ -51,6 +51,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef } from '@/i18n.js';
+
 import { computed, defineAsyncComponent, provide } from 'vue';
 import * as mfm from 'mfm-js';
 import * as Misskey from 'misskey-js';
@@ -62,7 +64,6 @@ import { extractUrlFromMfm } from '@/utility/extract-url-from-mfm.js';
 import MkUrlPreview from '@/components/MkUrlPreview.vue';
 import { ensureSignin } from '@/i.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
-import { i18n } from '@/i18n.js';
 import MkFukidashi from '@/components/MkFukidashi.vue';
 import * as os from '@/os.js';
 import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
@@ -140,7 +141,7 @@ function showMenu(ev: PointerEvent, contextmenu = false) {
 
 	if (!isMe.value && $i.policies.chatAvailability === 'available') {
 		menu.push({
-			text: i18n.ts.reaction,
+			text: localeRef.value.env.reaction,
 			icon: 'ti ti-mood-plus',
 			action: (ev) => {
 				react(ev);
@@ -153,7 +154,7 @@ function showMenu(ev: PointerEvent, contextmenu = false) {
 	}
 
 	menu.push({
-		text: i18n.ts.copyContent,
+		text: localeRef.value.env.copyContent,
 		icon: 'ti ti-copy',
 		action: () => {
 			copyToClipboard(props.message.text ?? '');
@@ -166,7 +167,7 @@ function showMenu(ev: PointerEvent, contextmenu = false) {
 
 	if (isMe.value && $i.policies.chatAvailability === 'available') {
 		menu.push({
-			text: i18n.ts.delete,
+			text: localeRef.value.env.delete,
 			icon: 'ti ti-trash',
 			danger: true,
 			action: () => {
@@ -179,7 +180,7 @@ function showMenu(ev: PointerEvent, contextmenu = false) {
 
 	if (!isMe.value && props.message.fromUser != null) {
 		menu.push({
-			text: i18n.ts.reportAbuse,
+			text: localeRef.value.env.reportAbuse,
 			icon: 'ti ti-exclamation-circle',
 			action: async () => {
 				const localUrl = `${url}/chat/messages/${props.message.id}`;

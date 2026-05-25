@@ -12,7 +12,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<slot name="header"></slot>
 			</span>
 			<div v-if="withOkButton" style="padding: 0 16px; place-content: center;">
-				<MkButton primary gradate small rounded :disabled="okButtonDisabled" @click="emit('ok')">{{ i18n.ts.done }} <i class="ti ti-check"></i></MkButton>
+				<MkButton primary gradate small rounded :disabled="okButtonDisabled" @click="emit('ok')">{{ $locale.env.done }} <i class="ti ti-check"></i></MkButton>
 			</div>
 		</div>
 		<div :class="$style.body">
@@ -26,6 +26,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+
 import { onMounted, onUnmounted, useTemplateRef, ref } from 'vue';
 import MkModal from '@/components/MkModal.vue';
 import MkButton from '@/components/MkButton.vue';

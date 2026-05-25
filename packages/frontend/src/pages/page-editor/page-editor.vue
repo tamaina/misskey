@@ -7,40 +7,40 @@ SPDX-License-Identifier: AGPL-3.0-only
 <PageWithHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs">
 	<div class="_spacer" style="--MI_SPACER-w: 700px;">
 		<div class="jqqmcavi">
-			<MkButton v-if="pageId && author != null" class="button" inline type="routerLink" :to="`/@${ author.username }/pages/${ currentName }`"><i class="ti ti-external-link"></i> {{ i18n.ts._pages.viewPage }}</MkButton>
-			<MkButton v-if="!readonly" inline primary class="button" @click="save"><i class="ti ti-device-floppy"></i> {{ i18n.ts.save }}</MkButton>
-			<MkButton v-if="pageId" inline class="button" @click="duplicate"><i class="ti ti-copy"></i> {{ i18n.ts.duplicate }}</MkButton>
-			<MkButton v-if="pageId && !readonly" inline class="button" danger @click="del"><i class="ti ti-trash"></i> {{ i18n.ts.delete }}</MkButton>
+			<MkButton v-if="pageId && author != null" class="button" inline type="routerLink" :to="`/@${ author.username }/pages/${ currentName }`"><i class="ti ti-external-link"></i> {{ $locale.env._pages.viewPage }}</MkButton>
+			<MkButton v-if="!readonly" inline primary class="button" @click="save"><i class="ti ti-device-floppy"></i> {{ $locale.env.save }}</MkButton>
+			<MkButton v-if="pageId" inline class="button" @click="duplicate"><i class="ti ti-copy"></i> {{ $locale.env.duplicate }}</MkButton>
+			<MkButton v-if="pageId && !readonly" inline class="button" danger @click="del"><i class="ti ti-trash"></i> {{ $locale.env.delete }}</MkButton>
 		</div>
 
 		<div v-if="tab === 'settings'">
 			<div class="_gaps_m">
 				<MkInput v-model="title">
-					<template #label>{{ i18n.ts._pages.title }}</template>
+					<template #label>{{ $locale.env._pages.title }}</template>
 				</MkInput>
 
 				<MkInput v-model="summary">
-					<template #label>{{ i18n.ts._pages.summary }}</template>
+					<template #label>{{ $locale.env._pages.summary }}</template>
 				</MkInput>
 
 				<MkInput v-model="name">
 					<template #prefix>{{ url }}/@{{ author?.username ?? '???' }}/pages/</template>
-					<template #label>{{ i18n.ts._pages.url }}</template>
+					<template #label>{{ $locale.env._pages.url }}</template>
 				</MkInput>
 
-				<MkSwitch v-model="alignCenter">{{ i18n.ts._pages.alignCenter }}</MkSwitch>
+				<MkSwitch v-model="alignCenter">{{ $locale.env._pages.alignCenter }}</MkSwitch>
 
 				<MkSelect v-model="font" :items="fontDef">
-					<template #label>{{ i18n.ts._pages.font }}</template>
+					<template #label>{{ $locale.env._pages.font }}</template>
 				</MkSelect>
 
-				<MkSwitch v-model="hideTitleWhenPinned">{{ i18n.ts._pages.hideTitleWhenPinned }}</MkSwitch>
+				<MkSwitch v-model="hideTitleWhenPinned">{{ $locale.env._pages.hideTitleWhenPinned }}</MkSwitch>
 
 				<div class="eyeCatch">
-					<MkButton v-if="eyeCatchingImageId == null && !readonly" @click="setEyeCatchingImage"><i class="ti ti-plus"></i> {{ i18n.ts._pages.eyeCatchingImageSet }}</MkButton>
+					<MkButton v-if="eyeCatchingImageId == null && !readonly" @click="setEyeCatchingImage"><i class="ti ti-plus"></i> {{ $locale.env._pages.eyeCatchingImageSet }}</MkButton>
 					<div v-else-if="eyeCatchingImage">
 						<img :src="eyeCatchingImage.url" :alt="eyeCatchingImage.name" style="max-width: 100%;"/>
-						<MkButton v-if="!readonly" @click="removeEyeCatchingImage()"><i class="ti ti-trash"></i> {{ i18n.ts._pages.eyeCatchingImageRemove }}</MkButton>
+						<MkButton v-if="!readonly" @click="removeEyeCatchingImage()"><i class="ti ti-trash"></i> {{ $locale.env._pages.eyeCatchingImageRemove }}</MkButton>
 					</div>
 				</div>
 			</div>
@@ -58,6 +58,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef, $l as localizerRef } from '@/i18n.js';
+
 import { computed, provide, watch, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import { url } from '@@/js/config.js';
@@ -70,7 +72,6 @@ import MkInput from '@/components/MkInput.vue';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { selectFile } from '@/utility/drive.js';
-import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
 import { $i } from '@/i.js';
 import { mainRouter } from '@/router.js';
@@ -99,8 +100,8 @@ const {
 	def: fontDef,
 } = useMkSelect({
 	items: [
-		{ label: i18n.ts._pages.fontSansSerif, value: 'sans-serif' },
-		{ label: i18n.ts._pages.fontSerif, value: 'serif' },
+		{ label: localeRef.value.env._pages.fontSansSerif, value: 'sans-serif' },
+		{ label: localeRef.value.env._pages.fontSerif, value: 'serif' },
 	],
 	initialValue: 'sans-serif',
 });
@@ -146,8 +147,8 @@ async function save() {
 
 		await os.apiWithDialog('pages/update', updateOptions, undefined, {
 			'2298a392-d4a1-44c5-9ebb-ac1aeaa5a9ab': {
-				title: i18n.ts.somethingHappened,
-				text: i18n.ts._pages.nameAlreadyExists,
+				title: localeRef.value.env.somethingHappened,
+				text: localeRef.value.env._pages.nameAlreadyExists,
 			},
 		});
 
@@ -155,8 +156,8 @@ async function save() {
 	} else {
 		const created = await os.apiWithDialog('pages/create', options, undefined, {
 			'4650348e-301c-499a-83c9-6aa988c66bc1': {
-				title: i18n.ts.somethingHappened,
-				text: i18n.ts._pages.nameAlreadyExists,
+				title: localeRef.value.env.somethingHappened,
+				text: localeRef.value.env._pages.nameAlreadyExists,
 			},
 		});
 
@@ -175,7 +176,7 @@ async function del() {
 
 	const { canceled } = await os.confirm({
 		type: 'warning',
-		text: i18n.tsx.removeAreYouSure({ x: title.value.trim() }),
+		text: localizerRef.value.env.removeAreYouSure({ x: title.value.trim() }),
 	});
 
 	if (canceled) return;
@@ -193,8 +194,8 @@ async function duplicate() {
 
 	const created = await os.apiWithDialog('pages/create', getSaveOptions(), undefined, {
 		'4650348e-301c-499a-83c9-6aa988c66bc1': {
-			title: i18n.ts.somethingHappened,
-			text: i18n.ts._pages.nameAlreadyExists,
+			title: localeRef.value.env.somethingHappened,
+			text: localeRef.value.env._pages.nameAlreadyExists,
 		},
 	});
 
@@ -210,7 +211,7 @@ async function duplicate() {
 
 async function add() {
 	const { canceled, result: type } = await os.select({
-		title: i18n.ts._pages.chooseBlock,
+		title: localeRef.value.env._pages.chooseBlock,
 		items: getPageBlockList(),
 	});
 	if (canceled || type == null) return;
@@ -301,18 +302,18 @@ const headerActions = computed(() => []);
 
 const headerTabs = computed(() => [{
 	key: 'settings',
-	title: i18n.ts._pages.pageSetting,
+	title: localeRef.value.env._pages.pageSetting,
 	icon: 'ti ti-settings',
 }, {
 	key: 'contents',
-	title: i18n.ts._pages.contents,
+	title: localeRef.value.env._pages.contents,
 	icon: 'ti ti-note',
 }]);
 
 definePage(() => ({
-	title: props.initPageId ? i18n.ts._pages.editPage
-	: props.initPageName && props.initUser ? i18n.ts._pages.readPage
-	: i18n.ts._pages.newPage,
+	title: props.initPageId ? localeRef.value.env._pages.editPage
+	: props.initPageName && props.initUser ? localeRef.value.env._pages.readPage
+	: localeRef.value.env._pages.newPage,
 	icon: 'ti ti-pencil',
 }));
 </script>

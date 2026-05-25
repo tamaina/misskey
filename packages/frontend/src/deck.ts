@@ -14,6 +14,7 @@ import { genId } from '@/utility/id.js';
 import { deepClone } from '@/utility/clone.js';
 import { prefer } from '@/preferences.js';
 import * as os from '@/os.js';
+import { $locale, $l } from '@/i18n.js';
 
 type DeckEvents = {
 	'column.dragStart': () => void;
@@ -346,11 +347,11 @@ export function switchProfileMenu(ev: PointerEvent) {
 			switchProfile(p);
 		},
 	}))), { type: 'divider' as const }, {
-		text: i18n.ts._deck.newProfile,
+		text: $locale.value.env._deck.newProfile,
 		icon: 'ti ti-plus',
 		action: async () => {
 			const { canceled, result: name } = await os.inputText({
-				title: i18n.ts._deck.profile,
+				title: $locale.value.env._deck.profile,
 				minLength: 1,
 			});
 

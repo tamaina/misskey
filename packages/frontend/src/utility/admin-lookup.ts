@@ -4,13 +4,13 @@
  */
 
 import * as Misskey from 'misskey-js';
-import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
+import { $locale, $l } from '@/i18n.js';
 
 export async function lookupUser() {
 	const { canceled, result } = await os.inputText({
-		title: i18n.ts.usernameOrUserId,
+		title: $locale.value.env.usernameOrUserId,
 	});
 	if (canceled || result == null) return;
 
@@ -25,7 +25,7 @@ export async function lookupUser() {
 		if (_notFound) {
 			os.alert({
 				type: 'error',
-				text: i18n.ts.noSuchUser,
+				text: $locale.value.env.noSuchUser,
 			});
 		} else {
 			_notFound = true;
@@ -43,7 +43,7 @@ export async function lookupUser() {
 
 export async function lookupUserByEmail() {
 	const { canceled, result } = await os.inputText({
-		title: i18n.ts.emailAddress,
+		title: $locale.value.env.emailAddress,
 		type: 'email',
 	});
 	if (canceled || result == null) return;
@@ -56,7 +56,7 @@ export async function lookupUserByEmail() {
 		if (err.code === 'USER_NOT_FOUND') {
 			os.alert({
 				type: 'error',
-				text: i18n.ts.noSuchUser,
+				text: $locale.value.env.noSuchUser,
 			});
 		} else {
 			throw err;
@@ -66,7 +66,7 @@ export async function lookupUserByEmail() {
 
 export async function lookupFile() {
 	const { canceled, result: q } = await os.inputText({
-		title: i18n.ts.fileIdOrUrl,
+		title: $locale.value.env.fileIdOrUrl,
 		minLength: 1,
 	});
 	if (canceled) return;
@@ -77,7 +77,7 @@ export async function lookupFile() {
 		if (err.code === 'NO_SUCH_FILE') {
 			os.alert({
 				type: 'error',
-				text: i18n.ts.notFound,
+				text: $locale.value.env.notFound,
 			});
 		}
 	});

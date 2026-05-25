@@ -4,15 +4,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<SearchMarker path="/settings/drive" :label="i18n.ts.drive" :keywords="['drive']" icon="ti ti-cloud">
+<SearchMarker path="/settings/drive" :label="$locale.env.drive" :keywords="['drive']" icon="ti ti-cloud">
 	<div class="_gaps_m">
 		<MkFeatureBanner icon="/client-assets/cloud_3d.png" color="#0059ff">
-			<SearchText>{{ i18n.ts._settings.driveBanner }}</SearchText>
+			<SearchText>{{ $locale.env._settings.driveBanner }}</SearchText>
 		</MkFeatureBanner>
 
 		<SearchMarker :keywords="['capacity', 'usage']">
 			<FormSection first>
-				<template #label><SearchLabel>{{ i18n.ts.usageAmount }}</SearchLabel></template>
+				<template #label><SearchLabel>{{ $locale.env.usageAmount }}</SearchLabel></template>
 
 				<div v-if="!fetching" class="_gaps_m">
 					<div>
@@ -20,11 +20,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</div>
 					<FormSplit>
 						<MkKeyValue>
-							<template #key>{{ i18n.ts.capacity }}</template>
+							<template #key>{{ $locale.env.capacity }}</template>
 							<template #value>{{ bytes(capacity, 1) }}</template>
 						</MkKeyValue>
 						<MkKeyValue>
-							<template #key>{{ i18n.ts.inUse }}</template>
+							<template #key>{{ $locale.env.inUse }}</template>
 							<template #value>{{ bytes(usage, 1) }}</template>
 						</MkKeyValue>
 					</FormSplit>
@@ -34,47 +34,47 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 		<SearchMarker :keywords="['statistics', 'usage']">
 			<FormSection>
-				<template #label><SearchLabel>{{ i18n.ts.statistics }}</SearchLabel></template>
+				<template #label><SearchLabel>{{ $locale.env.statistics }}</SearchLabel></template>
 				<MkChart src="per-user-drive" :args="{ user: $i }" span="day" :limit="7 * 5" :bar="true" :stacked="true" :detailed="false" :aspectRatio="6"/>
 			</FormSection>
 		</SearchMarker>
 
 		<SearchMarker :keywords="['general']">
 			<FormSection>
-				<template #label><SearchLabel>{{ i18n.ts.general }}</SearchLabel></template>
+				<template #label><SearchLabel>{{ $locale.env.general }}</SearchLabel></template>
 
 				<div class="_gaps_m">
 					<SearchMarker :keywords="['default', 'upload', 'folder']">
 						<FormLink @click="chooseUploadFolder()">
-							<SearchLabel>{{ i18n.ts.uploadFolder }}</SearchLabel>
+							<SearchLabel>{{ $locale.env.uploadFolder }}</SearchLabel>
 							<template #suffix>{{ uploadFolder ? uploadFolder.name : '-' }}</template>
 							<template #icon><i class="ti ti-folder"></i></template>
 						</FormLink>
 					</SearchMarker>
 
 					<FormLink to="/settings/drive/cleaner">
-						{{ i18n.ts.drivecleaner }}
+						{{ $locale.env.drivecleaner }}
 					</FormLink>
 
 					<SearchMarker :keywords="['keep', 'original', 'filename']">
 						<MkPreferenceContainer k="keepOriginalFilename">
 							<MkSwitch v-model="keepOriginalFilename">
-								<template #label><SearchLabel>{{ i18n.ts.keepOriginalFilename }}</SearchLabel></template>
-								<template #caption><SearchText>{{ i18n.ts.keepOriginalFilenameDescription }}</SearchText></template>
+								<template #label><SearchLabel>{{ $locale.env.keepOriginalFilename }}</SearchLabel></template>
+								<template #caption><SearchText>{{ $locale.env.keepOriginalFilenameDescription }}</SearchText></template>
 							</MkSwitch>
 						</MkPreferenceContainer>
 					</SearchMarker>
 
 					<SearchMarker :keywords="['always', 'default', 'mark', 'nsfw', 'sensitive', 'media', 'file']">
 						<MkSwitch v-model="alwaysMarkNsfw" @update:modelValue="saveProfile()">
-							<template #label><SearchLabel>{{ i18n.ts.alwaysMarkSensitive }}</SearchLabel></template>
+							<template #label><SearchLabel>{{ $locale.env.alwaysMarkSensitive }}</SearchLabel></template>
 						</MkSwitch>
 					</SearchMarker>
 
 					<SearchMarker :keywords="['auto', 'nsfw', 'sensitive', 'media', 'file']">
 						<MkSwitch v-model="autoSensitive" @update:modelValue="saveProfile()">
-							<template #label><SearchLabel>{{ i18n.ts.enableAutoSensitive }}</SearchLabel><span class="_beta">{{ i18n.ts.beta }}</span></template>
-							<template #caption><SearchText>{{ i18n.ts.enableAutoSensitiveDescription }}</SearchText></template>
+							<template #label><SearchLabel>{{ $locale.env.enableAutoSensitive }}</SearchLabel><span class="_beta">{{ $locale.env.beta }}</span></template>
+							<template #caption><SearchText>{{ $locale.env.enableAutoSensitiveDescription }}</SearchText></template>
 						</MkSwitch>
 					</SearchMarker>
 				</div>
@@ -83,14 +83,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 		<SearchMarker :keywords="['image']">
 			<FormSection>
-				<template #label><SearchLabel>{{ i18n.ts.image }}</SearchLabel></template>
+				<template #label><SearchLabel>{{ $locale.env.image }}</SearchLabel></template>
 
 				<div class="_gaps_m">
 					<SearchMarker :keywords="['watermark', 'credit']">
 						<MkFolder v-if="$i.policies.watermarkAvailable">
 							<template #icon><i class="ti ti-copyright"></i></template>
-							<template #label><SearchLabel>{{ i18n.ts.watermark }}</SearchLabel></template>
-							<template #caption>{{ i18n.ts._watermarkEditor.tip }}</template>
+							<template #label><SearchLabel>{{ $locale.env.watermark }}</SearchLabel></template>
+							<template #caption>{{ $locale.env._watermarkEditor.tip }}</template>
 
 							<div class="_gaps">
 								<div class="_gaps_s">
@@ -106,7 +106,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 									<SearchMarker :keywords="['sync', 'watermark', 'preset', 'devices']">
 										<MkSwitch :modelValue="watermarkPresetsSyncEnabled" @update:modelValue="changeWatermarkPresetsSyncEnabled">
-											<template #label><i class="ti ti-cloud-cog"></i> <SearchLabel>{{ i18n.ts.syncBetweenDevices }}</SearchLabel></template>
+											<template #label><i class="ti ti-cloud-cog"></i> <SearchLabel>{{ $locale.env.syncBetweenDevices }}</SearchLabel></template>
 										</MkSwitch>
 									</SearchMarker>
 								</div>
@@ -115,8 +115,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 								<SearchMarker :keywords="['default', 'watermark', 'preset']">
 									<MkPreferenceContainer k="defaultWatermarkPresetId">
-										<MkSelect v-model="defaultWatermarkPresetId" :items="[{ label: i18n.ts.none, value: null }, ...prefer.r.watermarkPresets.value.map(p => ({ label: p.name || i18n.ts.noName, value: p.id }))]">
-											<template #label><SearchLabel>{{ i18n.ts.defaultPreset }}</SearchLabel></template>
+										<MkSelect v-model="defaultWatermarkPresetId" :items="[{ label: $locale.env.none, value: null }, ...prefer.r.watermarkPresets.value.map(p => ({ label: p.name || $locale.env.noName, value: p.id }))]">
+											<template #label><SearchLabel>{{ $locale.env.defaultPreset }}</SearchLabel></template>
 										</MkSelect>
 									</MkPreferenceContainer>
 								</SearchMarker>
@@ -127,8 +127,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<SearchMarker :keywords="['label', 'frame', 'credit', 'metadata']">
 						<MkFolder>
 							<template #icon><i class="ti ti-device-ipad-horizontal"></i></template>
-							<template #label><SearchLabel>{{ i18n.ts.frame }}</SearchLabel></template>
-							<template #caption>{{ i18n.ts._imageFrameEditor.tip }}</template>
+							<template #label><SearchLabel>{{ $locale.env.frame }}</SearchLabel></template>
+							<template #caption>{{ $locale.env._imageFrameEditor.tip }}</template>
 
 							<div class="_gaps">
 								<div class="_gaps_s">
@@ -144,7 +144,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 									<SearchMarker :keywords="['sync', 'frame', 'label', 'preset', 'devices']">
 										<MkSwitch :modelValue="imageFramePresetsSyncEnabled" @update:modelValue="changeImageFramePresetsSyncEnabled">
-											<template #label><i class="ti ti-cloud-cog"></i> <SearchLabel>{{ i18n.ts.syncBetweenDevices }}</SearchLabel></template>
+											<template #label><i class="ti ti-cloud-cog"></i> <SearchLabel>{{ $locale.env.syncBetweenDevices }}</SearchLabel></template>
 										</MkSwitch>
 									</SearchMarker>
 								</div>
@@ -156,14 +156,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<MkPreferenceContainer k="defaultImageCompressionLevel">
 							<MkSelect
 								v-model="defaultImageCompressionLevel" :items="[
-									{ label: i18n.ts.none, value: 0 },
-									{ label: `${i18n.ts.low} (${i18n.ts._compression._quality.high}; ${i18n.ts._compression._size.large})`, value: 1 },
-									{ label: `${i18n.ts.medium} (${i18n.ts._compression._quality.medium}; ${i18n.ts._compression._size.medium})`, value: 2 },
-									{ label: `${i18n.ts.high} (${i18n.ts._compression._quality.low}; ${i18n.ts._compression._size.small})`, value: 3 },
+									{ label: $locale.env.none, value: 0 },
+									{ label: `${$locale.env.low} (${$locale.env._compression._quality.high}; ${$locale.env._compression._size.large})`, value: 1 },
+									{ label: `${$locale.env.medium} (${$locale.env._compression._quality.medium}; ${$locale.env._compression._size.medium})`, value: 2 },
+									{ label: `${$locale.env.high} (${$locale.env._compression._quality.low}; ${$locale.env._compression._size.small})`, value: 3 },
 								]"
 							>
-								<template #label><SearchLabel>{{ i18n.ts.defaultCompressionLevel }}</SearchLabel></template>
-								<template #caption><div v-html="i18n.ts.defaultCompressionLevel_description"></div></template>
+								<template #label><SearchLabel>{{ $locale.env.defaultCompressionLevel }}</SearchLabel></template>
+								<template #caption><div v-html="$locale.env.defaultCompressionLevel_description"></div></template>
 							</MkSelect>
 						</MkPreferenceContainer>
 					</SearchMarker>
@@ -173,21 +173,21 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 		<SearchMarker :keywords="['video']">
 			<FormSection>
-				<template #label><SearchLabel>{{ i18n.ts.video }}</SearchLabel></template>
+				<template #label><SearchLabel>{{ $locale.env.video }}</SearchLabel></template>
 
 				<div class="_gaps_m">
 					<SearchMarker :keywords="['default', 'video', 'compression']">
 						<MkPreferenceContainer k="defaultVideoCompressionLevel">
 							<MkSelect
 								v-model="defaultVideoCompressionLevel" :items="[
-									{ label: i18n.ts.none, value: 0 },
-									{ label: `${i18n.ts.low} (${i18n.ts._compression._quality.high}; ${i18n.ts._compression._size.large})`, value: 1 },
-									{ label: `${i18n.ts.medium} (${i18n.ts._compression._quality.medium}; ${i18n.ts._compression._size.medium})`, value: 2 },
-									{ label: `${i18n.ts.high} (${i18n.ts._compression._quality.low}; ${i18n.ts._compression._size.small})`, value: 3 },
+									{ label: $locale.env.none, value: 0 },
+									{ label: `${$locale.env.low} (${$locale.env._compression._quality.high}; ${$locale.env._compression._size.large})`, value: 1 },
+									{ label: `${$locale.env.medium} (${$locale.env._compression._quality.medium}; ${$locale.env._compression._size.medium})`, value: 2 },
+									{ label: `${$locale.env.high} (${$locale.env._compression._quality.low}; ${$locale.env._compression._size.small})`, value: 3 },
 								]"
 							>
-								<template #label><SearchLabel>{{ i18n.ts.defaultCompressionLevel }}</SearchLabel></template>
-								<template #caption><div v-html="i18n.ts.defaultCompressionLevel_description"></div></template>
+								<template #label><SearchLabel>{{ $locale.env.defaultCompressionLevel }}</SearchLabel></template>
+								<template #caption><div v-html="$locale.env.defaultCompressionLevel_description"></div></template>
 							</MkSelect>
 						</MkPreferenceContainer>
 					</SearchMarker>
@@ -199,6 +199,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef } from '@/i18n.js';
+
 import { computed, defineAsyncComponent, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import tinycolor from 'tinycolor2';
@@ -216,7 +218,6 @@ import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import bytes from '@/filters/bytes.js';
 import MkChart from '@/components/MkChart.vue';
-import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
 import { ensureSignin } from '@/i.js';
 import { prefer } from '@/preferences.js';
@@ -389,7 +390,7 @@ function saveProfile() {
 	}).catch(err => {
 		os.alert({
 			type: 'error',
-			title: i18n.ts.error,
+			title: localeRef.value.env.error,
 			text: err.message,
 		});
 		alwaysMarkNsfw.value = true;
@@ -401,7 +402,7 @@ const headerActions = computed(() => []);
 const headerTabs = computed(() => []);
 
 definePage(() => ({
-	title: i18n.ts.drive,
+	title: localeRef.value.env.drive,
 	icon: 'ti ti-cloud',
 }));
 </script>

@@ -33,8 +33,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 		><code :class="$style.codeBlockFallbackCode">{{ code }}</code></pre>
 		<button v-else :class="$style.codePlaceholderRoot" @click="show = true">
 			<div :class="$style.codePlaceholderContainer">
-				<div><i class="ti ti-code"></i> {{ i18n.ts.code }}</div>
-				<div>{{ i18n.ts.clickToShow }}</div>
+				<div><i class="ti ti-code"></i> {{ $locale.env.code }}</div>
+				<div>{{ $locale.env.clickToShow }}</div>
 			</div>
 		</button>
 	</Suspense>
@@ -42,8 +42,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+
 import { defineAsyncComponent, ref } from 'vue';
-import { i18n } from '@/i18n.js';
 import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
 import { prefer } from '@/preferences.js';
 

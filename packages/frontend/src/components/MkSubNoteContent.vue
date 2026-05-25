@@ -6,18 +6,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <div :class="[$style.root, { [$style.collapsed]: collapsed }]">
 	<div>
-		<span v-if="note.isHidden" style="opacity: 0.5">({{ i18n.ts.private }})</span>
-		<span v-if="note.deletedAt" style="opacity: 0.5">({{ i18n.ts.deletedNote }})</span>
+		<span v-if="note.isHidden" style="opacity: 0.5">({{ $locale.env.private }})</span>
+		<span v-if="note.deletedAt" style="opacity: 0.5">({{ $locale.env.deletedNote }})</span>
 		<MkA v-if="note.replyId" :class="$style.reply" :to="`/notes/${note.replyId}`"><i class="ti ti-arrow-back-up"></i></MkA>
 		<Mfm v-if="note.text" :text="note.text" :author="note.user" :nyaize="'respect'" :emojiUrls="note.emojis"/>
 		<MkA v-if="note.renoteId" :class="$style.rp" :to="`/notes/${note.renoteId}`">RN: ...</MkA>
 	</div>
 	<details v-if="note.files && note.files.length > 0">
-		<summary>({{ i18n.tsx.withNFiles({ n: note.files.length }) }})</summary>
+		<summary>({{ $l.env.withNFiles({ n: note.files.length }) }})</summary>
 		<MkMediaList :mediaList="note.files"/>
 	</details>
 	<details v-if="note.poll">
-		<summary>{{ i18n.ts.poll }}</summary>
+		<summary>{{ $locale.env.poll }}</summary>
 		<MkPoll
 			:noteId="note.id"
 			:multiple="note.poll.multiple"
@@ -27,23 +27,23 @@ SPDX-License-Identifier: AGPL-3.0-only
 			:emojiUrls="note.emojis"
 		/>
 	</details>
-	<MkA v-if="note.hasPoll && note.poll == null" :to="`/notes/${note.id}`">({{ i18n.ts.poll }})</MkA>
+	<MkA v-if="note.hasPoll && note.poll == null" :to="`/notes/${note.id}`">({{ $locale.env.poll }})</MkA>
 	<button v-if="isLong && collapsed" :class="$style.fade" class="_button" @click="collapsed = false">
-		<span :class="$style.fadeLabel">{{ i18n.ts.showMore }}</span>
+		<span :class="$style.fadeLabel">{{ $locale.env.showMore }}</span>
 	</button>
 	<button v-else-if="isLong && !collapsed" :class="$style.showLess" class="_button" @click="collapsed = true">
-		<span :class="$style.showLessLabel">{{ i18n.ts.showLess }}</span>
+		<span :class="$style.showLessLabel">{{ $locale.env.showLess }}</span>
 	</button>
 </div>
 </template>
 
 <script lang="ts" setup>
+
 import { ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import { shouldCollapsed } from '@@/js/collapsed.js';
 import MkMediaList from '@/components/MkMediaList.vue';
 import MkPoll from '@/components/MkPoll.vue';
-import { i18n } from '@/i18n.js';
 
 const props = defineProps<{
 	note: Misskey.entities.Note;

@@ -6,11 +6,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <div class="_gaps_m">
 	<MkSelect v-model="statusbar.type" :items="statusbarTypeDef">
-		<template #label>{{ i18n.ts.type }}</template>
+		<template #label>{{ $locale.env.type }}</template>
 	</MkSelect>
 
 	<MkInput v-model="statusbar.name" manualSave>
-		<template #label>{{ i18n.ts.label }}</template>
+		<template #label>{{ $locale.env.label }}</template>
 	</MkInput>
 
 	<MkSwitch v-model="statusbar.black">
@@ -20,14 +20,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<MkRadios
 		v-model="statusbar.size"
 		:options="[
-			{ value: 'verySmall', label: i18n.ts.small + '+' },
-			{ value: 'small', label: i18n.ts.small },
-			{ value: 'medium', label: i18n.ts.medium },
-			{ value: 'large', label: i18n.ts.large },
-			{ value: 'veryLarge', label: i18n.ts.large + '+' },
+			{ value: 'verySmall', label: $locale.env.small + '+' },
+			{ value: 'small', label: $locale.env.small },
+			{ value: 'medium', label: $locale.env.medium },
+			{ value: 'large', label: $locale.env.large },
+			{ value: 'veryLarge', label: $locale.env.large + '+' },
 		]"
 	>
-		<template #label>{{ i18n.ts.size }}</template>
+		<template #label>{{ $locale.env.size }}</template>
 	</MkRadios>
 
 	<template v-if="statusbar.type === 'rss'">
@@ -35,57 +35,59 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<template #label>URL</template>
 		</MkInput>
 		<MkSwitch v-model="statusbar.props.shuffle">
-			<template #label>{{ i18n.ts.shuffle }}</template>
+			<template #label>{{ $locale.env.shuffle }}</template>
 		</MkSwitch>
 		<MkInput v-model="statusbar.props.refreshIntervalSec" manualSave type="number" :min="1">
-			<template #label>{{ i18n.ts.refreshInterval }}</template>
+			<template #label>{{ $locale.env.refreshInterval }}</template>
 		</MkInput>
 		<MkRange v-model="statusbar.props.marqueeDuration" :min="5" :max="150" :step="1">
-			<template #label>{{ i18n.ts.speed }}</template>
-			<template #caption>{{ i18n.ts.fast }} &lt;-&gt; {{ i18n.ts.slow }}</template>
+			<template #label>{{ $locale.env.speed }}</template>
+			<template #caption>{{ $locale.env.fast }} &lt;-&gt; {{ $locale.env.slow }}</template>
 		</MkRange>
 		<MkSwitch v-model="statusbar.props.marqueeReverse">
-			<template #label>{{ i18n.ts.reverse }}</template>
+			<template #label>{{ $locale.env.reverse }}</template>
 		</MkSwitch>
 	</template>
 	<template v-else-if="statusbar.type === 'federation'">
 		<MkInput v-model="statusbar.props.refreshIntervalSec" manualSave type="number" :min="1">
-			<template #label>{{ i18n.ts.refreshInterval }}</template>
+			<template #label>{{ $locale.env.refreshInterval }}</template>
 		</MkInput>
 		<MkRange v-model="statusbar.props.marqueeDuration" :min="5" :max="150" :step="1">
-			<template #label>{{ i18n.ts.speed }}</template>
-			<template #caption>{{ i18n.ts.fast }} &lt;-&gt; {{ i18n.ts.slow }}</template>
+			<template #label>{{ $locale.env.speed }}</template>
+			<template #caption>{{ $locale.env.fast }} &lt;-&gt; {{ $locale.env.slow }}</template>
 		</MkRange>
 		<MkSwitch v-model="statusbar.props.marqueeReverse">
-			<template #label>{{ i18n.ts.reverse }}</template>
+			<template #label>{{ $locale.env.reverse }}</template>
 		</MkSwitch>
 		<MkSwitch v-model="statusbar.props.colored">
-			<template #label>{{ i18n.ts.colored }}</template>
+			<template #label>{{ $locale.env.colored }}</template>
 		</MkSwitch>
 	</template>
 	<template v-else-if="statusbar.type === 'userList' && userLists != null">
 		<MkSelect v-model="statusbar.props.userListId" :items="userListsDef">
-			<template #label>{{ i18n.ts.userList }}</template>
+			<template #label>{{ $locale.env.userList }}</template>
 		</MkSelect>
 		<MkInput v-model="statusbar.props.refreshIntervalSec" manualSave type="number">
-			<template #label>{{ i18n.ts.refreshInterval }}</template>
+			<template #label>{{ $locale.env.refreshInterval }}</template>
 		</MkInput>
 		<MkRange v-model="statusbar.props.marqueeDuration" :min="5" :max="150" :step="1">
-			<template #label>{{ i18n.ts.speed }}</template>
-			<template #caption>{{ i18n.ts.fast }} &lt;-&gt; {{ i18n.ts.slow }}</template>
+			<template #label>{{ $locale.env.speed }}</template>
+			<template #caption>{{ $locale.env.fast }} &lt;-&gt; {{ $locale.env.slow }}</template>
 		</MkRange>
 		<MkSwitch v-model="statusbar.props.marqueeReverse">
-			<template #label>{{ i18n.ts.reverse }}</template>
+			<template #label>{{ $locale.env.reverse }}</template>
 		</MkSwitch>
 	</template>
 
 	<div class="_buttons">
-		<MkButton danger @click="del">{{ i18n.ts.remove }}</MkButton>
+		<MkButton danger @click="del">{{ $locale.env.remove }}</MkButton>
 	</div>
 </div>
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef } from '@/i18n.js';
+
 import { reactive, computed, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkSelect from '@/components/MkSelect.vue';
@@ -94,7 +96,6 @@ import MkSwitch from '@/components/MkSwitch.vue';
 import MkRadios from '@/components/MkRadios.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkRange from '@/components/MkRange.vue';
-import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
 import { deepClone } from '@/utility/clone.js';
 import { prefer } from '@/preferences.js';
@@ -116,7 +117,7 @@ const statusbarTypeDef = computed(() => {
 		items.push({ label: 'Federation', value: 'federation' });
 	}
 	if (props.userLists != null) {
-		items.push({ label: i18n.ts.userList, value: 'userList' });
+		items.push({ label: localeRef.value.env.userList, value: 'userList' });
 	}
 	return items;
 });

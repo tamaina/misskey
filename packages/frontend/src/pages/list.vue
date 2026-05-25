@@ -10,7 +10,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</div>
 	<div v-else-if="list" class="_spacer" style="--MI_SPACER-w: 700px;">
 		<div v-if="list" class="members _margin">
-			<div :class="$style.member_text">{{ i18n.ts.members }}</div>
+			<div :class="$style.member_text">{{ $locale.env.members }}</div>
 			<div class="_gaps_s">
 				<div v-for="user in users" :key="user.id" :class="$style.userItem">
 					<MkA :class="$style.userItemBody" :to="`${userPage(user)}`">
@@ -19,20 +19,21 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 			</div>
 		</div>
-		<MkButton v-if="list.isLiked" v-tooltip="i18n.ts.unlike" inline :class="$style.button" asLike primary @click="unlike()"><i class="ti ti-heart-off"></i><span v-if="list.likedCount != null && list.likedCount > 0" class="count">{{ list.likedCount }}</span></MkButton>
-		<MkButton v-if="!list.isLiked" v-tooltip="i18n.ts.like" inline :class="$style.button" asLike @click="like()"><i class="ti ti-heart"></i><span v-if="1 > 0" class="count">{{ list.likedCount }}</span></MkButton>
-		<MkButton inline @click="create()"><i class="ti ti-download" :class="$style.import"></i>{{ i18n.ts.import }}</MkButton>
+		<MkButton v-if="list.isLiked" v-tooltip="$locale.env.unlike" inline :class="$style.button" asLike primary @click="unlike()"><i class="ti ti-heart-off"></i><span v-if="list.likedCount != null && list.likedCount > 0" class="count">{{ list.likedCount }}</span></MkButton>
+		<MkButton v-if="!list.isLiked" v-tooltip="$locale.env.like" inline :class="$style.button" asLike @click="like()"><i class="ti ti-heart"></i><span v-if="1 > 0" class="count">{{ list.likedCount }}</span></MkButton>
+		<MkButton inline @click="create()"><i class="ti ti-download" :class="$style.import"></i>{{ $locale.env.import }}</MkButton>
 	</div>
 </PageWithHeader>
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef } from '@/i18n.js';
+
 import { watch, computed, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { userPage } from '@/filters/user.js';
-import { i18n } from '@/i18n.js';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
 import MkButton from '@/components/MkButton.vue';
 import { definePage } from '@/page.js';
@@ -87,7 +88,7 @@ function unlike() {
 async function create() {
 	if (list.value == null) return;
 	const { canceled, result: name } = await os.inputText({
-		title: i18n.ts.enterListName,
+		title: localeRef.value.env.enterListName,
 	});
 	if (canceled || name == null) return;
 	await os.apiWithDialog('users/lists/create-from-public', { name: name, listId: list.value.id });
@@ -100,7 +101,7 @@ const headerActions = computed(() => []);
 const headerTabs = computed(() => []);
 
 definePage(() => ({
-	title: list.value ? list.value.name : i18n.ts.lists,
+	title: list.value ? list.value.name : localeRef.value.env.lists,
 	icon: 'ti ti-list',
 }));
 </script>

@@ -7,10 +7,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 <SearchMarker markerId="serverRules" :keywords="['rules']">
 	<MkFolder>
 		<template #icon><SearchIcon><i class="ti ti-checkbox"></i></SearchIcon></template>
-		<template #label><SearchLabel>{{ i18n.ts.serverRules }}</SearchLabel></template>
+		<template #label><SearchLabel>{{ $locale.env.serverRules }}</SearchLabel></template>
 
 		<div class="_gaps_m">
-			<div><SearchText>{{ i18n.ts._serverRules.description }}</SearchText></div>
+			<div><SearchText>{{ $locale.env._serverRules.description }}</SearchText></div>
 
 			<MkDraggable
 				v-model="serverRules"
@@ -30,8 +30,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</template>
 			</MkDraggable>
 			<div :class="$style.commands">
-				<MkButton rounded @click="add"><i class="ti ti-plus"></i> {{ i18n.ts.add }}</MkButton>
-				<MkButton primary rounded @click="save"><i class="ti ti-check"></i> {{ i18n.ts.save }}</MkButton>
+				<MkButton rounded @click="add"><i class="ti ti-plus"></i> {{ $locale.env.add }}</MkButton>
+				<MkButton primary rounded @click="save"><i class="ti ti-check"></i> {{ $locale.env.save }}</MkButton>
 			</div>
 		</div>
 	</MkFolder>
@@ -39,10 +39,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+
 import { ref } from 'vue';
 import * as os from '@/os.js';
 import { fetchInstance, instance } from '@/instance.js';
-import { i18n } from '@/i18n.js';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkFolder from '@/components/MkFolder.vue';

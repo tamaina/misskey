@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { $locale, $l } from '@/i18n.js';
 // TODO: (可能な部分を)sharedに抽出して frontend-embed と共通化
 
 import { ref, nextTick } from 'vue';
@@ -15,7 +16,6 @@ import type { Theme, CompiledTheme } from '@@/js/theme.js';
 import { deepClone } from '@/utility/clone.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { $i } from '@/i.js';
-import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
 import { prefer } from '@/preferences.js';
 
@@ -222,10 +222,10 @@ export function handleThemeInstallError(err: unknown) {
 			case 'this theme is already installed':
 			case 'already exists':
 			case 'builtin theme':
-				message = i18n.ts._theme.alreadyInstalled;
+				message = $locale.value.env._theme.alreadyInstalled;
 				break;
 			default:
-				message = i18n.ts._theme.invalid;
+				message = $locale.value.env._theme.invalid;
 				break;
 		}
 

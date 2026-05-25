@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div class="_gaps">
-	<MkInfo>{{ i18n.ts._fileViewer.thisPageCanBeSeenFromTheAuthor }}</MkInfo>
+	<MkInfo>{{ $locale.env._fileViewer.thisPageCanBeSeenFromTheAuthor }}</MkInfo>
 
 	<MkPagination :paginator="paginator">
 		<template #default="{ items }">
@@ -16,9 +16,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+
 import { ref, computed, markRaw } from 'vue';
 import XMessage from './chat/XMessage.vue';
-import { i18n } from '@/i18n.js';
 import MkInfo from '@/components/MkInfo.vue';
 import { Paginator } from '@/utility/paginator.js';
 import MkPagination from '@/components/MkPagination.vue';

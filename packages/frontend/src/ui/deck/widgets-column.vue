@@ -5,23 +5,24 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <XColumn :menu="menu" :naked="true" :column="column" :isStacked="isStacked">
-	<template #header><i class="ti ti-apps" style="margin-right: 8px;"></i>{{ column.name || i18n.ts._deck._columns[props.column.type] }}</template>
+	<template #header><i class="ti ti-apps" style="margin-right: 8px;"></i>{{ column.name || $locale.env._deck._columns[props.column.type] }}</template>
 
 	<div :class="$style.root">
-		<div v-if="!(column.widgets && column.widgets.length > 0) && !edit" :class="$style.intro">{{ i18n.ts._deck.widgetsIntroduction }}</div>
+		<div v-if="!(column.widgets && column.widgets.length > 0) && !edit" :class="$style.intro">{{ $locale.env._deck.widgetsIntroduction }}</div>
 		<XWidgets :edit="edit" :widgets="column.widgets ?? []" @addWidget="addWidget" @removeWidget="removeWidget" @updateWidget="updateWidget" @updateWidgets="updateWidgets" @exit="edit = false"/>
 	</div>
 </XColumn>
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef } from '@/i18n.js';
+
 import { ref } from 'vue';
 import XColumn from './column.vue';
 import type { Column } from '@/deck.js';
 import type { Widget } from '@/components/MkWidgets.vue';
 import { addColumnWidget, removeColumnWidget, setColumnWidgets, updateColumnWidget } from '@/deck.js';
 import XWidgets from '@/components/MkWidgets.vue';
-import { i18n } from '@/i18n.js';
 
 const props = defineProps<{
 	column: Column;
@@ -52,7 +53,7 @@ function func() {
 
 const menu = [{
 	icon: 'ti ti-pencil',
-	text: i18n.ts.editWidgets,
+	text: localeRef.value.env.editWidgets,
 	action: func,
 }];
 </script>

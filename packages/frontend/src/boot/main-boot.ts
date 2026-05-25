@@ -10,7 +10,6 @@ import { compareVersions } from 'compare-versions';
 import { common } from './common.js';
 import type { Component } from 'vue';
 import type { Keymap } from '@/utility/hotkey.js';
-import { i18n } from '@/i18n.js';
 import { alert, confirm, popup, post } from '@/os.js';
 import { useStream } from '@/stream.js';
 import * as sound from '@/utility/sound.js';
@@ -30,6 +29,7 @@ import { updateCurrentAccountPartial } from '@/accounts.js';
 import { migrateOldSettings } from '@/pref-migrate.js';
 import { unisonReload } from '@/utility/unison-reload.js';
 import { isBirthday } from '@/utility/is-birthday.js';
+import { $locale, $l } from '@/i18n.js';
 
 export async function mainBoot() {
 	const { isClientUpdated, lastVersion } = await common(async () => {
@@ -137,7 +137,7 @@ export async function mainBoot() {
 		if ($i.isDeleted) {
 			alert({
 				type: 'warning',
-				text: i18n.ts.accountDeletionInProgress,
+				text: $locale.value.env.accountDeletionInProgress,
 			});
 		}
 
@@ -276,7 +276,7 @@ export async function mainBoot() {
 		//	const lastUsedDate = parseInt(lastUsed, 10);
 		//	// 二時間以上前なら
 		//	if (Date.now() - lastUsedDate > 1000 * 60 * 60 * 2) {
-		//		toast(i18n.tsx.welcomeBackWithName({
+		//		toast($l.value.env.welcomeBackWithName({
 		//			name: $i.name || $i.username,
 		//		}));
 		//	}
@@ -312,8 +312,8 @@ export async function mainBoot() {
 					reloadDialogShowing = true;
 					const { canceled } = await confirm({
 						type: 'warning',
-						title: i18n.ts.disconnectedFromServer,
-						text: i18n.ts.reloadConfirm,
+						title: $locale.value.env.disconnectedFromServer,
+						text: $locale.value.env.reloadConfirm,
 					});
 					reloadDialogShowing = false;
 					if (!canceled) {

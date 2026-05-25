@@ -8,26 +8,26 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div class="_spacer" style="--MI_SPACER-w: 700px;">
 		<div v-if="list" class="_gaps">
 			<MkFolder>
-				<template #label>{{ i18n.ts.settings }}</template>
+				<template #label>{{ $locale.env.settings }}</template>
 
 				<div class="_gaps">
 					<MkInput v-model="name">
-						<template #label>{{ i18n.ts.name }}</template>
+						<template #label>{{ $locale.env.name }}</template>
 					</MkInput>
-					<MkSwitch v-model="isPublic">{{ i18n.ts.public }}</MkSwitch>
+					<MkSwitch v-model="isPublic">{{ $locale.env.public }}</MkSwitch>
 					<div class="_buttons">
-						<MkButton rounded primary @click="updateSettings">{{ i18n.ts.save }}</MkButton>
-						<MkButton rounded danger @click="deleteList()">{{ i18n.ts.delete }}</MkButton>
+						<MkButton rounded primary @click="updateSettings">{{ $locale.env.save }}</MkButton>
+						<MkButton rounded danger @click="deleteList()">{{ $locale.env.delete }}</MkButton>
 					</div>
 				</div>
 			</MkFolder>
 
 			<MkFolder defaultOpen>
-				<template #label>{{ i18n.ts.members }}</template>
-				<template #caption>{{ i18n.tsx.nUsers({ n: `${list.userIds!.length}/${$i.policies['userEachUserListsLimit']}` }) }}</template>
+				<template #label>{{ $locale.env.members }}</template>
+				<template #caption>{{ $l.env.nUsers({ n: `${list.userIds!.length}/${$i.policies['userEachUserListsLimit']}` }) }}</template>
 
 				<div class="_gaps">
-					<MkButton rounded primary style="margin: 0 auto;" @click="addUser()"><i class="ti ti-plus"></i> {{ i18n.ts.addUser }}</MkButton>
+					<MkButton rounded primary style="margin: 0 auto;" @click="addUser()"><i class="ti ti-plus"></i> {{ $locale.env.addUser }}</MkButton>
 
 					<MkPagination :paginator="membershipsPaginator">
 						<template #default="{ items }">
@@ -52,13 +52,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef, $l as localizerRef } from '@/i18n.js';
+
 import { computed, markRaw, ref, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { definePage } from '@/page.js';
-import { i18n } from '@/i18n.js';
 import { userPage } from '@/filters/user.js';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
@@ -112,7 +113,7 @@ function addUser() {
 
 async function removeUser(item: Misskey.entities.UsersListsGetMembershipsResponse[number], ev: PointerEvent) {
 	os.popupMenu([{
-		text: i18n.ts.remove,
+		text: localeRef.value.env.remove,
 		icon: 'ti ti-x',
 		danger: true,
 		action: async () => {
@@ -132,7 +133,7 @@ async function showMembershipMenu(item: Misskey.entities.UsersListsGetMembership
 
 	os.popupMenu([{
 		type: 'switch',
-		text: i18n.ts.showRepliesToOthersInTimeline,
+		text: localeRef.value.env.showRepliesToOthersInTimeline,
 		icon: 'ti ti-messages',
 		ref: withRepliesRef,
 	}], ev.currentTarget ?? ev.target);
@@ -155,7 +156,7 @@ async function deleteList() {
 	if (!list.value) return;
 	const { canceled } = await os.confirm({
 		type: 'warning',
-		text: i18n.tsx.removeAreYouSure({ x: list.value.name }),
+		text: localizerRef.value.env.removeAreYouSure({ x: list.value.name }),
 	});
 	if (canceled) return;
 
@@ -184,7 +185,7 @@ watch(() => props.listId, fetchList, { immediate: true });
 
 const headerActions = computed(() => list.value ? [{
 	icon: 'ti ti-timeline',
-	text: i18n.ts.timeline,
+	text: localeRef.value.env.timeline,
 	handler: () => {
 		router.push('/timeline/list/:listId', {
 			params: {
@@ -197,7 +198,7 @@ const headerActions = computed(() => list.value ? [{
 const headerTabs = computed(() => []);
 
 definePage(() => ({
-	title: list.value ? list.value.name : i18n.ts.lists,
+	title: list.value ? list.value.name : localeRef.value.env.lists,
 	icon: 'ti ti-list',
 }));
 </script>

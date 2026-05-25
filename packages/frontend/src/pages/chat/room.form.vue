@@ -14,7 +14,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		v-model="text"
 		:class="$style.textarea"
 		class="_acrylic"
-		:placeholder="i18n.ts.inputMessageHere"
+		:placeholder="$locale.env.inputMessageHere"
 		:readonly="textareaReadOnly"
 		@keydown="onKeydown"
 		@paste="onPaste"
@@ -24,7 +24,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div :class="$style.buttons">
 			<button class="_button" :class="$style.button" @click="chooseFile"><i class="ti ti-photo-plus"></i></button>
 			<button class="_button" :class="$style.button" @click="insertEmoji"><i class="ti ti-mood-happy"></i></button>
-			<button class="_button" :class="[$style.button, $style.send]" :disabled="!canSend || sending" :title="i18n.ts.send" @click="send">
+			<button class="_button" :class="[$style.button, $style.send]" :disabled="!canSend || sending" :title="$locale.env.send" @click="send">
 				<template v-if="!sending"><i class="ti ti-send"></i></template><template v-if="sending"><MkLoading :em="true"/></template>
 			</button>
 		</div>
@@ -34,13 +34,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef } from '@/i18n.js';
+
 import { onMounted, watch, ref, shallowRef, computed, nextTick, readonly, onBeforeUnmount } from 'vue';
 import * as Misskey from 'misskey-js';
 //import insertTextAtCursor from 'insert-text-at-cursor';
 import { formatTimeString } from '@/utility/format-time-string.js';
 import { selectFile } from '@/utility/drive.js';
 import * as os from '@/os.js';
-import { i18n } from '@/i18n.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { prefer } from '@/preferences.js';
@@ -94,7 +95,7 @@ async function onPaste(ev: ClipboardEvent) {
 		if (items[0].kind === 'file') {
 			os.alert({
 				type: 'error',
-				text: i18n.ts.onlyOneFileCanBeAttached,
+				text: localeRef.value.env.onlyOneFileCanBeAttached,
 			});
 		}
 	}
@@ -137,7 +138,7 @@ function onDrop(ev: DragEvent): void {
 		ev.preventDefault();
 		os.alert({
 			type: 'error',
-			text: i18n.ts.onlyOneFileCanBeAttached,
+			text: localeRef.value.env.onlyOneFileCanBeAttached,
 		});
 		return;
 	}
@@ -171,7 +172,7 @@ function chooseFile(ev: PointerEvent) {
 	selectFile({
 		anchorElement: ev.currentTarget ?? ev.target,
 		multiple: false,
-		label: i18n.ts.selectFile,
+		label: localeRef.value.env.selectFile,
 	}).then(selectedFile => {
 		file.value = selectedFile;
 	});

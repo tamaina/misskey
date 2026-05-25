@@ -9,19 +9,19 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div class="_gaps_m">
 			<FormSplit>
 				<MkKeyValue>
-					<template #key>{{ i18n.ts._registry.domain }}</template>
-					<template #value>{{ props.domain === '@' ? i18n.ts.system : props.domain.toUpperCase() }}</template>
+					<template #key>{{ $locale.env._registry.domain }}</template>
+					<template #value>{{ props.domain === '@' ? $locale.env.system : props.domain.toUpperCase() }}</template>
 				</MkKeyValue>
 				<MkKeyValue>
-					<template #key>{{ i18n.ts._registry.scope }}</template>
+					<template #key>{{ $locale.env._registry.scope }}</template>
 					<template #value>{{ scope.join('/') }}</template>
 				</MkKeyValue>
 			</FormSplit>
 
-			<MkButton primary @click="createKey">{{ i18n.ts._registry.createKey }}</MkButton>
+			<MkButton primary @click="createKey">{{ $locale.env._registry.createKey }}</MkButton>
 
 			<FormSection v-if="keys">
-				<template #label>{{ i18n.ts._registry.keys }}</template>
+				<template #label>{{ $locale.env._registry.keys }}</template>
 				<div class="_gaps_s">
 					<FormLink v-for="key in keys" :to="`/registry/value/${props.domain}/${scope.join('/')}/${key[0]}`" class="_monospace">{{ key[0] }}<template #suffix>{{ key[1].toUpperCase() }}</template></FormLink>
 				</div>
@@ -32,11 +32,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef } from '@/i18n.js';
+
 import { watch, computed, ref } from 'vue';
 import JSON5 from 'json5';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
-import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
 import FormLink from '@/components/form/link.vue';
 import FormSection from '@/components/form/section.vue';
@@ -63,19 +64,19 @@ function fetchKeys() {
 }
 
 async function createKey() {
-	const { canceled, result } = await os.form(i18n.ts._registry.createKey, {
+	const { canceled, result } = await os.form(localeRef.value.env._registry.createKey, {
 		key: {
 			type: 'string',
-			label: i18n.ts._registry.key,
+			label: localeRef.value.env._registry.key,
 		},
 		value: {
 			type: 'string',
 			multiline: true,
-			label: i18n.ts.value,
+			label: localeRef.value.env.value,
 		},
 		scope: {
 			type: 'string',
-			label: i18n.ts._registry.scope,
+			label: localeRef.value.env._registry.scope,
 			default: scope.value.join('/'),
 		},
 	});
@@ -98,7 +99,7 @@ const headerActions = computed(() => []);
 const headerTabs = computed(() => []);
 
 definePage(() => ({
-	title: i18n.ts.registry,
+	title: localeRef.value.env.registry,
 	icon: 'ti ti-adjustments',
 }));
 </script>

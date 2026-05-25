@@ -6,7 +6,7 @@
 import shader from './grayscale.glsl';
 import type { ImageEffectorUiDefinition } from '../image-effector/ImageEffector.js';
 import { defineImageCompositorFunction } from '@/lib/ImageCompositor.js';
-import { i18n } from '@/i18n.js';
+import { $locale, $l } from '@/i18n.js';
 
 export const fn = defineImageCompositorFunction({
 	shader,
@@ -15,7 +15,7 @@ export const fn = defineImageCompositorFunction({
 });
 
 export const uiDefinition = {
-	name: i18n.ts._imageEffector._fxs.grayscale,
+	name: $locale.value.env._imageEffector._fxs.grayscale,
 	params: {
 	},
 } satisfies ImageEffectorUiDefinition<typeof fn>;

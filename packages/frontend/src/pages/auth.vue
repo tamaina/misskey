@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <PageWithHeader :actions="headerActions" :tabs="headerTabs">
 	<div class="_spacer" style="--MI_SPACER-w: 500px;">
 		<div v-if="state == 'fetch-session-error'">
-			<p>{{ i18n.ts.somethingHappened }}</p>
+			<p>{{ $locale.env.somethingHappened }}</p>
 		</div>
 		<div v-else-if="$i && !session">
 			<MkLoading/>
@@ -21,19 +21,19 @@ SPDX-License-Identifier: AGPL-3.0-only
 				@accepted="accepted"
 			/>
 			<div v-if="state == 'denied'">
-				<h1>{{ i18n.ts._auth.denied }}</h1>
+				<h1>{{ $locale.env._auth.denied }}</h1>
 			</div>
 			<div v-if="state == 'accepted' && session">
-				<h1>{{ session.app.isAuthorized ? i18n.ts._auth.alreadyAuthorized : i18n.ts._auth.accepted }}</h1>
+				<h1>{{ session.app.isAuthorized ? $locale.env._auth.alreadyAuthorized : $locale.env._auth.accepted }}</h1>
 				<p v-if="session.app.callbackUrl">
-					{{ i18n.ts._auth.callback }}
+					{{ $locale.env._auth.callback }}
 					<MkEllipsis/>
 				</p>
-				<p v-if="!session.app.callbackUrl">{{ i18n.ts._auth.pleaseGoBack }}</p>
+				<p v-if="!session.app.callbackUrl">{{ $locale.env._auth.pleaseGoBack }}</p>
 			</div>
 		</div>
 		<div v-else>
-			<p :class="$style.loginMessage">{{ i18n.ts._auth.pleaseLogin }}</p>
+			<p :class="$style.loginMessage">{{ $locale.env._auth.pleaseLogin }}</p>
 			<MkSignin @login="onLogin"/>
 		</div>
 	</div>
@@ -41,6 +41,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef } from '@/i18n.js';
+
 import { onMounted, ref, computed } from 'vue';
 import * as Misskey from 'misskey-js';
 import XForm from './auth.form.vue';
@@ -48,7 +50,6 @@ import MkSignin from '@/components/MkSignin.vue';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { $i } from '@/i.js';
 import { definePage } from '@/page.js';
-import { i18n } from '@/i18n.js';
 import { login } from '@/accounts.js';
 
 const props = defineProps<{
@@ -99,7 +100,7 @@ const headerActions = computed(() => []);
 const headerTabs = computed(() => []);
 
 definePage(() => ({
-	title: i18n.ts._auth.shareAccessTitle,
+	title: localeRef.value.env._auth.shareAccessTitle,
 	icon: 'ti ti-apps',
 }));
 </script>

@@ -22,7 +22,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<MkNoteDetailed :key="note.id" v-model:note="note" :initialTab="initialTab" :class="$style.note"/>
 					</div>
 					<div v-if="clips && clips.length > 0" class="_margin">
-						<div style="font-weight: bold; padding: 12px;">{{ i18n.ts.clip }}</div>
+						<div style="font-weight: bold; padding: 12px;">{{ $locale.env.clip }}</div>
 						<div class="_gaps">
 							<MkClipPreview v-for="item in clips" :key="item.id" :clip="item"/>
 						</div>
@@ -45,6 +45,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef, $l as localizerRef } from '@/i18n.js';
+
 import { computed, watch, ref, markRaw } from 'vue';
 import * as Misskey from 'misskey-js';
 import { host } from '@@/js/config.js';
@@ -54,7 +56,6 @@ import MkRemoteCaution from '@/components/MkRemoteCaution.vue';
 import MkButton from '@/components/MkButton.vue';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { definePage } from '@/page.js';
-import { i18n } from '@/i18n.js';
 import { dateString } from '@/filters/date.js';
 import MkClipPreview from '@/components/MkClipPreview.vue';
 import { prefer } from '@/preferences.js';
@@ -139,7 +140,7 @@ function fetchNote() {
 		if (['fbcc002d-37d9-4944-a6b0-d9e29f2d33ab', '145f88d2-b03d-4087-8143-a78928883c4b'].includes(err.id)) {
 			pleaseLogin({
 				path: '/',
-				message: err.id === 'fbcc002d-37d9-4944-a6b0-d9e29f2d33ab' ? i18n.ts.thisContentsAreMarkedAsSigninRequiredByAuthor : i18n.ts.signinOrContinueOnRemote,
+				message: err.id === 'fbcc002d-37d9-4944-a6b0-d9e29f2d33ab' ? localeRef.value.env.thisContentsAreMarkedAsSigninRequiredByAuthor : localeRef.value.env.signinOrContinueOnRemote,
 				openOnRemote: {
 					type: 'lookup',
 					url: `https://${host}/notes/${props.noteId}`,
@@ -159,13 +160,13 @@ const headerActions = computed(() => []);
 const headerTabs = computed(() => []);
 
 definePage(() => ({
-	title: i18n.ts.note,
+	title: localeRef.value.env.note,
 	...note.value ? {
 		subtitle: dateString(note.value.createdAt),
 		avatar: note.value.user,
 		path: `/notes/${note.value.id}`,
 		share: {
-			title: i18n.tsx.noteOf({ user: note.value.user.name ?? note.value.user.username }),
+			title: localizerRef.value.env.noteOf({ user: note.value.user.name ?? note.value.user.username }),
 			text: note.value.text,
 		},
 	} : {},

@@ -7,7 +7,6 @@ import { ref, watch } from 'vue';
 import type { PreferencesProfile } from './manager.js';
 import type { MenuItem } from '@/types/menu.js';
 import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
-import { i18n } from '@/i18n.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { prefer } from '@/preferences.js';
 import * as os from '@/os.js';
@@ -15,6 +14,7 @@ import { store } from '@/store.js';
 import { $i } from '@/i.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { unisonReload } from '@/utility/unison-reload.js';
+import { $locale, $l } from '@/i18n.js';
 
 function canAutoBackup() {
 	return prefer.profile.name != null && prefer.profile.name.trim() !== '';
@@ -29,7 +29,7 @@ export function getPreferencesProfileMenu(): MenuItem[] {
 				autoBackupEnabled.value = false;
 				os.alert({
 					type: 'warning',
-					title: i18n.ts._preferencesBackup.youNeedToNameYourProfileToEnableAutoBackup,
+					title: $locale.value.env._preferencesBackup.youNeedToNameYourProfileToEnableAutoBackup,
 				});
 				return;
 			}
@@ -44,9 +44,9 @@ export function getPreferencesProfileMenu(): MenuItem[] {
 
 	const menu: MenuItem[] = [{
 		type: 'label',
-		text: prefer.profile.name || `(${i18n.ts.noName})`,
+		text: prefer.profile.name || `(${$locale.value.env.noName})`,
 	}, {
-		text: i18n.ts.rename,
+		text: $locale.value.env.rename,
 		icon: 'ti ti-pencil',
 		action: () => {
 			renameProfile();
@@ -54,10 +54,10 @@ export function getPreferencesProfileMenu(): MenuItem[] {
 	}, {
 		type: 'switch',
 		icon: 'ti ti-cloud-up',
-		text: i18n.ts._preferencesBackup.autoBackup,
+		text: $locale.value.env._preferencesBackup.autoBackup,
 		ref: autoBackupEnabled,
 	}, {
-		text: i18n.ts.export,
+		text: $locale.value.env.export,
 		icon: 'ti ti-download',
 		action: () => {
 			exportCurrentProfile();
@@ -65,13 +65,13 @@ export function getPreferencesProfileMenu(): MenuItem[] {
 	}, {
 		type: 'divider',
 	}, {
-		text: i18n.ts._preferencesBackup.restoreFromBackup,
+		text: $locale.value.env._preferencesBackup.restoreFromBackup,
 		icon: 'ti ti-cloud-down',
 		action: () => {
 			restoreFromCloudBackup();
 		},
 	}, {
-		text: i18n.ts.import,
+		text: $locale.value.env.import,
 		icon: 'ti ti-upload',
 		action: () => {
 			importProfile();
@@ -80,7 +80,7 @@ export function getPreferencesProfileMenu(): MenuItem[] {
 		type: 'divider',
 	}, {
 		type: 'link',
-		text: i18n.ts._preferencesProfile.manageProfiles + '...',
+		text: $locale.value.env._preferencesProfile.manageProfiles + '...',
 		icon: 'ti ti-settings-cog',
 		to: '/settings/profiles',
 	}];
@@ -100,8 +100,8 @@ export function getPreferencesProfileMenu(): MenuItem[] {
 
 async function renameProfile() {
 	const { canceled, result: name } = await os.inputText({
-		title: i18n.ts._preferencesProfile.profileName,
-		text: i18n.ts._preferencesProfile.profileNameDescription + '\n' + i18n.ts._preferencesProfile.profileNameDescription2,
+		title: $locale.value.env._preferencesProfile.profileName,
+		text: $locale.value.env._preferencesProfile.profileNameDescription + '\n' + $locale.value.env._preferencesProfile.profileNameDescription2,
 		placeholder: prefer.profile.name || null,
 		default: prefer.profile.name || null,
 	});
@@ -178,15 +178,15 @@ export async function restoreFromCloudBackup() {
 	if (backups.length === 0) {
 		os.alert({
 			type: 'warning',
-			title: i18n.ts._preferencesBackup.noBackupsFoundTitle,
-			text: i18n.ts._preferencesBackup.noBackupsFoundDescription,
+			title: $locale.value.env._preferencesBackup.noBackupsFoundTitle,
+			text: $locale.value.env._preferencesBackup.noBackupsFoundDescription,
 		});
 		return;
 	}
 
 	const select = await os.select({
-		title: i18n.ts._preferencesBackup.selectBackupToRestore,
-		text: 'ℹ️ ' + i18n.ts._preferencesProfile.shareSameProfileBetweenDevicesIsNotRecommended + ' ' + i18n.ts._preferencesProfile.useSyncBetweenDevicesOptionIfYouWantToSyncSetting,
+		title: $locale.value.env._preferencesBackup.selectBackupToRestore,
+		text: 'ℹ️ ' + $locale.value.env._preferencesProfile.shareSameProfileBetweenDevicesIsNotRecommended + ' ' + $locale.value.env._preferencesProfile.useSyncBetweenDevicesOptionIfYouWantToSyncSetting,
 		items: backups.map(backup => ({
 			label: backup.name,
 			value: backup.name,

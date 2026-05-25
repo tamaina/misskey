@@ -26,21 +26,21 @@ SPDX-License-Identifier: AGPL-3.0-only
 		></textarea>
 	</div>
 	<div :class="$style.caption"><slot name="caption"></slot></div>
-	<button v-if="mfmPreview" style="font-size: 0.85em;" class="_textButton" type="button" @click="preview = !preview">{{ i18n.ts.preview }}</button>
+	<button v-if="mfmPreview" style="font-size: 0.85em;" class="_textButton" type="button" @click="preview = !preview">{{ $locale.env.preview }}</button>
 	<div v-if="mfmPreview" v-show="preview" v-panel :class="$style.mfmPreview">
 		<Mfm :text="v"/>
 	</div>
 
-	<MkButton v-if="manualSave && changed" primary :class="$style.save" @click="updated"><i class="ti ti-device-floppy"></i> {{ i18n.ts.save }}</MkButton>
+	<MkButton v-if="manualSave && changed" primary :class="$style.save" @click="updated"><i class="ti ti-device-floppy"></i> {{ $locale.env.save }}</MkButton>
 </div>
 </template>
 
 <script lang="ts" setup>
+
 import { onMounted, onUnmounted, nextTick, ref, watch, computed, toRefs, useTemplateRef } from 'vue';
 import { debounce } from 'throttle-debounce';
 import type { SuggestionType } from '@/utility/autocomplete.js';
 import MkButton from '@/components/MkButton.vue';
-import { i18n } from '@/i18n.js';
 import { Autocomplete } from '@/utility/autocomplete.js';
 
 const props = defineProps<{

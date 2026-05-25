@@ -5,39 +5,40 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div class="_gaps">
-	<div style="text-align: center; padding: 0 16px;">{{ i18n.ts._initialTutorial._postNote.description1 }}</div>
+	<div style="text-align: center; padding: 0 16px;">{{ $locale.env._initialTutorial._postNote.description1 }}</div>
 	<MkPostForm :class="$style.exampleRoot" :mock="true" :autofocus="false"/>
 	<MkFormSection>
-		<template #label>{{ i18n.ts.visibility }}</template>
+		<template #label>{{ $locale.env.visibility }}</template>
 		<div class="_gaps">
-			<div>{{ i18n.ts._initialTutorial._postNote._visibility.description }}</div>
-			<div><i class="ti ti-world"></i> <b>{{ i18n.ts._visibility.public }}</b> … {{ i18n.ts._initialTutorial._postNote._visibility.public }}</div>
-			<div><i class="ti ti-home"></i> <b>{{ i18n.ts._visibility.home }}</b> … {{ i18n.ts._initialTutorial._postNote._visibility.home }}</div>
-			<div><i class="ti ti-lock"></i> <b>{{ i18n.ts._visibility.followers }}</b> … {{ i18n.ts._initialTutorial._postNote._visibility.followers }}</div>
+			<div>{{ $locale.env._initialTutorial._postNote._visibility.description }}</div>
+			<div><i class="ti ti-world"></i> <b>{{ $locale.env._visibility.public }}</b> … {{ $locale.env._initialTutorial._postNote._visibility.public }}</div>
+			<div><i class="ti ti-home"></i> <b>{{ $locale.env._visibility.home }}</b> … {{ $locale.env._initialTutorial._postNote._visibility.home }}</div>
+			<div><i class="ti ti-lock"></i> <b>{{ $locale.env._visibility.followers }}</b> … {{ $locale.env._initialTutorial._postNote._visibility.followers }}</div>
 			<div class="_gaps_s">
-				<div><i class="ti ti-mail"></i> <b>{{ i18n.ts._visibility.specified }}</b> … {{ i18n.ts._initialTutorial._postNote._visibility.direct }}</div>
+				<div><i class="ti ti-mail"></i> <b>{{ $locale.env._visibility.specified }}</b> … {{ $locale.env._initialTutorial._postNote._visibility.direct }}</div>
 				<MkInfo :warn="true">
-					<b>{{ i18n.ts._initialTutorial._postNote._visibility.doNotSendConfidencialOnDirect1 }}</b> {{ i18n.ts._initialTutorial._postNote._visibility.doNotSendConfidencialOnDirect2 }}
+					<b>{{ $locale.env._initialTutorial._postNote._visibility.doNotSendConfidencialOnDirect1 }}</b> {{ $locale.env._initialTutorial._postNote._visibility.doNotSendConfidencialOnDirect2 }}
 				</MkInfo>
 			</div>
-			<div><i class="ti ti-rocket-off"></i> <b>{{ i18n.ts._visibility.disableFederation }}</b> … {{ i18n.ts._initialTutorial._postNote._visibility.localOnly }}</div>
+			<div><i class="ti ti-rocket-off"></i> <b>{{ $locale.env._visibility.disableFederation }}</b> … {{ $locale.env._initialTutorial._postNote._visibility.localOnly }}</div>
 		</div>
 	</MkFormSection>
 	<MkFormSection>
-		<template #label>{{ i18n.ts._initialTutorial._postNote._cw.title }}</template>
+		<template #label>{{ $locale.env._initialTutorial._postNote._cw.title }}</template>
 		<div class="_gaps">
-			<div>{{ i18n.ts._initialTutorial._postNote._cw.description }}</div>
+			<div>{{ $locale.env._initialTutorial._postNote._cw.description }}</div>
 			<MkNote :class="$style.exampleRoot" :note="exampleCWNote" :mock="true"/>
-			<div>{{ i18n.ts._initialTutorial._postNote._cw.useCases }}</div>
+			<div>{{ $locale.env._initialTutorial._postNote._cw.useCases }}</div>
 		</div>
 	</MkFormSection>
 </div>
 </template>
 
 <script setup lang="ts">
+import { $locale as localeRef } from '@/i18n.js';
+
 import * as Misskey from 'misskey-js';
 import { reactive } from 'vue';
-import { i18n } from '@/i18n.js';
 import MkNote from '@/components/MkNote.vue';
 import MkPostForm from '@/components/MkPostForm.vue';
 import MkFormSection from '@/components/form/section.vue';
@@ -61,8 +62,8 @@ const exampleCWNote = reactive<Misskey.entities.Note>({
 		onlineStatus: 'unknown',
 		badgeRoles: [],
 	},
-	text: i18n.ts._initialTutorial._postNote._cw._exampleNote.note,
-	cw: i18n.ts._initialTutorial._postNote._cw._exampleNote.cw,
+	text: localeRef.value.env._initialTutorial._postNote._cw._exampleNote.note,
+	cw: localeRef.value.env._initialTutorial._postNote._cw._exampleNote.cw,
 	visibility: 'public',
 	localOnly: false,
 	reactionAcceptance: null,

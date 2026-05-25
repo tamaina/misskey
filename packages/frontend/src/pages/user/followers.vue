@@ -18,12 +18,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef } from '@/i18n.js';
+
 import { computed, watch, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import XFollowList from './follow-list.vue';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { definePage } from '@/page.js';
-import { i18n } from '@/i18n.js';
 
 const props = withDefaults(defineProps<{
 	acct: string;
@@ -52,11 +53,11 @@ const headerActions = computed(() => []);
 const headerTabs = computed(() => []);
 
 definePage(() => ({
-	title: i18n.ts.user,
+	title: localeRef.value.env.user,
 	icon: 'ti ti-user',
 	...user.value ? {
 		title: user.value.name ? `${user.value.name} (@${user.value.username})` : `@${user.value.username}`,
-		subtitle: i18n.ts.followers,
+		subtitle: localeRef.value.env.followers,
 		userName: user.value,
 		avatar: user.value,
 	} : {},

@@ -11,7 +11,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	@close="cancel"
 	@closed="emit('closed')"
 >
-	<template #header>{{ i18n.ts.setupOf2fa }}</template>
+	<template #header>{{ $locale.env.setupOf2fa }}</template>
 
 	<div style="overflow-x: clip;">
 		<Transition
@@ -25,9 +25,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<div style="height: 100cqh; overflow: auto; text-align: center;">
 					<div class="_spacer" style="--MI_SPACER-min: 20px; --MI_SPACER-max: 28px;">
 						<div class="_gaps">
-							<MkInfo><MkLink url="https://misskey-hub.net/docs/for-users/stepped-guides/how-to-enable-2fa/" target="_blank">{{ i18n.ts._2fa.moreDetailedGuideHere }}</MkLink></MkInfo>
+							<MkInfo><MkLink url="https://misskey-hub.net/docs/for-users/stepped-guides/how-to-enable-2fa/" target="_blank">{{ $locale.env._2fa.moreDetailedGuideHere }}</MkLink></MkInfo>
 
-							<I18n :src="i18n.ts._2fa.step1" tag="div">
+							<I18n :src="$locale.env._2fa.step1" tag="div">
 								<template #a>
 									<a href="https://authy.com/" rel="noopener" target="_blank" class="_link">Authy</a>
 								</template>
@@ -35,20 +35,20 @@ SPDX-License-Identifier: AGPL-3.0-only
 									<a href="https://support.google.com/accounts/answer/1066447" rel="noopener" target="_blank" class="_link">Google Authenticator</a>
 								</template>
 							</I18n>
-							<div>{{ i18n.ts._2fa.step2 }}</div>
+							<div>{{ $locale.env._2fa.step2 }}</div>
 							<div>
 								<a :class="$style.qrRoot" :href="twoFactorData.url"><img :class="$style.qr" :src="twoFactorData.qr"></a>
 								<!-- QRコード側にマージンが入っているので直下でOK -->
-								<div><MkButton inline rounded type="routerLink" :to="twoFactorData.url" :linkBehavior="'browser'">{{ i18n.ts.launchApp }}</MkButton></div>
+								<div><MkButton inline rounded type="routerLink" :to="twoFactorData.url" :linkBehavior="'browser'">{{ $locale.env.launchApp }}</MkButton></div>
 							</div>
 							<MkKeyValue :copy="twoFactorData.url">
-								<template #key>{{ i18n.ts._2fa.step2Uri }}</template>
+								<template #key>{{ $locale.env._2fa.step2Uri }}</template>
 								<template #value>{{ twoFactorData.url }}</template>
 							</MkKeyValue>
 						</div>
 						<div class="_buttonsCenter" style="margin-top: 16px;">
-							<MkButton rounded @click="cancel">{{ i18n.ts.cancel }}</MkButton>
-							<MkButton primary rounded gradate @click="page++">{{ i18n.ts.continue }} <i class="ti ti-arrow-right"></i></MkButton>
+							<MkButton rounded @click="cancel">{{ $locale.env.cancel }}</MkButton>
+							<MkButton primary rounded gradate @click="page++">{{ $locale.env.continue }} <i class="ti ti-arrow-right"></i></MkButton>
 						</div>
 					</div>
 				</div>
@@ -57,13 +57,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<div style="height: 100cqh; overflow: auto;">
 					<div class="_spacer" style="--MI_SPACER-min: 20px; --MI_SPACER-max: 28px;">
 						<div class="_gaps">
-							<div>{{ i18n.ts._2fa.step3Title }}</div>
+							<div>{{ $locale.env._2fa.step3Title }}</div>
 							<MkInput v-model="token" autocomplete="one-time-code" inputmode="numeric"></MkInput>
-							<div>{{ i18n.ts._2fa.step3 }}</div>
+							<div>{{ $locale.env._2fa.step3 }}</div>
 						</div>
 						<div class="_buttonsCenter" style="margin-top: 16px;">
-							<MkButton rounded @click="page--"><i class="ti ti-arrow-left"></i> {{ i18n.ts.goBack }}</MkButton>
-							<MkButton primary rounded gradate @click="tokenDone">{{ i18n.ts.continue }} <i class="ti ti-arrow-right"></i></MkButton>
+							<MkButton rounded @click="page--"><i class="ti ti-arrow-left"></i> {{ $locale.env.goBack }}</MkButton>
+							<MkButton primary rounded gradate @click="tokenDone">{{ $locale.env.continue }} <i class="ti ti-arrow-right"></i></MkButton>
 						</div>
 					</div>
 				</div>
@@ -72,16 +72,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<div style="height: 100cqh; overflow: auto;">
 					<div class="_spacer" style="--MI_SPACER-min: 20px; --MI_SPACER-max: 28px;">
 						<div class="_gaps">
-							<div style="text-align: center;">{{ i18n.ts._2fa.setupCompleted }}🎉</div>
-							<div style="text-align: center;">{{ i18n.ts._2fa.step4 }}</div>
-							<div style="text-align: center; font-weight: bold;">{{ i18n.ts._2fa.checkBackupCodesBeforeCloseThisWizard }}</div>
+							<div style="text-align: center;">{{ $locale.env._2fa.setupCompleted }}🎉</div>
+							<div style="text-align: center;">{{ $locale.env._2fa.step4 }}</div>
+							<div style="text-align: center; font-weight: bold;">{{ $locale.env._2fa.checkBackupCodesBeforeCloseThisWizard }}</div>
 
 							<MkFolder :defaultOpen="true">
 								<template #icon><i class="ti ti-key"></i></template>
-								<template #label>{{ i18n.ts._2fa.backupCodes }}</template>
+								<template #label>{{ $locale.env._2fa.backupCodes }}</template>
 
 								<div class="_gaps">
-									<MkInfo warn>{{ i18n.ts._2fa.backupCodesDescription }}</MkInfo>
+									<MkInfo warn>{{ $locale.env._2fa.backupCodesDescription }}</MkInfo>
 
 									<div v-for="(code, i) in backupCodes" :key="code" class="_gaps_s">
 										<MkKeyValue :copy="code">
@@ -90,12 +90,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 										</MkKeyValue>
 									</div>
 
-									<MkButton primary rounded gradate @click="downloadBackupCodes"><i class="ti ti-download"></i> {{ i18n.ts.download }}</MkButton>
+									<MkButton primary rounded gradate @click="downloadBackupCodes"><i class="ti ti-download"></i> {{ $locale.env.download }}</MkButton>
 								</div>
 							</MkFolder>
 						</div>
 						<div class="_buttonsCenter" style="margin-top: 16px;">
-							<MkButton primary rounded gradate @click="allDone">{{ i18n.ts.done }}</MkButton>
+							<MkButton primary rounded gradate @click="allDone">{{ $locale.env.done }}</MkButton>
 						</div>
 					</div>
 				</div>
@@ -106,13 +106,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+
 import { hostname, port } from '@@/js/config';
 import { useTemplateRef, ref } from 'vue';
 import MkButton from '@/components/MkButton.vue';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import MkKeyValue from '@/components/MkKeyValue.vue';
 import MkInput from '@/components/MkInput.vue';
-import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
 import MkFolder from '@/components/MkFolder.vue';
 import MkInfo from '@/components/MkInfo.vue';

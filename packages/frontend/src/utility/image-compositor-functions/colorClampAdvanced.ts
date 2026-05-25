@@ -6,7 +6,7 @@
 import shader from './colorClamp.glsl';
 import type { ImageEffectorUiDefinition } from '../image-effector/ImageEffector.js';
 import { defineImageCompositorFunction } from '@/lib/ImageCompositor.js';
-import { i18n } from '@/i18n.js';
+import { $locale, $l } from '@/i18n.js';
 
 export const fn = defineImageCompositorFunction<{
 	rMax: number;
@@ -28,10 +28,10 @@ export const fn = defineImageCompositorFunction<{
 });
 
 export const uiDefinition = {
-	name: i18n.ts._imageEffector._fxs.colorClampAdvanced,
+	name: $locale.value.env._imageEffector._fxs.colorClampAdvanced,
 	params: {
 		rMax: {
-			label: `${i18n.ts._imageEffector._fxProps.max} (${i18n.ts._imageEffector._fxProps.redComponent})`,
+			label: `${$locale.value.env._imageEffector._fxProps.max} (${$locale.value.env._imageEffector._fxProps.redComponent})`,
 			type: 'number',
 			default: 1.0,
 			min: 0.0,
@@ -40,7 +40,7 @@ export const uiDefinition = {
 			toViewValue: v => Math.round(v * 100) + '%',
 		},
 		rMin: {
-			label: `${i18n.ts._imageEffector._fxProps.min} (${i18n.ts._imageEffector._fxProps.redComponent})`,
+			label: `${$locale.value.env._imageEffector._fxProps.min} (${$locale.value.env._imageEffector._fxProps.redComponent})`,
 			type: 'number',
 			default: -1.0,
 			min: -1.0,
@@ -49,7 +49,7 @@ export const uiDefinition = {
 			toViewValue: v => Math.round(v * 100) + '%',
 		},
 		gMax: {
-			label: `${i18n.ts._imageEffector._fxProps.max} (${i18n.ts._imageEffector._fxProps.greenComponent})`,
+			label: `${$locale.value.env._imageEffector._fxProps.max} (${$locale.value.env._imageEffector._fxProps.greenComponent})`,
 			type: 'number',
 			default: 1.0,
 			min: 0.0,
@@ -58,7 +58,7 @@ export const uiDefinition = {
 			toViewValue: v => Math.round(v * 100) + '%',
 		},
 		gMin: {
-			label: `${i18n.ts._imageEffector._fxProps.min} (${i18n.ts._imageEffector._fxProps.greenComponent})`,
+			label: `${$locale.value.env._imageEffector._fxProps.min} (${$locale.value.env._imageEffector._fxProps.greenComponent})`,
 			type: 'number',
 			default: -1.0,
 			min: -1.0,
@@ -67,7 +67,7 @@ export const uiDefinition = {
 			toViewValue: v => Math.round(v * 100) + '%',
 		},
 		bMax: {
-			label: `${i18n.ts._imageEffector._fxProps.max} (${i18n.ts._imageEffector._fxProps.blueComponent})`,
+			label: `${$locale.value.env._imageEffector._fxProps.max} (${$locale.value.env._imageEffector._fxProps.blueComponent})`,
 			type: 'number',
 			default: 1.0,
 			min: 0.0,
@@ -76,7 +76,7 @@ export const uiDefinition = {
 			toViewValue: v => Math.round(v * 100) + '%',
 		},
 		bMin: {
-			label: `${i18n.ts._imageEffector._fxProps.min} (${i18n.ts._imageEffector._fxProps.blueComponent})`,
+			label: `${$locale.value.env._imageEffector._fxProps.min} (${$locale.value.env._imageEffector._fxProps.blueComponent})`,
 			type: 'number',
 			default: -1.0,
 			min: -1.0,

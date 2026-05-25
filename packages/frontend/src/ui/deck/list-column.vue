@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <XColumn :menu="menu" :column="column" :isStacked="isStacked" :refresher="async () => { await timeline?.reloadTimeline() }">
 	<template #header>
-		<i class="ti ti-list"></i><span style="margin-left: 8px;">{{ column.name || column.timelineNameCache || i18n.ts._deck._columns.list }}</span>
+		<i class="ti ti-list"></i><span style="margin-left: 8px;">{{ column.name || column.timelineNameCache || $locale.env._deck._columns.list }}</span>
 	</template>
 
 	<MkStreamingNotesTimeline v-if="column.listId" ref="timeline" src="list" :list="column.listId" :withRenotes="withRenotes"/>
@@ -14,6 +14,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef } from '@/i18n.js';
+
 import { watch, useTemplateRef, ref, onMounted } from 'vue';
 import XColumn from './column.vue';
 import type { entities as MisskeyEntities } from 'misskey-js';
@@ -24,7 +26,6 @@ import { updateColumn } from '@/deck.js';
 import MkStreamingNotesTimeline from '@/components/MkStreamingNotesTimeline.vue';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
-import { i18n } from '@/i18n.js';
 import { userListsCache } from '@/cache.js';
 import { soundSettingsButton } from '@/ui/deck/tl-note-notification.js';
 
@@ -59,12 +60,12 @@ watch(soundSetting, v => {
 async function setList() {
 	const lists = await misskeyApi('users/lists/list');
 	const { canceled, result: listIdOrOperation } = await os.select({
-		title: i18n.ts.selectList,
+		title: localeRef.value.env.selectList,
 		items: [
-			{ value: '_CREATE_', label: i18n.ts.createNew },
+			{ value: '_CREATE_', label: localeRef.value.env.createNew },
 			(lists.length > 0 ? {
 				type: 'group' as const,
-				label: i18n.ts.createdLists,
+				label: localeRef.value.env.createdLists,
 				items: lists.map(x => ({
 					value: x.id, label: x.name,
 				})),
@@ -76,7 +77,7 @@ async function setList() {
 
 	if (listIdOrOperation === '_CREATE_') {
 		const { canceled, result: name } = await os.inputText({
-			title: i18n.ts.enterListName,
+			title: localeRef.value.env.enterListName,
 		});
 		if (canceled || name == null || name === '') return;
 
@@ -104,22 +105,22 @@ function editList() {
 const menu: MenuItem[] = [
 	{
 		icon: 'ti ti-pencil',
-		text: i18n.ts.selectList,
+		text: localeRef.value.env.selectList,
 		action: setList,
 	},
 	{
 		icon: 'ti ti-settings',
-		text: i18n.ts.editList,
+		text: localeRef.value.env.editList,
 		action: editList,
 	},
 	{
 		type: 'switch',
-		text: i18n.ts.showRenotes,
+		text: localeRef.value.env.showRenotes,
 		ref: withRenotes,
 	},
 	{
 		icon: 'ti ti-bell',
-		text: i18n.ts._deck.newNoteNotificationSettings,
+		text: localeRef.value.env._deck.newNoteNotificationSettings,
 		action: () => soundSettingsButton(soundSetting),
 	},
 ];

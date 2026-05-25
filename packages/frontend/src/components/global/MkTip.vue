@@ -5,17 +5,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div v-if="!store.r.tips.value[props.k]" :class="[$style.root, { [$style.warn]: warn }]" class="_selectable _gaps_s">
-	<div style="font-weight: bold;"><i class="ti ti-bulb"></i> {{ i18n.ts.tip }}:</div>
+	<div style="font-weight: bold;"><i class="ti ti-bulb"></i> {{ $locale.env.tip }}:</div>
 	<div><slot></slot></div>
 	<div>
-		<MkButton inline primary rounded small @click="_closeTip()"><i class="ti ti-check"></i> {{ i18n.ts.gotIt }}</MkButton>
+		<MkButton inline primary rounded small @click="_closeTip()"><i class="ti ti-check"></i> {{ $locale.env.gotIt }}</MkButton>
 		<button class="_button" style="padding: 8px; margin-left: 4px;" @click="showMenu"><i class="ti ti-dots"></i></button>
 	</div>
 </div>
 </template>
 
 <script lang="ts" setup>
-import { i18n } from '@/i18n.js';
+import { $locale as localeRef } from '@/i18n.js';
+
 import { store } from '@/store.js';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os.js';
@@ -35,7 +36,7 @@ function _closeTip() {
 function showMenu(ev: PointerEvent) {
 	os.popupMenu([{
 		icon: 'ti ti-bulb-off',
-		text: i18n.ts.hideAllTips,
+		text: localeRef.value.env.hideAllTips,
 		danger: true,
 		action: () => {
 			hideAllTips();

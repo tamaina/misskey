@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div class="_spacer" style="--MI_SPACER-w: 800px; --MI_SPACER-min: 16px; --MI_SPACER-max: 32px;">
 		<div class="cwepdizn _gaps_m">
 			<MkFolder :defaultOpen="true">
-				<template #label>{{ i18n.ts.backgroundColor }}</template>
+				<template #label>{{ $locale.env.backgroundColor }}</template>
 				<div class="cwepdizn-colors">
 					<div class="row">
 						<button v-for="color in bgColors.filter(x => x.kind === 'light')" class="color _button" :class="{ active: theme.props.bg === color.color }" @click="setBgColor(color)">
@@ -24,7 +24,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</MkFolder>
 
 			<MkFolder :defaultOpen="true">
-				<template #label>{{ i18n.ts.accentColor }}</template>
+				<template #label>{{ $locale.env.accentColor }}</template>
 				<div class="cwepdizn-colors">
 					<div class="row">
 						<button v-for="color in accentColors" class="color rounded _button" :class="{ active: theme.props.accent === color }" @click="setAccentColor(color)">
@@ -35,7 +35,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</MkFolder>
 
 			<MkFolder :defaultOpen="true">
-				<template #label>{{ i18n.ts.textColor }}</template>
+				<template #label>{{ $locale.env.textColor }}</template>
 				<div class="cwepdizn-colors">
 					<div class="row">
 						<button v-for="color in fgColors" class="color char _button" :class="{ active: (theme.props.fg === color.forLight) || (theme.props.fg === color.forDark) }" @click="setFgColor(color)">
@@ -47,22 +47,22 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 			<MkFolder :defaultOpen="false">
 				<template #icon><i class="ti ti-code"></i></template>
-				<template #label>{{ i18n.ts.editCode }}</template>
+				<template #label>{{ $locale.env.editCode }}</template>
 
 				<div class="_gaps_m">
 					<MkCodeEditor v-model="themeCode" lang="json5">
-						<template #label>{{ i18n.ts._theme.code }}</template>
+						<template #label>{{ $locale.env._theme.code }}</template>
 					</MkCodeEditor>
-					<MkButton primary @click="applyThemeCode">{{ i18n.ts.apply }}</MkButton>
+					<MkButton primary @click="applyThemeCode">{{ $locale.env.apply }}</MkButton>
 				</div>
 			</MkFolder>
 
 			<MkFolder :defaultOpen="false">
-				<template #label>{{ i18n.ts.addDescription }}</template>
+				<template #label>{{ $locale.env.addDescription }}</template>
 
 				<div class="_gaps_m">
 					<MkTextarea v-model="description">
-						<template #label>{{ i18n.ts._theme.description }}</template>
+						<template #label>{{ $locale.env._theme.description }}</template>
 					</MkTextarea>
 				</div>
 			</MkFolder>
@@ -72,6 +72,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef, $l as localizerRef } from '@/i18n.js';
+
 import { watch, ref, computed } from 'vue';
 import { toUnicode } from 'punycode.js';
 import tinycolor from 'tinycolor2';
@@ -90,7 +92,6 @@ import { addTheme, themeManager } from '@/theme.js';
 import { deepClone } from '@/utility/clone.js';
 import * as os from '@/os.js';
 import { store } from '@/store.js';
-import { i18n } from '@/i18n.js';
 import { useLeaveGuard } from '@/composables/use-leave-guard.js';
 import { definePage } from '@/page.js';
 import { prefer } from '@/preferences.js';
@@ -183,7 +184,7 @@ function applyThemeCode() {
 	} catch (err) {
 		os.alert({
 			type: 'error',
-			text: i18n.ts._theme.invalid,
+			text: localeRef.value.env._theme.invalid,
 		});
 		return;
 	}
@@ -193,7 +194,7 @@ function applyThemeCode() {
 
 async function saveAs() {
 	const { canceled, result: name } = await os.inputText({
-		title: i18n.ts.name,
+		title: localeRef.value.env.name,
 		minLength: 1,
 	});
 	if (canceled) return;
@@ -211,7 +212,7 @@ async function saveAs() {
 	changed.value = false;
 	os.alert({
 		type: 'success',
-		text: i18n.tsx._theme.installed({ name: theme.value.name }),
+		text: localizerRef.value.env._theme.installed({ name: theme.value.name }),
 	});
 }
 
@@ -220,19 +221,19 @@ watch(theme, apply, { deep: true });
 const headerActions = computed(() => [{
 	asFullButton: true,
 	icon: 'ti ti-eye',
-	text: i18n.ts.preview,
+	text: localeRef.value.env.preview,
 	handler: showPreview,
 }, {
 	asFullButton: true,
 	icon: 'ti ti-check',
-	text: i18n.ts.saveAs,
+	text: localeRef.value.env.saveAs,
 	handler: saveAs,
 }]);
 
 const headerTabs = computed(() => []);
 
 definePage(() => ({
-	title: i18n.ts.themeEditor,
+	title: localeRef.value.env.themeEditor,
 	icon: 'ti ti-palette',
 }));
 </script>

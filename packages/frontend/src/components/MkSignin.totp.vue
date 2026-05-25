@@ -10,27 +10,27 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div :class="$style.totpIcon">
 				<i class="ti ti-key"></i>
 			</div>
-			<div :class="$style.totpDescription">{{ i18n.ts['2fa'] }}</div>
+			<div :class="$style.totpDescription">{{ $locale.env['2fa'] }}</div>
 		</div>
 
 		<!-- totp入力 -->
 		<form class="_gaps_s" @submit.prevent="emit('totpSubmitted', token)">
 			<MkInput v-model="token" type="text" :pattern="isBackupCode ? '^[A-Z0-9]{32}$' :'^[0-9]{6}$'" autocomplete="one-time-code" required autofocus :spellcheck="false" :inputmode="isBackupCode ? undefined : 'numeric'">
-				<template #label>{{ i18n.ts.token }} ({{ i18n.ts['2fa'] }})</template>
+				<template #label>{{ $locale.env.token }} ({{ $locale.env['2fa'] }})</template>
 				<template #prefix><i v-if="isBackupCode" class="ti ti-key"></i><i v-else class="ti ti-123"></i></template>
-				<template #caption><button class="_textButton" type="button" @click="isBackupCode = !isBackupCode">{{ isBackupCode ? i18n.ts.useTotp : i18n.ts.useBackupCode }}</button></template>
+				<template #caption><button class="_textButton" type="button" @click="isBackupCode = !isBackupCode">{{ isBackupCode ? $locale.env.useTotp : $locale.env.useBackupCode }}</button></template>
 			</MkInput>
 
-			<MkButton type="submit" large primary rounded style="margin: 0 auto;">{{ i18n.ts.continue }} <i class="ti ti-arrow-right"></i></MkButton>
+			<MkButton type="submit" large primary rounded style="margin: 0 auto;">{{ $locale.env.continue }} <i class="ti ti-arrow-right"></i></MkButton>
 		</form>
 	</div>
 </div>
 </template>
 
 <script setup lang="ts">
+
 import { ref } from 'vue';
 
-import { i18n } from '@/i18n.js';
 
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';

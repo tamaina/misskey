@@ -13,20 +13,20 @@ SPDX-License-Identifier: AGPL-3.0-only
 	@ok="ok()"
 	@closed="emit('closed')"
 >
-	<template #header>{{ i18n.ts.selectUser }}</template>
+	<template #header>{{ $locale.env.selectUser }}</template>
 	<div>
 		<div :class="$style.form">
 			<MkInput v-if="computedLocalOnly" v-model="username" :autofocus="true" @update:modelValue="search">
-				<template #label>{{ i18n.ts.username }}</template>
+				<template #label>{{ $locale.env.username }}</template>
 				<template #prefix>@</template>
 			</MkInput>
 			<FormSplit v-else :minWidth="170">
 				<MkInput v-model="username" :autofocus="true" @update:modelValue="search">
-					<template #label>{{ i18n.ts.username }}</template>
+					<template #label>{{ $locale.env.username }}</template>
 					<template #prefix>@</template>
 				</MkInput>
 				<MkInput v-model="host" :datalist="[hostname]" @update:modelValue="search">
-					<template #label>{{ i18n.ts.host }}</template>
+					<template #label>{{ $locale.env.host }}</template>
 					<template #prefix>@</template>
 				</MkInput>
 			</FormSplit>
@@ -42,7 +42,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 			</div>
 			<div v-else :class="$style.empty">
-				<span>{{ i18n.ts.noUsers }}</span>
+				<span>{{ $locale.env.noUsers }}</span>
 			</div>
 		</div>
 		<div v-if="username == '' && host == ''" :class="$style.recent">
@@ -61,6 +61,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+
 import { onMounted, ref, computed, useTemplateRef } from 'vue';
 import * as Misskey from 'misskey-js';
 import { host as currentHost, hostname } from '@@/js/config.js';
@@ -69,7 +70,6 @@ import FormSplit from '@/components/form/split.vue';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { store } from '@/store.js';
-import { i18n } from '@/i18n.js';
 import { $i } from '@/i.js';
 import { instance } from '@/instance.js';
 

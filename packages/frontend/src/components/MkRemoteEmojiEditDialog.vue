@@ -33,22 +33,22 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 
 				<MkKeyValue>
-					<template #key>{{ i18n.ts.name }}</template>
+					<template #key>{{ $locale.env.name }}</template>
 					<template #value>{{ name }}</template>
 				</MkKeyValue>
 				<MkKeyValue>
-					<template #key>{{ i18n.ts.host }}</template>
+					<template #key>{{ $locale.env.host }}</template>
 					<template #value>{{ host }}</template>
 				</MkKeyValue>
 				<MkKeyValue>
-					<template #key>{{ i18n.ts.license }}</template>
+					<template #key>{{ $locale.env.license }}</template>
 					<template #value>{{ license }}</template>
 				</MkKeyValue>
 			</div>
 		</div>
 		<div :class="$style.footer">
 			<MkButton primary rounded style="margin: 0 auto;" @click="done">
-				<i class="ti ti-plus"></i> {{ i18n.ts.import }}
+				<i class="ti ti-plus"></i> {{ $locale.env.import }}
 			</MkButton>
 		</div>
 	</div>
@@ -56,13 +56,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+
 import { computed, ref, useTemplateRef } from 'vue';
 import MkKeyValue from '@/components/MkKeyValue.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
 import MkWindow from '@/components/MkWindow.vue';
-import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
 
 const props = defineProps<{

@@ -51,6 +51,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef } from '@/i18n.js';
+
 import { onUnmounted, reactive, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import { useWidgetPropsManager } from './widget.js';
@@ -62,19 +64,18 @@ import * as sound from '@/utility/sound.js';
 import { deepClone } from '@/utility/clone.js';
 import { prefer } from '@/preferences.js';
 import { genId } from '@/utility/id.js';
-import { i18n } from '@/i18n.js';
 
 const name = 'jobQueue';
 
 const widgetPropsDef = {
 	transparent: {
 		type: 'boolean',
-		label: i18n.ts._widgetOptions.transparent,
+		label: localeRef.value.env._widgetOptions.transparent,
 		default: false,
 	},
 	sound: {
 		type: 'boolean',
-		label: i18n.ts._widgetOptions._jobQueue.sound,
+		label: localeRef.value.env._widgetOptions._jobQueue.sound,
 		default: false,
 	},
 } satisfies FormWithDefault;

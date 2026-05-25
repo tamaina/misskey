@@ -13,7 +13,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<component :is="loadingHandler.component.value" v-if="loadingHandler.showing.value"/>
 			<template v-else>
 				<div v-if="gridItems.length === 0" style="text-align: center">
-					{{ i18n.ts._customEmojisManager._local._list.emojisNothing }}
+					{{ $locale.env._customEmojisManager._local._list.emojisNothing }}
 				</div>
 
 				<template v-else>
@@ -29,7 +29,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div v-if="gridItems.length > 0" :class="$style.footer">
 			<div :class="$style.left">
 				<MkButton danger style="margin-right: auto" @click="onDeleteButtonClicked">
-					{{ i18n.ts.delete }} ({{ deleteItemsCount }})
+					{{ $locale.env.delete }} ({{ deleteItemsCount }})
 				</MkButton>
 			</div>
 
@@ -39,9 +39,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 			<div :class="$style.right">
 				<MkButton primary :disabled="updateButtonDisabled" @click="onUpdateButtonClicked">
-					{{ i18n.ts.update }} ({{ updatedItemsCount }})
+					{{ $locale.env.update }} ({{ updatedItemsCount }})
 				</MkButton>
-				<MkButton @click="onGridResetButtonClicked">{{ i18n.ts.reset }}</MkButton>
+				<MkButton @click="onGridResetButtonClicked">{{ $locale.env.reset }}</MkButton>
 			</div>
 		</div>
 	</template>
@@ -49,6 +49,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts">
+
 import type { SortOrder } from '@/components/MkSortOrderEditor.define.js';
 import type { GridSortOrderKey } from './custom-emojis-manager.impl.js';
 import type { PageHeaderItem } from '@/types/page-header.js';
@@ -70,6 +71,8 @@ export type EmojiSearchQuery = {
 </script>
 
 <script setup lang="ts">
+import { $locale as localeRef, $l as localizerRef } from '@/i18n.js';
+
 import { computed, defineAsyncComponent, onMounted, ref, nextTick, useCssModule } from 'vue';
 import * as Misskey from 'misskey-js';
 import type { RequestLogItem } from '@/pages/admin/custom-emojis-manager.impl.js';
@@ -83,7 +86,6 @@ import {
 	roleIdsParser,
 } from '@/pages/admin/custom-emojis-manager.impl.js';
 import MkGrid from '@/components/grid/MkGrid.vue';
-import { i18n } from '@/i18n.js';
 import MkButton from '@/components/MkButton.vue';
 import { validators } from '@/components/grid/cell-validators.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
@@ -145,13 +147,13 @@ function setupGrid(): GridSetting {
 				return [
 					{
 						type: 'button',
-						text: i18n.ts._customEmojisManager._gridCommon.copySelectionRows,
+						text: localeRef.value.env._customEmojisManager._gridCommon.copySelectionRows,
 						icon: 'ti ti-copy',
 						action: () => copyGridDataToClipboard(gridItems, context),
 					},
 					{
 						type: 'button',
-						text: i18n.ts._customEmojisManager._local._list.markAsDeleteTargetRows,
+						text: localeRef.value.env._customEmojisManager._local._list.markAsDeleteTargetRows,
 						icon: 'ti ti-trash',
 						action: () => {
 							for (const rangedRow of context.rangedRows) {
@@ -207,8 +209,8 @@ function setupGrid(): GridSetting {
 					const current = gridItems.value[row.index].roleIdsThatCanBeUsedThisEmojiAsReaction;
 					const result = await os.selectRole({
 						initialRoleIds: current.map(it => it.id),
-						title: i18n.ts.rolesThatCanBeUsedThisEmojiAsReaction,
-						infoMessage: i18n.ts.rolesThatCanBeUsedThisEmojiAsReactionEmptyDescription,
+						title: localeRef.value.env.rolesThatCanBeUsedThisEmojiAsReaction,
+						infoMessage: localeRef.value.env.rolesThatCanBeUsedThisEmojiAsReactionEmptyDescription,
 						publicOnly: true,
 					});
 					if (result.canceled) {
@@ -239,7 +241,7 @@ function setupGrid(): GridSetting {
 				return [
 					{
 						type: 'button',
-						text: i18n.ts._customEmojisManager._gridCommon.copySelectionRanges,
+						text: localeRef.value.env._customEmojisManager._gridCommon.copySelectionRanges,
 						icon: 'ti ti-copy',
 						action: () => {
 							return copyGridDataToClipboard(gridItems, context);
@@ -247,7 +249,7 @@ function setupGrid(): GridSetting {
 					},
 					{
 						type: 'button',
-						text: i18n.ts._customEmojisManager._gridCommon.deleteSelectionRanges,
+						text: localeRef.value.env._customEmojisManager._gridCommon.deleteSelectionRanges,
 						icon: 'ti ti-trash',
 						action: () => {
 							removeDataFromGrid(context, (cell) => {
@@ -257,7 +259,7 @@ function setupGrid(): GridSetting {
 					},
 					{
 						type: 'button',
-						text: i18n.ts._customEmojisManager._local._list.markAsDeleteTargetRanges,
+						text: localeRef.value.env._customEmojisManager._local._list.markAsDeleteTargetRanges,
 						icon: 'ti ti-trash',
 						action: () => {
 							for (const rowIdx of [...new Set(context.rangedCells.map(it => it.row.index)).values()]) {
@@ -317,14 +319,14 @@ async function onUpdateButtonClicked() {
 	if (updatedItems.length === 0) {
 		await os.alert({
 			type: 'info',
-			text: i18n.ts._customEmojisManager._local._list.alertUpdateEmojisNothingDescription,
+			text: localeRef.value.env._customEmojisManager._local._list.alertUpdateEmojisNothingDescription,
 		});
 		return;
 	}
 
 	const { canceled } = await os.confirm({
 		type: 'info',
-		text: i18n.tsx._customEmojisManager._local._list.confirmUpdateEmojisDescription({ count: updatedItems.length }),
+		text: localizerRef.value.env._customEmojisManager._local._list.confirmUpdateEmojisDescription({ count: updatedItems.length }),
 	});
 	if (canceled) {
 		return;
@@ -357,8 +359,8 @@ async function onUpdateButtonClicked() {
 	if (failedItems.length > 0) {
 		await os.alert({
 			type: 'error',
-			title: i18n.ts.somethingHappened,
-			text: i18n.ts._customEmojisManager._gridCommon.alertEmojisRegisterFailedDescription,
+			title: localeRef.value.env.somethingHappened,
+			text: localeRef.value.env._customEmojisManager._gridCommon.alertEmojisRegisterFailedDescription,
 		});
 	}
 
@@ -383,14 +385,14 @@ async function onDeleteButtonClicked() {
 	if (deleteItems.length === 0) {
 		await os.alert({
 			type: 'info',
-			text: i18n.ts._customEmojisManager._local._list.alertDeleteEmojisNothingDescription,
+			text: localeRef.value.env._customEmojisManager._local._list.alertDeleteEmojisNothingDescription,
 		});
 		return;
 	}
 
 	const { canceled } = await os.confirm({
 		type: 'info',
-		text: i18n.tsx._customEmojisManager._local._list.confirmDeleteEmojisDescription({ count: deleteItems.length }),
+		text: localizerRef.value.env._customEmojisManager._local._list.confirmDeleteEmojisDescription({ count: deleteItems.length }),
 	});
 	if (canceled) {
 		return;
@@ -409,8 +411,8 @@ async function onDeleteButtonClicked() {
 async function onGridResetButtonClicked() {
 	const { canceled } = await os.confirm({
 		type: 'warning',
-		title: i18n.ts.resetAreYouSure,
-		text: i18n.ts._customEmojisManager._local._list.confirmResetDescription,
+		title: localeRef.value.env.resetAreYouSure,
+		text: localeRef.value.env._customEmojisManager._local._list.confirmResetDescription,
 	});
 
 	if (canceled) return;
@@ -426,8 +428,8 @@ async function onPageChanged(pageNumber: number) {
 	if (updatedItemsCount.value > 0) {
 		const { canceled } = await os.confirm({
 			type: 'warning',
-			title: i18n.ts._customEmojisManager._local._list.confirmMovePage,
-			text: i18n.ts._customEmojisManager._local._list.confirmMovePageDesciption,
+			title: localeRef.value.env._customEmojisManager._local._list.confirmMovePage,
+			text: localeRef.value.env._customEmojisManager._local._list.confirmMovePageDesciption,
 		});
 		if (canceled) return;
 	}
@@ -522,13 +524,13 @@ onMounted(async () => {
 });
 
 const headerPageMetadata = computed(() => ({
-	title: i18n.ts._customEmojisManager._local.tabTitleList,
+	title: localeRef.value.env._customEmojisManager._local.tabTitleList,
 	icon: 'ti ti-icons',
 }));
 
 const headerActions = computed<PageHeaderItem[]>(() => [{
 	icon: 'ti ti-search',
-	text: i18n.ts.search,
+	text: localeRef.value.env.search,
 	handler: async () => {
 		if (searchWindowOpening) return;
 		searchWindowOpening = true;
@@ -552,14 +554,14 @@ const headerActions = computed<PageHeaderItem[]>(() => [{
 	},
 }, {
 	icon: 'ti ti-list-numbers',
-	text: i18n.ts._customEmojisManager._gridCommon.searchLimit,
+	text: localeRef.value.env._customEmojisManager._gridCommon.searchLimit,
 	handler: (ev) => {
 		async function changeSearchLimit(to: number) {
 			if (updatedItemsCount.value > 0) {
 				const { canceled } = await os.confirm({
 					type: 'warning',
-					title: i18n.ts._customEmojisManager._local._list.confirmChangeView,
-					text: i18n.ts._customEmojisManager._local._list.confirmMovePageDesciption,
+					title: localeRef.value.env._customEmojisManager._local._list.confirmChangeView,
+					text: localeRef.value.env._customEmojisManager._local._list.confirmMovePageDesciption,
 				});
 				if (canceled) return;
 			}
@@ -587,7 +589,7 @@ const headerActions = computed<PageHeaderItem[]>(() => [{
 	},
 }, {
 	icon: 'ti ti-notes',
-	text: i18n.ts._customEmojisManager._gridCommon.registrationLogs,
+	text: localeRef.value.env._customEmojisManager._gridCommon.registrationLogs,
 	handler: async () => {
 		const { dispose } = await os.popupAsyncWithDialog(import('./custom-emojis-manager.local.list.logs.vue').then(x => x.default), {
 			logs: requestLogs.value,

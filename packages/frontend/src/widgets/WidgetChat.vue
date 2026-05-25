@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <MkContainer :showHeader="widgetProps.showHeader" class="mkw-chat">
 	<template #icon><i class="ti ti-users"></i></template>
-	<template #header>{{ i18n.ts._widgets.chat }}</template>
+	<template #header>{{ $locale.env._widgets.chat }}</template>
 	<template #func="{ buttonStyleClass }"><button class="_button" :class="buttonStyleClass" @click="configure()"><i class="ti ti-settings"></i></button></template>
 
 	<div>
@@ -16,12 +16,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef } from '@/i18n.js';
+
 import { } from 'vue';
 import { useWidgetPropsManager } from './widget.js';
 import type { WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
 import type { FormWithDefault, GetFormResultType } from '@/utility/form.js';
 import MkContainer from '@/components/MkContainer.vue';
-import { i18n } from '@/i18n.js';
 import MkChatHistories from '@/components/MkChatHistories.vue';
 
 const name = 'chat';
@@ -29,7 +30,7 @@ const name = 'chat';
 const widgetPropsDef = {
 	showHeader: {
 		type: 'boolean',
-		label: i18n.ts._widgetOptions.showHeader,
+		label: localeRef.value.env._widgetOptions.showHeader,
 		default: true,
 	},
 } satisfies FormWithDefault;

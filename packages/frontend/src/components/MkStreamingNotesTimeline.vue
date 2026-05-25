@@ -10,14 +10,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<MkError v-else-if="paginator.error.value" @retry="paginator.init()"/>
 
 	<div v-else-if="paginator.items.value.length === 0" key="_empty_">
-		<slot name="empty"><MkResult type="empty" :text="i18n.ts.noNotes"/></slot>
+		<slot name="empty"><MkResult type="empty" :text="$locale.env.noNotes"/></slot>
 	</div>
 
 	<div v-else ref="rootEl">
 		<div v-if="paginator.queuedAheadItemsCount.value > 0" :class="$style.new">
 			<div :class="$style.newBg1"></div>
 			<div :class="$style.newBg2"></div>
-			<button class="_button" :class="$style.newButton" @click="releaseQueue()"><i class="ti ti-circle-arrow-up"></i> {{ i18n.ts.newNote }}</button>
+			<button class="_button" :class="$style.newButton" @click="releaseQueue()"><i class="ti ti-circle-arrow-up"></i> {{ $locale.env.newNote }}</button>
 		</div>
 		<component
 			:is="prefer.s.animation ? TransitionGroup : 'div'"
@@ -48,7 +48,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</template>
 		</component>
 		<button v-show="paginator.canFetchOlder.value" key="_more_" v-appear="prefer.s.enableInfiniteScroll ? paginator.fetchOlder : null" :disabled="paginator.fetchingOlder.value" class="_button" :class="$style.more" @click="paginator.fetchOlder">
-			<div v-if="!paginator.fetchingOlder.value">{{ i18n.ts.loadMore }}</div>
+			<div v-if="!paginator.fetchingOlder.value">{{ $locale.env.loadMore }}</div>
 			<MkLoading v-else :inline="true"/>
 		</button>
 	</div>
@@ -56,6 +56,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+
 import { computed, watch, onUnmounted, provide, useTemplateRef, TransitionGroup, onMounted, shallowRef, ref, markRaw } from 'vue';
 import * as Misskey from 'misskey-js';
 import { useInterval } from '@@/js/use-interval.js';
@@ -73,7 +74,6 @@ import { prefer } from '@/preferences.js';
 import { store } from '@/store.js';
 import MkNote from '@/components/MkNote.vue';
 import MkButton from '@/components/MkButton.vue';
-import { i18n } from '@/i18n.js';
 import { DI } from '@/di.js';
 import { globalEvents, useGlobalEvent } from '@/events.js';
 import { isSeparatorNeeded, getSeparatorInfo } from '@/utility/timeline-date-separate.js';

@@ -6,7 +6,7 @@
 import shader from './mirror.glsl';
 import type { ImageEffectorUiDefinition } from '../image-effector/ImageEffector.js';
 import { defineImageCompositorFunction } from '@/lib/ImageCompositor.js';
-import { i18n } from '@/i18n.js';
+import { $locale, $l } from '@/i18n.js';
 
 export const fn = defineImageCompositorFunction<{
 	h: number;
@@ -20,10 +20,10 @@ export const fn = defineImageCompositorFunction<{
 });
 
 export const uiDefinition = {
-	name: i18n.ts._imageEffector._fxs.mirror,
+	name: $locale.value.env._imageEffector._fxs.mirror,
 	params: {
 		h: {
-			label: i18n.ts.horizontal,
+			label: $locale.value.env.horizontal,
 			type: 'number:enum',
 			enum: [
 				{ value: -1 as const, icon: 'ti ti-arrow-bar-right' },
@@ -33,7 +33,7 @@ export const uiDefinition = {
 			default: -1,
 		},
 		v: {
-			label: i18n.ts.vertical,
+			label: $locale.value.env.vertical,
 			type: 'number:enum',
 			enum: [
 				{ value: -1 as const, icon: 'ti ti-arrow-bar-down' },

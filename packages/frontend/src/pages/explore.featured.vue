@@ -8,8 +8,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<MkTab
 		v-model="tab"
 		:tabs="[
-			{ key: 'notes', label: i18n.ts.notes },
-			{ key: 'polls', label: i18n.ts.poll },
+			{ key: 'notes', label: $locale.env.notes },
+			{ key: 'polls', label: $locale.env.poll },
 		]"
 		style="margin-bottom: var(--MI-margin);"
 	>
@@ -20,10 +20,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+
 import { markRaw, ref } from 'vue';
 import MkNotesTimeline from '@/components/MkNotesTimeline.vue';
 import MkTab from '@/components/MkTab.vue';
-import { i18n } from '@/i18n.js';
 import { Paginator } from '@/utility/paginator.js';
 
 const paginatorForNotes = markRaw(new Paginator('notes/featured', {

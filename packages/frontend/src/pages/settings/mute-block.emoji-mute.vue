@@ -26,25 +26,26 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 	</div>
 
-	<MkButton primary inline @click="add"><i class="ti ti-plus"></i> {{ i18n.ts.add }}</MkButton>
+	<MkButton primary inline @click="add"><i class="ti ti-plus"></i> {{ $locale.env.add }}</MkButton>
 
 	<hr>
 
 	<SearchMarker :keywords="['sync', 'devices']">
 		<MkSwitch :modelValue="syncEnabled" @update:modelValue="changeSyncEnabled">
-			<template #label><i class="ti ti-cloud-cog"></i> <SearchLabel>{{ i18n.ts.syncBetweenDevices }}</SearchLabel></template>
+			<template #label><i class="ti ti-cloud-cog"></i> <SearchLabel>{{ $locale.env.syncBetweenDevices }}</SearchLabel></template>
 		</MkSwitch>
 	</SearchMarker>
 </div>
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef, $l as localizerRef } from '@/i18n.js';
+
 import { ref } from 'vue';
 import type { MenuItem } from '@/types/menu';
 import MkButton from '@/components/MkButton.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import * as os from '@/os.js';
-import { i18n } from '@/i18n.js';
 import { prefer } from '@/preferences.js';
 import {
 	mute as muteEmoji,
@@ -73,7 +74,7 @@ function onEmojiClick(ev: PointerEvent, emoji: string) {
 		type: 'label',
 		text: emoji,
 	}, {
-		text: i18n.ts.emojiUnmute,
+		text: localeRef.value.env.emojiUnmute,
 		icon: 'ti ti-mood-off',
 		action: () => unmute(emoji),
 	}];
@@ -83,7 +84,7 @@ function onEmojiClick(ev: PointerEvent, emoji: string) {
 function unmute(emoji: string) {
 	os.confirm({
 		type: 'question',
-		title: i18n.tsx.unmuteX({ x: emoji }),
+		title: localizerRef.value.env.unmuteX({ x: emoji }),
 	}).then(({ canceled }) => {
 		if (canceled) {
 			return;

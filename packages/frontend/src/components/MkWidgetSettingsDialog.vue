@@ -15,12 +15,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 	@ok="save()"
 	@closed="emit('closed')"
 >
-	<template #header><i class="ti ti-icons"></i> {{ i18n.ts._widgets[widgetName] ?? widgetName }}</template>
+	<template #header><i class="ti ti-icons"></i> {{ $locale.env._widgets[widgetName] ?? widgetName }}</template>
 
 	<MkPreviewWithControls>
 		<template #preview>
 			<div :class="$style.previewWrapper">
-				<div class="_acrylic" :class="$style.previewTitle">{{ i18n.ts.preview }}</div>
+				<div class="_acrylic" :class="$style.previewTitle">{{ $locale.env.preview }}</div>
 
 				<div ref="resizerRootEl" :class="$style.previewResizerRoot" inert>
 					<div
@@ -47,12 +47,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script setup lang="ts">
+
 import { useTemplateRef, ref, computed, onBeforeUnmount, onMounted } from 'vue';
 import MkPreviewWithControls from './MkPreviewWithControls.vue';
 import type { Form } from '@/utility/form.js';
 import type { WidgetName } from '@/widgets/index.js';
 import { deepClone } from '@/utility/clone.js';
-import { i18n } from '@/i18n.js';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import MkForm from '@/components/MkForm.vue';
 

@@ -6,7 +6,7 @@
 import { readonly, ref } from 'vue';
 import * as os from '@/os.js';
 import { store } from '@/store.js';
-import { i18n } from '@/i18n.js';
+import { $locale, $l } from '@/i18n.js';
 
 export const storagePersistenceSupported = window.isSecureContext && 'storage' in navigator;
 const storagePersisted = ref(false);
@@ -28,13 +28,13 @@ export async function enableStoragePersistence() {
 		} else {
 			os.alert({
 				type: 'error',
-				text: i18n.ts.somethingHappened,
+				text: $locale.value.env.somethingHappened,
 			});
 		}
 	}	catch (err) {
 		os.alert({
 			type: 'error',
-			text: i18n.ts.somethingHappened,
+			text: $locale.value.env.somethingHappened,
 		});
 	}
 }

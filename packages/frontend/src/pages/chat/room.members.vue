@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div class="_gaps">
-	<MkButton v-if="isOwner" primary rounded style="margin: 0 auto;" @click="emit('inviteUser')"><i class="ti ti-plus"></i> {{ i18n.ts._chat.inviteUser }}</MkButton>
+	<MkButton v-if="isOwner" primary rounded style="margin: 0 auto;" @click="emit('inviteUser')"><i class="ti ti-plus"></i> {{ $locale.env._chat.inviteUser }}</MkButton>
 
 	<MkA :class="$style.membershipBody" :to="`${userPage(room.owner)}`">
 		<MkUserCardMini :user="room.owner"/>
@@ -22,7 +22,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<template v-if="isOwner">
 		<hr>
 
-		<div>{{ i18n.ts._chat.sentInvitations }}</div>
+		<div>{{ $locale.env._chat.sentInvitations }}</div>
 
 		<div v-for="invitation in invitations" :key="invitation.id" :class="$style.invitation">
 			<MkA :class="$style.invitationBody" :to="`${userPage(invitation.user)}`">
@@ -34,10 +34,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+
 import { computed, onMounted, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkButton from '@/components/MkButton.vue';
-import { i18n } from '@/i18n.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
 import { userPage } from '@/filters/user.js';

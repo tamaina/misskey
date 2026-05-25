@@ -35,11 +35,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef } from '@/i18n.js';
+
 import { computed, markRaw, ref } from 'vue';
 import MkPagePreview from '@/components/MkPagePreview.vue';
 import MkPagination from '@/components/MkPagination.vue';
 import MkButton from '@/components/MkButton.vue';
-import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
 import { useRouter } from '@/router.js';
 import { Paginator } from '@/utility/paginator.js';
@@ -64,26 +65,26 @@ function create() {
 
 const headerActions = computed(() => [{
 	icon: 'ti ti-plus',
-	text: i18n.ts.create,
+	text: localeRef.value.env.create,
 	handler: create,
 }]);
 
 const headerTabs = computed(() => [{
 	key: 'featured',
-	title: i18n.ts._pages.featured,
+	title: localeRef.value.env._pages.featured,
 	icon: 'ti ti-flare',
 }, {
 	key: 'my',
-	title: i18n.ts._pages.my,
+	title: localeRef.value.env._pages.my,
 	icon: 'ti ti-edit',
 }, {
 	key: 'liked',
-	title: i18n.ts._pages.liked,
+	title: localeRef.value.env._pages.liked,
 	icon: 'ti ti-heart',
 }]);
 
 definePage(() => ({
-	title: i18n.ts.pages,
+	title: localeRef.value.env.pages,
 	icon: 'ti ti-note',
 }));
 </script>

@@ -16,7 +16,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	@closed="emit('closed')"
 >
 	<template #header>
-		{{ mode === 'create' ? i18n.ts._webhookSettings.createWebhook : i18n.ts._webhookSettings.modifyWebhook }}
+		{{ mode === 'create' ? $locale.env._webhookSettings.createWebhook : $locale.env._webhookSettings.modifyWebhook }}
 	</template>
 
 	<div style="display: flex; flex-direction: column; min-height: 100%;">
@@ -24,74 +24,76 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkLoading v-if="loading !== 0"/>
 			<div v-else :class="$style.root" class="_gaps_m">
 				<MkInput v-model="title">
-					<template #label>{{ i18n.ts._webhookSettings.name }}</template>
+					<template #label>{{ $locale.env._webhookSettings.name }}</template>
 				</MkInput>
 				<MkInput v-model="url">
 					<template #label>URL</template>
 				</MkInput>
 				<MkInput v-model="secret">
-					<template #label>{{ i18n.ts._webhookSettings.secret }}</template>
+					<template #label>{{ $locale.env._webhookSettings.secret }}</template>
 				</MkInput>
 				<MkFolder :defaultOpen="true">
-					<template #label>{{ i18n.ts._webhookSettings.trigger }}</template>
+					<template #label>{{ $locale.env._webhookSettings.trigger }}</template>
 
 					<div class="_gaps">
 						<div class="_gaps_s">
 							<div :class="$style.switchBox">
 								<MkSwitch v-model="events.abuseReport" :disabled="disabledEvents.abuseReport">
-									<template #label>{{ i18n.ts._webhookSettings._systemEvents.abuseReport }}</template>
+									<template #label>{{ $locale.env._webhookSettings._systemEvents.abuseReport }}</template>
 								</MkSwitch>
 								<MkButton v-show="mode === 'edit'" transparent :class="$style.testButton" :disabled="!(isActive && events.abuseReport)" @click="test('abuseReport')"><i class="ti ti-send"></i></MkButton>
 							</div>
 							<div :class="$style.switchBox">
 								<MkSwitch v-model="events.abuseReportResolved" :disabled="disabledEvents.abuseReportResolved">
-									<template #label>{{ i18n.ts._webhookSettings._systemEvents.abuseReportResolved }}</template>
+									<template #label>{{ $locale.env._webhookSettings._systemEvents.abuseReportResolved }}</template>
 								</MkSwitch>
 								<MkButton v-show="mode === 'edit'" transparent :class="$style.testButton" :disabled="!(isActive && events.abuseReportResolved)" @click="test('abuseReportResolved')"><i class="ti ti-send"></i></MkButton>
 							</div>
 							<div :class="$style.switchBox">
 								<MkSwitch v-model="events.userCreated" :disabled="disabledEvents.userCreated">
-									<template #label>{{ i18n.ts._webhookSettings._systemEvents.userCreated }}</template>
+									<template #label>{{ $locale.env._webhookSettings._systemEvents.userCreated }}</template>
 								</MkSwitch>
 								<MkButton v-show="mode === 'edit'" transparent :class="$style.testButton" :disabled="!(isActive && events.userCreated)" @click="test('userCreated')"><i class="ti ti-send"></i></MkButton>
 							</div>
 							<div :class="$style.switchBox">
 								<MkSwitch v-model="events.inactiveModeratorsWarning" :disabled="disabledEvents.inactiveModeratorsWarning">
-									<template #label>{{ i18n.ts._webhookSettings._systemEvents.inactiveModeratorsWarning }}</template>
+									<template #label>{{ $locale.env._webhookSettings._systemEvents.inactiveModeratorsWarning }}</template>
 								</MkSwitch>
 								<MkButton v-show="mode === 'edit'" transparent :class="$style.testButton" :disabled="!(isActive && events.inactiveModeratorsWarning)" @click="test('inactiveModeratorsWarning')"><i class="ti ti-send"></i></MkButton>
 							</div>
 							<div :class="$style.switchBox">
 								<MkSwitch v-model="events.inactiveModeratorsInvitationOnlyChanged" :disabled="disabledEvents.inactiveModeratorsInvitationOnlyChanged">
-									<template #label>{{ i18n.ts._webhookSettings._systemEvents.inactiveModeratorsInvitationOnlyChanged }}</template>
+									<template #label>{{ $locale.env._webhookSettings._systemEvents.inactiveModeratorsInvitationOnlyChanged }}</template>
 								</MkSwitch>
 								<MkButton v-show="mode === 'edit'" transparent :class="$style.testButton" :disabled="!(isActive && events.inactiveModeratorsInvitationOnlyChanged)" @click="test('inactiveModeratorsInvitationOnlyChanged')"><i class="ti ti-send"></i></MkButton>
 							</div>
 						</div>
 
 						<div v-show="mode === 'edit'" :class="$style.description">
-							{{ i18n.ts._webhookSettings.testRemarks }}
+							{{ $locale.env._webhookSettings.testRemarks }}
 						</div>
 					</div>
 				</MkFolder>
 
 				<MkSwitch v-model="isActive">
-					<template #label>{{ i18n.ts.enable }}</template>
+					<template #label>{{ $locale.env.enable }}</template>
 				</MkSwitch>
 			</div>
 		</div>
 		<div :class="$style.footer" class="_buttonsCenter">
 			<MkButton primary rounded :disabled="disableSubmitButton" @click="onSubmitClicked">
 				<i class="ti ti-check"></i>
-				{{ i18n.ts.ok }}
+				{{ $locale.env.ok }}
 			</MkButton>
-			<MkButton rounded @click="onCancelClicked"><i class="ti ti-x"></i> {{ i18n.ts.cancel }}</MkButton>
+			<MkButton rounded @click="onCancelClicked"><i class="ti ti-x"></i> {{ $locale.env.cancel }}</MkButton>
 		</div>
 	</div>
 </MkModalWindow>
 </template>
 
 <script setup lang="ts">
+import { $locale as localeRef } from '@/i18n.js';
+
 import { computed, onMounted, ref, useTemplateRef, toRefs } from 'vue';
 import * as Misskey from 'misskey-js';
 import type {
@@ -101,7 +103,6 @@ import type {
 } from '@/components/MkSystemWebhookEditor.impl.js';
 import MkInput from '@/components/MkInput.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
-import { i18n } from '@/i18n.js';
 import MkButton from '@/components/MkButton.vue';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import MkModalWindow from '@/components/MkModalWindow.vue';
@@ -192,8 +193,8 @@ async function onSubmitClicked() {
 			}
 			// eslint-disable-next-line
 		} catch (ex: any) {
-			const msg = ex.message ?? i18n.ts.internalServerErrorDescription;
-			await os.alert({ type: 'error', title: i18n.ts.error, text: msg });
+			const msg = ex.message ?? localeRef.value.env.internalServerErrorDescription;
+			await os.alert({ type: 'error', title: localeRef.value.env.error, text: msg });
 			dialogEl.value?.close();
 			emit('canceled');
 		}
@@ -249,8 +250,8 @@ onMounted(async () => {
 					}
 					// eslint-disable-next-line @typescript-eslint/no-explicit-any
 				} catch (ex: any) {
-					const msg = ex.message ?? i18n.ts.internalServerErrorDescription;
-					await os.alert({ type: 'error', title: i18n.ts.error, text: msg });
+					const msg = ex.message ?? localeRef.value.env.internalServerErrorDescription;
+					await os.alert({ type: 'error', title: localeRef.value.env.error, text: msg });
 					dialogEl.value?.close();
 					emit('canceled');
 				}

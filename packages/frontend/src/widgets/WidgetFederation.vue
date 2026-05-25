@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <MkContainer :showHeader="widgetProps.showHeader" data-cy-mkw-federation class="mkw-federation">
 	<template #icon><i class="ti ti-whirl"></i></template>
-	<template #header>{{ i18n.ts._widgets.federation }}</template>
+	<template #header>{{ $locale.env._widgets.federation }}</template>
 
 	<div class="wbrkwalb">
 		<MkLoading v-if="fetching"/>
@@ -25,6 +25,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef } from '@/i18n.js';
+
 import { ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import { useInterval } from '@@/js/use-interval.js';
@@ -34,7 +36,6 @@ import type { FormWithDefault, GetFormResultType } from '@/utility/form.js';
 import MkContainer from '@/components/MkContainer.vue';
 import MkMiniChart from '@/components/MkMiniChart.vue';
 import { misskeyApi, misskeyApiGet } from '@/utility/misskey-api.js';
-import { i18n } from '@/i18n.js';
 import { getProxiedImageUrlNullable } from '@/utility/media-proxy.js';
 import { prefer } from '@/preferences.js';
 
@@ -43,7 +44,7 @@ const name = 'federation';
 const widgetPropsDef = {
 	showHeader: {
 		type: 'boolean',
-		label: i18n.ts._widgetOptions.showHeader,
+		label: localeRef.value.env._widgetOptions.showHeader,
 		default: true,
 	},
 } satisfies FormWithDefault;

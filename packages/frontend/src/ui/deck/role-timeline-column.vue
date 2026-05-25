@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <XColumn :menu="menu" :column="column" :isStacked="isStacked" :refresher="async () => { await timeline?.reloadTimeline() }">
 	<template #header>
-		<i class="ti ti-badge"></i><span style="margin-left: 8px;">{{ column.name || column.timelineNameCache || i18n.ts._deck._columns.roleTimeline }}</span>
+		<i class="ti ti-badge"></i><span style="margin-left: 8px;">{{ column.name || column.timelineNameCache || $locale.env._deck._columns.roleTimeline }}</span>
 	</template>
 
 	<MkStreamingNotesTimeline v-if="column.roleId" ref="timeline" src="role" :role="column.roleId"/>
@@ -14,6 +14,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef } from '@/i18n.js';
+
 import { onMounted, ref, useTemplateRef, watch } from 'vue';
 import XColumn from './column.vue';
 import type { Column } from '@/deck.js';
@@ -23,7 +25,6 @@ import { updateColumn } from '@/deck.js';
 import MkStreamingNotesTimeline from '@/components/MkStreamingNotesTimeline.vue';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
-import { i18n } from '@/i18n.js';
 import { soundSettingsButton } from '@/ui/deck/tl-note-notification.js';
 
 const props = defineProps<{
@@ -50,7 +51,7 @@ watch(soundSetting, v => {
 async function setRole() {
 	const roles = (await misskeyApi('roles/list')).filter(x => x.isExplorable);
 	const { canceled, result: roleId } = await os.select({
-		title: i18n.ts.role,
+		title: localeRef.value.env.role,
 		items: roles.map(x => ({
 			value: x.id, label: x.name,
 		})),
@@ -66,11 +67,11 @@ async function setRole() {
 
 const menu: MenuItem[] = [{
 	icon: 'ti ti-pencil',
-	text: i18n.ts.role,
+	text: localeRef.value.env.role,
 	action: setRole,
 }, {
 	icon: 'ti ti-bell',
-	text: i18n.ts._deck.newNoteNotificationSettings,
+	text: localeRef.value.env._deck.newNoteNotificationSettings,
 	action: () => soundSettingsButton(soundSetting),
 }];
 

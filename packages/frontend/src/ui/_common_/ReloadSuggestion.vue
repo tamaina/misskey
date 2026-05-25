@@ -8,13 +8,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<span :class="$style.icon">
 		<i class="ti ti-info-circle"></i>
 	</span>
-	<span :class="$style.title">{{ i18n.ts.reloadRequiredToApplySettings }}</span>
-	<span :class="$style.body"><button class="_textButton" style="color: var(--MI_THEME-fgOnAccent);" @click="reload">{{ i18n.ts.reload }}</button> | <button class="_textButton" style="color: var(--MI_THEME-fgOnAccent);" @click="skip">{{ i18n.ts.skip }}</button></span>
+	<span :class="$style.title">{{ $locale.env.reloadRequiredToApplySettings }}</span>
+	<span :class="$style.body"><button class="_textButton" style="color: var(--MI_THEME-fgOnAccent);" @click="reload">{{ $locale.env.reload }}</button> | <button class="_textButton" style="color: var(--MI_THEME-fgOnAccent);" @click="skip">{{ $locale.env.skip }}</button></span>
 </div>
 </template>
 
 <script lang="ts" setup>
-import { i18n } from '@/i18n.js';
+
 import { shouldSuggestReload } from '@/utility/reload-suggest.js';
 import { unisonReload } from '@/utility/unison-reload.js';
 

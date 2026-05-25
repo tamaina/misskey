@@ -46,8 +46,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 									<MkAvatar :user="page.user" :class="$style.avatar" indicator link preview/> <MkA :to="`/@${username}`"><MkUserName :user="page.user" :nowrap="false"/></MkA>
 								</div>
 								<div :class="$style.pageBannerTitleSubActions">
-									<MkA v-if="page.userId === $i?.id" v-tooltip="i18n.ts._pages.editThisPage" :to="`/pages/edit/${page.id}`" class="_button" :class="$style.generalActionButton"><i class="ti ti-pencil ti-fw"></i></MkA>
-									<button v-tooltip="i18n.ts.share" class="_button" :class="$style.generalActionButton" @click="share"><i class="ti ti-share ti-fw"></i></button>
+									<MkA v-if="page.userId === $i?.id" v-tooltip="$locale.env._pages.editThisPage" :to="`/pages/edit/${page.id}`" class="_button" :class="$style.generalActionButton"><i class="ti ti-pencil ti-fw"></i></MkA>
+									<button v-tooltip="$locale.env.share" class="_button" :class="$style.generalActionButton" @click="share"><i class="ti ti-share ti-fw"></i></button>
 								</div>
 							</div>
 						</div>
@@ -57,13 +57,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</div>
 					<div :class="$style.pageActions">
 						<div>
-							<MkButton v-if="page.isLiked" v-tooltip="i18n.ts._pages.unlike" class="button" asLike primary @click="unlike()"><i class="ti ti-heart-off"></i><span v-if="page.likedCount > 0" class="count">{{ page.likedCount }}</span></MkButton>
-							<MkButton v-else v-tooltip="i18n.ts._pages.like" class="button" asLike @click="like()"><i class="ti ti-heart"></i><span v-if="page.likedCount > 0" class="count">{{ page.likedCount }}</span></MkButton>
+							<MkButton v-if="page.isLiked" v-tooltip="$locale.env._pages.unlike" class="button" asLike primary @click="unlike()"><i class="ti ti-heart-off"></i><span v-if="page.likedCount > 0" class="count">{{ page.likedCount }}</span></MkButton>
+							<MkButton v-else v-tooltip="$locale.env._pages.like" class="button" asLike @click="like()"><i class="ti ti-heart"></i><span v-if="page.likedCount > 0" class="count">{{ page.likedCount }}</span></MkButton>
 						</div>
 						<div :class="$style.other">
-							<MkA v-if="page.userId === $i?.id" v-tooltip="i18n.ts._pages.editThisPage" :to="`/pages/edit/${page.id}`" class="_button" :class="$style.generalActionButton"><i class="ti ti-pencil ti-fw"></i></MkA>
-							<button v-tooltip="i18n.ts.copyLink" class="_button" :class="$style.generalActionButton" @click="copyLink"><i class="ti ti-link ti-fw"></i></button>
-							<button v-tooltip="i18n.ts.share" class="_button" :class="$style.generalActionButton" @click="share"><i class="ti ti-share ti-fw"></i></button>
+							<MkA v-if="page.userId === $i?.id" v-tooltip="$locale.env._pages.editThisPage" :to="`/pages/edit/${page.id}`" class="_button" :class="$style.generalActionButton"><i class="ti ti-pencil ti-fw"></i></MkA>
+							<button v-tooltip="$locale.env.copyLink" class="_button" :class="$style.generalActionButton" @click="copyLink"><i class="ti ti-link ti-fw"></i></button>
+							<button v-tooltip="$locale.env.share" class="_button" :class="$style.generalActionButton" @click="share"><i class="ti ti-share ti-fw"></i></button>
 							<button v-if="$i" v-click-anime class="_button" :class="$style.generalActionButton" @click="showMenu"><i class="ti ti-dots ti-fw"></i></button>
 						</div>
 					</div>
@@ -76,14 +76,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<!--<MkFollowButton v-if="!$i || $i.id != page.user.id" :user="page.user!" :inline="true" :transparent="false" :full="true" :class="$style.follow"/>-->
 					</div>
 					<div :class="$style.pageDate">
-						<div><i class="ti ti-clock"></i> {{ i18n.ts.createdAt }}: <MkTime :time="page.createdAt" mode="detail"/></div>
-						<div v-if="page.createdAt != page.updatedAt"><i class="ti ti-clock-edit"></i> {{ i18n.ts.updatedAt }}: <MkTime :time="page.updatedAt" mode="detail"/></div>
+						<div><i class="ti ti-clock"></i> {{ $locale.env.createdAt }}: <MkTime :time="page.createdAt" mode="detail"/></div>
+						<div v-if="page.createdAt != page.updatedAt"><i class="ti ti-clock-edit"></i> {{ $locale.env.updatedAt }}: <MkTime :time="page.updatedAt" mode="detail"/></div>
 					</div>
 				</div>
 				<MkAd :preferForms="['horizontal', 'horizontal-big']"/>
 				<MkContainer :max-height="300" :foldable="true" class="other">
 					<template #icon><i class="ti ti-clock"></i></template>
-					<template #header>{{ i18n.ts.recentPosts }}</template>
+					<template #header>{{ $locale.env.recentPosts }}</template>
 					<MkPagination v-slot="{items}" :paginator="otherPostsPaginator" :class="$style.relatedPagesRoot" class="_gaps">
 						<MkPagePreview v-for="page in items" :key="page.id" :page="page" :class="$style.relatedPagesItem"/>
 					</MkPagination>
@@ -97,6 +97,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef } from '@/i18n.js';
+
 import { computed, watch, ref, defineAsyncComponent, markRaw } from 'vue';
 import * as Misskey from 'misskey-js';
 import { url } from '@@/js/config.js';
@@ -111,7 +113,6 @@ import MkFollowButton from '@/components/MkFollowButton.vue';
 import MkContainer from '@/components/MkContainer.vue';
 import MkPagination from '@/components/MkPagination.vue';
 import MkPagePreview from '@/components/MkPagePreview.vue';
-import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
 import { deepClone } from '@/utility/clone.js';
 import { $i } from '@/i.js';
@@ -169,14 +170,14 @@ function share(ev: PointerEvent) {
 	const menuItems: MenuItem[] = [];
 
 	menuItems.push({
-		text: i18n.ts.shareWithNote,
+		text: localeRef.value.env.shareWithNote,
 		icon: 'ti ti-pencil',
 		action: shareWithNote,
 	});
 
 	if (isSupportShare()) {
 		menuItems.push({
-			text: i18n.ts.share,
+			text: localeRef.value.env.share,
 			icon: 'ti ti-share',
 			action: shareWithNavigator,
 		});
@@ -226,7 +227,7 @@ async function unlike() {
 
 	const confirm = await os.confirm({
 		type: 'warning',
-		text: i18n.ts.unlikeConfirm,
+		text: localeRef.value.env.unlikeConfirm,
 	});
 	if (confirm.canceled) return;
 	os.apiWithDialog('pages/unlike', {
@@ -266,7 +267,7 @@ function showMenu(ev: PointerEvent) {
 	if ($i && $i.id === page.value.userId) {
 		menuItems.push({
 			icon: 'ti ti-pencil',
-			text: i18n.ts.edit,
+			text: localeRef.value.env.edit,
 			action: () => router.push('/pages/edit/:initPageId', {
 				params: {
 					initPageId: page.value!.id,
@@ -277,20 +278,20 @@ function showMenu(ev: PointerEvent) {
 		if ($i.pinnedPageId === page.value.id) {
 			menuItems.push({
 				icon: 'ti ti-pinned-off',
-				text: i18n.ts.unpin,
+				text: localeRef.value.env.unpin,
 				action: () => pin(false),
 			});
 		} else {
 			menuItems.push({
 				icon: 'ti ti-pin',
-				text: i18n.ts.pin,
+				text: localeRef.value.env.pin,
 				action: () => pin(true),
 			});
 		}
 	} else if ($i && $i.id !== page.value.userId) {
 		menuItems.push({
 			icon: 'ti ti-exclamation-circle',
-			text: i18n.ts.reportAbuse,
+			text: localeRef.value.env.reportAbuse,
 			action: reportAbuse,
 		});
 
@@ -299,11 +300,11 @@ function showMenu(ev: PointerEvent) {
 				type: 'divider',
 			}, {
 				icon: 'ti ti-trash',
-				text: i18n.ts.delete,
+				text: localeRef.value.env.delete,
 				danger: true,
 				action: () => os.confirm({
 					type: 'warning',
-					text: i18n.ts.deleteConfirm,
+					text: localeRef.value.env.deleteConfirm,
 				}).then(({ canceled }) => {
 					if (canceled || !page.value) return;
 
@@ -323,7 +324,7 @@ const headerActions = computed(() => []);
 const headerTabs = computed(() => []);
 
 definePage(() => ({
-	title: page.value ? page.value.title || page.value.name : i18n.ts.pages,
+	title: page.value ? page.value.title || page.value.name : localeRef.value.env.pages,
 	...page.value ? {
 		avatar: page.value.user,
 		path: `/@${page.value.user.username}/pages/${page.value.name}`,

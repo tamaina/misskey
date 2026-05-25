@@ -11,7 +11,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<template #footer>
 		<div :class="$style.footer">
 			<div class="_spacer" style="--MI_SPACER-w: 600px; --MI_SPACER-min: 16px; --MI_SPACER-max: 16px;">
-				<MkButton primary rounded @click="save"><i class="ti ti-check"></i> {{ i18n.ts.save }}</MkButton>
+				<MkButton primary rounded @click="save"><i class="ti ti-check"></i> {{ $locale.env.save }}</MkButton>
 			</div>
 		</div>
 	</template>
@@ -19,13 +19,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef } from '@/i18n.js';
+
 import { computed, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import XEditor from './roles.editor.vue';
 import { genId } from '@/utility/id.js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
-import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
 import MkButton from '@/components/MkButton.vue';
 import { rolesCache } from '@/cache.js';
@@ -99,7 +100,7 @@ async function save() {
 const headerTabs = computed(() => []);
 
 definePage(() => ({
-	title: role.value ? `${i18n.ts._role.edit}: ${role.value.name}` : i18n.ts._role.new,
+	title: role.value ? `${localeRef.value.env._role.edit}: ${role.value.name}` : localeRef.value.env._role.new,
 	icon: 'ti ti-badge',
 }));
 </script>

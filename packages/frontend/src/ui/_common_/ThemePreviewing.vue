@@ -8,13 +8,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<span :class="$style.icon">
 		<i class="ti ti-info-circle"></i>
 	</span>
-	<span :class="$style.title">{{ i18n.ts.previewingTheme }}</span>
-	<span :class="$style.body"><button class="_textButton" style="color: var(--MI_THEME-fgOnAccent);" @click="restore">{{ i18n.ts.previewingThemeRestore }}</button> | <MkA class="_textButton" style="color: var(--MI_THEME-fgOnAccent);" to="/settings/theme">{{ i18n.ts.settings }}</MkA></span>
+	<span :class="$style.title">{{ $locale.env.previewingTheme }}</span>
+	<span :class="$style.body"><button class="_textButton" style="color: var(--MI_THEME-fgOnAccent);" @click="restore">{{ $locale.env.previewingThemeRestore }}</button> | <MkA class="_textButton" style="color: var(--MI_THEME-fgOnAccent);" to="/settings/theme">{{ $locale.env.settings }}</MkA></span>
 </div>
 </template>
 
 <script lang="ts" setup>
-import { i18n } from '@/i18n.js';
+
 import { themeManager } from '@/theme.js';
 
 function restore() {

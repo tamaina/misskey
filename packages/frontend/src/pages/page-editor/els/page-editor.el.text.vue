@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <!-- eslint-disable vue/no-mutating-props -->
 <XContainer :draggable="true" :dragStartCallback="dragStartCallback" @remove="() => emit('remove')">
-	<template #header><i class="ti ti-align-left"></i> {{ i18n.ts._pages.blocks.text }}</template>
+	<template #header><i class="ti ti-align-left"></i> {{ $locale.env._pages.blocks.text }}</template>
 
 	<section>
 		<textarea ref="inputEl" v-model="text" :class="$style.textarea"></textarea>
@@ -15,10 +15,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+
 import { watch, ref, useTemplateRef, onMounted, onUnmounted } from 'vue';
 import * as Misskey from 'misskey-js';
 import XContainer from '../page-editor.container.vue';
-import { i18n } from '@/i18n.js';
 import { Autocomplete } from '@/utility/autocomplete.js';
 
 const props = defineProps<{

@@ -20,13 +20,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef } from '@/i18n.js';
+
 import { computed, markRaw, ref } from 'vue';
 import { notificationTypes } from 'misskey-js';
 import type { PageHeaderItem } from '@/types/page-header.js';
 import MkStreamingNotificationsTimeline from '@/components/MkStreamingNotificationsTimeline.vue';
 import MkNotesTimeline from '@/components/MkNotesTimeline.vue';
 import * as os from '@/os.js';
-import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
 import { Paginator } from '@/utility/paginator.js';
 
@@ -47,7 +48,7 @@ const directNotesPaginator = markRaw(new Paginator('notes/mentions', {
 
 function setFilter(ev: PointerEvent) {
 	const typeItems = notificationTypes.map(t => ({
-		text: i18n.ts._notification._types[t],
+		text: localeRef.value.env._notification._types[t],
 		active: (includeTypes.value && includeTypes.value.includes(t)) ?? false,
 		action: () => {
 			includeTypes.value = [t];
@@ -55,7 +56,7 @@ function setFilter(ev: PointerEvent) {
 	}));
 	const items = includeTypes.value != null ? [{
 		icon: 'ti ti-x',
-		text: i18n.ts.clear,
+		text: localeRef.value.env.clear,
 		action: () => {
 			includeTypes.value = null;
 		},
@@ -64,12 +65,12 @@ function setFilter(ev: PointerEvent) {
 }
 
 const headerActions = computed<PageHeaderItem[]>(() => ([tab.value === 'all' ? {
-	text: i18n.ts.filter,
+	text: localeRef.value.env.filter,
 	icon: 'ti ti-filter',
 	highlighted: includeTypes.value != null,
 	handler: setFilter,
 } : undefined, tab.value === 'all' ? {
-	text: i18n.ts.markAllAsRead,
+	text: localeRef.value.env.markAllAsRead,
 	icon: 'ti ti-check',
 	handler: () => {
 		os.apiWithDialog('notifications/mark-all-as-read', {});
@@ -78,20 +79,20 @@ const headerActions = computed<PageHeaderItem[]>(() => ([tab.value === 'all' ? {
 
 const headerTabs = computed(() => [{
 	key: 'all',
-	title: i18n.ts.all,
+	title: localeRef.value.env.all,
 	icon: 'ti ti-point',
 }, {
 	key: 'mentions',
-	title: i18n.ts.mentions,
+	title: localeRef.value.env.mentions,
 	icon: 'ti ti-at',
 }, {
 	key: 'directNotes',
-	title: i18n.ts.directNotes,
+	title: localeRef.value.env.directNotes,
 	icon: 'ti ti-mail',
 }]);
 
 definePage(() => ({
-	title: i18n.ts.notifications,
+	title: localeRef.value.env.notifications,
 	icon: 'ti ti-bell',
 }));
 </script>

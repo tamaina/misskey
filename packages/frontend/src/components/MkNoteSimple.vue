@@ -20,17 +20,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</div>
 </div>
 <div v-else :class="$style.deleted">
-	{{ i18n.ts.deletedNote }}
+	{{ $locale.env.deletedNote }}
 </div>
 </template>
 
 <script lang="ts" setup>
+
 import { ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkNoteHeader from '@/components/MkNoteHeader.vue';
 import MkSubNoteContent from '@/components/MkSubNoteContent.vue';
 import MkCwButton from '@/components/MkCwButton.vue';
-import { i18n } from '@/i18n.js';
 import { prefer } from '@/preferences.js';
 
 const props = defineProps<{

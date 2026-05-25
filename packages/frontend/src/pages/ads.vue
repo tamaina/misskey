@@ -15,12 +15,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef } from '@/i18n.js';
+
 import { definePage } from '@/page.js';
-import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
 
 definePage(() => ({
-	title: i18n.ts.ads,
+	title: localeRef.value.env.ads,
 	icon: 'ti ti-ad',
 }));
 </script>

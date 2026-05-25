@@ -38,7 +38,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 			</template>
 		</MkDraggable>
-		<MkButton rounded style="margin: 0 auto;" @click="addChildValue"><i class="ti ti-plus"></i> {{ i18n.ts.add }}</MkButton>
+		<MkButton rounded style="margin: 0 auto;" @click="addChildValue"><i class="ti ti-plus"></i> {{ $locale.env.add }}</MkButton>
 	</div>
 
 	<div v-else-if="v.type === 'not'" :class="$style.item">
@@ -58,6 +58,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef } from '@/i18n.js';
+
 import { computed, ref, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import type { GetMkSelectValueTypesFromDef, MkSelectItem } from '@/components/MkSelect.vue';
@@ -66,7 +68,6 @@ import MkInput from '@/components/MkInput.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkDraggable from '@/components/MkDraggable.vue';
-import { i18n } from '@/i18n.js';
 import { deepClone } from '@/utility/clone.js';
 import { rolesCache } from '@/cache.js';
 
@@ -95,25 +96,25 @@ watch(v, () => {
 }, { deep: true });
 
 const typeDef = [
-	{ label: i18n.ts._role._condition.isLocal, value: 'isLocal' },
-	{ label: i18n.ts._role._condition.isRemote, value: 'isRemote' },
-	{ label: i18n.ts._role._condition.isSuspended, value: 'isSuspended' },
-	{ label: i18n.ts._role._condition.isLocked, value: 'isLocked' },
-	{ label: i18n.ts._role._condition.isBot, value: 'isBot' },
-	{ label: i18n.ts._role._condition.isCat, value: 'isCat' },
-	{ label: i18n.ts._role._condition.isExplorable, value: 'isExplorable' },
-	{ label: i18n.ts._role._condition.roleAssignedTo, value: 'roleAssignedTo' },
-	{ label: i18n.ts._role._condition.createdLessThan, value: 'createdLessThan' },
-	{ label: i18n.ts._role._condition.createdMoreThan, value: 'createdMoreThan' },
-	{ label: i18n.ts._role._condition.followersLessThanOrEq, value: 'followersLessThanOrEq' },
-	{ label: i18n.ts._role._condition.followersMoreThanOrEq, value: 'followersMoreThanOrEq' },
-	{ label: i18n.ts._role._condition.followingLessThanOrEq, value: 'followingLessThanOrEq' },
-	{ label: i18n.ts._role._condition.followingMoreThanOrEq, value: 'followingMoreThanOrEq' },
-	{ label: i18n.ts._role._condition.notesLessThanOrEq, value: 'notesLessThanOrEq' },
-	{ label: i18n.ts._role._condition.notesMoreThanOrEq, value: 'notesMoreThanOrEq' },
-	{ label: i18n.ts._role._condition.and, value: 'and' },
-	{ label: i18n.ts._role._condition.or, value: 'or' },
-	{ label: i18n.ts._role._condition.not, value: 'not' },
+	{ label: localeRef.value.env._role._condition.isLocal, value: 'isLocal' },
+	{ label: localeRef.value.env._role._condition.isRemote, value: 'isRemote' },
+	{ label: localeRef.value.env._role._condition.isSuspended, value: 'isSuspended' },
+	{ label: localeRef.value.env._role._condition.isLocked, value: 'isLocked' },
+	{ label: localeRef.value.env._role._condition.isBot, value: 'isBot' },
+	{ label: localeRef.value.env._role._condition.isCat, value: 'isCat' },
+	{ label: localeRef.value.env._role._condition.isExplorable, value: 'isExplorable' },
+	{ label: localeRef.value.env._role._condition.roleAssignedTo, value: 'roleAssignedTo' },
+	{ label: localeRef.value.env._role._condition.createdLessThan, value: 'createdLessThan' },
+	{ label: localeRef.value.env._role._condition.createdMoreThan, value: 'createdMoreThan' },
+	{ label: localeRef.value.env._role._condition.followersLessThanOrEq, value: 'followersLessThanOrEq' },
+	{ label: localeRef.value.env._role._condition.followersMoreThanOrEq, value: 'followersMoreThanOrEq' },
+	{ label: localeRef.value.env._role._condition.followingLessThanOrEq, value: 'followingLessThanOrEq' },
+	{ label: localeRef.value.env._role._condition.followingMoreThanOrEq, value: 'followingMoreThanOrEq' },
+	{ label: localeRef.value.env._role._condition.notesLessThanOrEq, value: 'notesLessThanOrEq' },
+	{ label: localeRef.value.env._role._condition.notesMoreThanOrEq, value: 'notesMoreThanOrEq' },
+	{ label: localeRef.value.env._role._condition.and, value: 'and' },
+	{ label: localeRef.value.env._role._condition.or, value: 'or' },
+	{ label: localeRef.value.env._role._condition.not, value: 'not' },
 ] as const satisfies MkSelectItem[];
 
 type KeyOfUnion<T> = T extends T ? keyof T : never;

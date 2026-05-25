@@ -11,9 +11,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkLoading v-if="isRefreshing" :class="$style.loader" :em="true"/>
 			<i v-else class="ti ti-arrow-bar-to-down" :class="[$style.icon, { [$style.refresh]: isPulledEnough }]"></i>
 			<div :class="$style.text">
-				<template v-if="isPulledEnough">{{ i18n.ts.releaseToRefresh }}</template>
-				<template v-else-if="isRefreshing">{{ i18n.ts.refreshing }}</template>
-				<template v-else>{{ i18n.ts.pullDownToRefresh }}</template>
+				<template v-if="isPulledEnough">{{ $locale.env.releaseToRefresh }}</template>
+				<template v-else-if="isRefreshing">{{ $locale.env.refreshing }}</template>
+				<template v-else>{{ $locale.env.pullDownToRefresh }}</template>
 			</div>
 		</div>
 	</div>
@@ -23,9 +23,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+
 import { onMounted, onUnmounted, ref, useTemplateRef } from 'vue';
 import { getScrollContainer } from '@@/js/scroll.js';
-import { i18n } from '@/i18n.js';
 import { isHorizontalSwipeSwiping } from '@/utility/touch.js';
 import { haptic } from '@/utility/haptic.js';
 

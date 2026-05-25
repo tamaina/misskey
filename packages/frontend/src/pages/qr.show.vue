@@ -26,6 +26,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { $locale as localeRef, $l as localizerRef } from '@/i18n.js';
+
 import tinycolor from 'tinycolor2';
 import QRCodeStyling from 'qr-code-styling';
 import { computed, ref, shallowRef, watch, onMounted, onUnmounted, useTemplateRef } from 'vue';
@@ -36,15 +38,14 @@ import { ensureSignin } from '@/i.js';
 import { userPage, userName } from '@/filters/user.js';
 import misskeysvg from '/client-assets/misskey.svg';
 import { getStaticImageUrl } from '@/utility/media-proxy.js';
-import { i18n } from '@/i18n.js';
 
 const $i = ensureSignin();
 
 const acct = computed(() => `@${$i.username}@${host}`);
 const userProfileUrl = computed(() => userPage($i, undefined, true));
 const shareData = computed(() => ({
-	title: i18n.tsx._qr.shareTitle({ name: userName($i), acct: acct.value }),
-	text: i18n.ts._qr.shareText,
+	title: localizerRef.value.env._qr.shareTitle({ name: userName($i), acct: acct.value }),
+	text: localeRef.value.env._qr.shareText,
 	url: userProfileUrl.value,
 }));
 const canShare = computed(() => navigator.canShare && navigator.canShare(shareData.value));
