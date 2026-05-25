@@ -18,7 +18,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 
 import { ensureSignin } from '@/i.js';
-import { i18n } from '../../i18n.js';
 import XColumn from './column.vue';
 import type { Column } from '@/deck.js';
 import MkInfo from '@/components/MkInfo.vue';

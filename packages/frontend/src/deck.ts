@@ -6,7 +6,6 @@
 import { notificationTypes } from 'misskey-js';
 import { ref } from 'vue';
 import { EventEmitter } from 'eventemitter3';
-import { i18n } from './i18n.js';
 import type { BasicTimelineType } from '@/timelines.js';
 import type { SoundStore } from '@/preferences/def.js';
 import type { MenuItem } from '@/types/menu.js';
