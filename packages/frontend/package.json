@@ -67,7 +67,7 @@
 		"throttle-debounce": "5.0.2",
 		"tinycolor2": "1.6.0",
 		"v-code-diff": "1.13.1",
-		"vite-vue-internationalization": "1.0.0",
+		"vite-vue-internationalization": "1.1.2",
 		"vue": "3.5.35",
 		"wanakana": "5.3.1"
 	},
