@@ -3,7 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { $locale, $l } from '@/i18n.js';
+import { useLocale, useLocalizer } from 'virtual:vite-vue-internationalization';
+
+const $locale = useLocale(import.meta.url);
+const $l = useLocalizer(import.meta.url);
 // TODO: (可能な部分を)sharedに抽出して frontend-embed と共通化
 
 import { ref, nextTick } from 'vue';

@@ -14,7 +14,10 @@ import { store } from '@/store.js';
 import { $i } from '@/i.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { unisonReload } from '@/utility/unison-reload.js';
-import { $locale, $l } from '@/i18n.js';
+import { useLocale, useLocalizer } from 'virtual:vite-vue-internationalization';
+
+const $locale = useLocale(import.meta.url);
+const $l = useLocalizer(import.meta.url);
 
 function canAutoBackup() {
 	return prefer.profile.name != null && prefer.profile.name.trim() !== '';

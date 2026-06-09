@@ -10,7 +10,10 @@ import { channel } from '../../.storybook/fakes.js';
 import { commonHandlers } from '../../.storybook/mocks.js';
 import MkChannelFollowButton from './MkChannelFollowButton.vue';
 import type { StoryObj } from '@storybook/vue3';
-import { i18n } from '@/i18n.js';
+import { useLocale, useLocalizer } from 'virtual:vite-vue-internationalization';
+
+const localeRef = useLocale(import.meta.url);
+const localizerRef = useLocalizer(import.meta.url);
 
 function sleep(ms: number) {
 	return new Promise(resolve => window.setTimeout(resolve, ms));
@@ -44,10 +47,10 @@ export const Default = {
 	async play({ canvasElement }) {
 		const canvas = within(canvasElement);
 		const buttonElement = canvas.getByRole<HTMLButtonElement>('button');
-		await expect(buttonElement).toHaveTextContent(i18n.ts.follow);
+		await expect(buttonElement).toHaveTextContent(localeRef.value.env.follow);
 		await userEvent.click(buttonElement);
 		await sleep(1000);
-		await expect(buttonElement).toHaveTextContent(i18n.ts.unfollow);
+		await expect(buttonElement).toHaveTextContent(localeRef.value.env.unfollow);
 		await userEvent.click(buttonElement);
 	},
 	parameters: {

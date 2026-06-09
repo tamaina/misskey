@@ -12,7 +12,10 @@ import { deckStore } from '@/ui/deck/deck-store.js';
 import { unisonReload } from '@/utility/unison-reload.js';
 import * as os from '@/os.js';
 import type { SoundStore } from '@/preferences/def.js';
-import { $locale, $l } from '@/i18n.js';
+import { useLocale, useLocalizer } from 'virtual:vite-vue-internationalization';
+
+const $locale = useLocale(import.meta.url);
+const $l = useLocalizer(import.meta.url);
 
 // TODO: そのうち消す
 export function migrateOldSettings() {

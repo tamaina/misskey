@@ -9,23 +9,6 @@ import lightTheme from '@@/themes/_light.json5';
 import darkTheme from '@@/themes/_dark.json5';
 import './init';
 
-vi.mock('@/i18n.js', async (importOriginal) => {
-	const actual = await importOriginal<typeof import('@/i18n.js')>();
-
-	return {
-		...actual,
-		i18n: {
-			ts: {
-				_theme: {
-					alreadyInstalled: 'already installed',
-					invalid: 'invalid',
-				},
-			},
-		},
-		updateI18n: vi.fn(),
-	};
-});
-
 vi.mock('@/os.js', () => ({
 	alert: vi.fn(),
 }));

@@ -15,7 +15,10 @@ import { prefer } from '@/preferences.js';
 import { store } from '@/store.js';
 import { $i } from '@/i.js';
 import { signout } from '@/signout.js';
-import { $locale, $l } from '@/i18n.js';
+import { useLocale, useLocalizer } from 'virtual:vite-vue-internationalization';
+
+const $locale = useLocale(import.meta.url);
+const $l = useLocalizer(import.meta.url);
 
 type AccountWithToken = Misskey.entities.MeDetailed & { token: string };
 

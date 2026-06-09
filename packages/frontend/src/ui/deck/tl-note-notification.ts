@@ -9,7 +9,10 @@ import type { SoundType } from '@/utility/sound.js';
 import type { SoundStore } from '@/preferences/def.js';
 import { getSoundDuration, playMisskeySfxFile, soundsTypes } from '@/utility/sound.js';
 import * as os from '@/os.js';
-import { $locale, $l } from '@/i18n.js';
+import { useLocale, useLocalizer } from 'virtual:vite-vue-internationalization';
+
+const $locale = useLocale(import.meta.url);
+const $l = useLocalizer(import.meta.url);
 
 export async function soundSettingsButton(soundSetting: Ref<SoundStore>): Promise<void> {
 	function getSoundTypeName(f: SoundType): string {

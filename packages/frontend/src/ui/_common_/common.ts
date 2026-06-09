@@ -9,13 +9,15 @@ import type { MenuItem } from '@/types/menu.js';
 import * as os from '@/os.js';
 import { instance } from '@/instance.js';
 import { $i } from '@/i.js';
-import { $locale, $l } from '@/i18n.js';
+import { useLocale } from 'virtual:vite-vue-internationalization';
+
+const localeRef = useLocale(import.meta.url);
 
 function toolsMenuItems(): MenuItem[] {
 	const items: MenuItem[] = [{
 		type: 'link',
 		to: '/scratchpad',
-		text: $locale.value.env.scratchpad,
+		text: localeRef.value.env.scratchpad,
 		icon: 'ti ti-terminal-2',
 	}, {
 		type: 'link',
@@ -33,7 +35,7 @@ function toolsMenuItems(): MenuItem[] {
 		items.push({
 			type: 'link',
 			to: '/custom-emojis-manager',
-			text: $locale.value.env.manageCustomEmojis,
+			text: localeRef.value.env.manageCustomEmojis,
 			icon: 'ti ti-icons',
 		});
 	}
@@ -42,7 +44,7 @@ function toolsMenuItems(): MenuItem[] {
 		items.push({
 			type: 'link' as const,
 			to: '/avatar-decorations',
-			text: $locale.value.env.manageAvatarDecorations,
+			text: localeRef.value.env.manageAvatarDecorations,
 			icon: 'ti ti-sparkles',
 		});
 	}
@@ -58,12 +60,12 @@ export function openInstanceMenu(ev: PointerEvent) {
 		type: 'label',
 	}, {
 		type: 'link',
-		text: $locale.value.env.instanceInfo,
+		text: localeRef.value.env.instanceInfo,
 		icon: 'ti ti-info-circle',
 		to: '/about',
 	}, {
 		type: 'link',
-		text: $locale.value.env.customEmojis,
+		text: localeRef.value.env.customEmojis,
 		icon: 'ti ti-icons',
 		to: '/about#emojis',
 	});
@@ -71,7 +73,7 @@ export function openInstanceMenu(ev: PointerEvent) {
 	if (instance.federation !== 'none') {
 		menuItems.push({
 			type: 'link',
-			text: $locale.value.env.federation,
+			text: localeRef.value.env.federation,
 			icon: 'ti ti-whirl',
 			to: '/about#federation',
 		});
@@ -79,12 +81,12 @@ export function openInstanceMenu(ev: PointerEvent) {
 
 	menuItems.push({
 		type: 'link',
-		text: $locale.value.env.charts,
+		text: localeRef.value.env.charts,
 		icon: 'ti ti-chart-line',
 		to: '/about#charts',
 	}, { type: 'divider' }, {
 		type: 'link',
-		text: $locale.value.env.ads,
+		text: localeRef.value.env.ads,
 		icon: 'ti ti-ad',
 		to: '/ads',
 	});
@@ -93,19 +95,19 @@ export function openInstanceMenu(ev: PointerEvent) {
 		menuItems.push({
 			type: 'link',
 			to: '/invite',
-			text: $locale.value.env.invite,
+			text: localeRef.value.env.invite,
 			icon: 'ti ti-user-plus',
 		});
 	}
 
 	menuItems.push({
 		type: 'parent',
-		text: $locale.value.env.tools,
+		text: localeRef.value.env.tools,
 		icon: 'ti ti-tool',
 		children: toolsMenuItems(),
 	}, { type: 'divider' }, {
 		type: 'link',
-		text: $locale.value.env.inquiry,
+		text: localeRef.value.env.inquiry,
 		icon: 'ti ti-help-circle',
 		to: '/contact',
 	});
@@ -113,7 +115,7 @@ export function openInstanceMenu(ev: PointerEvent) {
 	if (instance.impressumUrl) {
 		menuItems.push({
 			type: 'a',
-			text: $locale.value.env.impressum,
+			text: localeRef.value.env.impressum,
 			icon: 'ti ti-file-invoice',
 			href: instance.impressumUrl,
 			target: '_blank',
@@ -123,7 +125,7 @@ export function openInstanceMenu(ev: PointerEvent) {
 	if (instance.tosUrl) {
 		menuItems.push({
 			type: 'a',
-			text: $locale.value.env.termsOfService,
+			text: localeRef.value.env.termsOfService,
 			icon: 'ti ti-notebook',
 			href: instance.tosUrl,
 			target: '_blank',
@@ -133,7 +135,7 @@ export function openInstanceMenu(ev: PointerEvent) {
 	if (instance.privacyPolicyUrl) {
 		menuItems.push({
 			type: 'a',
-			text: $locale.value.env.privacyPolicy,
+			text: localeRef.value.env.privacyPolicy,
 			icon: 'ti ti-shield-lock',
 			href: instance.privacyPolicyUrl,
 			target: '_blank',
@@ -146,7 +148,7 @@ export function openInstanceMenu(ev: PointerEvent) {
 
 	menuItems.push({
 		type: 'a',
-		text: $locale.value.env.document,
+		text: localeRef.value.env.document,
 		icon: 'ti ti-bulb',
 		href: 'https://misskey-hub.net/docs/for-users/',
 		target: '_blank',
@@ -154,7 +156,7 @@ export function openInstanceMenu(ev: PointerEvent) {
 
 	if ($i) {
 		menuItems.push({
-			text: $locale.value.env._initialTutorial.launchTutorial,
+			text: localeRef.value.env._initialTutorial.launchTutorial,
 			icon: 'ti ti-presentation',
 			action: async () => {
 				const { dispose } = await os.popupAsyncWithDialog(import('@/components/MkTutorialDialog.vue').then(x => x.default), {}, {
@@ -166,7 +168,7 @@ export function openInstanceMenu(ev: PointerEvent) {
 
 	menuItems.push({
 		type: 'link',
-		text: $locale.value.env.aboutMisskey,
+		text: localeRef.value.env.aboutMisskey,
 		to: '/about-misskey',
 	});
 

@@ -180,7 +180,6 @@ export function getConfig(): UserConfig {
 					nativeMagicString: true,
 				},
 				input: {
-					i18n: './src/i18n.ts',
 					entry: './src/_boot_.ts',
 				},
 				external: externalPackages.map(p => p.match),

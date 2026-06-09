@@ -3,7 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { $locale, $l } from '@/i18n.js';
+import { useLocale, useLocalizer } from 'virtual:vite-vue-internationalization';
+
+const $locale = useLocale(import.meta.url);
+const $l = useLocalizer(import.meta.url);
 // TODO: なんでもかんでもos.tsに突っ込むのやめたいのでよしなに分割する
 
 import { markRaw, ref, defineAsyncComponent, nextTick } from 'vue';

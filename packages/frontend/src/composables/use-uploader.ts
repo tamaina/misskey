@@ -17,7 +17,10 @@ import { isWebpSupported } from '@/utility/isWebpSupported.js';
 import { uploadFile, UploadAbortedError } from '@/utility/drive.js';
 import * as os from '@/os.js';
 import { ensureSignin } from '@/i.js';
-import { $locale, $l } from '@/i18n.js';
+import { useLocale, useLocalizer } from 'virtual:vite-vue-internationalization';
+
+const $locale = useLocale(import.meta.url);
+const $l = useLocalizer(import.meta.url);
 
 export type UploaderFeatures = {
 	imageEditing?: boolean;

@@ -5,7 +5,10 @@
 
 import { MFM_TAGS } from '@@/js/const.js';
 import * as os from '@/os.js';
-import { $locale, $l } from '@/i18n.js';
+import { useLocale, useLocalizer } from 'virtual:vite-vue-internationalization';
+
+const $locale = useLocale(import.meta.url);
+const $l = useLocalizer(import.meta.url);
 
 /**
  * MFMの装飾のリストを表示する

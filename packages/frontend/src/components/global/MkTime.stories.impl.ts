@@ -7,7 +7,10 @@
 import { expect } from '@storybook/test';
 import type { StoryObj } from '@storybook/vue3';
 import MkTime from './MkTime.vue';
-import { i18n } from '@/i18n.js';
+import { useLocale, useLocalizer } from 'virtual:vite-vue-internationalization';
+
+const localeRef = useLocale(import.meta.url);
+const localizerRef = useLocalizer(import.meta.url);
 import { dateTimeFormat } from '@@/js/intl-const.js';
 const now = new Date('2023-04-01T00:00:00.000Z');
 const future = new Date('2024-04-01T00:00:00.000Z');
@@ -38,7 +41,7 @@ export const Empty = {
 		};
 	},
 	async play({ canvasElement }) {
-		await expect(canvasElement).toHaveTextContent(i18n.ts._ago.invalid);
+		await expect(canvasElement).toHaveTextContent(localeRef.value.env._ago.invalid);
 	},
 	args: {
 	},
@@ -49,7 +52,7 @@ export const Empty = {
 export const RelativeFuture = {
 	...Empty,
 	async play({ canvasElement }) {
-		await expect(canvasElement).toHaveTextContent(i18n.tsx._timeIn.years({ n: 1 })); // n (1) = future (2024) - now (2023)
+		await expect(canvasElement).toHaveTextContent(localizerRef.value.env._timeIn.years({ n: 1 })); // n (1) = future (2024) - now (2023)
 	},
 	args: {
 		...Empty.args,
@@ -85,7 +88,7 @@ export const DetailFuture = {
 export const RelativeNow = {
 	...Empty,
 	async play({ canvasElement }) {
-		await expect(canvasElement).toHaveTextContent(i18n.ts._ago.justNow);
+		await expect(canvasElement).toHaveTextContent(localeRef.value.env._ago.justNow);
 	},
 	args: {
 		...Empty.args,
@@ -124,7 +127,7 @@ export const DetailNow = {
 export const RelativeOneHourAgo = {
 	...Empty,
 	async play({ canvasElement }) {
-		await expect(canvasElement).toHaveTextContent(i18n.tsx._ago.hoursAgo({ n: 1 }));
+		await expect(canvasElement).toHaveTextContent(localizerRef.value.env._ago.hoursAgo({ n: 1 }));
 	},
 	args: {
 		...Empty.args,
@@ -163,7 +166,7 @@ export const DetailOneHourAgo = {
 export const RelativeOneDayAgo = {
 	...Empty,
 	async play({ canvasElement }) {
-		await expect(canvasElement).toHaveTextContent(i18n.tsx._ago.daysAgo({ n: 1 }));
+		await expect(canvasElement).toHaveTextContent(localizerRef.value.env._ago.daysAgo({ n: 1 }));
 	},
 	args: {
 		...Empty.args,
@@ -202,7 +205,7 @@ export const DetailOneDayAgo = {
 export const RelativeOneWeekAgo = {
 	...Empty,
 	async play({ canvasElement }) {
-		await expect(canvasElement).toHaveTextContent(i18n.tsx._ago.weeksAgo({ n: 1 }));
+		await expect(canvasElement).toHaveTextContent(localizerRef.value.env._ago.weeksAgo({ n: 1 }));
 	},
 	args: {
 		...Empty.args,
@@ -241,7 +244,7 @@ export const DetailOneWeekAgo = {
 export const RelativeOneMonthAgo = {
 	...Empty,
 	async play({ canvasElement }) {
-		await expect(canvasElement).toHaveTextContent(i18n.tsx._ago.monthsAgo({ n: 1 }));
+		await expect(canvasElement).toHaveTextContent(localizerRef.value.env._ago.monthsAgo({ n: 1 }));
 	},
 	args: {
 		...Empty.args,
@@ -280,7 +283,7 @@ export const DetailOneMonthAgo = {
 export const RelativeOneYearAgo = {
 	...Empty,
 	async play({ canvasElement }) {
-		await expect(canvasElement).toHaveTextContent(i18n.tsx._ago.yearsAgo({ n: 1 }));
+		await expect(canvasElement).toHaveTextContent(localizerRef.value.env._ago.yearsAgo({ n: 1 }));
 	},
 	args: {
 		...Empty.args,

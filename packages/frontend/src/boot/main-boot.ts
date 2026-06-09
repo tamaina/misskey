@@ -9,6 +9,7 @@ import * as Misskey from 'misskey-js';
 import { compareVersions } from 'compare-versions';
 import { common } from './common.js';
 import type { Component } from 'vue';
+import type { InternationalizationBoot } from './common.js';
 import type { Keymap } from '@/utility/hotkey.js';
 import { alert, confirm, popup, post } from '@/os.js';
 import { useStream } from '@/stream.js';
@@ -29,9 +30,12 @@ import { updateCurrentAccountPartial } from '@/accounts.js';
 import { migrateOldSettings } from '@/pref-migrate.js';
 import { unisonReload } from '@/utility/unison-reload.js';
 import { isBirthday } from '@/utility/is-birthday.js';
-import { $locale, $l } from '@/i18n.js';
+import { useLocale, useLocalizer } from 'virtual:vite-vue-internationalization';
 
-export async function mainBoot() {
+const localeRef = useLocale(import.meta.url);
+const localizerRef = useLocalizer(import.meta.url);
+
+export async function mainBoot(i18nBoot: InternationalizationBoot) {
 	const { isClientUpdated, lastVersion } = await common(async () => {
 		let uiStyle = ui;
 		const searchParams = new URLSearchParams(window.location.search);
@@ -60,7 +64,7 @@ export async function mainBoot() {
 		}
 
 		return createApp(rootComponent);
-	});
+	}, i18nBoot);
 
 	reactionPicker.init();
 	emojiPicker.init();
@@ -137,7 +141,7 @@ export async function mainBoot() {
 		if ($i.isDeleted) {
 			alert({
 				type: 'warning',
-				text: $locale.value.env.accountDeletionInProgress,
+				text: localeRef.value.env.accountDeletionInProgress,
 			});
 		}
 
@@ -276,7 +280,7 @@ export async function mainBoot() {
 		//	const lastUsedDate = parseInt(lastUsed, 10);
 		//	// 二時間以上前なら
 		//	if (Date.now() - lastUsedDate > 1000 * 60 * 60 * 2) {
-		//		toast($l.value.env.welcomeBackWithName({
+		//		toast(localizerRef.value.env.welcomeBackWithName({
 		//			name: $i.name || $i.username,
 		//		}));
 		//	}
@@ -312,8 +316,8 @@ export async function mainBoot() {
 					reloadDialogShowing = true;
 					const { canceled } = await confirm({
 						type: 'warning',
-						title: $locale.value.env.disconnectedFromServer,
-						text: $locale.value.env.reloadConfirm,
+						title: localeRef.value.env.disconnectedFromServer,
+						text: localeRef.value.env.reloadConfirm,
 					});
 					reloadDialogShowing = false;
 					if (!canceled) {
@@ -385,7 +389,7 @@ export async function mainBoot() {
 			if (prefer.s.syncDeviceDarkMode) {
 				const { canceled } = await confirm({
 					type: 'question',
-					text: i18n.tsx.switchDarkModeManuallyWhenSyncEnabledConfirm({ x: i18n.ts.syncDeviceDarkMode }),
+					text: localizerRef.value.env.switchDarkModeManuallyWhenSyncEnabledConfirm({ x: localeRef.value.env.syncDeviceDarkMode }),
 				});
 				if (canceled) return;
 

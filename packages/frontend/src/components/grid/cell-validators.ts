@@ -6,7 +6,10 @@
 import type { CellValue, GridCell } from '@/components/grid/cell.js';
 import type { GridColumn } from '@/components/grid/column.js';
 import type { GridRow } from '@/components/grid/row.js';
-import { $locale, $l } from '@/i18n.js';
+import { useLocale, useLocalizer } from 'virtual:vite-vue-internationalization';
+
+const $locale = useLocale(import.meta.url);
+const $l = useLocalizer(import.meta.url);
 
 export type ValidatorParams = {
 	column: GridColumn;

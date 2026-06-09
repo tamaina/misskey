@@ -6,6 +6,8 @@
 import { FORCE_RE_RENDER, FORCE_REMOUNT } from '@storybook/core-events';
 import { addons } from '@storybook/preview-api';
 import { type Preview, setup } from '@storybook/vue3';
+import { markRaw } from 'vue';
+import { createInternationalization, setActiveInternationalization } from 'virtual:vite-vue-internationalization';
 import isChromatic from 'chromatic/isChromatic';
 import { initialize, mswLoader } from 'msw-storybook-addon';
 import { userDetailed } from './fakes.js';
@@ -14,6 +16,13 @@ import themes from './themes.js';
 import '../src/style.scss';
 
 const appInitialized = Symbol();
+
+const internationalization = markRaw(createInternationalization({
+	initialLocale: 'ja-JP',
+	fallbackLocale: 'ja-JP',
+}));
+setActiveInternationalization(internationalization);
+void internationalization.ready;
 
 let lastStory: string | null = null;
 let moduleInitialized = false;
@@ -75,6 +84,7 @@ queueMicrotask(() => {
 				return;
 			}
 			app[appInitialized] = true;
+			app.use(internationalization);
 			loadTheme(applyTheme);
 			components(app);
 			directives(app);

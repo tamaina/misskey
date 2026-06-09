@@ -6,7 +6,10 @@
 import shader from './fill.glsl';
 import type { ImageEffectorUiDefinition } from '../image-effector/ImageEffector.js';
 import { defineImageCompositorFunction } from '@/lib/ImageCompositor.js';
-import { $locale, $l } from '@/i18n.js';
+import { useLocale, useLocalizer } from 'virtual:vite-vue-internationalization';
+
+const $locale = useLocale(import.meta.url);
+const $l = useLocalizer(import.meta.url);
 
 export const fn = defineImageCompositorFunction<{
 	offsetX: number;

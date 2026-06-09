@@ -6,7 +6,10 @@
 import { action } from 'storybook/actions';
 import { expect, userEvent, waitFor, within } from '@storybook/test';
 import type { StoryObj } from '@storybook/vue3';
-import { i18n } from '@/i18n.js';
+import { useLocale, useLocalizer } from 'virtual:vite-vue-internationalization';
+
+const localeRef = useLocale(import.meta.url);
+const localizerRef = useLocalizer(import.meta.url);
 import MkDialog from './MkDialog.vue';
 const Base = {
 	render(args) {
@@ -88,17 +91,17 @@ export const DialogWithActions = {
 	...Question,
 	args: {
 		...Question.args,
-		text: i18n.ts.areYouSure,
+		text: localeRef.value.env.areYouSure,
 		actions: [
 			{
-				text: i18n.ts.yes,
+				text: localeRef.value.env.yes,
 				primary: true,
 				callback() {
 					action('YES')();
 				},
 			},
 			{
-				text: i18n.ts.no,
+				text: localeRef.value.env.no,
 				callback() {
 					action('NO')();
 				},
@@ -110,10 +113,10 @@ export const DialogWithDangerActions = {
 	...Warning,
 	args: {
 		...Warning.args,
-		text: i18n.ts.resetAreYouSure,
+		text: localeRef.value.env.resetAreYouSure,
 		actions: [
 			{
-				text: i18n.ts.yes,
+				text: localeRef.value.env.yes,
 				danger: true,
 				primary: true,
 				callback() {
@@ -121,7 +124,7 @@ export const DialogWithDangerActions = {
 				},
 			},
 			{
-				text: i18n.ts.no,
+				text: localeRef.value.env.no,
 				callback() {
 					action('NO')();
 				},
@@ -136,7 +139,7 @@ export const DialogWithInput = {
 		title: 'Hello, world!',
 		text: undefined,
 		input: {
-			placeholder: i18n.ts.inputMessageHere,
+			placeholder: localeRef.value.env.inputMessageHere,
 			type: 'text',
 			default: null,
 			minLength: 2,
@@ -145,14 +148,14 @@ export const DialogWithInput = {
 	},
 	async play({ canvasElement }) {
 		const canvas = within(canvasElement);
-		await expect(canvasElement).toHaveTextContent(i18n.tsx._dialog.charactersBelow({ current: 0, min: 2 }));
-		const okButton = canvas.getByRole('button', { name: i18n.ts.ok });
+		await expect(canvasElement).toHaveTextContent(localizerRef.value.env._dialog.charactersBelow({ current: 0, min: 2 }));
+		const okButton = canvas.getByRole('button', { name: localeRef.value.env.ok });
 		await expect(okButton).toBeDisabled();
 		const input = canvas.getByRole<HTMLInputElement>('combobox');
 		await waitFor(() => userEvent.hover(input));
 		await waitFor(() => userEvent.click(input));
 		await waitFor(() => userEvent.type(input, 'M'));
-		await expect(canvasElement).toHaveTextContent(i18n.tsx._dialog.charactersBelow({ current: 1, min: 2 }));
+		await expect(canvasElement).toHaveTextContent(localizerRef.value.env._dialog.charactersBelow({ current: 1, min: 2 }));
 		await waitFor(() => userEvent.type(input, 'i'));
 		await expect(okButton).toBeEnabled();
 	},

@@ -6,7 +6,10 @@
 import * as Misskey from 'misskey-js';
 import * as os from '@/os.js';
 import { prefer } from '@/preferences.js';
-import { $locale, $l } from '@/i18n.js';
+import { useLocale, useLocalizer } from 'virtual:vite-vue-internationalization';
+
+const $locale = useLocale(import.meta.url);
+const $l = useLocalizer(import.meta.url);
 
 export function shouldHideFileByDefault(file: Misskey.entities.DriveFile): boolean {
 	if (prefer.s.nsfw === 'force' || prefer.s.dataSaver.media) {

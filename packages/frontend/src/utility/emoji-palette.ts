@@ -5,24 +5,27 @@
 
 import { prefer } from '@/preferences.js';
 import * as os from '@/os.js';
-import { i18n } from '@/i18n.js';
+import { useLocale, useLocalizer } from 'virtual:vite-vue-internationalization';
+
+const localeRef = useLocale(import.meta.url);
+const localizerRef = useLocalizer(import.meta.url);
 import type { MkSelectItem } from '@/components/MkSelect.vue';
 
 export function chooseEmojiPalette() {
 	return os.select({
-		title: i18n.ts.chooseEmojiPalette,
+		title: localeRef.value.env.chooseEmojiPalette,
 		default: prefer.s.emojiPaletteForMain ?? prefer.s.emojiPaletteForReaction ?? prefer.s.emojiPalettes[0]?.id,
 		items: prefer.s.emojiPalettes.map<MkSelectItem<string>>((palette) => {
 			let caption: string | undefined = undefined;
 
 			if (prefer.s.emojiPaletteForMain === palette.id) {
-				caption = i18n.ts._emojiPalette.paletteForMain;
+				caption = localeRef.value.env._emojiPalette.paletteForMain;
 			} else if (prefer.s.emojiPaletteForReaction === palette.id) {
-				caption = i18n.ts._emojiPalette.paletteForReaction;
+				caption = localeRef.value.env._emojiPalette.paletteForReaction;
 			}
 
 			return {
-				label: palette.name || `(${i18n.ts.noName})`,
+				label: palette.name || `(${localeRef.value.env.noName})`,
 				caption,
 				value: palette.id,
 			};
@@ -55,16 +58,16 @@ export async function addToEmojiPalette(emoji: string) {
 	} else {
 		const res = await os.actions({
 			type: 'warning',
-			text: i18n.ts.emojiPaletteAlreadyAddedConfirm,
+			text: localeRef.value.env.emojiPaletteAlreadyAddedConfirm,
 			actions: [{
 				value: 'prepend',
-				text: i18n.ts.prepend,
+				text: localeRef.value.env.prepend,
 			}, {
 				value: 'append',
-				text: i18n.ts.append,
+				text: localeRef.value.env.append,
 			}, {
 				value: 'doNothing',
-				text: i18n.ts.doNothing,
+				text: localeRef.value.env.doNothing,
 			}],
 		});
 

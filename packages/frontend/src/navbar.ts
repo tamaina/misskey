@@ -13,7 +13,9 @@ import { openInstanceMenu, openToolsMenu } from '@/ui/_common_/common.js';
 import { lookup } from '@/utility/lookup.js';
 import * as os from '@/os.js';
 import { unisonReload } from '@/utility/unison-reload.js';
-import { $locale, $l } from '@/i18n.js';
+import { useLocale } from 'virtual:vite-vue-internationalization';
+
+const localeRef = useLocale(import.meta.url);
 
 export const navbarItemDef = reactive<{
 	[key: string]: {
@@ -27,7 +29,7 @@ export const navbarItemDef = reactive<{
 	};
 }>({
 	notifications: {
-		title: $locale.value.env.notifications,
+		get title() { return localeRef.value.env.notifications; },
 		icon: 'ti ti-bell',
 		show: computed(() => $i != null),
 		indicated: computed(() => $i != null && $i.hasUnreadNotification),
@@ -43,66 +45,66 @@ export const navbarItemDef = reactive<{
 		to: '/my/notifications',
 	},
 	drive: {
-		title: $locale.value.env.drive,
+		get title() { return localeRef.value.env.drive; },
 		icon: 'ti ti-cloud',
 		show: computed(() => $i != null),
 		to: '/my/drive',
 	},
 	followRequests: {
-		title: $locale.value.env.followRequests,
+		get title() { return localeRef.value.env.followRequests; },
 		icon: 'ti ti-user-plus',
 		indicated: computed(() => $i != null && $i.hasPendingReceivedFollowRequest),
 		to: '/my/follow-requests',
 	},
 	explore: {
-		title: $locale.value.env.explore,
+		get title() { return localeRef.value.env.explore; },
 		icon: 'ti ti-hash',
 		to: '/explore',
 	},
 	announcements: {
-		title: $locale.value.env.announcements,
+		get title() { return localeRef.value.env.announcements; },
 		icon: 'ti ti-speakerphone',
 		indicated: computed(() => $i != null && $i.hasUnreadAnnouncement),
 		to: '/announcements',
 	},
 	search: {
-		title: $locale.value.env.search,
+		get title() { return localeRef.value.env.search; },
 		icon: 'ti ti-search',
 		to: '/search',
 	},
 	lookup: {
-		title: $locale.value.env.lookup,
+		get title() { return localeRef.value.env.lookup; },
 		icon: 'ti ti-world-search',
 		action: (ev) => {
 			lookup();
 		},
 	},
 	qr: {
-		title: $locale.value.env.qr,
+		get title() { return localeRef.value.env.qr; },
 		icon: 'ti ti-qrcode',
 		show: computed(() => $i != null),
 		to: '/qr',
 	},
 	lists: {
-		title: $locale.value.env.lists,
+		get title() { return localeRef.value.env.lists; },
 		icon: 'ti ti-list',
 		show: computed(() => $i != null),
 		to: '/my/lists',
 	},
 	antennas: {
-		title: $locale.value.env.antennas,
+		get title() { return localeRef.value.env.antennas; },
 		icon: 'ti ti-antenna',
 		show: computed(() => $i != null),
 		to: '/my/antennas',
 	},
 	favorites: {
-		title: $locale.value.env.favorites,
+		get title() { return localeRef.value.env.favorites; },
 		icon: 'ti ti-star',
 		show: computed(() => $i != null),
 		to: '/my/favorites',
 	},
 	pages: {
-		title: $locale.value.env.pages,
+		get title() { return localeRef.value.env.pages; },
 		icon: 'ti ti-news',
 		to: '/pages',
 	},
@@ -112,30 +114,30 @@ export const navbarItemDef = reactive<{
 		to: '/play',
 	},
 	gallery: {
-		title: $locale.value.env.gallery,
+		get title() { return localeRef.value.env.gallery; },
 		icon: 'ti ti-icons',
 		to: '/gallery',
 	},
 	clips: {
-		title: $locale.value.env.clip,
+		get title() { return localeRef.value.env.clip; },
 		icon: 'ti ti-paperclip',
 		show: computed(() => $i != null),
 		to: '/my/clips',
 	},
 	channels: {
-		title: $locale.value.env.channel,
+		get title() { return localeRef.value.env.channel; },
 		icon: 'ti ti-device-tv',
 		to: '/channels',
 	},
 	chat: {
-		title: $locale.value.env.directMessage_short,
+		get title() { return localeRef.value.env.directMessage_short; },
 		icon: 'ti ti-messages',
 		to: '/chat',
 		show: computed(() => $i != null && $i.policies.chatAvailability !== 'unavailable'),
 		indicated: computed(() => $i != null && $i.hasUnreadChatMessages),
 	},
 	achievements: {
-		title: $locale.value.env.achievements,
+		get title() { return localeRef.value.env.achievements; },
 		icon: 'ti ti-medal',
 		show: computed(() => $i != null),
 		to: '/my/achievements',
@@ -146,18 +148,18 @@ export const navbarItemDef = reactive<{
 		to: '/games',
 	},
 	ui: {
-		title: $locale.value.env.switchUi,
+		get title() { return localeRef.value.env.switchUi; },
 		icon: 'ti ti-devices',
 		action: (ev) => {
 			os.popupMenu([{
-				text: $locale.value.env.default,
+				text: localeRef.value.env.default,
 				active: ui === 'default' || ui === null,
 				action: () => {
 					miLocalStorage.setItem('ui', 'default');
 					unisonReload();
 				},
 			}, {
-				text: $locale.value.env.deck,
+				text: localeRef.value.env.deck,
 				active: ui === 'deck',
 				action: () => {
 					miLocalStorage.setItem('ui', 'deck');
@@ -167,34 +169,34 @@ export const navbarItemDef = reactive<{
 		},
 	},
 	about: {
-		title: $locale.value.env.about,
+		get title() { return localeRef.value.env.about; },
 		icon: 'ti ti-info-circle',
 		action: (ev) => {
 			openInstanceMenu(ev);
 		},
 	},
 	tools: {
-		title: $locale.value.env.tools,
+		get title() { return localeRef.value.env.tools; },
 		icon: 'ti ti-tool',
 		action: (ev) => {
 			openToolsMenu(ev);
 		},
 	},
 	reload: {
-		title: $locale.value.env.reload,
+		get title() { return localeRef.value.env.reload; },
 		icon: 'ti ti-refresh',
 		action: (ev) => {
 			window.location.reload();
 		},
 	},
 	profile: {
-		title: $locale.value.env.profile,
+		get title() { return localeRef.value.env.profile; },
 		icon: 'ti ti-user',
 		show: computed(() => $i != null),
 		to: `/@${$i?.username}`,
 	},
 	cacheClear: {
-		title: $locale.value.env.clearCache,
+		get title() { return localeRef.value.env.clearCache; },
 		icon: 'ti ti-trash',
 		action: (ev) => {
 			clearCache();

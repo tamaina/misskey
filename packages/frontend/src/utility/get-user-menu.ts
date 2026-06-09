@@ -19,7 +19,10 @@ import { mainRouter } from '@/router.js';
 import { genEmbedCode } from '@/utility/get-embed-code.js';
 import { prefer } from '@/preferences.js';
 import { getPluginHandlers } from '@/plugin.js';
-import { $locale, $l } from '@/i18n.js';
+import { useLocale, useLocalizer } from 'virtual:vite-vue-internationalization';
+
+const $locale = useLocale(import.meta.url);
+const $l = useLocalizer(import.meta.url);
 
 export function getUserMenu(user: Misskey.entities.UserDetailed, router: Router = mainRouter) {
 	const meId = $i ? $i.id : null;

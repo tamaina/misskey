@@ -6,7 +6,10 @@
 import { expect, userEvent, waitFor, within } from '@storybook/test';
 import MkAd from './MkAd.vue';
 import type { StoryObj } from '@storybook/vue3';
-import { i18n } from '@/i18n.js';
+import { useLocale, useLocalizer } from 'virtual:vite-vue-internationalization';
+
+const localeRef = useLocale(import.meta.url);
+const localizerRef = useLocalizer(import.meta.url);
 
 const common = {
 	render(args) {
@@ -41,7 +44,7 @@ const common = {
 		const i = buttons[0];
 		await expect(i).toBeInTheDocument();
 		await userEvent.click(i);
-		await expect(canvasElement).toHaveTextContent(i18n.ts._ad.back);
+		await expect(canvasElement).toHaveTextContent(localeRef.value.env._ad.back);
 		await expect(a).not.toBeInTheDocument();
 		await expect(i).not.toBeInTheDocument();
 		buttons = canvas.getAllByRole<HTMLButtonElement>('button');
@@ -51,10 +54,10 @@ const common = {
 		const back = buttons[hasReduceFrequency ? 1 : 0];
 		if (reduce) {
 			await expect(reduce).toBeInTheDocument();
-			await expect(reduce).toHaveTextContent(i18n.ts._ad.reduceFrequencyOfThisAd);
+			await expect(reduce).toHaveTextContent(localeRef.value.env._ad.reduceFrequencyOfThisAd);
 		}
 		await expect(back).toBeInTheDocument();
-		await expect(back).toHaveTextContent(i18n.ts._ad.back);
+		await expect(back).toHaveTextContent(localeRef.value.env._ad.back);
 		await userEvent.click(back);
 		await waitFor(() => expect(canvas.queryByRole('img')).toBeTruthy());
 		if (reduce) {

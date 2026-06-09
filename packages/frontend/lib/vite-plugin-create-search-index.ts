@@ -152,7 +152,9 @@ function findEndOfStartTagAttributes(node: ElementNode): number {
  * TypeScriptコード生成
  */
 function generateJavaScriptCode(resolvedRootMarkers: SearchIndexItem[]): string {
-	return `import { i18n } from '@/i18n.js';\n`
+	return `import { useLocale, useLocalizer } from 'virtual:vite-vue-internationalization';\n`
+		+ `const $locale = useLocale(import.meta.url);\n`
+		+ `const $l = useLocalizer(import.meta.url);\n`
 		+ `export const searchIndexes = ${customStringify(resolvedRootMarkers)};\n`;
 }
 
@@ -405,6 +407,7 @@ function extractUsageInfoFromTemplateAst(
 /**
  * expr を実行します。
  * i18n はそのアクセスを保持するために propertyAccessProxy を使用しています。
+ * 生成コードでは vvi の $locale/$l 参照に置き換えます。
  */
 function evalExpression(expr: string): unknown {
 	const rarResult = Function('i18n', `return ${expr}`)(i18nProxy);
@@ -424,6 +427,14 @@ const propertyAccessProxyHandler: ProxyHandler<AccessProxy> = {
 	get(target: AccessProxy, p: string | symbol): any {
 		if (p in target) {
 			return (target as any)[p];
+		}
+		if (target[propertyAccessProxySymbol].length === 0) {
+			if (p === 'ts') {
+				return propertyAccessProxy(['$locale', 'value', 'env']);
+			}
+			if (p === 'tsx') {
+				return propertyAccessProxy(['$l', 'value', 'env']);
+			}
 		}
 		if (p == "toJSON" || p == Symbol.toPrimitive) {
 			return propertyAccessProxyToJSON;
@@ -459,7 +470,7 @@ function propertyAccessProxy(path: string[]): AccessProxy {
 	return new Proxy(target, propertyAccessProxyHandler);
 }
 
-const i18nProxy = propertyAccessProxy(['i18n']);
+const i18nProxy = propertyAccessProxy([]);
 
 export function collectFileMarkers(id: string, code: string | RolldownMagicString | undefined): SearchIndexItem[] {
 	try {

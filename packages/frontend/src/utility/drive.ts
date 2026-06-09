@@ -16,7 +16,10 @@ import { instance } from '@/instance.js';
 import { globalEvents } from '@/events.js';
 import { getProxiedImageUrl } from '@/utility/media-proxy.js';
 import { genId } from '@/utility/id.js';
-import { $locale, $l } from '@/i18n.js';
+import { useLocale, useLocalizer } from 'virtual:vite-vue-internationalization';
+
+const $locale = useLocale(import.meta.url);
+const $l = useLocalizer(import.meta.url);
 
 type UploadReturnType = {
 	filePromise: Promise<Misskey.entities.DriveFile>;

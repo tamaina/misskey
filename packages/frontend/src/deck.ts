@@ -13,7 +13,9 @@ import { genId } from '@/utility/id.js';
 import { deepClone } from '@/utility/clone.js';
 import { prefer } from '@/preferences.js';
 import * as os from '@/os.js';
-import { $locale, $l } from '@/i18n.js';
+import { useLocale } from 'virtual:vite-vue-internationalization';
+
+const localeRef = useLocale(import.meta.url);
 
 type DeckEvents = {
 	'column.dragStart': () => void;
@@ -346,11 +348,11 @@ export function switchProfileMenu(ev: PointerEvent) {
 			switchProfile(p);
 		},
 	}))), { type: 'divider' as const }, {
-		text: $locale.value.env._deck.newProfile,
+		text: localeRef.value.env._deck.newProfile,
 		icon: 'ti ti-plus',
 		action: async () => {
 			const { canceled, result: name } = await os.inputText({
-				title: $locale.value.env._deck.profile,
+				title: localeRef.value.env._deck.profile,
 				minLength: 1,
 			});
 

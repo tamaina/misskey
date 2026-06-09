@@ -4,7 +4,10 @@
  */
 
 import * as Misskey from 'misskey-js';
-import { $locale, $l } from '@/i18n.js';
+import { useLocale, useLocalizer } from 'virtual:vite-vue-internationalization';
+
+const $locale = useLocale(import.meta.url);
+const $l = useLocalizer(import.meta.url);
 
 /**
  * 投稿を表す文字列を取得します。

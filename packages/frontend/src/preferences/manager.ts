@@ -14,7 +14,10 @@ import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
 import * as os from '@/os.js';
 import { deepEqual } from '@/utility/deep-equal.js';
 import { deepClone } from '@/utility/clone.js';
-import { $locale, $l } from '@/i18n.js';
+import { useLocale, useLocalizer } from 'virtual:vite-vue-internationalization';
+
+const $locale = useLocale(import.meta.url);
+const $l = useLocalizer(import.meta.url);
 
 // NOTE: 明示的な設定値のひとつとして null もあり得るため、設定が存在しないかどうかを判定する目的で null で比較したり ?? を使ってはいけない
 

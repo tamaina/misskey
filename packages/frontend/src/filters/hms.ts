@@ -3,7 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { $locale } from '@/i18n.js';
+import { useLocale } from 'virtual:vite-vue-internationalization';
+
+const $locale = useLocale(import.meta.url);
 export function hms(ms: number, options?: {
 	textFormat?: 'colon' | 'locale';
 	enableSeconds?: boolean;

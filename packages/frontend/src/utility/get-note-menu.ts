@@ -24,7 +24,10 @@ import { genEmbedCode } from '@/utility/get-embed-code.js';
 import { prefer } from '@/preferences.js';
 import { getPluginHandlers } from '@/plugin.js';
 import { globalEvents } from '@/events.js';
-import { $locale, $l } from '@/i18n.js';
+import { useLocale, useLocalizer } from 'virtual:vite-vue-internationalization';
+
+const $locale = useLocale(import.meta.url);
+const $l = useLocalizer(import.meta.url);
 
 const isInBrowserTranslationAvailable = (
 	'LanguageDetector' in window &&
@@ -268,7 +271,7 @@ export function getNoteMenu(props: {
 
 		const { canceled } = await os.confirm({
 			type: 'warning',
-			text: i18n.tsx.removeNoteFromAntennaConfirm({ name: props.currentAntenna.name }),
+			text: $l.value.env.removeNoteFromAntennaConfirm({ name: props.currentAntenna.name }),
 		});
 		if (canceled) return;
 
@@ -519,7 +522,7 @@ export function getNoteMenu(props: {
 			if (props.currentAntenna != null) {
 				menuItems.push({
 					icon: 'ti ti-trash',
-					text: i18n.ts.removeFromAntenna,
+					text: $locale.value.env.removeFromAntenna,
 					danger: true,
 					action: removeFromAntenna,
 				});
@@ -534,7 +537,7 @@ export function getNoteMenu(props: {
 			menuItems.push({ type: 'divider' });
 			menuItems.push({
 				icon: 'ti ti-trash',
-				text: i18n.ts.removeFromAntenna,
+				text: $locale.value.env.removeFromAntenna,
 				danger: true,
 				action: removeFromAntenna,
 			});

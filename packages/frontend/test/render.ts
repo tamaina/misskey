@@ -8,11 +8,14 @@ import {
 	render as renderWithTestingLibrary,
 	type RenderResult,
 } from '@testing-library/vue';
-import { $l, $locale } from '@/i18n.js';
+import { useLocale, useLocalizer } from 'virtual:vite-vue-internationalization';
 
 type RenderOptions = Parameters<typeof renderWithTestingLibrary>[1];
 
 export { cleanup, type RenderResult };
+
+const $locale = useLocale(import.meta.url);
+const $l = useLocalizer(import.meta.url);
 
 export const render: typeof renderWithTestingLibrary = (component, options) => {
 	const global = options?.global ?? {};
