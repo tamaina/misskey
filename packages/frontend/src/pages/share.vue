@@ -206,7 +206,26 @@ function onPosted(): void {
 	postMessageToParentWindow('misskey:shareForm:shareCompleted');
 }
 
-const headerActions = computed(() => []);
+const headerActions = computed(() => [
+	{
+		icon: 'ti ti-dots',
+		text: localeRef.value.env.menu,
+		handler: (ev: MouseEvent) => {
+			os.popupMenu([
+				{
+					icon: 'ti ti-home',
+					text: localeRef.value.env.goToMisskey,
+					action: () => goToMisskey(),
+				},
+				{
+					icon: 'ti ti-x',
+					text: localeRef.value.env.close,
+					action: () => close(),
+				},
+			], ev.currentTarget ?? ev.target);
+		},
+	},
+]);
 
 const headerTabs = computed(() => []);
 

@@ -4,9 +4,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<img v-if="shouldMute" :class="$style.root" src="/client-assets/unknown.png" :alt="props.emoji" decoding="async" @pointerenter="computeTitle" @click="onClick"/>
-<img v-else-if="!useOsNativeEmojis" :class="$style.root" :src="url" :alt="props.emoji" decoding="async" @pointerenter="computeTitle" @click="onClick"/>
-<span v-else :alt="props.emoji" @pointerenter="computeTitle" @click="onClick">{{ colorizedNativeEmoji }}</span>
+<img v-if="shouldMute" :class="[$style.root, { [$style.normal]: normal, [$style.noStyle]: noStyle }]" src="/client-assets/unknown.png" :alt="props.emoji" decoding="async" @pointerenter="computeTitle" @click="onClick"/>
+<img v-else-if="!useOsNativeEmojis" :class="[$style.root, { [$style.normal]: normal, [$style.noStyle]: noStyle }]" :src="url" :alt="props.emoji" decoding="async" @pointerenter="computeTitle" @click="onClick"/>
+<span v-else :class="[$style.root, { [$style.normal]: normal, [$style.noStyle]: noStyle }]" :alt="props.emoji" @pointerenter="computeTitle" @click="onClick">{{ colorizedNativeEmoji }}</span>
 </template>
 
 <script lang="ts" setup>
@@ -28,6 +28,8 @@ const localizerRef = useLocalizer(import.meta.url);
 
 const props = defineProps<{
 	emoji: string;
+	normal?: boolean;
+	noStyle?: boolean;
 	menu?: boolean;
 	menuReaction?: boolean;
 	ignoreMuted?: boolean;
@@ -136,5 +138,13 @@ function onClick(ev: PointerEvent) {
 .root {
 	height: 1.25em;
 	vertical-align: -0.25em;
+
+	&.normal {
+		height: 1.25em;
+	}
+
+	&.noStyle {
+		height: auto !important;
+	}
 }
 </style>

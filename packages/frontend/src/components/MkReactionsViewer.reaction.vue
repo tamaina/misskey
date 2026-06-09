@@ -212,7 +212,7 @@ async function menu(ev: PointerEvent) {
 
 	if (canToggle.value) {
 		menuItems.push({
-			text: i18n.ts.addToEmojiPalette,
+			text: localeRef.value.env.addToEmojiPalette,
 			icon: 'ti ti-palette',
 			action: () => {
 				addToEmojiPalette(isLocalCustomEmoji ? `:${emojiName.value}:` : props.reaction);

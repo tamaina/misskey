@@ -52,7 +52,7 @@ const absolute = !invalid ? dateTimeFormat.format(_time) : localeRef.value.env._
 
 const actualNow = useLowresTime();
 const now = computed(() => (props.origin ? props.origin.getTime() : actualNow.value));
- 
+
 const ago = computed(() => (now.value - _time) / 1000/*ms*/);
 
 const relative = computed<string>(() => {
