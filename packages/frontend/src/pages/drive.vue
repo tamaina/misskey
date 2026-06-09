@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div>
+<div ref="scrollContainer" class="_pageScrollable">
 	<MkDrive @cd="x => folder = x"/>
 </div>
 </template>
@@ -12,10 +12,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { useLocale } from 'virtual:vite-vue-internationalization';
 
-import { computed, ref } from 'vue';
+import { computed, ref, useTemplateRef } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkDrive from '@/components/MkDrive.vue';
 import { definePage } from '@/page.js';
+import { useScrollPositionKeeper } from '@/composables/use-scroll-position-keeper.js';
+
+const scrollContainer = useTemplateRef('scrollContainer');
+useScrollPositionKeeper(scrollContainer);
 const localeRef = useLocale(import.meta.url);
 
 const folder = ref<Misskey.entities.DriveFolder | null>(null);

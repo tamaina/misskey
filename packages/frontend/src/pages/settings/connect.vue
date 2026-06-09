@@ -95,7 +95,7 @@ async function generateToken() {
 
 			os.alert({
 				type: 'success',
-				title: localeRef.value.env.token,
+				title: localeRef.value.env.accessToken,
 				text: token,
 			});
 		},

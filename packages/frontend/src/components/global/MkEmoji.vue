@@ -21,6 +21,8 @@ import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
 import { prefer } from '@/preferences.js';
 import { DI } from '@/di.js';
 import { mute as muteEmoji, unmute as unmuteEmoji, checkMuted as checkMutedEmoji } from '@/utility/emoji-mute.js';
+import { addToEmojiPalette } from '@/utility/emoji-palette.js';
+
 const localeRef = useLocale(import.meta.url);
 const localizerRef = useLocalizer(import.meta.url);
 
@@ -97,17 +99,31 @@ function onClick(ev: PointerEvent) {
 
 		menuItems.push({
 			type: 'divider',
-		}, isMuted.value ? {
-			text: localeRef.value.env.emojiUnmute,
-			icon: 'ti ti-mood-smile',
+		});
+
+		if (isMuted.value) {
+			menuItems.push({
+				text: localeRef.value.env.emojiUnmute,
+				icon: 'ti ti-mood-smile',
+				action: () => {
+					unmute();
+				},
+			});
+		} else {
+			menuItems.push({
+				text: localeRef.value.env.emojiMute,
+				icon: 'ti ti-mood-off',
+				action: () => {
+					mute();
+				},
+			});
+		}
+
+		menuItems.push({
+			text: localeRef.value.env.addToEmojiPalette,
+			icon: 'ti ti-palette',
 			action: () => {
-				unmute();
-			},
-		} : {
-			text: localeRef.value.env.emojiMute,
-			icon: 'ti ti-mood-off',
-			action: () => {
-				mute();
+				addToEmojiPalette(props.emoji);
 			},
 		});
 

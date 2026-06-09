@@ -58,6 +58,7 @@ minimumReleaseAgeExclude:
   - rolldown
   - typeorm # そのうち消す
   - vite-vue-internationalization
+  - '@types/archiver' # そのうち消す
 overrides:
   '@aiscript-dev/aiscript-languageserver': '-'
   chokidar: 5.0.0
