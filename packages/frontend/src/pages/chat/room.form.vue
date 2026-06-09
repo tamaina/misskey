@@ -34,7 +34,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { $locale as localeRef } from '@/i18n.js';
+import { useLocale } from 'virtual:vite-vue-internationalization';
 
 import { onMounted, watch, ref, shallowRef, computed, nextTick, readonly, onBeforeUnmount } from 'vue';
 import * as Misskey from 'misskey-js';
@@ -48,6 +48,7 @@ import { prefer } from '@/preferences.js';
 import { Autocomplete } from '@/utility/autocomplete.js';
 import { emojiPicker } from '@/utility/emoji-picker.js';
 import { checkDragDataType, getDragData } from '@/drag-and-drop.js';
+const localeRef = useLocale(import.meta.url);
 
 const props = defineProps<{
 	user?: Misskey.entities.UserDetailed | null;

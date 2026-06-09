@@ -27,7 +27,7 @@ const notificationConfigTypes = [
 	'mutualFollow',
 	'followingOrFollower',
 	'list',
-	'never'
+	'never',
 ] as const;
 
 export type NotificationConfig = {
@@ -39,13 +39,14 @@ export type NotificationConfig = {
 </script>
 
 <script lang="ts" setup>
-import { $locale as localeRef } from '@/i18n.js';
+import { useLocale } from 'virtual:vite-vue-internationalization';
 
 import * as Misskey from 'misskey-js';
 import { ref, computed } from 'vue';
 import MkSelect from '@/components/MkSelect.vue';
 import MkButton from '@/components/MkButton.vue';
 import { useMkSelect } from '@/composables/use-mkselect.js';
+const localeRef = useLocale(import.meta.url);
 
 const props = defineProps<{
 	value: NotificationConfig;

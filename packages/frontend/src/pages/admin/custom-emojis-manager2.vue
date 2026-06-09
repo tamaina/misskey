@@ -12,13 +12,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script setup lang="ts">
-import { $locale as localeRef } from '@/i18n.js';
+import { useLocale } from 'virtual:vite-vue-internationalization';
 
 import { computed, ref } from 'vue';
 import { definePage } from '@/page.js';
 import XGridLocalComponent from '@/pages/admin/custom-emojis-manager.local.list.vue';
 import XGridRemoteComponent from '@/pages/admin/custom-emojis-manager.remote.vue';
 import XRegisterComponent from '@/pages/admin/custom-emojis-manager.register.vue';
+const localeRef = useLocale(import.meta.url);
 
 type PageMode = 'local' | 'remote';
 

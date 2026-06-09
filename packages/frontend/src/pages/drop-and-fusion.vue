@@ -81,7 +81,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { $locale as localeRef } from '@/i18n.js';
+import { useLocale } from 'virtual:vite-vue-internationalization';
 
 import { computed, ref, watch } from 'vue';
 import * as Misskey from 'misskey-js';
@@ -92,6 +92,7 @@ import { useMkSelect } from '@/composables/use-mkselect.js';
 import MkSelect from '@/components/MkSelect.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import { misskeyApiGet } from '@/utility/misskey-api.js';
+const localeRef = useLocale(import.meta.url);
 
 const {
 	model: gameMode,

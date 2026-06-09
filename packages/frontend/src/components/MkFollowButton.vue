@@ -35,7 +35,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { $l as localizerRef } from '@/i18n.js';
+import { useLocalizer } from 'virtual:vite-vue-internationalization';
 
 import { onBeforeUnmount, onMounted, ref } from 'vue';
 import * as Misskey from 'misskey-js';
@@ -48,6 +48,7 @@ import { pleaseLogin } from '@/utility/please-login.js';
 import { $i } from '@/i.js';
 import { prefer } from '@/preferences.js';
 import { haptic } from '@/utility/haptic.js';
+const localizerRef = useLocalizer(import.meta.url);
 
 const props = withDefaults(defineProps<{
 	user: Misskey.entities.UserDetailed,

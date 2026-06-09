@@ -36,7 +36,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { $locale as localeRef } from '@/i18n.js';
+import { useLocale } from 'virtual:vite-vue-internationalization';
 
 import { ref, computed } from 'vue';
 import * as Misskey from 'misskey-js';
@@ -49,6 +49,7 @@ import { misskeyApi } from '@/utility/misskey-api.js';
 import MkContainer from '@/components/MkContainer.vue';
 import MkStreamingNotesTimeline from '@/components/MkStreamingNotesTimeline.vue';
 import { availableBasicTimelines, isAvailableBasicTimeline, isBasicTimeline, basicTimelineIconClass, basicTimelineTypes } from '@/timelines.js';
+const localeRef = useLocale(import.meta.url);
 
 const name = 'timeline';
 

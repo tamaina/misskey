@@ -10,12 +10,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { $locale as localeRef } from '@/i18n.js';
+import { useLocale } from 'virtual:vite-vue-internationalization';
 
 import { computed, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkDrive from '@/components/MkDrive.vue';
 import { definePage } from '@/page.js';
+const localeRef = useLocale(import.meta.url);
 
 const folder = ref<Misskey.entities.DriveFolder | null>(null);
 

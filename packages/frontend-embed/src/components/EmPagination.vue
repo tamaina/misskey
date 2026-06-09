@@ -11,7 +11,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <div v-else-if="empty" key="_empty_" class="empty">
 	<slot name="empty">
 		<div class="_fullinfo">
-			<div>{{ i18n.ts.nothing }}</div>
+			<div>{{ $locale.env.nothing }}</div>
 		</div>
 	</slot>
 </div>
@@ -19,14 +19,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 <div v-else ref="rootEl">
 	<div v-show="pagination.reversed && more" key="_more_" class="_margin">
 		<button v-if="!moreFetching" class="_buttonPrimary" :class="$style.more" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }" @click="fetchMoreAhead">
-			{{ i18n.ts.loadMore }}
+			{{ $locale.env.loadMore }}
 		</button>
 		<EmLoading v-else class="loading"/>
 	</div>
 	<slot :items="Array.from(items.values())" :fetching="fetching || moreFetching"></slot>
 	<div v-show="!pagination.reversed && more" key="_more_" class="_margin">
 		<button v-if="!moreFetching" class="_buttonRounded _buttonPrimary" :class="$style.more" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }" @click="fetchMore">
-			{{ i18n.ts.loadMore }}
+			{{ $locale.env.loadMore }}
 		</button>
 		<EmLoading v-else class="loading"/>
 	</div>
@@ -40,7 +40,6 @@ import { useDocumentVisibility } from '@@/js/use-document-visibility.js';
 import { onScrollTop, getBodyScrollHeight, getScrollContainer, onScrollBottom, scrollToBottom, scrollInContainer, isTailVisible, isHeadVisible } from '@@/js/scroll.js';
 import type { ComputedRef } from 'vue';
 import { misskeyApi } from '@/misskey-api.js';
-import { i18n } from '@/i18n.js';
 
 const SECOND_FETCH_LIMIT = 30;
 const TOLERANCE = 16;

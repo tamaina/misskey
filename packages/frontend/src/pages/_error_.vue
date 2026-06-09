@@ -25,7 +25,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { $locale as localeRef } from '@/i18n.js';
+import { useLocale } from 'virtual:vite-vue-internationalization';
 
 import { ref, computed } from 'vue';
 import * as Misskey from 'misskey-js';
@@ -38,6 +38,7 @@ import { definePage } from '@/page.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { prefer } from '@/preferences.js';
 import { instance } from '@/instance.js';
+const localeRef = useLocale(import.meta.url);
 
 const props = withDefaults(defineProps<{
 	error?: Error;

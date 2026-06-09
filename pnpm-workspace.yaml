@@ -2,7 +2,6 @@ packages:
   - packages/backend
   - packages/frontend-shared
   - packages/frontend
-  - packages/frontend-builder
   - packages/frontend-embed
   - packages/i18n
   - packages/icons-subsetter
@@ -34,8 +33,11 @@ allowBuilds:
 minimumReleaseAge: 10080 # delay 7days to mitigate supply-chain attack
 minimumReleaseAgeExclude:
   - '@misskey-dev/*'
+  - '@formatjs/*'
+  - '@rolldown/binding-*'
   - '@syuilo/aiscript'
   - buraha
+  - intl-messageformat
   - mfm-js
   - slacc
   - slacc-android-arm-eabi
@@ -53,7 +55,9 @@ minimumReleaseAgeExclude:
   - slacc-win32-x64-msvc
   - '@typescript/native-preview*'
   - pnpm
+  - rolldown
   - typeorm # そのうち消す
+  - vite-vue-internationalization
 overrides:
   '@aiscript-dev/aiscript-languageserver': '-'
   chokidar: 5.0.0

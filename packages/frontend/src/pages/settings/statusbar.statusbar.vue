@@ -86,10 +86,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { $locale as localeRef } from '@/i18n.js';
+import { useLocale } from 'virtual:vite-vue-internationalization';
 
 import { reactive, computed, watch } from 'vue';
 import * as Misskey from 'misskey-js';
+import type { MkSelectItem } from '@/components/MkSelect.vue';
+import type { StatusbarStore } from '@/preferences/def.js';
 import MkSelect from '@/components/MkSelect.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
@@ -99,8 +101,7 @@ import MkRange from '@/components/MkRange.vue';
 import { instance } from '@/instance.js';
 import { deepClone } from '@/utility/clone.js';
 import { prefer } from '@/preferences.js';
-import type { MkSelectItem } from '@/components/MkSelect.vue';
-import type { StatusbarStore } from '@/preferences/def.js';
+const localeRef = useLocale(import.meta.url);
 
 const props = defineProps<{
 	_id: string;

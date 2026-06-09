@@ -63,7 +63,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { $locale as localeRef } from '@/i18n.js';
+import { useLocale } from 'virtual:vite-vue-internationalization';
 
 import { computed, onMounted, ref, useTemplateRef, toRefs } from 'vue';
 import { entities } from 'misskey-js';
@@ -78,6 +78,7 @@ import { showSystemWebhookEditorDialog } from '@/components/MkSystemWebhookEdito
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkDivider from '@/components/MkDivider.vue';
 import * as os from '@/os.js';
+const localeRef = useLocale(import.meta.url);
 
 const emit = defineEmits<{
 	(ev: 'submitted'): void;

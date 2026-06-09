@@ -32,7 +32,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<template #icon><i class="ti ti-report-search"></i></template>
 				<template #label>{{ $locale.env.deviceInfo }}</template>
 				<template #caption>{{ $locale.env.deviceInfoDescription }}</template>
-				<MkLoading v-if="userEnv == null" />
+				<MkLoading v-if="userEnv == null"/>
 				<MkCode v-else lang="json" :code="JSON.stringify(userEnv, null, 2)" style="max-height: 300px; overflow: auto;"/>
 			</MkFolder>
 		</div>
@@ -41,17 +41,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { $locale as localeRef } from '@/i18n.js';
+import { useLocale } from 'virtual:vite-vue-internationalization';
 
 import { ref } from 'vue';
+import type { UserEnvironment } from '@/utility/get-user-environment.js';
 import { instance } from '@/instance.js';
 import { definePage } from '@/page.js';
 import { getUserEnvironment } from '@/utility/get-user-environment.js';
-import type { UserEnvironment } from '@/utility/get-user-environment.js';
 import MkKeyValue from '@/components/MkKeyValue.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkLink from '@/components/MkLink.vue';
 import MkCode from '@/components/MkCode.vue';
+const localeRef = useLocale(import.meta.url);
 
 const userEnv = ref<UserEnvironment | null>(null);
 

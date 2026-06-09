@@ -30,7 +30,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { $locale as localeRef } from '@/i18n.js';
+import { useLocale } from 'virtual:vite-vue-internationalization';
 
 import { ref, computed, watch } from 'vue';
 import type { SoundType } from '@/utility/sound.js';
@@ -43,6 +43,7 @@ import { useMkSelect } from '@/composables/use-mkselect.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { playMisskeySfxFile, soundsTypes, getSoundDuration } from '@/utility/sound.js';
 import { selectFile } from '@/utility/drive.js';
+const localeRef = useLocale(import.meta.url);
 
 const props = defineProps<{
 	def: SoundStore;

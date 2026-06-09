@@ -153,7 +153,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { $locale as localeRef } from '@/i18n.js';
+import { useLocale } from 'virtual:vite-vue-internationalization';
 
 import { ref, computed } from 'vue';
 import JSON5 from 'json5';
@@ -169,6 +169,7 @@ import MkButton from '@/components/MkButton.vue';
 import MkColorInput from '@/components/MkColorInput.vue';
 import MkRadios from '@/components/MkRadios.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
+const localeRef = useLocale(import.meta.url);
 
 const meta = await misskeyApi('admin/meta');
 

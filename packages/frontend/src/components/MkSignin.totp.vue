@@ -31,7 +31,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 import { ref } from 'vue';
 
-
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
 

@@ -82,7 +82,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { $locale as localeRef } from '@/i18n.js';
+import { useLocale } from 'virtual:vite-vue-internationalization';
 
 import { ref, computed } from 'vue';
 import MkSwitch from '@/components/MkSwitch.vue';
@@ -95,6 +95,7 @@ import { misskeyApi } from '@/utility/misskey-api.js';
 import { fetchInstance, instance } from '@/instance.js';
 import { definePage } from '@/page.js';
 import MkButton from '@/components/MkButton.vue';
+const localeRef = useLocale(import.meta.url);
 
 const meta = await misskeyApi('admin/meta');
 

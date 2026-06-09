@@ -158,7 +158,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { $locale as localeRef } from '@/i18n.js';
+import { useLocale } from 'virtual:vite-vue-internationalization';
 
 import { ref, computed } from 'vue';
 import MkButton from '@/components/MkButton.vue';
@@ -171,6 +171,7 @@ import { definePage } from '@/page.js';
 import { $i } from '@/i.js';
 import MkFeatureBanner from '@/components/MkFeatureBanner.vue';
 import { prefer } from '@/preferences.js';
+const localeRef = useLocale(import.meta.url);
 
 const excludeMutingUsers = ref(false);
 const excludeInactiveUsers = ref(false);

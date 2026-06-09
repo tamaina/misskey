@@ -38,7 +38,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script setup lang="ts">
-import { $locale as localeRef } from '@/i18n.js';
+import { useLocale } from 'virtual:vite-vue-internationalization';
 
 import { entities } from 'misskey-js';
 import { computed, defineAsyncComponent, onMounted, ref } from 'vue';
@@ -50,6 +50,7 @@ import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os.js';
 import MkDivider from '@/components/MkDivider.vue';
 import { useMkSelect } from '@/composables/use-mkselect.js';
+const localeRef = useLocale(import.meta.url);
 
 const recipients = ref<entities.AbuseReportNotificationRecipient[]>([]);
 

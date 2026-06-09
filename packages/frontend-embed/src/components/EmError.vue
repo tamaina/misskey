@@ -5,13 +5,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div :class="$style.root">
-	<p :class="$style.text"><i class="ti ti-alert-triangle"></i> {{ i18n.ts.somethingHappened }}</p>
-	<button class="_buttonGray _buttonRounded" :class="$style.button" @click="() => emit('retry')">{{ i18n.ts.retry }}</button>
+	<p :class="$style.text"><i class="ti ti-alert-triangle"></i> {{ $locale.env.somethingHappened }}</p>
+	<button class="_buttonGray _buttonRounded" :class="$style.button" @click="() => emit('retry')">{{ $locale.env.retry }}</button>
 </div>
 </template>
 
 <script lang="ts" setup>
-import { i18n } from '@/i18n.js';
 
 const emit = defineEmits<{
 	(ev: 'retry'): void;

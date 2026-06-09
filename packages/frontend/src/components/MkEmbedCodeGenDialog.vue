@@ -85,7 +85,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script setup lang="ts">
-import { $locale as localeRef } from '@/i18n.js';
+import { useLocale } from 'virtual:vite-vue-internationalization';
 
 import { useTemplateRef, ref, computed, nextTick, onMounted, onDeactivated, onUnmounted } from 'vue';
 import { url } from '@@/js/config.js';
@@ -102,6 +102,7 @@ import MkInfo from '@/components/MkInfo.vue';
 import { useMkSelect } from '@/composables/use-mkselect.js';
 import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
 import { normalizeEmbedParams, getEmbedCode } from '@/utility/get-embed-code.js';
+const localeRef = useLocale(import.meta.url);
 
 const emit = defineEmits<{
 	(ev: 'ok'): void;

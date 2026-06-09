@@ -86,7 +86,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { $locale as localeRef } from '@/i18n.js';
+import { useLocale } from 'virtual:vite-vue-internationalization';
 
 import { useTemplateRef, computed, ref, markRaw } from 'vue';
 import { notificationTypes } from 'misskey-js';
@@ -108,6 +108,7 @@ import { Paginator } from '@/utility/paginator.js';
 import MkPagination from '@/components/MkPagination.vue';
 import { userPage } from '@/filters/user.js';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
+const localeRef = useLocale(import.meta.url);
 
 const $i = ensureSignin();
 

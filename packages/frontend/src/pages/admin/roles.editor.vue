@@ -92,13 +92,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { $locale as localeRef } from '@/i18n.js';
+import { useLocale } from 'virtual:vite-vue-internationalization';
 
 import { watch, ref, computed } from 'vue';
 import { throttle } from 'throttle-debounce';
 import * as Misskey from 'misskey-js';
 import RolesEditorFormula from './RolesEditorFormula.vue';
+import XPolicyEditor from './roles.policy-editor.vue';
 import type { MkSelectItem, GetMkSelectValueTypesFromDef } from '@/components/MkSelect.vue';
+import type { PolicyMeta } from './roles.policy-editor.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkColorInput from '@/components/MkColorInput.vue';
 import MkSelect from '@/components/MkSelect.vue';
@@ -106,10 +108,9 @@ import MkTextarea from '@/components/MkTextarea.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import FormSlot from '@/components/form/slot.vue';
-import XPolicyEditor from './roles.policy-editor.vue';
 import { instance } from '@/instance.js';
 import { deepClone } from '@/utility/clone.js';
-import type { PolicyMeta } from './roles.policy-editor.vue';
+const localeRef = useLocale(import.meta.url);
 
 type RoleLike = Pick<Misskey.entities.Role, 'name' | 'description' | 'isAdministrator' | 'isModerator' | 'color' | 'iconUrl' | 'target' | 'isPublic' | 'isExplorable' | 'asBadge' | 'canEditMembersByModerator' | 'displayOrder' | 'preserveAssignmentOnMoveAccount'> & {
 	id?: Misskey.entities.Role['id'] | null;

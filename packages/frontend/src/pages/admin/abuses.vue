@@ -49,7 +49,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { $locale as localeRef } from '@/i18n.js';
+import { useLocale } from 'virtual:vite-vue-internationalization';
 
 import { computed, ref, markRaw } from 'vue';
 import MkSelect from '@/components/MkSelect.vue';
@@ -60,6 +60,7 @@ import { useMkSelect } from '@/composables/use-mkselect.js';
 import MkButton from '@/components/MkButton.vue';
 import { store } from '@/store.js';
 import { Paginator } from '@/utility/paginator.js';
+const localeRef = useLocale(import.meta.url);
 
 const {
 	model: state,

@@ -17,7 +17,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { $locale as localeRef } from '@/i18n.js';
+import { useLocale } from 'virtual:vite-vue-internationalization';
 
 import { computed } from 'vue';
 import MkKeyValue from '@/components/MkKeyValue.vue';
@@ -25,6 +25,7 @@ import { misskeyApi } from '@/utility/misskey-api.js';
 import bytes from '@/filters/bytes.js';
 import number from '@/filters/number.js';
 import { definePage } from '@/page.js';
+const localeRef = useLocale(import.meta.url);
 
 const databasePromiseFactory = () => misskeyApi('admin/get-table-stats').then(res => Object.entries(res).sort((a, b) => b[1].size - a[1].size));
 

@@ -55,7 +55,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { $locale as localeRef } from '@/i18n.js';
+import { useLocale } from 'virtual:vite-vue-internationalization';
 
 import { onMounted, computed, useTemplateRef } from 'vue';
 import { Chart } from 'chart.js';
@@ -75,6 +75,7 @@ import MkRetentionLineChart from '@/components/MkRetentionLineChart.vue';
 import { initChart } from '@/utility/init-chart.js';
 import { useMkSelect } from '@/composables/use-mkselect.js';
 import { themeManager } from '@/theme.js';
+const localeRef = useLocale(import.meta.url);
 
 initChart();
 

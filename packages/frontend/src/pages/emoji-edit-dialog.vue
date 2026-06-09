@@ -79,7 +79,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { $l as localizerRef } from '@/i18n.js';
+import { useLocalizer } from 'virtual:vite-vue-internationalization';
 
 import { computed, watch, ref, useTemplateRef } from 'vue';
 import * as Misskey from 'misskey-js';
@@ -94,6 +94,7 @@ import { customEmojiCategories } from '@/custom-emojis.js';
 import MkSwitch from '@/components/MkSwitch.vue';
 import { selectFile } from '@/utility/drive.js';
 import MkRolePreview from '@/components/MkRolePreview.vue';
+const localizerRef = useLocalizer(import.meta.url);
 
 const props = defineProps<{
 	emoji?: Misskey.entities.EmojiDetailed,

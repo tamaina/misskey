@@ -52,7 +52,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { $locale as localeRef, $l as localizerRef } from '@/i18n.js';
+import { useLocale, useLocalizer } from 'virtual:vite-vue-internationalization';
 
 import { computed, markRaw, ref, watch } from 'vue';
 import * as Misskey from 'misskey-js';
@@ -70,6 +70,8 @@ import { ensureSignin } from '@/i.js';
 import MkPagination from '@/components/MkPagination.vue';
 import { useRouter } from '@/router.js';
 import { Paginator } from '@/utility/paginator.js';
+const localeRef = useLocale(import.meta.url);
+const localizerRef = useLocalizer(import.meta.url);
 
 const $i = ensureSignin();
 

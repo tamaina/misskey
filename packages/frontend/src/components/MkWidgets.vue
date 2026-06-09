@@ -46,7 +46,7 @@ export type DefaultStoredWidget = {
 </script>
 
 <script lang="ts" setup>
-import { $locale as localeRef } from '@/i18n.js';
+import { useLocale } from 'virtual:vite-vue-internationalization';
 
 import { computed } from 'vue';
 import { isLink } from '@@/js/is-link.js';
@@ -59,6 +59,7 @@ import { widgets as widgetDefs, federationWidgets } from '@/widgets/index.js';
 import * as os from '@/os.js';
 import { instance } from '@/instance.js';
 import { useMkSelect } from '@/composables/use-mkselect.js';
+const localeRef = useLocale(import.meta.url);
 
 const props = defineProps<{
 	widgets: Widget[];

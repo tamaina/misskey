@@ -41,9 +41,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { $locale as localeRef } from '@/i18n.js';
+import { useLocale } from 'virtual:vite-vue-internationalization';
 
 import { ref, computed, nextTick } from 'vue';
+import { parseThemeCode } from '@@/js/theme.js';
 import type { Extension } from '@/components/MkExtensionInstaller.vue';
 import type { AiScriptPluginMeta } from '@/plugin.js';
 import MkLoading from '@/components/global/MkLoading.vue';
@@ -56,9 +57,9 @@ import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { parsePluginMeta, installPlugin } from '@/plugin.js';
 import { installTheme } from '@/theme.js';
-import { parseThemeCode } from '@@/js/theme.js';
 import { unisonReload } from '@/utility/unison-reload.js';
 import { definePage } from '@/page.js';
+const localeRef = useLocale(import.meta.url);
 
 const uiPhase = ref<'fetching' | 'confirm' | 'error'>('fetching');
 const errorKV = ref<{

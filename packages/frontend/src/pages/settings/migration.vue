@@ -58,7 +58,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { $l as localizerRef } from '@/i18n.js';
+import { useLocalizer } from 'virtual:vite-vue-internationalization';
 
 import { ref } from 'vue';
 import * as Misskey from 'misskey-js';
@@ -71,6 +71,7 @@ import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { ensureSignin } from '@/i.js';
 import { unisonReload } from '@/utility/unison-reload.js';
+const localizerRef = useLocalizer(import.meta.url);
 
 const $i = ensureSignin();
 

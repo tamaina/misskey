@@ -163,7 +163,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { $locale as localeRef } from '@/i18n.js';
+import { useLocale } from 'virtual:vite-vue-internationalization';
 
 import { ref, computed } from 'vue';
 import * as Misskey from 'misskey-js';
@@ -178,6 +178,7 @@ import MkKeyValue from '@/components/MkKeyValue.vue';
 import MkCodeEditor from '@/components/MkCodeEditor.vue';
 import MkTl from '@/components/MkTl.vue';
 import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
+const localeRef = useLocale(import.meta.url);
 
 function msSMH(v: number | null) {
 	if (v == null) return 'N/A';

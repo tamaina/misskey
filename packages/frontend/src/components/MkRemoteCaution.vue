@@ -9,7 +9,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 
-
 defineProps<{
 	href?: string;
 }>();

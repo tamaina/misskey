@@ -18,13 +18,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { $locale as localeRef } from '@/i18n.js';
+import { useLocale } from 'virtual:vite-vue-internationalization';
 
 import { markRaw } from 'vue';
 import MkPagination from '@/components/MkPagination.vue';
 import MkNote from '@/components/MkNote.vue';
 import { definePage } from '@/page.js';
 import { Paginator } from '@/utility/paginator.js';
+const localeRef = useLocale(import.meta.url);
 
 const paginator = markRaw(new Paginator('i/favorites', {
 	limit: 10,

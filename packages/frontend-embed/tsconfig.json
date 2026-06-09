@@ -43,6 +43,48 @@
 		"jsx": "preserve"
 	},
 	"compileOnSave": false,
+	"vueCompilerOptions": {
+		"plugins": [
+			{
+				"name": "vite-vue-internationalization/volar",
+				"primaryLocale": "ja-JP",
+				"global": {
+					"ar-SA": "../../locales/ar-SA.yml",
+					"ca-ES": "../../locales/ca-ES.yml",
+					"cs-CZ": "../../locales/cs-CZ.yml",
+					"da-DK": "../../locales/da-DK.yml",
+					"de-DE": "../../locales/de-DE.yml",
+					"en-US": "../../locales/en-US.yml",
+					"es-ES": "../../locales/es-ES.yml",
+					"fr-FR": "../../locales/fr-FR.yml",
+					"id-ID": "../../locales/id-ID.yml",
+					"it-IT": "../../locales/it-IT.yml",
+					"ja-JP": "../../locales/ja-JP.yml",
+					"ja-KS": "../../locales/ja-KS.yml",
+					"kab-KAB": "../../locales/kab-KAB.yml",
+					"kn-IN": "../../locales/kn-IN.yml",
+					"ko-KR": "../../locales/ko-KR.yml",
+					"nl-NL": "../../locales/nl-NL.yml",
+					"no-NO": "../../locales/no-NO.yml",
+					"pl-PL": "../../locales/pl-PL.yml",
+					"pt-PT": "../../locales/pt-PT.yml",
+					"ru-RU": "../../locales/ru-RU.yml",
+					"sk-SK": "../../locales/sk-SK.yml",
+					"th-TH": "../../locales/th-TH.yml",
+					"tr-TR": "../../locales/tr-TR.yml",
+					"ug-CN": "../../locales/ug-CN.yml",
+					"uk-UA": "../../locales/uk-UA.yml",
+					"vi-VN": "../../locales/vi-VN.yml",
+					"zh-CN": "../../locales/zh-CN.yml",
+					"zh-TW": "../../locales/zh-TW.yml"
+				},
+				"globalType": "runtime",
+				"messageSyntax": "vue",
+				"buildStrategy": "inline-chunks",
+				"sfcTransform": "all"
+			}
+		]
+	},
 	"include": [
 		"./src/**/*.ts",
 		"./src/**/*.vue",

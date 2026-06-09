@@ -63,7 +63,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { $l as localizerRef } from '@/i18n.js';
+import { useLocalizer } from 'virtual:vite-vue-internationalization';
 
 import { computed, watch, ref, useTemplateRef } from 'vue';
 import * as Misskey from 'misskey-js';
@@ -78,6 +78,7 @@ import MkSwitch from '@/components/MkSwitch.vue';
 import MkRolePreview from '@/components/MkRolePreview.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
 import { ensureSignin } from '@/i.js';
+const localizerRef = useLocalizer(import.meta.url);
 
 const $i = ensureSignin();
 

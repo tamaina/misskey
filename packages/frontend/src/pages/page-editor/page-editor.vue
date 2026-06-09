@@ -58,7 +58,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { $locale as localeRef, $l as localizerRef } from '@/i18n.js';
+import { useLocale, useLocalizer } from 'virtual:vite-vue-internationalization';
 
 import { computed, provide, watch, ref } from 'vue';
 import * as Misskey from 'misskey-js';
@@ -77,6 +77,8 @@ import { $i } from '@/i.js';
 import { mainRouter } from '@/router.js';
 import { useMkSelect } from '@/composables/use-mkselect.js';
 import { getPageBlockList } from '@/pages/page-editor/common.js';
+const localeRef = useLocale(import.meta.url);
+const localizerRef = useLocalizer(import.meta.url);
 
 const props = defineProps<{
 	initPageId?: string;

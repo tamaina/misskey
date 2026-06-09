@@ -81,7 +81,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { $locale as localeRef, $l as localizerRef } from '@/i18n.js';
+import { useLocale, useLocalizer } from 'virtual:vite-vue-internationalization';
 
 import { computed, defineAsyncComponent, ref } from 'vue';
 import * as Misskey from 'misskey-js';
@@ -97,6 +97,8 @@ import bytes from '@/filters/bytes.js';
 import * as os from '@/os.js';
 import { iAmAdmin, iAmModerator } from '@/i.js';
 import MkTabs from '@/components/MkTabs.vue';
+const localeRef = useLocale(import.meta.url);
+const localizerRef = useLocalizer(import.meta.url);
 
 const props = defineProps<{
 	file: Misskey.entities.DriveFile,

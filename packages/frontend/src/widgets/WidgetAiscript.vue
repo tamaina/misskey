@@ -19,7 +19,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { $locale as localeRef } from '@/i18n.js';
+import { useLocale } from 'virtual:vite-vue-internationalization';
 
 import { ref } from 'vue';
 import { Interpreter, Parser, utils } from '@syuilo/aiscript';
@@ -32,6 +32,7 @@ import MkContainer from '@/components/MkContainer.vue';
 import { aiScriptReadline, createAiScriptEnv } from '@/aiscript/api.js';
 import { $i } from '@/i.js';
 import { genId } from '@/utility/id.js';
+const localeRef = useLocale(import.meta.url);
 
 const name = 'aiscript';
 

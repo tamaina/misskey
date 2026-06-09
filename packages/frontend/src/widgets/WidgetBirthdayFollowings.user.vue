@@ -21,7 +21,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script setup lang="ts">
-import { $locale as localeRef, $l as localizerRef } from '@/i18n.js';
+import { useLocale, useLocalizer } from 'virtual:vite-vue-internationalization';
 
 import { computed } from 'vue';
 import * as Misskey from 'misskey-js';
@@ -29,6 +29,8 @@ import MkUserCardMini from '@/components/MkUserCardMini.vue';
 import * as os from '@/os.js';
 import { useLowresTime } from '@/composables/use-lowres-time.js';
 import { userPage, acct } from '@/filters/user.js';
+const localeRef = useLocale(import.meta.url);
+const localizerRef = useLocalizer(import.meta.url);
 
 const props = defineProps<{
 	item: Misskey.entities.UsersGetFollowingUsersByBirthdayResponse[number];

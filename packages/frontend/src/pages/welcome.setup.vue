@@ -124,7 +124,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { $locale as localeRef } from '@/i18n.js';
+import { useLocale } from 'virtual:vite-vue-internationalization';
 
 import { ref } from 'vue';
 import { host, version } from '@@/js/config.js';
@@ -135,6 +135,7 @@ import { misskeyApi } from '@/utility/misskey-api.js';
 import { login } from '@/accounts.js';
 import MkLink from '@/components/MkLink.vue';
 import MkServerSetupWizard from '@/components/MkServerSetupWizard.vue';
+const localeRef = useLocale(import.meta.url);
 
 const username = ref('');
 const password = ref('');

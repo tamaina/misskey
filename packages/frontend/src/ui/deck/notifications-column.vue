@@ -12,7 +12,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { $locale as localeRef } from '@/i18n.js';
+import { useLocale } from 'virtual:vite-vue-internationalization';
 
 import { defineAsyncComponent, useTemplateRef } from 'vue';
 import XColumn from './column.vue';
@@ -20,6 +20,7 @@ import type { Column } from '@/deck.js';
 import { updateColumn } from '@/deck.js';
 import MkStreamingNotificationsTimeline from '@/components/MkStreamingNotificationsTimeline.vue';
 import * as os from '@/os.js';
+const localeRef = useLocale(import.meta.url);
 
 const props = defineProps<{
 	column: Column;

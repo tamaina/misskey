@@ -41,7 +41,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script setup lang="ts">
-import { $locale as localeRef, $l as localizerRef } from '@/i18n.js';
+import { useLocale, useLocalizer } from 'virtual:vite-vue-internationalization';
 
 import { ref } from 'vue';
 import { instanceName } from '@@/js/config.js';
@@ -51,6 +51,8 @@ import { instance } from '@/instance.js';
 import { apiWithDialog, promiseDialog, alert } from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { getAccounts } from '@/accounts.js';
+const localeRef = useLocale(import.meta.url);
+const localizerRef = useLocalizer(import.meta.url);
 
 defineProps<{
 	primary?: boolean;

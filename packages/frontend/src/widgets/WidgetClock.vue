@@ -29,7 +29,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { $locale as localeRef } from '@/i18n.js';
+import { useLocale } from 'virtual:vite-vue-internationalization';
 
 import { computed } from 'vue';
 import { useWidgetPropsManager } from './widget.js';
@@ -39,6 +39,7 @@ import MkContainer from '@/components/MkContainer.vue';
 import MkAnalogClock from '@/components/MkAnalogClock.vue';
 import MkDigitalClock from '@/components/MkDigitalClock.vue';
 import { timezones } from '@/utility/timezones.js';
+const localeRef = useLocale(import.meta.url);
 
 const name = 'clock';
 

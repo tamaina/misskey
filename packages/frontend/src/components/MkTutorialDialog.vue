@@ -148,7 +148,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { $locale as localeRef } from '@/i18n.js';
+import { useLocale } from 'virtual:vite-vue-internationalization';
 
 import { ref, useTemplateRef, watch } from 'vue';
 import { host } from '@@/js/config.js';
@@ -162,6 +162,7 @@ import MkAnimBg from '@/components/MkAnimBg.vue';
 import { instance } from '@/instance.js';
 import { claimAchievement } from '@/utility/achievements.js';
 import * as os from '@/os.js';
+const localeRef = useLocale(import.meta.url);
 
 const props = defineProps<{
 	initialPage?: number;

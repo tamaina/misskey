@@ -92,7 +92,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script setup lang="ts">
-import { $locale as localeRef } from '@/i18n.js';
+import { useLocale } from 'virtual:vite-vue-internationalization';
 
 import { computed, onMounted, ref, useTemplateRef, toRefs } from 'vue';
 import * as Misskey from 'misskey-js';
@@ -108,6 +108,7 @@ import { misskeyApi } from '@/utility/misskey-api.js';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import * as os from '@/os.js';
+const localeRef = useLocale(import.meta.url);
 
 type EventType = {
 	abuseReport: boolean;

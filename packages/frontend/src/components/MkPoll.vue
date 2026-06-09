@@ -27,7 +27,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { $l as localizerRef } from '@/i18n.js';
+import { useLocalizer } from 'virtual:vite-vue-internationalization';
 
 import { computed, ref, watch } from 'vue';
 import * as Misskey from 'misskey-js';
@@ -38,6 +38,7 @@ import { pleaseLogin } from '@/utility/please-login.js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { useLowresTime } from '@/composables/use-lowres-time.js';
+const localizerRef = useLocalizer(import.meta.url);
 
 const props = defineProps<{
 	noteId: string;

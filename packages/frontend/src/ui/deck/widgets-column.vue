@@ -15,7 +15,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { $locale as localeRef } from '@/i18n.js';
+import { useLocale } from 'virtual:vite-vue-internationalization';
 
 import { ref } from 'vue';
 import XColumn from './column.vue';
@@ -23,6 +23,7 @@ import type { Column } from '@/deck.js';
 import type { Widget } from '@/components/MkWidgets.vue';
 import { addColumnWidget, removeColumnWidget, setColumnWidgets, updateColumnWidget } from '@/deck.js';
 import XWidgets from '@/components/MkWidgets.vue';
+const localeRef = useLocale(import.meta.url);
 
 const props = defineProps<{
 	column: Column;

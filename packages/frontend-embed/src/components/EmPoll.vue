@@ -11,12 +11,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<span :class="$style.fg">
 				<template v-if="choice.isVoted"><i class="ti ti-check" style="margin-right: 4px; color: var(--MI_THEME-accent);"></i></template>
 				<EmMfm :text="choice.text" :plain="true"/>
-				<span style="margin-left: 4px; opacity: 0.7;">({{ i18n.tsx._poll.votesCount({ n: choice.votes }) }})</span>
+				<span style="margin-left: 4px; opacity: 0.7;">({{ $l.env._poll.votesCount({ n: choice.votes }) }})</span>
 			</span>
 		</li>
 	</ul>
 	<p :class="$style.info">
-		<span>{{ i18n.tsx._poll.totalVotes({ n: total }) }}</span>
+		<span>{{ $l.env._poll.totalVotes({ n: total }) }}</span>
 	</p>
 </div>
 </template>
@@ -24,7 +24,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed } from 'vue';
 import * as Misskey from 'misskey-js';
-import { i18n } from '@/i18n.js';
 import EmMfm from '@/components/EmMfm.js';
 
 function sum(xs: number[]): number {

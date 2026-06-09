@@ -16,7 +16,6 @@ import pluginJson5 from './lib/vite-plugin-json5.js';
 import type { Options as SearchIndexOptions } from './lib/vite-plugin-create-search-index.js';
 import pluginCreateSearchIndex from './lib/vite-plugin-create-search-index.js';
 import pluginWatchLocales from './lib/vite-plugin-watch-locales.js';
-import { pluginRemoveUnrefI18n } from '../frontend-builder/rollup-plugin-remove-unref-i18n.js';
 
 const url = process.env.NODE_ENV === 'development' ? (yaml.load(await fsp.readFile('../../.config/default.yml', 'utf-8')) as any).url : null;
 const host = url ? (new URL(url)).hostname : undefined;
@@ -88,7 +87,6 @@ export function toBase62(n: number): string {
 
 export function getConfig(): UserConfig {
 	const localesHash = toBase62(hash(JSON.stringify(locales)));
-	const vviBuildStrategy = process.env.VVI_BUILD_STRATEGY === 'inline-chunks' ? 'inline-chunks' : 'virtual';
 
 	return {
 		base: '/vite/',
@@ -116,15 +114,8 @@ export function getConfig(): UserConfig {
 		plugins: [
 			pluginWatchLocales(),
 			...searchIndexes.map(options => pluginCreateSearchIndex(options)),
-			vueInternationalization({
-				primaryLocale: 'ja-JP',
-				global: locales,
-				messageSyntax: 'vue',
-				buildStrategy: vviBuildStrategy,
-				sfcTransform: vviBuildStrategy === 'inline-chunks' ? 'all' : 'locale-sources',
-			}),
+			vueInternationalization(),
 			pluginVue(),
-			pluginRemoveUnrefI18n(),
 			pluginUnwindCssModuleClassName(),
 			pluginJson5(),
 			pluginGlsl({ minify: true }),

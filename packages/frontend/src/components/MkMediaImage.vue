@@ -66,7 +66,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { $locale as localeRef } from '@/i18n.js';
+import { useLocale } from 'virtual:vite-vue-internationalization';
 
 import { watch, ref, computed } from 'vue';
 import * as Misskey from 'misskey-js';
@@ -79,6 +79,7 @@ import * as os from '@/os.js';
 import { $i, iAmModerator } from '@/i.js';
 import { prefer } from '@/preferences.js';
 import { shouldHideFileByDefault, canRevealFile } from '@/utility/sensitive-file.js';
+const localeRef = useLocale(import.meta.url);
 
 const props = withDefaults(defineProps<{
 	image: Misskey.entities.DriveFile;

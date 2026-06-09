@@ -51,7 +51,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { $locale as localeRef } from '@/i18n.js';
+import { useLocale } from 'virtual:vite-vue-internationalization';
 
 import { computed, markRaw, ref, shallowRef } from 'vue';
 import type { IPaginator } from '@/utility/paginator.js';
@@ -62,6 +62,7 @@ import MkInput from '@/components/MkInput.vue';
 import { definePage } from '@/page.js';
 import { useRouter } from '@/router.js';
 import { Paginator } from '@/utility/paginator.js';
+const localeRef = useLocale(import.meta.url);
 
 const router = useRouter();
 

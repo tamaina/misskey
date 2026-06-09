@@ -45,14 +45,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { $locale as localeRef } from '@/i18n.js';
+import { useLocale } from 'virtual:vite-vue-internationalization';
 
 import { computed, reactive, ref } from 'vue';
+import XPolicyEditor from './roles.policy-editor.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkRolePreview from '@/components/MkRolePreview.vue';
-import XPolicyEditor from './roles.policy-editor.vue';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { definePage } from '@/page.js';
@@ -60,6 +60,7 @@ import { instance, fetchInstance } from '@/instance.js';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';
 import { useRouter } from '@/router.js';
 import { deepClone } from '@/utility/clone.js';
+const localeRef = useLocale(import.meta.url);
 
 const router = useRouter();
 const baseRoleQ = ref('');

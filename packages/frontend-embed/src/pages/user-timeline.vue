@@ -12,15 +12,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<EmAvatar :class="$style.avatar" :user="user"/>
 				</a>
 				<div :class="$style.headerTitle" @click="top">
-					<I18n :src="i18n.ts.noteOf" tag="div" class="_nowrap">
+					<I18n :src="$locale.env.noteOf" tag="div" class="_nowrap">
 						<template #user>
 							<a v-if="user != null" :href="`/@${user.username}`" target="_blank" rel="noopener noreferrer">
 								<EmUserName :user="user"/>
 							</a>
-							<span v-else>{{ i18n.ts.user }}</span>
+							<span v-else>{{ $locale.env.user }}</span>
 						</template>
 					</I18n>
-					<div :class="$style.sub">{{ i18n.tsx.fromX({ x: instanceName }) }}</div>
+					<div :class="$style.sub">{{ $l.env.fromX({ x: instanceName }) }}</div>
 				</div>
 				<a :href="url" :class="$style.instanceIconLink" target="_blank" rel="noopener noreferrer">
 					<img
@@ -59,7 +59,6 @@ import I18n from '@/components/I18n.vue';
 import XNotFound from '@/pages/not-found.vue';
 import EmTimelineContainer from '@/components/EmTimelineContainer.vue';
 import { misskeyApi } from '@/misskey-api.js';
-import { i18n } from '@/i18n.js';
 import { assertServerContext } from '@/server-context.js';
 import { DI } from '@/di.js';
 

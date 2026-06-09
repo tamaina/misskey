@@ -45,7 +45,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { $locale as localeRef } from '@/i18n.js';
+import { useLocale } from 'virtual:vite-vue-internationalization';
 
 import { computed, markRaw, ref, watchEffect } from 'vue';
 import * as Misskey from 'misskey-js';
@@ -61,6 +61,7 @@ import { useMkSelect } from '@/composables/use-mkselect.js';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
 import { dateString } from '@/filters/date.js';
 import { Paginator } from '@/utility/paginator.js';
+const localeRef = useLocale(import.meta.url);
 
 type SearchQuery = {
 	sort?: '-createdAt' | '+createdAt' | '-updatedAt' | '+updatedAt';

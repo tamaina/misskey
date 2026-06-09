@@ -51,7 +51,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { $locale as localeRef } from '@/i18n.js';
+import { useLocale } from 'virtual:vite-vue-internationalization';
 
 import { computed, onMounted, ref, useTemplateRef, watch } from 'vue';
 import * as Misskey from 'misskey-js';
@@ -62,6 +62,7 @@ import * as os from '@/os.js';
 import { ensureSignin } from '@/i.js';
 import { useUploader } from '@/composables/use-uploader.js';
 import MkUploaderItems from '@/components/MkUploaderItems.vue';
+const localeRef = useLocale(import.meta.url);
 
 const $i = ensureSignin();
 

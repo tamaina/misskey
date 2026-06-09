@@ -6,8 +6,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <a :href="href" target="_blank" :class="$style.root">
 	<div :class="$style.label">
-		<template v-if="media.type.startsWith('audio')"><i class="ti ti-music"></i> {{ i18n.ts.audio }}</template>
-		<template v-else><i class="ti ti-file"></i> {{ i18n.ts.file }}</template>
+		<template v-if="media.type.startsWith('audio')"><i class="ti ti-music"></i> {{ $locale.env.audio }}</template>
+		<template v-else><i class="ti ti-file"></i> {{ $locale.env.file }}</template>
 	</div>
 	<div :class="$style.go">
 		<i class="ti ti-chevron-right"></i>
@@ -17,7 +17,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script setup lang="ts">
 import * as Misskey from 'misskey-js';
-import { i18n } from '@/i18n.js';
 
 defineProps<{
 	media: Misskey.entities.DriveFile;

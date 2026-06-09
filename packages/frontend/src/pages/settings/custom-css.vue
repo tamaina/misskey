@@ -16,16 +16,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { $locale as localeRef } from '@/i18n.js';
+import { useLocale } from 'virtual:vite-vue-internationalization';
 
 import { ref, watch, computed } from 'vue';
+import { isSafeMode } from '@@/js/config.js';
 import MkCodeEditor from '@/components/MkCodeEditor.vue';
 import FormInfo from '@/components/MkInfo.vue';
-import { isSafeMode } from '@@/js/config.js';
 import * as os from '@/os.js';
 import { unisonReload } from '@/utility/unison-reload.js';
 import { definePage } from '@/page.js';
 import { miLocalStorage } from '@/local-storage.js';
+const localeRef = useLocale(import.meta.url);
 
 const localCustomCss = ref(miLocalStorage.getItem('customCss') ?? '');
 

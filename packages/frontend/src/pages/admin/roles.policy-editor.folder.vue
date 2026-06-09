@@ -4,40 +4,41 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-	<MkFolder>
-		<template #label><slot name="label"></slot></template>
-		<template #suffix>
-			<template v-if="isBaseRole">
-				<span><slot name="valueText"></slot></span>
-			</template>
-			<template v-else-if="policyMeta != null">
-				<span v-if="policyMeta.useDefault" :class="$style.useDefaultLabel">{{ $locale.env._role.useBaseValue }}</span>
-				<span v-else><slot name="valueText"></slot></span>
-				<span :class="$style.priorityIndicator"><i :class="getPriorityIcon(policyMeta.priority)"></i></span>
-			</template>
+<MkFolder>
+	<template #label><slot name="label"></slot></template>
+	<template #suffix>
+		<template v-if="isBaseRole">
+			<span><slot name="valueText"></slot></span>
 		</template>
-		<div class="_gaps">
-			<MkSwitch v-if="!isBaseRole && policyMeta != null" v-model="useDefaultModel" :disabled="readonly">
-				<template #label>{{ $locale.env._role.useBaseValue }}</template>
-			</MkSwitch>
-			<div>
-				<slot :disabled="readonly || (!isBaseRole && policyMeta?.useDefault)"></slot>
-			</div>
-			<MkRange v-if="!isBaseRole && policyMeta != null" v-model="priorityModel" :min="0" :max="2" :step="1" easing :textConverter="priroityRangeTextConverter" :disabled="readonly">
-				<template #label>{{ $locale.env._role.priority }}</template>
-			</MkRange>
+		<template v-else-if="policyMeta != null">
+			<span v-if="policyMeta.useDefault" :class="$style.useDefaultLabel">{{ $locale.env._role.useBaseValue }}</span>
+			<span v-else><slot name="valueText"></slot></span>
+			<span :class="$style.priorityIndicator"><i :class="getPriorityIcon(policyMeta.priority)"></i></span>
+		</template>
+	</template>
+	<div class="_gaps">
+		<MkSwitch v-if="!isBaseRole && policyMeta != null" v-model="useDefaultModel" :disabled="readonly">
+			<template #label>{{ $locale.env._role.useBaseValue }}</template>
+		</MkSwitch>
+		<div>
+			<slot :disabled="readonly || (!isBaseRole && policyMeta?.useDefault)"></slot>
 		</div>
-	</MkFolder>
+		<MkRange v-if="!isBaseRole && policyMeta != null" v-model="priorityModel" :min="0" :max="2" :step="1" easing :textConverter="priroityRangeTextConverter" :disabled="readonly">
+			<template #label>{{ $locale.env._role.priority }}</template>
+		</MkRange>
+	</div>
+</MkFolder>
 </template>
 
 <script setup lang="ts">
-import { $locale as localeRef } from '@/i18n.js';
+import { useLocale } from 'virtual:vite-vue-internationalization';
 
 import { computed } from 'vue';
+import type { PolicyMeta } from './roles.policy-editor.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkRange from '@/components/MkRange.vue';
-import type { PolicyMeta } from './roles.policy-editor.vue';
+const localeRef = useLocale(import.meta.url);
 
 const props = defineProps<{
 	isBaseRole: boolean;

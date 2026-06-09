@@ -13,7 +13,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div>
 				<p v-if="note.cw != null" :class="$style.cw">
 					<EmMfm v-if="note.cw != ''" style="margin-right: 8px;" :text="note.cw" :author="note.user" :nyaize="'respect'"/>
-					<button style="display: block; width: 100%;" class="_buttonGray _buttonRounded" @click="showContent = !showContent">{{ showContent ? i18n.ts._cw.hide : i18n.ts._cw.show }}</button>
+					<button style="display: block; width: 100%;" class="_buttonGray _buttonRounded" @click="showContent = !showContent">{{ showContent ? $locale.env._cw.hide : $locale.env._cw.show }}</button>
 				</p>
 				<div v-show="note.cw == null || showContent">
 					<EmSubNoteContent :class="$style.text" :note="note"/>
@@ -25,7 +25,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<EmNoteSub v-for="reply in replies" :key="reply.id" :note="reply" :class="$style.reply" :detail="true" :depth="depth + 1"/>
 	</template>
 	<div v-else :class="$style.more">
-		<EmA class="_link" :to="notePage(note)">{{ i18n.ts.continueThread }} <i class="ti ti-chevron-double-right"></i></EmA>
+		<EmA class="_link" :to="notePage(note)">{{ $locale.env.continueThread }} <i class="ti ti-chevron-double-right"></i></EmA>
 	</div>
 </div>
 </template>
@@ -39,7 +39,6 @@ import EmNoteHeader from '@/components/EmNoteHeader.vue';
 import EmSubNoteContent from '@/components/EmSubNoteContent.vue';
 import { notePage } from '@/utils.js';
 import { misskeyApi } from '@/misskey-api.js';
-import { i18n } from '@/i18n.js';
 import EmMfm from '@/components/EmMfm.js';
 
 const props = withDefaults(defineProps<{

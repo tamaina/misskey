@@ -43,7 +43,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { $locale as localeRef } from '@/i18n.js';
+import { useLocale } from 'virtual:vite-vue-internationalization';
 
 import { onBeforeUnmount, onMounted, provide, watch, useTemplateRef, ref, computed } from 'vue';
 import type { Column } from '@/deck.js';
@@ -52,6 +52,7 @@ import { deckGlobalEvents, updateColumn, swapLeftColumn, swapRightColumn, swapUp
 import * as os from '@/os.js';
 import { prefer } from '@/preferences.js';
 import { checkDragDataType, getDragData, setDragData } from '@/drag-and-drop.js';
+const localeRef = useLocale(import.meta.url);
 
 provide('shouldHeaderThin', true);
 provide('shouldOmitHeaderTitle', true);

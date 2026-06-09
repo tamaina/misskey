@@ -58,7 +58,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { $locale as localeRef } from '@/i18n.js';
+import { useLocale } from 'virtual:vite-vue-internationalization';
 
 import { computed, ref } from 'vue';
 import XSound from './sounds.sound.vue';
@@ -77,6 +77,7 @@ import MkPreferenceContainer from '@/components/MkPreferenceContainer.vue';
 import { PREF_DEF } from '@/preferences/def.js';
 import MkFeatureBanner from '@/components/MkFeatureBanner.vue';
 import { getInitialPrefValue } from '@/preferences/manager.js';
+const localeRef = useLocale(import.meta.url);
 
 const notUseSound = prefer.model('sound.notUseSound');
 const useSoundOnlyWhenActive = prefer.model('sound.useSoundOnlyWhenActive');

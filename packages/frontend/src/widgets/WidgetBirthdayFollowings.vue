@@ -20,9 +20,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<span style="height: 1em; width: 1px; background: var(--MI_THEME-divider);"></span>
 						<span>{{ getSeparatorInfo(birthdayUsersPaginator.items.value[i - 1].birthday, user.birthday)?.nextText }} <i class="ti ti-chevron-down"></i></span>
 					</div>
-					<XUser :class="$style.user" :item="user" />
+					<XUser :class="$style.user" :item="user"/>
 				</div>
-				<XUser v-else :class="$style.user" :item="user" />
+				<XUser v-else :class="$style.user" :item="user"/>
 			</template>
 		</div>
 	</MkPagination>
@@ -30,18 +30,20 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { $locale as localeRef, $l as localizerRef } from '@/i18n.js';
+import { useLocale, useLocalizer } from 'virtual:vite-vue-internationalization';
 
 import { computed, markRaw, ref, watch } from 'vue';
-import { useLowresTime } from '@/composables/use-lowres-time.js';
-import { isSeparatorNeeded, getSeparatorInfo } from '@/utility/timeline-date-separate.js';
 import { useWidgetPropsManager } from './widget.js';
+import XUser from './WidgetBirthdayFollowings.user.vue';
 import type { WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
 import type { FormWithDefault, GetFormResultType } from '@/utility/form.js';
+import { useLowresTime } from '@/composables/use-lowres-time.js';
+import { isSeparatorNeeded, getSeparatorInfo } from '@/utility/timeline-date-separate.js';
 import MkContainer from '@/components/MkContainer.vue';
 import MkPagination from '@/components/MkPagination.vue';
-import XUser from './WidgetBirthdayFollowings.user.vue';
 import { Paginator } from '@/utility/paginator.js';
+const localeRef = useLocale(import.meta.url);
+const localizerRef = useLocalizer(import.meta.url);
 
 const name = 'birthdayFollowings';
 

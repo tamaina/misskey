@@ -172,7 +172,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { $locale as localeRef } from '@/i18n.js';
+import { useLocale } from 'virtual:vite-vue-internationalization';
 
 import { ref, computed, watch } from 'vue';
 import * as Misskey from 'misskey-js';
@@ -191,6 +191,7 @@ import MkTl from '@/components/MkTl.vue';
 import kmg from '@/filters/kmg.js';
 import MkInput from '@/components/MkInput.vue';
 import bytes from '@/filters/bytes.js';
+const localeRef = useLocale(import.meta.url);
 
 const tab = ref<typeof Misskey.queueTypes[number] | '-'>('-');
 const jobState = ref<'all' | 'latest' | 'completed' | 'failed' | 'active' | 'delayed' | 'wait' | 'paused'>('all');

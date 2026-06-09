@@ -261,9 +261,9 @@ export async function common(createVue: () => Promise<App<Element>>) {
 
 	const app = await createVue();
 	app.use(internationalization);
+	await i18nReady;
 	app.config.globalProperties.$locale = $locale.value;
 	app.config.globalProperties.$l = $l.value;
-	await i18nReady;
 
 	if (_DEV_) {
 		app.config.performance = true;

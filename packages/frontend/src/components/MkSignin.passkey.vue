@@ -25,10 +25,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { ref, onMounted } from 'vue';
 import { startAuthentication } from '@simplewebauthn/browser';
 
-
-import MkButton from '@/components/MkButton.vue';
-
 import type { PublicKeyCredentialRequestOptionsJSON, AuthenticationResponseJSON } from '@simplewebauthn/browser';
+import MkButton from '@/components/MkButton.vue';
 
 const props = defineProps<{
 	credentialRequest: PublicKeyCredentialRequestOptionsJSON;

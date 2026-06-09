@@ -105,7 +105,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { $locale as localeRef } from '@/i18n.js';
+import { useLocale } from 'virtual:vite-vue-internationalization';
 
 import { markRaw, onDeactivated, onMounted, onUnmounted, ref } from 'vue';
 import * as Misskey from 'misskey-js';
@@ -122,6 +122,7 @@ import * as os from '@/os.js';
 import { pleaseLogin } from '@/utility/please-login.js';
 import * as sound from '@/utility/sound.js';
 import { Paginator } from '@/utility/paginator.js';
+const localeRef = useLocale(import.meta.url);
 
 const myGamesPaginator = markRaw(new Paginator('reversi/games', {
 	limit: 10,

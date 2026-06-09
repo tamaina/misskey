@@ -16,7 +16,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { $locale as localeRef } from '@/i18n.js';
+import { useLocale } from 'virtual:vite-vue-internationalization';
 
 import { } from 'vue';
 import { useWidgetPropsManager } from './widget.js';
@@ -24,6 +24,7 @@ import type { WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps 
 import type { FormWithDefault, GetFormResultType } from '@/utility/form.js';
 import MkContainer from '@/components/MkContainer.vue';
 import MkChatHistories from '@/components/MkChatHistories.vue';
+const localeRef = useLocale(import.meta.url);
 
 const name = 'chat';
 

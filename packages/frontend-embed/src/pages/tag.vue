@@ -13,7 +13,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 				<div :class="$style.headerTitle" @click="top">
 					<div class="_nowrap"><a :href="`/tags/${tag}`" target="_blank" rel="noopener">#{{ tag }}</a></div>
-					<div :class="$style.sub">{{ i18n.tsx.fromX({ x: instanceName }) }}</div>
+					<div :class="$style.sub">{{ $l.env.fromX({ x: instanceName }) }}</div>
 				</div>
 				<a :href="url" :class="$style.instanceIconLink" target="_blank" rel="noopener noreferrer">
 					<img
@@ -47,7 +47,6 @@ import type { Paging } from '@/components/EmPagination.vue';
 import EmNotes from '@/components/EmNotes.vue';
 import XNotFound from '@/pages/not-found.vue';
 import EmTimelineContainer from '@/components/EmTimelineContainer.vue';
-import { i18n } from '@/i18n.js';
 import { DI } from '@/di.js';
 
 const props = defineProps<{

@@ -10,10 +10,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { $locale as localeRef } from '@/i18n.js';
+import { useLocale } from 'virtual:vite-vue-internationalization';
 
 import { computed, watch, ref, onMounted, shallowRef, onUnmounted } from 'vue';
 import * as Misskey from 'misskey-js';
+import { url } from '@@/js/config.js';
+import { useInterval } from '@@/js/use-interval.js';
 import GameSetting from './game.setting.vue';
 import GameBoard from './game.board.vue';
 import { misskeyApi } from '@/utility/misskey-api.js';
@@ -22,8 +24,7 @@ import { useStream } from '@/stream.js';
 import { $i } from '@/i.js';
 import { useRouter } from '@/router.js';
 import * as os from '@/os.js';
-import { url } from '@@/js/config.js';
-import { useInterval } from '@@/js/use-interval.js';
+const localeRef = useLocale(import.meta.url);
 
 const router = useRouter();
 

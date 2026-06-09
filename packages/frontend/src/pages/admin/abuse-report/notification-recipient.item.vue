@@ -29,10 +29,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script setup lang="ts">
-import { $locale as localeRef } from '@/i18n.js';
+import { useLocale } from 'virtual:vite-vue-internationalization';
 
 import { entities } from 'misskey-js';
 import { computed, toRefs } from 'vue';
+const localeRef = useLocale(import.meta.url);
 
 const emit = defineEmits<{
 	(ev: 'edit', id: entities.AbuseReportNotificationRecipient['id']): void;

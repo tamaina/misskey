@@ -28,15 +28,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script setup lang="ts">
-import { $locale as localeRef } from '@/i18n.js';
+import { useLocale } from 'virtual:vite-vue-internationalization';
 
 import { computed, ref, toRefs } from 'vue';
+import type { RequestLogItem } from '@/pages/admin/custom-emojis-manager.impl.js';
+import type { GridSetting } from '@/components/grid/grid.js';
 import MkGrid from '@/components/grid/MkGrid.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import { copyGridDataToClipboard } from '@/components/grid/grid-utils.js';
 
-import type { RequestLogItem } from '@/pages/admin/custom-emojis-manager.impl.js';
-import type { GridSetting } from '@/components/grid/grid.js';
+const localeRef = useLocale(import.meta.url);
 
 function setupGrid(): GridSetting {
 	return {

@@ -27,18 +27,19 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { $locale as localeRef } from '@/i18n.js';
+import { useLocale } from 'virtual:vite-vue-internationalization';
 
 import { ref, watch, computed } from 'vue';
 import * as Misskey from 'misskey-js';
-import { useWidgetPropsManager } from './widget.js';
-import type { WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
-import MkMarqueeText from '@/components/MkMarqueeText.vue';
-import type { FormWithDefault, GetFormResultType } from '@/utility/form.js';
-import MkContainer from '@/components/MkContainer.vue';
-import { shuffle } from '@/utility/shuffle.js';
 import { url as base } from '@@/js/config.js';
 import { useInterval } from '@@/js/use-interval.js';
+import { useWidgetPropsManager } from './widget.js';
+import type { WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
+import type { FormWithDefault, GetFormResultType } from '@/utility/form.js';
+import MkMarqueeText from '@/components/MkMarqueeText.vue';
+import MkContainer from '@/components/MkContainer.vue';
+import { shuffle } from '@/utility/shuffle.js';
+const localeRef = useLocale(import.meta.url);
 
 const name = 'rssTicker';
 

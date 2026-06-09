@@ -26,7 +26,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { $locale as localeRef } from '@/i18n.js';
+import { useLocale } from 'virtual:vite-vue-internationalization';
 
 import { watch, ref, computed, markRaw } from 'vue';
 import * as Misskey from 'misskey-js';
@@ -37,6 +37,7 @@ import * as os from '@/os.js';
 import { definePage } from '@/page.js';
 import { clipsCache } from '@/cache.js';
 import { Paginator } from '@/utility/paginator.js';
+const localeRef = useLocale(import.meta.url);
 
 const tab = ref('my');
 

@@ -66,7 +66,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { $locale as localeRef } from '@/i18n.js';
+import { useLocale } from 'virtual:vite-vue-internationalization';
 
 import QrScanner from 'qr-scanner';
 import { onActivated, onDeactivated, onMounted, onUnmounted, ref, shallowRef, useTemplateRef, watch } from 'vue';
@@ -80,6 +80,7 @@ import MkNote from '@/components/MkNote.vue';
 import MkTab from '@/components/MkTab.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkQrReadRawViewer from '@/pages/qr.read.raw-viewer.vue';
+const localeRef = useLocale(import.meta.url);
 
 const LIST_RERENDER_INTERVAL = 1500;
 

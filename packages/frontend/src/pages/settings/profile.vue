@@ -162,7 +162,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { $locale as localeRef } from '@/i18n.js';
+import { useLocale } from 'virtual:vite-vue-internationalization';
 
 import { computed, reactive, ref, watch } from 'vue';
 import * as Misskey from 'misskey-js';
@@ -185,6 +185,7 @@ import { store } from '@/store.js';
 import MkInfo from '@/components/MkInfo.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
 import { genId } from '@/utility/id.js';
+const localeRef = useLocale(import.meta.url);
 
 const $i = ensureSignin();
 

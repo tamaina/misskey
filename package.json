@@ -14,7 +14,6 @@
 		"packages/misskey-bubble-game",
 		"packages/icons-subsetter",
 		"packages/frontend-shared",
-		"packages/frontend-builder",
 		"packages/sw",
 		"packages/backend",
 		"packages/frontend",

@@ -88,7 +88,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { $locale as localeRef } from '@/i18n.js';
+import { useLocale } from 'virtual:vite-vue-internationalization';
 
 import { useTemplateRef, watch, computed, ref, onDeactivated, onActivated, onMounted } from 'vue';
 import * as Misskey from 'misskey-js';
@@ -102,6 +102,7 @@ import MkMediaRange from '@/components/MkMediaRange.vue';
 import { $i, iAmModerator } from '@/i.js';
 import { prefer } from '@/preferences.js';
 import { canRevealFile, shouldHideFileByDefault } from '@/utility/sensitive-file.js';
+const localeRef = useLocale(import.meta.url);
 
 const props = defineProps<{
 	audio: Misskey.entities.DriveFile;

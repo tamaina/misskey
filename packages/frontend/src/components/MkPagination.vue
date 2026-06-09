@@ -64,7 +64,7 @@ export type MkPaginationOptions = {
 </script>
 
 <script lang="ts" setup generic="T extends IPaginator">
-import { $locale as localeRef } from '@/i18n.js';
+import { useLocale } from 'virtual:vite-vue-internationalization';
 
 import { isLink } from '@@/js/is-link.js';
 import { onMounted, computed, watch, unref } from 'vue';
@@ -75,6 +75,7 @@ import { prefer } from '@/preferences.js';
 import MkPullToRefresh from '@/components/MkPullToRefresh.vue';
 import MkPaginationControl from '@/components/MkPaginationControl.vue';
 import * as os from '@/os.js';
+const localeRef = useLocale(import.meta.url);
 
 const props = withDefaults(defineProps<MkPaginationOptions & {
 	paginator: T;

@@ -26,7 +26,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { $locale as localeRef } from '@/i18n.js';
+import { useLocale } from 'virtual:vite-vue-internationalization';
 
 import { provide, useTemplateRef, ref } from 'vue';
 import { isLink } from '@@/js/is-link.js';
@@ -38,6 +38,7 @@ import { provideMetadataReceiver, provideReactiveMetadata } from '@/page.js';
 import { mainRouter } from '@/router.js';
 import { prefer } from '@/preferences.js';
 import { DI } from '@/di.js';
+const localeRef = useLocale(import.meta.url);
 
 defineProps<{
 	column: Column;

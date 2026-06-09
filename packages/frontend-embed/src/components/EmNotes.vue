@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <EmPagination ref="pagingComponent" :pagination="pagination" :disableAutoLoad="disableAutoLoad">
 	<template #empty>
 		<div class="_fullinfo">
-			<div>{{ i18n.ts.noNotes }}</div>
+			<div>{{ $locale.env.noNotes }}</div>
 		</div>
 	</template>
 
@@ -24,7 +24,6 @@ import { useTemplateRef } from 'vue';
 import EmNote from '@/components/EmNote.vue';
 import EmPagination from '@/components/EmPagination.vue';
 import type { Paging } from '@/components/EmPagination.vue';
-import { i18n } from '@/i18n.js';
 import * as Misskey from 'misskey-js';
 
 withDefaults(defineProps<{

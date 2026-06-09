@@ -22,7 +22,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { $locale as localeRef } from '@/i18n.js';
+import { useLocale } from 'virtual:vite-vue-internationalization';
 
 import { onUnmounted, ref } from 'vue';
 import * as Misskey from 'misskey-js';
@@ -34,6 +34,7 @@ import { getStaticImageUrl } from '@/utility/media-proxy.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import MkContainer from '@/components/MkContainer.vue';
 import { prefer } from '@/preferences.js';
+const localeRef = useLocale(import.meta.url);
 
 const name = 'photos';
 

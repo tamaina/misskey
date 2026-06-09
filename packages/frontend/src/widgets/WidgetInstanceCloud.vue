@@ -18,7 +18,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { $locale as localeRef } from '@/i18n.js';
+import { useLocale } from 'virtual:vite-vue-internationalization';
 
 import { shallowRef, useTemplateRef } from 'vue';
 import * as Misskey from 'misskey-js';
@@ -31,6 +31,7 @@ import MkTagCloud from '@/components/MkTagCloud.vue';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { getProxiedImageUrlNullable } from '@/utility/media-proxy.js';
+const localeRef = useLocale(import.meta.url);
 
 const name = 'instanceCloud';
 

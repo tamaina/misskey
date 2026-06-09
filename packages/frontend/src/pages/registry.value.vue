@@ -44,7 +44,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { $locale as localeRef } from '@/i18n.js';
+import { useLocale } from 'virtual:vite-vue-internationalization';
 
 import { watch, computed, ref } from 'vue';
 import JSON5 from 'json5';
@@ -56,6 +56,7 @@ import MkKeyValue from '@/components/MkKeyValue.vue';
 import MkCodeEditor from '@/components/MkCodeEditor.vue';
 import FormSplit from '@/components/form/split.vue';
 import FormInfo from '@/components/MkInfo.vue';
+const localeRef = useLocale(import.meta.url);
 
 const props = defineProps<{
 	path: string;

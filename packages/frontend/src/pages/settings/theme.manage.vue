@@ -25,23 +25,24 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { $locale as localeRef } from '@/i18n.js';
+import { useLocale } from 'virtual:vite-vue-internationalization';
 
 import { computed, ref } from 'vue';
 import JSON5 from 'json5';
+import { getBuiltinThemes } from '@@/js/theme.js';
 import type { Theme } from '@@/js/theme.js';
+import type { MkSelectItem } from '@/components/MkSelect.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkButton from '@/components/MkButton.vue';
 import { removeTheme } from '@/theme.js';
-import { getBuiltinThemes } from '@@/js/theme.js';
 import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
 import * as os from '@/os.js';
 import { definePage } from '@/page.js';
 import { useMkSelect } from '@/composables/use-mkselect.js';
-import type { MkSelectItem } from '@/components/MkSelect.vue';
 import { prefer } from '@/preferences';
+const localeRef = useLocale(import.meta.url);
 
 const installedThemes = prefer.r.themes;
 const builtinThemes = ref<Theme[]>([]);

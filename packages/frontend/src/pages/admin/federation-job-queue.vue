@@ -18,7 +18,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { $locale as localeRef } from '@/i18n.js';
+import { useLocale } from 'virtual:vite-vue-internationalization';
 
 import { ref, computed } from 'vue';
 import XQueue from './federation-job-queue.chart.vue';
@@ -26,6 +26,7 @@ import type { Ref } from 'vue';
 import * as os from '@/os.js';
 import { definePage } from '@/page.js';
 import MkButton from '@/components/MkButton.vue';
+const localeRef = useLocale(import.meta.url);
 
 export type ApQueueDomain = 'deliver' | 'inbox';
 

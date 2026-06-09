@@ -50,7 +50,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script setup lang="ts">
-import { $locale as localeRef } from '@/i18n.js';
+import { useLocale } from 'virtual:vite-vue-internationalization';
 
 import { ref, useTemplateRef, watch, onMounted, onUnmounted, reactive, nextTick } from 'vue';
 import type { ImageEffectorLayer } from '@/utility/image-effector/ImageEffector.js';
@@ -62,6 +62,7 @@ import XLayer from '@/components/MkImageEffectorDialog.Layer.vue';
 import * as os from '@/os.js';
 import { FXS } from '@/utility/image-effector/fxs.js';
 import { genId } from '@/utility/id.js';
+const localeRef = useLocale(import.meta.url);
 
 const props = defineProps<{
 	image: File;

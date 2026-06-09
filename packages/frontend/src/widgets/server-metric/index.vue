@@ -20,21 +20,22 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { $locale as localeRef } from '@/i18n.js';
+import { useLocale } from 'virtual:vite-vue-internationalization';
 
 import { onUnmounted, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import { useWidgetPropsManager } from '../widget.js';
-import type { WidgetComponentProps, WidgetComponentEmits, WidgetComponentExpose } from '../widget.js';
 import XCpuMemory from './cpu-mem.vue';
 import XNet from './net.vue';
 import XCpu from './cpu.vue';
 import XMemory from './mem.vue';
 import XDisk from './disk.vue';
-import MkContainer from '@/components/MkContainer.vue';
+import type { WidgetComponentProps, WidgetComponentEmits, WidgetComponentExpose } from '../widget.js';
 import type { FormWithDefault, GetFormResultType } from '@/utility/form.js';
+import MkContainer from '@/components/MkContainer.vue';
 import { misskeyApiGet } from '@/utility/misskey-api.js';
 import { useStream } from '@/stream.js';
+const localeRef = useLocale(import.meta.url);
 
 const name = 'serverMetric';
 

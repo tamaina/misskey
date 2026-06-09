@@ -72,7 +72,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { $locale as localeRef, $l as localizerRef } from '@/i18n.js';
+import { useLocale, useLocalizer } from 'virtual:vite-vue-internationalization';
 
 import { watch, ref, computed } from 'vue';
 import { toUnicode } from 'punycode.js';
@@ -95,6 +95,8 @@ import { store } from '@/store.js';
 import { useLeaveGuard } from '@/composables/use-leave-guard.js';
 import { definePage } from '@/page.js';
 import { prefer } from '@/preferences.js';
+const localeRef = useLocale(import.meta.url);
+const localizerRef = useLocalizer(import.meta.url);
 
 const $i = ensureSignin();
 

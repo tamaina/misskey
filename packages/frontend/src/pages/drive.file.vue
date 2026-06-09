@@ -22,11 +22,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { $locale as localeRef } from '@/i18n.js';
+import { useLocale } from 'virtual:vite-vue-internationalization';
 
 import { computed, ref, defineAsyncComponent } from 'vue';
 import { definePage } from '@/page.js';
 import MkSwiper from '@/components/MkSwiper.vue';
+const localeRef = useLocale(import.meta.url);
 
 const props = defineProps<{
 	fileId: string;

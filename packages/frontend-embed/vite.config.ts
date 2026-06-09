@@ -1,5 +1,6 @@
 import path from 'path';
 import pluginVue from '@vitejs/plugin-vue';
+import { vueInternationalization } from 'vite-vue-internationalization';
 import { defineConfig, type UserConfig } from 'vite';
 import * as yaml from 'js-yaml';
 import { promises as fsp } from 'fs';
@@ -8,7 +9,6 @@ import locales from 'i18n';
 import meta from '../../package.json';
 import packageInfo from './package.json' with { type: 'json' };
 import pluginJson5 from './lib/vite-plugin-json5.js';
-import { pluginRemoveUnrefI18n } from '../frontend-builder/rollup-plugin-remove-unref-i18n';
 
 const url = process.env.NODE_ENV === 'development' ? (yaml.load(await fsp.readFile('../../.config/default.yml', 'utf-8')) as any).url : null;
 const host = url ? (new URL(url)).hostname : undefined;
@@ -87,8 +87,8 @@ export function getConfig(): UserConfig {
 		},
 
 		plugins: [
+			vueInternationalization(),
 			pluginVue(),
-			pluginRemoveUnrefI18n(),
 			pluginJson5(),
 		],
 
@@ -138,7 +138,6 @@ export function getConfig(): UserConfig {
 					nativeMagicString: true,
 				},
 				input: {
-					i18n: './src/i18n.ts',
 					entry: './src/boot.ts',
 				},
 				external: externalPackages.map(p => p.match),
