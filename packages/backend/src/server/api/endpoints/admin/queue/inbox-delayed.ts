@@ -5,6 +5,7 @@
 
 import { URL } from 'node:url';
 import { Inject, Injectable } from '@nestjs/common';
+import { getApId } from '@/core/activitypub/type.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { InboxQueue } from '@/core/QueueModule.js';
 
@@ -56,7 +57,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			for (const job of jobs) {
 				const signature = job.data.signature ? 'version' in job.data.signature ? job.data.signature.value : job.data.signature : null;
-				const host = signature ? Array.isArray(signature) ? 'TODO' : new URL(signature.keyId).host : new URL(job.data.activity.actor).host;
+				const host = signature ? Array.isArray(signature) ? 'TODO' : new URL(signature.keyId).host : new URL(getApId(job.data.activity.actor)).host;
 				counts.set(host, (counts.get(host) ?? 0) + 1);
 			}
 

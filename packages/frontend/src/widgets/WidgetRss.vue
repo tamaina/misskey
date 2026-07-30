@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkContainer :showHeader="widgetProps.showHeader" data-cy-mkw-rss class="mkw-rss">
+<MkContainer :showHeader="widgetProps.showHeader" data-testid="mkw-rss" class="mkw-rss">
 	<template #icon><i class="ti ti-rss"></i></template>
 	<template #header>RSS</template>
 	<template #func="{ buttonStyleClass }"><button class="_button" :class="buttonStyleClass" @click="configure"><i class="ti ti-settings"></i></button></template>
@@ -75,25 +75,27 @@ const fetchEndpoint = computed(() => {
 	url.searchParams.set('url', widgetProps.url);
 	return url.toString();
 });
-const intervalClear = ref<(() => void) | undefined>();
+let intervalClear: (() => void) | null | undefined = null;
 
 const tick = () => {
-	if (window.document.visibilityState === 'hidden' && rawItems.value.length !== 0) return;
-
 	window.fetch(fetchEndpoint.value, {})
 		.then(res => res.json())
 		.then((feed: Misskey.entities.FetchRssResponse) => {
-			rawItems.value = feed.items;
+			rawItems.value = feed.items.filter((item) => {
+				if (!item.link) return false;
+				const itemUrl = new URL(item.link, base);
+				return ['http:', 'https:'].includes(itemUrl.protocol);
+			});
 			fetching.value = false;
 		});
 };
 
 watch(fetchEndpoint, tick);
 watch(() => widgetProps.refreshIntervalSec, () => {
-	if (intervalClear.value) {
-		intervalClear.value();
+	if (intervalClear != null) {
+		intervalClear();
 	}
-	intervalClear.value = useInterval(tick, Math.max(10000, widgetProps.refreshIntervalSec * 1000), {
+	intervalClear = useInterval(tick, Math.max(10000, widgetProps.refreshIntervalSec * 1000), {
 		immediate: true,
 		afterMounted: true,
 	});
