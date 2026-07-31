@@ -138,17 +138,6 @@ export class ActivityPubServerService {
 
 		let signature: ReturnType<typeof parseRequestSignature>;
 
-		const verifyDigest = await verifyDigestHeader(
-			request.raw,
-			request.rawBody ?? '',
-			true
-		);
-		if (verifyDigest !== true) {
-			this.inboxLogger.warn('digest verification failed');
-			reply.code(401);
-			return;
-		}
-
 		try {
 			signature = parseRequestSignature(request.raw, {
 				requiredComponents: {
@@ -174,6 +163,17 @@ export class ActivityPubServerService {
 			}
 
 			this.inboxLogger.warn('signature header parsing failed and LD signature not found', { err });
+			reply.code(401);
+			return;
+		}
+
+		const verifyDigest = await verifyDigestHeader(
+			request.raw,
+			request.rawBody ?? '',
+			true
+		);
+		if (verifyDigest !== true) {
+			this.inboxLogger.warn('digest verification failed');
 			reply.code(401);
 			return;
 		}

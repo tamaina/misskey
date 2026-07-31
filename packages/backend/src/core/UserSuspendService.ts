@@ -12,9 +12,13 @@ import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { bindThis } from '@/decorators.js';
 import { ModerationLogService } from '@/core/ModerationLogService.js';
 import { AccountUpdateService } from '@/core/AccountUpdateService.js';
+import type Logger from '@/logger.js';
+import { ApLoggerService } from '@/core/activitypub/ApLoggerService.js';
 
 @Injectable()
 export class UserSuspendService {
+	private logger: Logger;
+
 	constructor(
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
@@ -29,7 +33,9 @@ export class UserSuspendService {
 		private globalEventService: GlobalEventService,
 		private accountUpdateService: AccountUpdateService,
 		private moderationLogService: ModerationLogService,
+		private apLoggerService: ApLoggerService,
 	) {
+		this.logger = this.apLoggerService.logger.createSubLogger('user-suspend');
 	}
 
 	@bindThis
@@ -45,8 +51,12 @@ export class UserSuspendService {
 		});
 
 		(async () => {
-			await this.postSuspend(user, false).catch(_ => {});
-			await this.suspendFollowings(user).catch(_ => {});
+			await this.postSuspend(user, false).catch(err => {
+				this.logger.error('postSuspend failed', { userId: user.id, err });
+			});
+			await this.suspendFollowings(user).catch(err => {
+				this.logger.error('suspendFollowings failed', { userId: user.id, err });
+			});
 		})();
 	}
 
@@ -57,8 +67,12 @@ export class UserSuspendService {
 		});
 
 		(async () => {
-			await this.postSuspend(user, true).catch(_ => {});
-			await this.suspendFollowings(user).catch(_ => {});
+			await this.postSuspend(user, true).catch(err => {
+				this.logger.error('postSuspend from remote failed', { userId: user.id, err });
+			});
+			await this.suspendFollowings(user).catch(err => {
+				this.logger.error('suspendFollowings from remote failed', { userId: user.id, err });
+			});
 		})();
 	}
 
@@ -75,8 +89,12 @@ export class UserSuspendService {
 		});
 
 		(async () => {
-			await this.postUnsuspend(user, false).catch(_ => {});
-			await this.restoreFollowings(user).catch(_ => {});
+			await this.postUnsuspend(user, false).catch(err => {
+				this.logger.error('postUnsuspend failed', { userId: user.id, err });
+			});
+			await this.restoreFollowings(user).catch(err => {
+				this.logger.error('restoreFollowings failed', { userId: user.id, err });
+			});
 		})();
 	}
 
@@ -87,8 +105,12 @@ export class UserSuspendService {
 		});
 
 		(async () => {
-			await this.postUnsuspend(user, true).catch(_ => {});
-			await this.restoreFollowings(user).catch(_ => {});
+			await this.postUnsuspend(user, true).catch(err => {
+				this.logger.error('postUnsuspend from remote failed', { userId: user.id, err });
+			});
+			await this.restoreFollowings(user).catch(err => {
+				this.logger.error('restoreFollowings from remote failed', { userId: user.id, err });
+			});
 		})();
 	}
 

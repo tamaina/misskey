@@ -146,8 +146,13 @@ export class UserKeypairService implements OnApplicationShutdown {
 	 */
 	@bindThis
 	public async refreshAndPrepareEd25519KeyPair(userId: MiUser['id']): Promise<MiUserKeypair | void> {
+		let keypair = await this.keypairEntityCache.fetch(userId);
+		if (keypair.ed25519PublicKey != null) {
+			return;
+		}
+
 		await this.refresh(userId);
-		const keypair = await this.keypairEntityCache.fetch(userId);
+		keypair = await this.keypairEntityCache.fetch(userId);
 		if (keypair.ed25519PublicKey != null) {
 			return;
 		}
