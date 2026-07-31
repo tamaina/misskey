@@ -16,7 +16,6 @@ import { deepClone } from '@/misc/clone.js';
 import { bindThis } from '@/decorators.js';
 import { SystemAccountService } from '@/core/SystemAccountService.js';
 import { UserKeypairService } from './UserKeypairService.js';
-import type { PrivateKeyWithPem } from '@misskey-dev/node-http-message-signatures';
 
 @Injectable()
 export class RelayService {
@@ -111,7 +110,7 @@ export class RelayService {
 	}
 
 	@bindThis
-	public async deliverToRelays(user: { id: MiUser['id']; host: null; }, activity: any, privateKey?: PrivateKeyWithPem): Promise<void> {
+	public async deliverToRelays(user: { id: MiUser['id']; host: null; }, activity: any, forceMainKey = false): Promise<void> {
 		if (activity == null) return;
 
 		const relays = await this.getAcceptedRelays();
@@ -119,9 +118,9 @@ export class RelayService {
 
 		const copy = deepClone(activity);
 		if (!copy.to) copy.to = ['https://www.w3.org/ns/activitystreams#Public'];
-		privateKey = privateKey ?? await this.userKeypairService.getLocalUserPrivateKeyPem(user.id);
+		const privateKey = await this.userKeypairService.getLocalUserPrivateKeyPem(user.id, forceMainKey ? 'main' : undefined);
 		const signed = await this.apRendererService.attachLdSignature(copy, privateKey);
 
-		this.queueService.deliverMany(user, signed, new Map(relays.map(({ inbox }) => [inbox, false])), privateKey);
+		this.queueService.deliverMany(user, signed, new Map(relays.map(({ inbox }) => [inbox, false])), forceMainKey);
 	}
 }

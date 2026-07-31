@@ -140,7 +140,7 @@ export class ActivityPubServerService {
 
 		const verifyDigest = await verifyDigestHeader(
 			request.raw,
-			typeof request.rawBody === 'string' ? request.rawBody : (request.rawBody ? request.rawBody.toString('utf8') : ''),
+			request.rawBody ?? '',
 			true
 		);
 		if (verifyDigest !== true) {

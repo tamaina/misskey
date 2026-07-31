@@ -242,7 +242,7 @@ export class UserFollowingService implements OnModuleInit {
 			followerId: follower.id,
 			followeeId: followee.id,
 			withReplies: withReplies,
-			isFollowerSuspended: follower.isSuspended,
+			isFollowerSuspended: this.userEntityService.isSuspendedEither(follower),
 
 			// 非正規化
 			followerHost: follower.host,

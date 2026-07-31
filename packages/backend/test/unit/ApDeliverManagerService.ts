@@ -141,7 +141,7 @@ describe('ApDeliverManagerService', () => {
 				{ id: mockLocalUser.id },
 				mockActivity,
 				expect.any(Map),
-				undefined,
+				false,
 			);
 
 			// 呼び出されたinboxesを確認
@@ -175,7 +175,7 @@ describe('ApDeliverManagerService', () => {
 				{ id: mockLocalUser.id },
 				mockActivity,
 				expect.any(Map),
-				undefined,
+				false,
 			);
 
 			const [, , inboxes] = queueService.deliverMany.mock.calls[0];
@@ -350,10 +350,11 @@ describe('ApDeliverManagerService (SQL)', () => {
 	let queueService: Mocked<QueueService>;
 
 	async function createUser(data: Partial<{ id: string; username: string; host: string | null; inbox: string | null; sharedInbox: string | null; isSuspended: boolean }> = {}): Promise<any> {
+		const username = data.username ?? secureRndstr(16);
 		const user = {
 			id: secureRndstr(16),
-			username: secureRndstr(16),
-			usernameLower: (data.username ?? secureRndstr(16)).toLowerCase(),
+			username,
+			usernameLower: username.toLowerCase(),
 			host: data.host ?? null,
 			inbox: data.inbox ?? null,
 			sharedInbox: data.sharedInbox ?? null,
@@ -393,9 +394,7 @@ describe('ApDeliverManagerService (SQL)', () => {
 	}
 
 	beforeEach(async () => {
-		const { Test } = await import('@nestjs/testing');
 		const { GlobalModule } = await import('@/GlobalModule.js');
-		const { DI } = await import('@/di-symbols.js');
 
 		app = await Test.createTestingModule({
 			imports: [GlobalModule],
@@ -441,6 +440,8 @@ describe('ApDeliverManagerService (SQL)', () => {
 	});
 
 	afterEach(async () => {
+		await followingsRepository.deleteAll();
+		await usersRepository.deleteAll();
 		await app.close();
 	});
 

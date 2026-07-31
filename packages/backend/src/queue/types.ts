@@ -12,7 +12,7 @@ import type { MiWebhook, WebhookEventTypes } from '@/models/Webhook.js';
 import type { IActivity } from '@/core/activitypub/type.js';
 import type { SystemWebhookPayload } from '@/core/SystemWebhookService.js';
 import type { UserWebhookPayload } from '@/core/UserWebhookService.js';
-import type { ParsedSignature, PrivateKeyWithPem } from '@misskey-dev/node-http-message-signatures';
+import type { ParsedSignature } from '@misskey-dev/node-http-message-signatures';
 
 /**
  * @peertube/http-signature 時代の古いデータにも対応しておく
@@ -43,7 +43,7 @@ export type DeliverJobData = {
 	/** whether it is sharedInbox */
 	isSharedInbox: boolean;
 	/** force to use main (rsa) key */
-	privateKey?: PrivateKeyWithPem;
+	forceMainKey?: boolean;
 };
 
 export type InboxJobData = {

@@ -695,6 +695,9 @@ export class ApRendererService {
 
 	@bindThis
 	public async attachLdSignature(activity: any, key: PrivateKeyWithPem): Promise<IActivity> {
+		if (!key.keyId.endsWith('#main-key')) {
+			throw new Error('RsaSignature2017 must use the main RSA key');
+		}
 		const jsonLd = this.jsonLdService.use();
 		jsonLd.debug = false;
 		activity = await jsonLd.signRsaSignature2017(activity, key.privateKeyPem, key.keyId);

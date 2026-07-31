@@ -99,12 +99,14 @@ export class UserSuspendService {
 			isFromRemote ? { id: user.id, isRemoteSuspended: true } : { id: user.id, isSuspended: true }
 		);
 
-		this.followRequestsRepository.delete({
-			followeeId: user.id,
-		});
-		this.followRequestsRepository.delete({
-			followerId: user.id,
-		});
+		if (!isFromRemote) {
+			this.followRequestsRepository.delete({
+				followeeId: user.id,
+			});
+			this.followRequestsRepository.delete({
+				followerId: user.id,
+			});
+		}
 
 		if (this.userEntityService.isLocalUser(user)) {
 			await this.accountUpdateService.publishToFollowersAndSharedInboxAndRelays(user.id);

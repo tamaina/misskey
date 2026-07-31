@@ -81,9 +81,7 @@ export class DeliverProcessorService {
 		}
 
 		try {
-			const server = await (this.meta.enableStatsForFederatedInstances
-				? this.federatedInstanceService.fetchOrRegister(host)
-				: this.federatedInstanceService.fetch(host));
+			const server = i;
 
 			await this.apRequestService.signedPost(
 				job.data.user,
@@ -91,7 +89,7 @@ export class DeliverProcessorService {
 				job.data.content,
 				server?.httpMessageSignaturesImplementationLevel ?? '00',
 				job.data.digest,
-				job.data.privateKey,
+				job.data.forceMainKey,
 			);
 
 			// Update stats

@@ -145,7 +145,7 @@ export class FetchInstanceMetadataService {
 				info: !!info,
 				dom: !!dom,
 				manifest: !!manifest,
-				updates,
+				updatedFields: Object.keys(updates),
 			});
 		} catch (e) {
 			this.logger.error(`Failed to update metadata of ${instance.host}: ${e}`);
@@ -224,7 +224,7 @@ export class FetchInstanceMetadataService {
 
 	@bindThis
 	private async fetchFaviconUrl(instance: MiInstance, doc: htmlParser.HTMLElement | null): Promise<string | null> {
-		const url = 'https://' + instance.host;
+		const url = this.httpColon + instance.host;
 
 		if (doc) {
 			// https://github.com/misskey-dev/misskey/pull/8220#issuecomment-1025104043

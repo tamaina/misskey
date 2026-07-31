@@ -12026,9 +12026,7 @@ export interface operations {
                         keyPairs: {
                             userId: string;
                             publicKey: string;
-                            privateKey: string;
                             ed25519PublicKey: string | null;
-                            ed25519PrivateKey: string | null;
                         } | null;
                     };
                 };

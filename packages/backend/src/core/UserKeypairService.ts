@@ -5,6 +5,7 @@
 
 import { Inject, Injectable, OnApplicationShutdown } from '@nestjs/common';
 import * as Redis from 'ioredis';
+import { IsNull } from 'typeorm';
 import { genEd25519KeyPair, importPrivateKey, PrivateKey, PrivateKeyWithPem } from '@misskey-dev/node-http-message-signatures';
 import type { MiUser } from '@/models/User.js';
 import type { UserKeypairsRepository } from '@/models/_.js';
@@ -152,10 +153,17 @@ export class UserKeypairService implements OnApplicationShutdown {
 		}
 
 		const ed25519 = await genEd25519KeyPair();
-		await this.userKeypairsRepository.update({ userId }, {
-			ed25519PublicKey: ed25519.publicKey,
-			ed25519PrivateKey: ed25519.privateKey,
-		});
+		const updated = await this.userKeypairsRepository.update(
+			{ userId, ed25519PublicKey: IsNull() },
+			{
+				ed25519PublicKey: ed25519.publicKey,
+				ed25519PrivateKey: ed25519.privateKey,
+			},
+		);
+		if (!updated.affected) {
+			await this.refresh(userId);
+			return;
+		}
 		this.globalEventService.publishInternalEvent('userKeypairUpdated', { userId });
 		const result = {
 			...keypair,
@@ -182,7 +190,9 @@ export class UserKeypairService implements OnApplicationShutdown {
 	}
 	@bindThis
 	public dispose(): void {
+		this.redisForSub.off('message', this.onMessage);
 		this.keypairEntityCache.dispose();
+		this.privateKeyObjectCache.dispose();
 	}
 
 	@bindThis

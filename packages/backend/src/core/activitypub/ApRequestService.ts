@@ -94,9 +94,9 @@ export class ApRequestService {
 	}
 
 	@bindThis
-	public async signedPost(user: { id: MiUser['id'] }, url: string, object: unknown, level: string, digest?: string, key?: PrivateKeyWithPem): Promise<void> {
+	public async signedPost(user: { id: MiUser['id'] }, url: string, object: unknown, level: string, digest?: string, forceMainKey = false): Promise<void> {
 		const body = typeof object === 'string' ? object : JSON.stringify(object);
-		const keyFetched = await this.userKeypairService.getLocalUserPrivateKey(key ?? user.id, level);
+		const keyFetched = await this.userKeypairService.getLocalUserPrivateKey(user.id, forceMainKey ? 'main' : level);
 		const req = await createSignedPost({
 			level,
 			key: keyFetched,
