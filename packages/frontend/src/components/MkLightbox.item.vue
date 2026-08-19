@@ -977,7 +977,7 @@ function openMenu(ev: PointerEvent) {
 		type: 'divider',
 	});
 
-	if (props.content.type.startsWith('image')) {
+	if (props.content.type === 'image') {
 		menu.push({
 			type: 'switch',
 			text: i18n.ts.pixelatedZoom,
