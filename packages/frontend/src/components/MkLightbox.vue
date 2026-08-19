@@ -31,7 +31,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						v-model:pixelatedZoom="pixelatedZoom"
 						:content="content"
 						:user="user"
-						:initiallyOpened="i === (props.defaultIndex ?? 0)"
+						:initiallyRevealed="props.initiallyRevealedContentIds?.includes(content.id) ?? false"
 						:activated="activatedIndexes.has(i)"
 						@close="onItemClose"
 						@horizontalSwipe="onHorizontalSwipe"
@@ -63,6 +63,7 @@ import { focusTrap } from '@/utility/focus-trap.js';
 const props = withDefaults(defineProps<{
 	defaultIndex?: number;
 	contents: Content[];
+	initiallyRevealedContentIds?: string[];
 	user?: Misskey.entities.User | null; // DriveFileのuserはnullになることがある。その場合に使用する所有者情報
 }>(), {
 });

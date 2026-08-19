@@ -30,6 +30,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<XVideo
 					v-if="media.type.startsWith('video')"
 					:key="`video:${media.id}`"
+					:ref="(comp) => { mediaComponents.set(media.id, comp as InstanceType<typeof XVideo> | null); }"
 					:class="$style.media"
 					:video="media"
 					@mediaClick="onMediaClick(media)"
@@ -37,6 +38,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<XImage
 					v-else-if="media.type.startsWith('image')"
 					:key="`image:${media.id}`"
+					:ref="(comp) => { mediaComponents.set(media.id, comp as InstanceType<typeof XImage> | null); }"
 					:marker="`${markerId}:${media.id}`"
 					:disableImageLink="true"
 					:class="$style.media"
@@ -51,9 +53,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, markRaw, onMounted, useTemplateRef } from 'vue';
+import { computed, markRaw, onMounted, onUnmounted, useTemplateRef } from 'vue';
 import * as Misskey from 'misskey-js';
 import type { Content } from '@/components/MkLightbox.item.vue';
+import type { MediaComponentExposes } from '@/types/media-component.js';
 import XBanner from '@/components/MkMediaBanner.vue';
 import XAudio from '@/components/MkMediaAudio.vue';
 import XImage from '@/components/MkMediaImage.vue';
@@ -86,6 +89,7 @@ const medias = computed(() => {
 		nonPreviewable,
 	};
 });
+const mediaComponents = new Map<string, MediaComponentExposes | null>();
 const count = computed(() => medias.value.previewable.length);
 const markerId = genId();
 
@@ -126,6 +130,10 @@ onMounted(() => {
 	if (gallery.value == null) return; // TSを黙らすため
 });
 
+onUnmounted(() => {
+	mediaComponents.clear();
+});
+
 function onMediaClick(file: Misskey.entities.DriveFile) {
 	if (prefer.s.imageNewTab) {
 		window.open(file.url, '_blank');
@@ -160,9 +168,14 @@ async function openGallery(id?: string) {
 		sourceElement: getElementByMarker(`${markerId}:${media.id}`),
 	}));
 
+	const initiallyRevealedContentIds = contents
+		.filter(content => mediaComponents.get(content.id)?.isRevealed() === true)
+		.map(content => content.id);
+
 	const { dispose } = await os.popupAsyncWithDialog(import('@/components/MkLightbox.vue').then(x => x.default), {
 		defaultIndex: contents.findIndex(conten => conten.id === id),
 		contents: contents,
+		initiallyRevealedContentIds,
 		user: props.user,
 	}, {
 		closed: () => dispose(),
