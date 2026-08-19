@@ -977,12 +977,16 @@ function openMenu(ev: PointerEvent) {
 		type: 'divider',
 	});
 
+	if (props.content.type.startsWith('image')) {
+		menu.push({
+			type: 'switch',
+			text: i18n.ts.pixelatedZoom,
+			icon: 'ti ti-grain',
+			ref: pixelatedZoom,
+		});
+	}
+
 	menu.push({
-		type: 'switch',
-		text: i18n.ts.pixelatedZoom,
-		icon: 'ti ti-grain',
-		ref: pixelatedZoom,
-	}, {
 		text: i18n.ts.hide,
 		icon: 'ti ti-eye-off',
 		action: () => {
