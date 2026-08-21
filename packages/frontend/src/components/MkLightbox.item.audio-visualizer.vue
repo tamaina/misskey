@@ -421,8 +421,8 @@ function setupAudioGraph(el: HTMLAudioElement) {
 		audioCtx = new AudioContext();
 		analyserNode = audioCtx.createAnalyser();
 		analyserNode.fftSize = FFT_SIZE;
-		// 時間ベースの平滑は analyse() 側で行うので別途不要
-		analyserNode.smoothingTimeConstant = 0;
+		// 時間ベースの平滑は analyse() 側で行うので弱めでよい
+		analyserNode.smoothingTimeConstant = 0.2;
 		// 既定の -100〜-30dB は音楽素材に対して下が広すぎるので、実用レンジに寄せて 0-255 を使い切る
 		analyserNode.minDecibels = -90;
 		analyserNode.maxDecibels = -25;
