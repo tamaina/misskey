@@ -76,7 +76,7 @@ const MAX_FREQ = 16000;
 /**
  * 低域の傾き補正の倍率。1オクターブ上がるごとにこの値を掛ける。1より大きいと高域が持ち上がる
  */
-const SPECTRUM_TILT_COEFFICIENT = 1.06;
+const SPECTRUM_TILT_COEFFICIENT = 1.085;
 
 const BEAT_BAND_COUNT = 36;
 const BEAT_MIN_FREQ = 30;
