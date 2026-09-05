@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { In, IsNull, MoreThan, Not } from 'typeorm';
+import { In, IsNull, Not } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
 import type { FollowingsRepository, InstancesRepository } from '@/models/_.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';
@@ -73,24 +73,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const [topSubInstances, topPubInstances, allSubCount, allPubCount] = await Promise.all([
-				this.instancesRepository.find({
-					where: {
-						followersCount: MoreThan(0),
-					},
-					order: {
-						followersCount: 'DESC',
-					},
-					take: ps.limit,
-				}),
-				this.instancesRepository.find({
-					where: {
-						followingCount: MoreThan(0),
-					},
-					order: {
-						followingCount: 'DESC',
-					},
-					take: ps.limit,
-				}),
+				this.getTopInstances('followeeHost', 'followersCount', ps.limit),
+				this.getTopInstances('followerHost', 'followingCount', ps.limit),
 				this.followingsRepository.count({
 					where: {
 						followeeHost: Not(IsNull()),
@@ -126,6 +110,24 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				topPubInstances: this.instanceEntityService.packMany(topPubInstances, me),
 				otherFollowingCount: Math.max(0, allPubCount - gotPubCount),
 			});
+		});
+	}
+
+	private async getTopInstances(hostColumn: 'followeeHost' | 'followerHost', countColumn: 'followersCount' | 'followingCount', limit: number) {
+		const counts = await this.followingsRepository.createQueryBuilder('following')
+			.select(`following.${hostColumn}`, 'host')
+			.addSelect('COUNT(*)', 'count')
+			.innerJoin(this.instancesRepository.metadata.tablePath, 'instance', `instance.host = following.${hostColumn}`)
+			.where('following.isFollowerSuspended = false')
+			.groupBy(`following.${hostColumn}`)
+			.orderBy('COUNT(*)', 'DESC')
+			.addOrderBy(`following.${hostColumn}`, 'ASC')
+			.limit(limit)
+			.getRawMany<{ host: string; count: string }>();
+		const instances = await this.instancesRepository.findBy({ host: In(counts.map(x => x.host)) });
+		return counts.flatMap(({ host, count }) => {
+			const instance = instances.find(x => x.host === host);
+			return instance ? [{ ...instance, [countColumn]: Number(count) }] : [];
 		});
 	}
 }

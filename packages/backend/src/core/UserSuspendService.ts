@@ -36,9 +36,7 @@ export class UserSuspendService {
 
 	@bindThis
 	public async suspend(user: MiUser, moderator: MiUser): Promise<void> {
-		await this.usersRepository.update(user.id, {
-			isSuspended: true,
-		});
+		await this.updateSuspendedState(user.id, true);
 
 		this.moderationLogService.log(moderator, 'suspend', {
 			userId: user.id,
@@ -48,15 +46,12 @@ export class UserSuspendService {
 
 		(async () => {
 			await this.postSuspend(user).catch(_ => {});
-			await this.suspendFollowings(user).catch(_ => {});
 		})();
 	}
 
 	@bindThis
 	public async unsuspend(user: MiUser, moderator: MiUser): Promise<void> {
-		await this.usersRepository.update(user.id, {
-			isSuspended: false,
-		});
+		await this.updateSuspendedState(user.id, false);
 
 		this.moderationLogService.log(moderator, 'unsuspend', {
 			userId: user.id,
@@ -66,7 +61,6 @@ export class UserSuspendService {
 
 		(async () => {
 			await this.postUnsuspend(user).catch(_ => {});
-			await this.restoreFollowings(user).catch(_ => {});
 		})();
 	}
 
@@ -104,27 +98,14 @@ export class UserSuspendService {
 	}
 
 	@bindThis
-	private async suspendFollowings(follower: MiUser) {
-		await this.followingsRepository.update(
-			{
-				followerId: follower.id,
-			},
-			{
-				isFollowerSuspended: true,
-			}
-		);
-	}
-
-	@bindThis
-	private async restoreFollowings(follower: MiUser) {
-		// フォロー関係を復元（isFollowerSuspended: false）に変更
-		await this.followingsRepository.update(
-			{
-				followerId: follower.id,
-			},
-			{
-				isFollowerSuspended: false,
-			}
-		);
+	private async updateSuspendedState(userId: MiUser['id'], isSuspended: boolean): Promise<void> {
+		await this.usersRepository.manager.transaction(async manager => {
+			// The user row is also locked before inserting a following.
+			await manager.getRepository(this.usersRepository.target).update(userId, { isSuspended });
+			await manager.getRepository(this.followingsRepository.target).update(
+				{ followerId: userId },
+				{ isFollowerSuspended: isSuspended },
+			);
+		});
 	}
 }
