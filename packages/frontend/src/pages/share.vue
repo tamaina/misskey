@@ -199,9 +199,14 @@ async function init() {
 	//#region Local files
 	// If the browser supports IndexedDB, try to get the temporary files from temp.
 	if (typeof window !== 'undefined' ? !!(window.indexedDB && typeof window.indexedDB.open === 'function') : true) {
-		const filesFromIdb = await get<File[]>('share-files-temp');
-		if (Array.isArray(filesFromIdb) && filesFromIdb.length > 0 && filesFromIdb.every(file => file instanceof Blob)) {
-			tempFiles.value = filesFromIdb;
+		try {
+			const filesFromIdb = await get<File[]>('share-files-temp');
+			if (Array.isArray(filesFromIdb) && filesFromIdb.length > 0 && filesFromIdb.every(file => file instanceof Blob)) {
+				tempFiles.value = filesFromIdb;
+			}
+		} catch (err) {
+			console.error('Failed to read shared files:', err);
+			os.alert({ type: 'error', title: i18n.ts.error, text: err instanceof Error ? err.message : String(err) });
 		}
 	}
 
@@ -241,7 +246,7 @@ function goToMisskey(): void {
 function onPosted(): void {
 	state.value = 'posted';
 	// SWが保存したファイルは投稿が完了するまでIndexedDBに保持
-	del('share-files-temp');
+	del('share-files-temp').catch(err => console.error('Failed to clear shared files:', err));
 	postMessageToParentWindow('misskey:shareForm:shareCompleted');
 }
 
