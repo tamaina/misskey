@@ -102,6 +102,36 @@ test('shared drafts remain isolated across requests and accounts', async ({ page
 	expect((await rejected).status()).toBe(403);
 	expect(await read(page, firstId, 'A')).toEqual([{ name: 'a.txt', text: 'A' }]);
 
+	const countRecords = () => page.evaluate(() => new Promise<number>((done, reject) => {
+		const open = indexedDB.open('misskey-shared-files');
+		open.onerror = () => reject(open.error);
+		open.onsuccess = () => {
+			const db = open.result;
+			const count = db.transaction('shares').objectStore('shares').count();
+			count.onerror = () => { db.close(); reject(count.error); };
+			count.onsuccess = () => { db.close(); done(count.result); };
+		};
+	}));
+	const pendingCount = await countRecords();
+	for (let i = 0; i < 3; i++) {
+		const opaque = await context.newPage();
+		await opaque.goto(origin);
+		const target = `${origin}/sw/share?shareId=${firstId}`;
+		await opaque.evaluate(({ target, firstId }) => {
+			const iframe = document.createElement('iframe');
+			iframe.setAttribute('sandbox', 'allow-scripts allow-forms allow-top-navigation');
+			iframe.srcdoc = `<form action="${target}" method="post" enctype="multipart/form-data" target="_top"><input name="shareId" value="${firstId}"><button>Share</button></form>`;
+			document.body.append(iframe);
+		}, { target, firstId });
+		const submitted = opaque.waitForRequest(request => request.url() === target && request.method() === 'POST');
+		await Promise.all([opaque.waitForURL(`${origin}/share`), opaque.frameLocator('iframe').locator('button').click()]);
+		expect((await submitted).headers().origin).toBe('null');
+		expect(new URL(opaque.url()).searchParams.has('shareId')).toBe(false);
+		await opaque.close();
+	}
+	expect(await countRecords()).toBe(pendingCount);
+	expect(await read(page, firstId, 'A')).toEqual([{ name: 'a.txt', text: 'A' }]);
+
 	await page.evaluate(async origin => {
 		const shared = await import(`${origin}/shared-files.js`);
 		const now = Date.now;
@@ -109,4 +139,11 @@ test('shared drafts remain isolated across requests and accounts', async ({ page
 		try { await shared.cleanupSharedFiles(); } finally { Date.now = now; }
 	}, origin);
 	expect(await read(page, firstId, 'A')).toEqual([]);
+	const capacity = await page.evaluate(async origin => {
+		const shared = await import(`${origin}/shared-files.js`);
+		const attempts = await Promise.allSettled(Array.from({ length: 40 }, () => shared.saveSharedFiles([new File(['x'], 'x.txt')])));
+		return { saved: attempts.filter(result => result.status === 'fulfilled').length, rejected: attempts.filter(result => result.status === 'rejected').length };
+	}, origin);
+	expect(capacity).toEqual({ saved: 32, rejected: 8 });
+	expect(await countRecords()).toBe(32);
 });

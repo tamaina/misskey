@@ -28,6 +28,7 @@ describe('PWA share target', () => {
 
 	test('does not accept a shareId supplied by the sender', async () => {
 		const form = new FormData();
+		form.append('files', new File(['image'], 'photo.png'));
 		form.append('shareId', 'untrusted');
 		const response = await respondToShare(request(form));
 		expect(new URL(response.headers.get('location')!).searchParams.get('shareId')).toBe(shareId);
@@ -61,30 +62,47 @@ describe('PWA share target', () => {
 		let release!: () => void;
 		vi.mocked(saveSharedFiles).mockReturnValue(new Promise(resolve => { release = () => resolve(shareId); }));
 		let redirected = false;
-		const response = respondToShare(request(new FormData())).then(value => { redirected = true; return value; });
+		const form = new FormData();
+		form.append('files', new File(['image'], 'photo.png'));
+		const response = respondToShare(request(form)).then(value => { redirected = true; return value; });
 		await vi.waitFor(() => expect(saveSharedFiles).toHaveBeenCalled());
 		expect(redirected).toBe(false);
 		release();
 		expect((await response).status).toBe(303);
 	});
 
-	test.each([false, true])('stores an independent empty share when there are no valid files (invalid entry: %s)', async invalid => {
+	test.each([false, true])('does not use storage when there are no valid files (invalid entry: %s)', async invalid => {
 		const form = new FormData();
 		if (invalid) form.append('files', 'not a file');
 		await respondToShare(request(form));
-		expect(saveSharedFiles).toHaveBeenCalledWith([]);
+		expect(saveSharedFiles).not.toHaveBeenCalled();
 	});
 
 	test('does not navigate after a failed save', async () => {
 		const error = new Error('storage failed');
 		vi.mocked(saveSharedFiles).mockRejectedValue(error);
-		await expect(respondToShare(request(new FormData()))).rejects.toBe(error);
+		const form = new FormData();
+		form.append('files', new File(['image'], 'photo.png'));
+		await expect(respondToShare(request(form))).rejects.toBe(error);
 	});
 
 	test('ignores an empty file-input placeholder', async () => {
 		const form = new FormData();
 		form.append('files', new File([], ''));
 		await respondToShare(request(form));
-		expect(saveSharedFiles).toHaveBeenCalledWith([]);
+		expect(saveSharedFiles).not.toHaveBeenCalled();
+	});
+
+	test('opaque-origin text POSTs cannot allocate records or reuse a supplied shareId', async () => {
+		for (let i = 0; i < 10; i++) {
+			const form = new FormData();
+			form.append('shareId', shareId);
+			const incoming = new Request(`https://example.com/sw/share?shareId=${shareId}`, { method: 'POST', body: form });
+			const getHeader = incoming.headers.get.bind(incoming.headers);
+			vi.spyOn(incoming.headers, 'get').mockImplementation(name => name.toLowerCase() === 'origin' ? 'null' : getHeader(name));
+			const response = await respondToShare(incoming);
+			expect(new URL(response.headers.get('location')!).searchParams.has('shareId')).toBe(false);
+		}
+		expect(saveSharedFiles).not.toHaveBeenCalled();
 	});
 });

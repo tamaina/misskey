@@ -3,10 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { createStore, promisifyRequest, set } from 'idb-keyval';
+import { createStore, promisifyRequest } from 'idb-keyval';
 
 const store = createStore('misskey-shared-files', 'shares');
 const lifetime = 60 * 60 * 1000;
+const maxPendingShares = 32;
 const validId = (id: string | null): id is string => id != null && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
 
 type SharedFiles = { files: File[]; expiresAt: number; ownerId: string | null };
@@ -31,7 +32,22 @@ export async function cleanupSharedFiles(): Promise<void> {
 export async function saveSharedFiles(files: File[]): Promise<string> {
 	await cleanupSharedFiles();
 	const id = crypto.randomUUID();
-	await set(id, { files, expiresAt: Date.now() + lifetime, ownerId: null } satisfies SharedFiles, store);
+	let full = false;
+	await store('readwrite', objectStore => {
+		const request = objectStore.count();
+		request.onsuccess = () => {
+			if (request.result >= maxPendingShares) {
+				full = true;
+				objectStore.transaction.abort();
+				return;
+			}
+			objectStore.add({ files, expiresAt: Date.now() + lifetime, ownerId: null } satisfies SharedFiles, id);
+		};
+		return promisifyRequest(objectStore.transaction);
+	}).catch(error => {
+		if (full) throw new Error('Too many pending shared drafts');
+		throw error;
+	});
 	return id;
 }
 

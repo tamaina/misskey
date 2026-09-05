@@ -8,7 +8,7 @@ import { saveSharedFiles } from '@@/js/shared-files.js';
 export async function respondToShare(request: Request): Promise<Response> {
 	const responseUrl = new URL(request.url);
 	const origin = request.headers.get('Origin');
-	// Native share invocations may have no web origin (or an opaque origin).
+	// Missing/opaque origins are not proof of a native share; storage remains bounded.
 	if (origin && origin !== 'null' && origin !== responseUrl.origin) return new Response('Forbidden', { status: 403 });
 	responseUrl.pathname = '/share';
 	const formData = await request.formData();
@@ -17,12 +17,15 @@ export async function respondToShare(request: Request): Promise<Response> {
 		? entries.filter(file => !(file instanceof File && file.name === '' && file.size === 0))
 		: [];
 
-	const shareId = await saveSharedFiles(files);
+	// Text-only shares need no persistent record, regardless of their origin.
+	const shareId = files.length > 0 ? await saveSharedFiles(files) : null;
 	formData.delete('files');
+	formData.delete('shareId');
+	responseUrl.searchParams.delete('shareId');
 	for (const [key, value] of formData.entries()) {
 		responseUrl.searchParams.set(key, value.toString());
 	}
-	responseUrl.searchParams.set('shareId', shareId);
+	if (shareId) responseUrl.searchParams.set('shareId', shareId);
 
 	return Response.redirect(responseUrl, 303);
 }
