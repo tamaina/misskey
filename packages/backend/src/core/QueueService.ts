@@ -37,7 +37,7 @@ import type {
 	SystemWebhookDeliverQueue,
 	UserWebhookDeliverQueue,
 } from './QueueModule.js';
-import { genRFC3230DigestHeader, type PrivateKeyWithPem, type ParsedSignature } from '@misskey-dev/node-http-message-signatures';
+import { genRFC3230DigestHeader, type ParsedSignature } from '@misskey-dev/node-http-message-signatures';
 import type * as Bull from 'bullmq';
 
 export const QUEUE_TYPES = [
@@ -143,7 +143,7 @@ export class QueueService {
 	}
 
 	@bindThis
-	public async deliver(user: ThinUser, content: IActivity | null, to: string | null, isSharedInbox: boolean, privateKey?: PrivateKeyWithPem) {
+	public async deliver(user: ThinUser, content: IActivity | null, to: string | null, isSharedInbox: boolean, forceMainKey = false) {
 		if (content == null) return null;
 		if (to == null) return null;
 
@@ -157,7 +157,7 @@ export class QueueService {
 			digest: await genRFC3230DigestHeader(contentBody, 'SHA-256'),
 			to,
 			isSharedInbox,
-			privateKey,
+			forceMainKey,
 		};
 
 		const label = to.replace('https://', '').replace('/inbox', '');
@@ -183,16 +183,17 @@ export class QueueService {
 	 * @param user `{ id: string; }` この関数ではThinUserに変換しないので前もって変換してください
 	 * @param content IActivity | null
 	 * @param inboxes `Map<string, boolean>` / key: to (inbox url), value: isSharedInbox (whether it is sharedInbox)
-	 * @param forceMainKey boolean | undefined, force to use main (rsa) key
+	 * @param forceMainKey force to use main (rsa) key
 	 * @returns void
 	 */
 	@bindThis
-	public async deliverMany(user: ThinUser, content: IActivity | null, inboxes: Map<string, boolean>, privateKey?: PrivateKeyWithPem) {
+	public async deliverMany(user: ThinUser, content: IActivity | null, inboxes: Map<string, boolean>, forceMainKey = false) {
 		if (content == null) return null;
 		inboxes.delete(null as unknown as string); // remove null inboxes
 		if (inboxes.size === 0) return null;
 
 		const contentBody = JSON.stringify(content);
+		const digest = await genRFC3230DigestHeader(contentBody, 'SHA-256');
 
 		const opts = {
 			attempts: this.config.deliverJobMaxAttempts ?? 12,
@@ -214,10 +215,11 @@ export class QueueService {
 			data: {
 				user,
 				content: contentBody,
+				digest,
 				to: d[0],
 				isSharedInbox: d[1],
-				privateKey,
-			} as DeliverJobData,
+				forceMainKey,
+			} satisfies DeliverJobData,
 			opts,
 		})));
 
@@ -903,7 +905,7 @@ export class QueueService {
 		const isPaused = await queue.isPaused();
 		const metrics_completed = await queue.getMetrics('completed', 0, MetricsTime.ONE_WEEK);
 		const metrics_failed = await queue.getMetrics('failed', 0, MetricsTime.ONE_WEEK);
-		const db = parseRedisInfo(await (await queue.client).info());
+		const db = parseRedisInfo(await (await queue.getBackend().client).info());
 
 		return {
 			name: queueType,

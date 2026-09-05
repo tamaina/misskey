@@ -13,7 +13,6 @@ import { RelayService } from '@/core/RelayService.js';
 import { ApDeliverManagerService } from '@/core/activitypub/ApDeliverManagerService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { bindThis } from '@/decorators.js';
-import type { PrivateKeyWithPem } from '@misskey-dev/node-http-message-signatures';
 
 @Injectable()
 export class AccountUpdateService implements OnModuleInit {
@@ -46,9 +45,9 @@ export class AccountUpdateService implements OnModuleInit {
 	/**
 	 * Deliver account update to followers
 	 * @param userId user id
-	 * @param deliverKey optional. Private key to sign the deliver.
+	 * @param forceMainKey Force delivery to use the main RSA key.
 	 */
-	public async publishToFollowers(userId: MiUser['id'], deliverKey?: PrivateKeyWithPem) {
+	public async publishToFollowers(userId: MiUser['id'], forceMainKey = false) {
 		const user = await this.usersRepository.findOneBy({ id: userId });
 		if (user == null || user.isDeleted) {
 			// ユーザーが存在しない、または削除されている場合は何もしない
@@ -58,8 +57,8 @@ export class AccountUpdateService implements OnModuleInit {
 		// ローカルユーザーならUpdateを配信
 		if (this.userEntityService.isLocalUser(user)) {
 			const content = await this.createUpdatePersonActivity(user);
-			this.apDeliverManagerService.deliverToFollowers(user, content, deliverKey);
-			this.relayService.deliverToRelays(user, content, deliverKey);
+			this.apDeliverManagerService.deliverToFollowers(user, content, forceMainKey);
+			this.relayService.deliverToRelays(user, content, forceMainKey);
 		}
 	}
 

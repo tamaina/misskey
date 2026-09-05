@@ -219,15 +219,7 @@ export const meta = {
 						type: 'string',
 						optional: false, nullable: false,
 					},
-					privateKey: {
-						type: 'string',
-						optional: false, nullable: false,
-					},
 					ed25519PublicKey: {
-						type: 'string',
-						optional: false, nullable: true,
-					},
-					ed25519PrivateKey: {
 						type: 'string',
 						optional: false, nullable: true,
 					},
@@ -318,7 +310,13 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					roleId: a.roleId,
 				})),
 				publicKeys: this.userEntityService.isRemoteUser(user) ? await this.apDbResolverService.getPublicKeyByUserId(user.id) : null,
-				keyPairs: this.userEntityService.isLocalUser(user) ? await this.userKeypairService.getUserKeypair(user.id) : null,
+				keyPairs: this.userEntityService.isLocalUser(user)
+					? await this.userKeypairService.getUserKeypair(user.id).then(keypair => ({
+						userId: keypair.userId,
+						publicKey: keypair.publicKey,
+						ed25519PublicKey: keypair.ed25519PublicKey,
+					}))
+					: null,
 			};
 		});
 	}

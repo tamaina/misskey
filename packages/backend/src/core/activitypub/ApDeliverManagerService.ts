@@ -16,7 +16,6 @@ import { AccountUpdateService } from '@/core/AccountUpdateService.js';
 import type Logger from '@/logger.js';
 import { UserKeypairService } from '../UserKeypairService.js';
 import { ApLoggerService } from './ApLoggerService.js';
-import type { PrivateKeyWithPem } from '@misskey-dev/node-http-message-signatures';
 import { ModuleRef } from '@nestjs/core';
 
 interface IRecipe {
@@ -130,9 +129,9 @@ class DeliverManager {
 	 * Execute delivers
 	 */
 	@bindThis
-	public async execute(opts: { privateKey?: PrivateKeyWithPem; ignoreSuspend?: boolean } = {}): Promise<void> {
+	public async execute(opts: { forceMainKey?: boolean; ignoreSuspend?: boolean } = {}): Promise<void> {
 		//#region MIGRATION
-		if (!opts?.privateKey) {
+		if (!opts.forceMainKey) {
 			/**
 			 * ed25519の署名がなければ追加する
 			 */
@@ -141,8 +140,7 @@ class DeliverManager {
 				// createdが存在するということは新規作成されたということなので、フォロワーに配信する
 				this.logger.info(`ed25519 key pair created for user ${this.actor.id} and publishing to followers`);
 				// リモートに配信
-				const keyPair = await this.userKeypairService.getLocalUserPrivateKeyPem(created, 'main');
-				await this.accountUpdateService.publishToFollowers(this.actor.id, keyPair);
+				await this.accountUpdateService.publishToFollowers(this.actor.id, true);
 			}
 		}
 		//#endregion
@@ -207,7 +205,7 @@ class DeliverManager {
 		//#endregion
 
 		// deliver
-		await this.queueService.deliverMany(this.actor, this.activity, inboxes, opts?.privateKey);
+		await this.queueService.deliverMany(this.actor, this.activity, inboxes, opts.forceMainKey ?? false);
 		this.logger.info(`Deliver queues dispatched: inboxes=${inboxes.size} actorId=${this.actor.id} activityId=${this.activity?.id}`);
 	}
 }
@@ -241,7 +239,7 @@ export class ApDeliverManagerService implements OnModuleInit {
 	 * @param forceMainKey Force to use main (rsa) key
 	 */
 	@bindThis
-	public async deliverToFollowers(actor: { id: MiLocalUser['id']; host: null; }, activity: IActivity, privateKey?: PrivateKeyWithPem): Promise<void> {
+	public async deliverToFollowers(actor: { id: MiLocalUser['id']; host: null; }, activity: IActivity, forceMainKey = false): Promise<void> {
 		const manager = new DeliverManager(
 			this.userKeypairService,
 			this.followingsRepository,
@@ -252,7 +250,7 @@ export class ApDeliverManagerService implements OnModuleInit {
 			activity,
 		);
 		manager.addFollowersRecipe();
-		await manager.execute({ privateKey });
+		await manager.execute({ forceMainKey });
 	}
 
 	/**

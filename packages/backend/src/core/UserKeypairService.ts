@@ -5,7 +5,9 @@
 
 import { Inject, Injectable, OnApplicationShutdown } from '@nestjs/common';
 import * as Redis from 'ioredis';
+import { IsNull } from 'typeorm';
 import { genEd25519KeyPair, importPrivateKey, PrivateKey, PrivateKeyWithPem } from '@misskey-dev/node-http-message-signatures';
+import * as nodeCrypto from 'crypto';
 import type { MiUser } from '@/models/User.js';
 import type { UserKeypairsRepository } from '@/models/_.js';
 import { RedisKVCache, MemoryKVCache } from '@/misc/cache.js';
@@ -32,10 +34,10 @@ export class UserKeypairService implements OnApplicationShutdown {
 		private globalEventService: GlobalEventService,
 		private userEntityService: UserEntityService,
 	) {
-		this.keypairEntityCache = new RedisKVCache<MiUserKeypair>(this.redisClient, 'userKeypair', {
+		this.keypairEntityCache = new RedisKVCache<MiUserKeypair>(this.redisClient, 'userKeypair:v2', {
 			lifetime: 1000 * 60 * 60 * 24, // 24h
 			memoryCacheLifetime: 1000 * 60 * 60, // 1h
-			fetcher: (key) => this.userKeypairsRepository.findOneByOrFail({ userId: key }),
+			fetcher: (key) => this.fetcher(key),
 			toRedisConverter: (value) => JSON.stringify(value),
 			fromRedisConverter: (value) => JSON.parse(value),
 		});
@@ -145,17 +147,29 @@ export class UserKeypairService implements OnApplicationShutdown {
 	 */
 	@bindThis
 	public async refreshAndPrepareEd25519KeyPair(userId: MiUser['id']): Promise<MiUserKeypair | void> {
+		let keypair = await this.keypairEntityCache.fetch(userId);
+		if (keypair.ed25519PublicKey != null) {
+			return;
+		}
+
 		await this.refresh(userId);
-		const keypair = await this.keypairEntityCache.fetch(userId);
+		keypair = await this.keypairEntityCache.fetch(userId);
 		if (keypair.ed25519PublicKey != null) {
 			return;
 		}
 
 		const ed25519 = await genEd25519KeyPair();
-		await this.userKeypairsRepository.update({ userId }, {
-			ed25519PublicKey: ed25519.publicKey,
-			ed25519PrivateKey: ed25519.privateKey,
-		});
+		const updated = await this.userKeypairsRepository.update(
+			{ userId, ed25519PublicKey: IsNull() },
+			{
+				ed25519PublicKey: ed25519.publicKey,
+				ed25519PrivateKey: ed25519.privateKey,
+			},
+		);
+		if (!updated.affected) {
+			await this.refresh(userId);
+			return;
+		}
 		this.globalEventService.publishInternalEvent('userKeypairUpdated', { userId });
 		const result = {
 			...keypair,
@@ -182,11 +196,27 @@ export class UserKeypairService implements OnApplicationShutdown {
 	}
 	@bindThis
 	public dispose(): void {
+		this.redisForSub.off('message', this.onMessage);
 		this.keypairEntityCache.dispose();
+		this.privateKeyObjectCache.dispose();
 	}
 
 	@bindThis
 	public onApplicationShutdown(signal?: string | undefined): void {
 		this.dispose();
+	}
+
+	@bindThis
+	public async fetcher(userId: MiUser['id']): Promise<MiUserKeypair> {
+		const keyPair = await this.userKeypairsRepository.findOneByOrFail({ userId });
+
+		// migrate PKCS#1 => PKCS#8. legacy misskey generated PKCS#1 but slacc only accepts PKCS#8
+		if (keyPair.privateKey.includes('-----BEGIN RSA PRIVATE KEY-----')) {
+			const pkcs8Key = nodeCrypto.createPrivateKey({ key: keyPair.privateKey, format: 'pem', type: 'pkcs1' }).export({ format: 'pem', type: 'pkcs8' });
+			keyPair.privateKey = pkcs8Key;
+			void this.userKeypairsRepository.update(userId, { privateKey: pkcs8Key });
+		}
+
+		return keyPair;
 	}
 }

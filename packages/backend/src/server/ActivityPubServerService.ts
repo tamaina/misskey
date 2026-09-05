@@ -126,18 +126,17 @@ export class ActivityPubServerService {
 			return;
 		}
 
-		let signature: ReturnType<typeof parseRequestSignature>;
+		const body = request.body;
 
-		const verifyDigest = await verifyDigestHeader(
-			request.raw,
-			typeof request.rawBody === 'string' ? request.rawBody : (request.rawBody ? request.rawBody.toString('utf8') : ''),
-			true
-		);
-		if (verifyDigest !== true) {
-			this.inboxLogger.warn('digest verification failed');
-			reply.code(401);
+		// Reject structurally invalid activities (e.g. missing actor) here instead
+		// of letting them fail deep inside the inbox processor. An actor-less
+		// activity can never be authenticated, so there is no point enqueueing it.
+		if (typeof body !== 'object' || !('actor' in body) || body.actor == null) {
+			reply.code(400);
 			return;
 		}
+
+		let signature: ReturnType<typeof parseRequestSignature>;
 
 		try {
 			signature = parseRequestSignature(request.raw, {
@@ -153,17 +152,28 @@ export class ActivityPubServerService {
 				throw new Error('RFC9421 HTTP Message Signatures are not supported for inbox verification yet');
 			}
 
-			this.inboxLogger.debug('signature header parsed', { signature, body: request.body });
+			this.inboxLogger.debug('signature header parsed', { signature, body });
 		} catch (err) {
-			if (typeof request.body === 'object' && 'signature' in request.body) {
+			if ('signature' in body) {
 				// LD SignatureがあればOK
-				this.queueService.inbox(request.body as IActivity, null);
-				this.inboxLogger.debug('LD Signature found in request body', { err, body: request.body });
+				this.queueService.inbox(body as IActivity, null);
+				this.inboxLogger.debug('LD Signature found in request body', { err, body });
 				reply.code(202);
 				return;
 			}
 
 			this.inboxLogger.warn('signature header parsing failed and LD signature not found', { err });
+			reply.code(401);
+			return;
+		}
+
+		const verifyDigest = await verifyDigestHeader(
+			request.raw,
+			request.rawBody ?? '',
+			true
+		);
+		if (verifyDigest !== true) {
+			this.inboxLogger.warn('digest verification failed');
 			reply.code(401);
 			return;
 		}
@@ -174,7 +184,7 @@ export class ActivityPubServerService {
 			return;
 		}
 
-		this.queueService.inbox(request.body as IActivity, signature);
+		this.queueService.inbox(body as IActivity, signature);
 		reply.code(202);
 	}
 

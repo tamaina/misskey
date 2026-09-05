@@ -8,7 +8,6 @@ process.env.NODE_ENV = 'test';
 import { beforeAll, beforeEach, describe, expect, test, vi } from 'vitest';
 import type { Mocked } from 'vitest';
 import { Test } from '@nestjs/testing';
-import { setTimeout } from 'node:timers/promises';
 import type { TestingModule } from '@nestjs/testing';
 import { GlobalModule } from '@/GlobalModule.js';
 import { UserSuspendService } from '@/core/UserSuspendService.js';
@@ -145,7 +144,6 @@ describe('UserSuspendService', () => {
 				{
 					provide: ApRendererService,
 					useFactory: () => ({
-						renderDelete: vi.fn(),
 						renderUndo: vi.fn(),
 						renderPerson: vi.fn(),
 						renderUpdate: vi.fn(),
@@ -213,16 +211,14 @@ describe('UserSuspendService', () => {
 			await createFollowing(user, followee2);
 
 			await userSuspendService.suspend(user, moderator);
-			await setTimeout(250);
-
-			// フォロー関係が論理削除されているかチェック
-			const followings = await followingsRepository.find({
-				where: { followerId: user.id },
-			});
-
-			expect(followings).toHaveLength(2);
-			followings.forEach(following => {
-				expect(following.isFollowerSuspended).toBe(true);
+			await vi.waitFor(async () => {
+				const followings = await followingsRepository.find({
+					where: { followerId: user.id },
+				});
+				expect(followings).toHaveLength(2);
+				followings.forEach(following => {
+					expect(following.isFollowerSuspended).toBe(true);
+				});
 			});
 		});
 
@@ -231,15 +227,12 @@ describe('UserSuspendService', () => {
 			const moderator = await createUser();
 
 			await userSuspendService.suspend(user, moderator);
-			await setTimeout(250);
-
-			// 内部イベントが発行されているかチェック（非同期処理のため少し待つ）
-			await setTimeout(100);
-
-			expect(globalEventService.publishInternalEvent).toHaveBeenCalledWith(
-				'userChangeSuspendedState',
-				{ id: user.id, isSuspended: true },
-			);
+			await vi.waitFor(() => {
+				expect(globalEventService.publishInternalEvent).toHaveBeenCalledWith(
+					'userChangeSuspendedState',
+					{ id: user.id, isSuspended: true },
+				);
+			});
 		});
 	});
 
@@ -249,7 +242,6 @@ describe('UserSuspendService', () => {
 			const moderator = await createUser();
 
 			await userSuspendService.unsuspend(user, moderator);
-			await setTimeout(250);
 
 			// ユーザーの凍結が解除されているかチェック
 			const unsuspendedUser = await usersRepository.findOneBy({ id: user.id });
@@ -276,16 +268,14 @@ describe('UserSuspendService', () => {
 			await createFollowing(user, followee2, { isFollowerSuspended: true });
 
 			await userSuspendService.unsuspend(user, moderator);
-			await setTimeout(250);
-
-			// フォロー関係が復元されているかチェック
-			const followings = await followingsRepository.find({
-				where: { followerId: user.id },
-			});
-
-			expect(followings).toHaveLength(2);
-			followings.forEach(following => {
-				expect(following.isFollowerSuspended).toBe(false);
+			await vi.waitFor(async () => {
+				const followings = await followingsRepository.find({
+					where: { followerId: user.id },
+				});
+				expect(followings).toHaveLength(2);
+				followings.forEach(following => {
+					expect(following.isFollowerSuspended).toBe(false);
+				});
 			});
 		});
 
@@ -294,15 +284,12 @@ describe('UserSuspendService', () => {
 			const moderator = await createUser();
 
 			await userSuspendService.unsuspend(user, moderator);
-			await setTimeout(250);
-
-			// 内部イベントが発行されているかチェック（非同期処理のため少し待つ）
-			await setTimeout(100);
-
-			expect(globalEventService.publishInternalEvent).toHaveBeenCalledWith(
-				'userChangeSuspendedState',
-				{ id: user.id, isSuspended: false },
-			);
+			await vi.waitFor(() => {
+				expect(globalEventService.publishInternalEvent).toHaveBeenCalledWith(
+					'userChangeSuspendedState',
+					{ id: user.id, isSuspended: false },
+				);
+			});
 		});
 	});
 
@@ -330,29 +317,27 @@ describe('UserSuspendService', () => {
 
 			// 凍結
 			await userSuspendService.suspend(user, moderator);
-			await setTimeout(250);
-
-			// 凍結後の状態確認
-			followings = await followingsRepository.find({
-				where: { followerId: user.id },
-			});
-			expect(followings).toHaveLength(2);
-			followings.forEach(following => {
-				expect(following.isFollowerSuspended).toBe(true);
+			await vi.waitFor(async () => {
+				followings = await followingsRepository.find({
+					where: { followerId: user.id },
+				});
+				expect(followings).toHaveLength(2);
+				followings.forEach(following => {
+					expect(following.isFollowerSuspended).toBe(true);
+				});
 			});
 
 			// 凍結解除
 			const suspendedUser = await usersRepository.findOneByOrFail({ id: user.id });
 			await userSuspendService.unsuspend(suspendedUser, moderator);
-			await setTimeout(250);
-
-			// 凍結解除後の状態確認
-			followings = await followingsRepository.find({
-				where: { followerId: user.id },
-			});
-			expect(followings).toHaveLength(2);
-			followings.forEach(following => {
-				expect(following.isFollowerSuspended).toBe(false);
+			await vi.waitFor(async () => {
+				followings = await followingsRepository.find({
+					where: { followerId: user.id },
+				});
+				expect(followings).toHaveLength(2);
+				followings.forEach(following => {
+					expect(following.isFollowerSuspended).toBe(false);
+				});
 			});
 		});
 	});
@@ -369,14 +354,13 @@ describe('UserSuspendService', () => {
 			apRendererService.addContext.mockReturnValue({ '@context': '...', type: 'Update' } as any);
 
 			await userSuspendService.suspend(localUser, moderator);
-			await setTimeout(250);
-
-			// ActivityPub配信が呼ばれているかチェック
-			expect(userEntityService.isLocalUser).toHaveBeenCalledWith(localUser);
-			expect(apRendererService.renderUpdate).toHaveBeenCalled();
-			expect(apRendererService.renderPerson).toHaveBeenCalled();
-			expect(apRendererService.addContext).toHaveBeenCalled();
-			expect(queueService.deliverMany).toHaveBeenCalled();
+			await vi.waitFor(() => {
+				expect(userEntityService.isLocalUser).toHaveBeenCalledWith(localUser);
+				expect(apRendererService.renderUpdate).toHaveBeenCalled();
+				expect(apRendererService.renderPerson).toHaveBeenCalled();
+				expect(apRendererService.addContext).toHaveBeenCalled();
+				expect(queueService.deliverMany).toHaveBeenCalled();
+			});
 		});
 
 		test('should deliver Update Person activity on unsuspend of local user', async () => {
@@ -390,14 +374,13 @@ describe('UserSuspendService', () => {
 			apRendererService.addContext.mockReturnValue({ '@context': '...', type: 'Update' } as any);
 
 			await userSuspendService.unsuspend(localUser, moderator);
-			await setTimeout(250);
-
-			// ActivityPub配信が呼ばれているかチェック
-			expect(userEntityService.isLocalUser).toHaveBeenCalledWith(localUser);
-			expect(apRendererService.renderUpdate).toHaveBeenCalled();
-			expect(apRendererService.renderPerson).toHaveBeenCalled();
-			expect(apRendererService.addContext).toHaveBeenCalled();
-			expect(queueService.deliverMany).toHaveBeenCalled();
+			await vi.waitFor(() => {
+				expect(userEntityService.isLocalUser).toHaveBeenCalledWith(localUser);
+				expect(apRendererService.renderUpdate).toHaveBeenCalled();
+				expect(apRendererService.renderPerson).toHaveBeenCalled();
+				expect(apRendererService.addContext).toHaveBeenCalled();
+				expect(queueService.deliverMany).toHaveBeenCalled();
+			});
 		});
 
 		test('should not deliver any activity on suspend of remote user', async () => {
@@ -407,12 +390,12 @@ describe('UserSuspendService', () => {
 			userEntityService.isLocalUser.mockReturnValue(false);
 
 			await userSuspendService.suspend(remoteUser, moderator);
-			await setTimeout(250);
-
-			// ActivityPub配信が呼ばれていないことをチェック
-			expect(userEntityService.isLocalUser).toHaveBeenCalledWith(remoteUser);
-			expect(apRendererService.renderDelete).not.toHaveBeenCalled();
-			expect(queueService.deliver).not.toHaveBeenCalled();
+			await vi.waitFor(() => {
+				expect(userEntityService.isLocalUser).toHaveBeenCalledWith(remoteUser);
+			});
+			expect(apRendererService.renderUpdate).not.toHaveBeenCalled();
+			expect(apRendererService.renderPerson).not.toHaveBeenCalled();
+			expect(queueService.deliverMany).not.toHaveBeenCalled();
 		});
 	});
 
@@ -422,7 +405,6 @@ describe('UserSuspendService', () => {
 			const moderator = await createUser();
 
 			await userSuspendService.suspend(remoteUser, moderator);
-			await setTimeout(250);
 
 			// ユーザーが凍結されているかチェック
 			const suspendedUser = await usersRepository.findOneBy({ id: remoteUser.id });
@@ -436,7 +418,10 @@ describe('UserSuspendService', () => {
 			});
 
 			// ActivityPub配信が呼ばれていないことを確認
-			expect(queueService.deliver).not.toHaveBeenCalled();
+			await vi.waitFor(() => {
+				expect(userEntityService.isLocalUser).toHaveBeenCalledWith(remoteUser);
+			});
+			expect(queueService.deliverMany).not.toHaveBeenCalled();
 		});
 
 		test('should unsuspend remote user without AP delivery', async () => {
@@ -444,8 +429,6 @@ describe('UserSuspendService', () => {
 			const moderator = await createUser();
 
 			await userSuspendService.unsuspend(remoteUser, moderator);
-
-			await setTimeout(250);
 
 			// ユーザーの凍結が解除されているかチェック
 			const unsuspendedUser = await usersRepository.findOneBy({ id: remoteUser.id });
@@ -459,7 +442,10 @@ describe('UserSuspendService', () => {
 			});
 
 			// ActivityPub配信が呼ばれていないことを確認
-			expect(queueService.deliver).not.toHaveBeenCalled();
+			await vi.waitFor(() => {
+				expect(userEntityService.isLocalUser).toHaveBeenCalledWith(remoteUser);
+			});
+			expect(queueService.deliverMany).not.toHaveBeenCalled();
 		});
 	});
 

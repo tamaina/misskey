@@ -260,9 +260,12 @@ export class ApDbResolverService implements OnApplicationShutdown {
 			} else if (renewed.isDeleted) {
 				this.logger.warn(`getAuthUserFromApId: User is deleted uri=${uri} userId=${user.id} keyId=${keyId}`);
 				return null;
+			} else if (renewed.host == null) {
+				this.logger.warn(`getAuthUserFromApId: Resolved user is local uri=${uri} userId=${user.id} keyId=${keyId}`);
+				return null;
 			}
 
-			return { user, key: await this.refreshAndFindKey(user.id, keyId) };
+			return { user: renewed, key: await this.refreshAndFindKey(renewed.id, keyId) };
 		}
 
 		this.logger.warn(`getAuthUserFromApId: No key found uri=${uri} userId=${user.id} keyId=${keyId}`);

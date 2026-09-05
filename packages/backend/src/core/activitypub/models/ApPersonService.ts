@@ -54,6 +54,7 @@ import type { IActor, IKey, IObject, ICollection, IOrderedCollection } from '../
 
 const nameLength = 128;
 const summaryLength = 2048;
+const maxPublicKeys = 16;
 
 type Field = Record<'name' | 'value', string>;
 
@@ -215,6 +216,9 @@ export class ApPersonService implements OnModuleInit {
 
 		if (x.publicKey) {
 			const publicKeys = Array.isArray(x.publicKey) ? x.publicKey : [x.publicKey];
+			if (publicKeys.length > maxPublicKeys) {
+				throw new Error('invalid Actor: too many publicKey entries');
+			}
 
 			for (const publicKey of publicKeys) {
 				if (typeof publicKey.id !== 'string') {
@@ -235,6 +239,9 @@ export class ApPersonService implements OnModuleInit {
 
 			if (!Array.isArray(x.additionalPublicKeys)) {
 				throw new Error('invalid Actor: additionalPublicKeys is not an array');
+			}
+			if (x.additionalPublicKeys.length > maxPublicKeys) {
+				throw new Error('invalid Actor: too many additionalPublicKeys entries');
 			}
 
 			for (const key of x.additionalPublicKeys) {

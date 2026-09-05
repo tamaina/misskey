@@ -182,6 +182,7 @@ type Option = {
 	visibleUsers?: MinimumUser[] | null;
 	channel?: MiChannel | null;
 	apMentions?: MinimumUser[] | null;
+	apMentionRawCount?: number | null;
 	apHashtags?: string[] | null;
 	apEmojis?: string[] | null;
 	uri?: string | null;
@@ -519,6 +520,11 @@ export class NoteCreateService implements OnApplicationShutdown {
 					// specified / direct noteはreject
 					throw new Error('Renote target is not public or home');
 			}
+
+			// ローカルのみをRenoteしたらローカルのみにする
+			if (data.renote.localOnly && data.channel == null) {
+				data.localOnly = true;
+			}
 		}
 
 		// Check blocking
@@ -533,19 +539,35 @@ export class NoteCreateService implements OnApplicationShutdown {
 			}
 		}
 
-		// 返信対象がpublicではないならhomeにする
-		if (data.reply && data.reply.visibility !== 'public' && data.visibility === 'public') {
-			data.visibility = 'home';
-		}
+		if (data.reply) {
+			switch (data.reply.visibility) {
+				case 'public':
+					// public noteは無条件にreply可能
+					break;
+				case 'home':
+					// home noteはhome以下にreply可能
+					if (data.visibility === 'public') {
+						data.visibility = 'home';
+					}
+					break;
+				case 'followers':
+					// followers noteはfollowers以下にreply可能
+					if (data.visibility === 'public' || data.visibility === 'home') {
+						data.visibility = 'followers';
+					}
+					break;
+				case 'specified':
+					// specified / direct noteはspecifiedのみreply可能
+					if (data.visibility !== 'specified') {
+						data.visibility = 'specified';
+					}
+					break;
+			}
 
-		// ローカルのみをRenoteしたらローカルのみにする
-		if (data.renote && data.renote.localOnly && data.channel == null) {
-			data.localOnly = true;
-		}
-
-		// ローカルのみにリプライしたらローカルのみにする
-		if (data.reply && data.reply.localOnly && data.channel == null) {
-			data.localOnly = true;
+			// ローカルのみにリプライしたらローカルのみにする
+			if (data.reply.localOnly && data.channel == null) {
+				data.localOnly = true;
+			}
 		}
 
 		if (data.text) {
@@ -604,7 +626,8 @@ export class NoteCreateService implements OnApplicationShutdown {
 			}
 		}
 
-		if (mentionedUsers.length > 0 && mentionedUsers.length > (await this.roleService.getUserPolicies(user.id)).mentionLimit) {
+		const effectiveMentionCount = Math.max(mentionedUsers.length, data.apMentionRawCount ?? 0);
+		if (effectiveMentionCount > 0 && effectiveMentionCount > (await this.roleService.getUserPolicies(user.id)).mentionLimit) {
 			throw new IdentifiableError('9f466dab-c856-48cd-9e65-ff90ff750580', 'Note contains too many mentions');
 		}
 

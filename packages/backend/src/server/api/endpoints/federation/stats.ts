@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { IsNull, MoreThan, Not } from 'typeorm';
+import { In, IsNull, MoreThan, Not } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
 import type { FollowingsRepository, InstancesRepository } from '@/models/_.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';
@@ -105,8 +105,20 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				}),
 			]);
 
-			const gotSubCount = topSubInstances.map(x => x.followersCount).reduce((a, b) => a + b, 0);
-			const gotPubCount = topPubInstances.map(x => x.followingCount).reduce((a, b) => a + b, 0);
+			const [gotSubCount, gotPubCount] = await Promise.all([
+				this.followingsRepository.count({
+					where: {
+						followeeHost: In(topSubInstances.map(x => x.host)),
+						isFollowerSuspended: false,
+					},
+				}),
+				this.followingsRepository.count({
+					where: {
+						followerHost: In(topPubInstances.map(x => x.host)),
+						isFollowerSuspended: false,
+					},
+				}),
+			]);
 
 			return await awaitAll({
 				topSubInstances: this.instanceEntityService.packMany(topSubInstances, me),
