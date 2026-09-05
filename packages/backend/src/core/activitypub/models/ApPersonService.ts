@@ -3,9 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { verify } from 'crypto';
 import { Inject, Injectable } from '@nestjs/common';
 import promiseLimit from 'promise-limit';
-import { DataSource } from 'typeorm';
+import { DataSource, In, Not } from 'typeorm';
 import { ModuleRef } from '@nestjs/core';
 import { DI } from '@/di-symbols.js';
 import type { FollowingsRepository, InstancesRepository, MiMeta, UserProfilesRepository, UserPublickeysRepository, UsersRepository } from '@/models/_.js';
@@ -38,6 +39,7 @@ import { RoleService } from '@/core/RoleService.js';
 import { DriveFileEntityService } from '@/core/entities/DriveFileEntityService.js';
 import type { AccountMoveService } from '@/core/AccountMoveService.js';
 import { checkHttps } from '@/misc/check-https.js';
+import { REMOTE_USER_CACHE_TTL, REMOTE_USER_MOVE_COOLDOWN } from '@/const.js';
 import { UserSuspendService } from '@/core/UserSuspendService.js';
 import { getApId, getApType, getOneApHrefNullable, isActor, isCollection, isCollectionOrOrderedCollection, isPropertyValue } from '../type.js';
 import { extractApHashtags } from './tag.js';
@@ -48,10 +50,11 @@ import type { ApResolverService, Resolver } from '../ApResolverService.js';
 import type { ApLoggerService } from '../ApLoggerService.js';
 
 import type { ApImageService } from './ApImageService.js';
-import type { IActor, ICollection, IObject, IOrderedCollection } from '../type.js';
+import type { IActor, IKey, IObject, ICollection, IOrderedCollection } from '../type.js';
 
 const nameLength = 128;
 const summaryLength = 2048;
+const maxPublicKeys = 16;
 
 type Field = Record<'name' | 'value', string>;
 
@@ -212,13 +215,44 @@ export class ApPersonService implements OnModuleInit {
 		}
 
 		if (x.publicKey) {
-			if (typeof x.publicKey.id !== 'string') {
-				throw new Error('invalid Actor: publicKey.id is not a string');
+			const publicKeys = Array.isArray(x.publicKey) ? x.publicKey : [x.publicKey];
+			if (publicKeys.length > maxPublicKeys) {
+				throw new Error('invalid Actor: too many publicKey entries');
 			}
 
-			const publicKeyIdHost = this.utilityService.punyHost(x.publicKey.id);
-			if (publicKeyIdHost !== expectHost) {
-				throw new Error('invalid Actor: publicKey.id has different host');
+			for (const publicKey of publicKeys) {
+				if (typeof publicKey.id !== 'string') {
+					throw new Error('invalid Actor: publicKey.id is not a string');
+				}
+
+				const publicKeyIdHost = this.utilityService.punyHost(publicKey.id);
+				if (publicKeyIdHost !== expectHost) {
+					throw new Error('invalid Actor: publicKey.id has different host');
+				}
+			}
+		}
+
+		if (x.additionalPublicKeys) {
+			if (!x.publicKey) {
+				throw new Error('invalid Actor: additionalPublicKeys is set but publicKey is not');
+			}
+
+			if (!Array.isArray(x.additionalPublicKeys)) {
+				throw new Error('invalid Actor: additionalPublicKeys is not an array');
+			}
+			if (x.additionalPublicKeys.length > maxPublicKeys) {
+				throw new Error('invalid Actor: too many additionalPublicKeys entries');
+			}
+
+			for (const key of x.additionalPublicKeys) {
+				if (typeof key.id !== 'string') {
+					throw new Error('invalid Actor: additionalPublicKeys.id is not a string');
+				}
+
+				const keyIdHost = this.utilityService.punyHost(key.id);
+				if (keyIdHost !== expectHost) {
+					throw new Error('invalid Actor: additionalPublicKeys.id has different host');
+				}
 			}
 		}
 
@@ -253,6 +287,33 @@ export class ApPersonService implements OnModuleInit {
 		//#endregion
 
 		return null;
+	}
+
+	/**
+	 * uriからUser(Person)をフェッチします。
+	 *
+	 * Misskeyに対象のPersonが登録されていればそれを返し、登録がなければnullを返します。
+	 * また、TTLが0でない場合、TTLを過ぎていた場合はupdatePersonを実行します。
+	 */
+	@bindThis
+	async fetchPersonWithRenewal(uri: string, TTL = REMOTE_USER_CACHE_TTL): Promise<MiLocalUser | MiRemoteUser | null> {
+		const exist = await this.fetchPerson(uri);
+		if (exist == null) return null;
+
+		if (this.userEntityService.isRemoteUser(exist)) {
+			if (TTL === 0 || exist.lastFetchedAt == null || Date.now() - exist.lastFetchedAt.getTime() > TTL) {
+				this.logger.debug('fetchPersonWithRenewal: renew', { uri, TTL, lastFetchedAt: exist.lastFetchedAt });
+				try {
+					await this.updatePerson(exist.uri);
+					return await this.fetchPerson(uri);
+				} catch (err) {
+					this.logger.error('error occurred while renewing user', { err });
+				}
+			}
+			this.logger.debug('fetchPersonWithRenewal: use cache', { uri, TTL, lastFetchedAt: exist.lastFetchedAt });
+		}
+
+		return exist;
 	}
 
 	private async resolveAvatarAndBanner(user: MiRemoteUser, icon: any, image: any): Promise<Partial<Pick<MiRemoteUser, 'avatarId' | 'bannerId' | 'avatarUrl' | 'bannerUrl' | 'avatarBlurhash' | 'bannerBlurhash'>>> {
@@ -336,7 +397,7 @@ export class ApPersonService implements OnModuleInit {
 				.then(isPublic => isPublic ? 'public' : 'private')
 				.catch(err => {
 					if (!(err instanceof StatusError) || err.isRetryable) {
-						this.logger.error('error occurred while fetching following/followers collection', { stack: err });
+						this.logger.error('Create the Person: error occurred while fetching following/followers collection', { stack: err });
 					}
 					return 'private';
 				}),
@@ -362,7 +423,7 @@ export class ApPersonService implements OnModuleInit {
 		const emojis = await this.apNoteService.extractEmojis(person.tag ?? [], host)
 			.then(_emojis => _emojis.map(emoji => emoji.name))
 			.catch(err => {
-				this.logger.error('error occurred while fetching user emojis', { stack: err });
+				this.logger.error('Create the Person: error occurred while fetching user emojis', { stack: err });
 				return [];
 			});
 		//#endregion
@@ -421,11 +482,16 @@ export class ApPersonService implements OnModuleInit {
 				}));
 
 				if (person.publicKey) {
-					await transactionalEntityManager.save(new MiUserPublickey({
-						userId: user.id,
-						keyId: person.publicKey.id,
-						keyPem: person.publicKey.publicKeyPem,
-					}));
+					const publicKeys = new Map<string, IKey>();
+					(person.additionalPublicKeys ?? []).forEach(key => publicKeys.set(key.id, key));
+					(Array.isArray(person.publicKey) ? person.publicKey : [person.publicKey]).forEach(key => publicKeys.set(key.id, key));
+
+					this.logger.debug(`Create the Person: Saving public keys for user ${user.id}`, { keyIds: Array.from(publicKeys.keys()) });
+					await transactionalEntityManager.save(Array.from(publicKeys.values(), key => new MiUserPublickey({
+						keyId: key.id,
+						userId: user!.id,
+						keyPem: key.publicKeyPem,
+					})));
 				}
 			});
 		} catch (e) {
@@ -433,7 +499,10 @@ export class ApPersonService implements OnModuleInit {
 			if (isDuplicateKeyValueError(e)) {
 				// /users/@a => /users/:id のように入力がaliasなときにエラーになることがあるのを対応
 				const u = await this.usersRepository.findOneBy({ uri: person.id });
-				if (u == null) throw new Error('already registered');
+				if (u == null) {
+					this.logger.error('Create the Person: duplicate key error', { stack: e });
+					throw new Error('already registered');
+				}
 
 				user = u as MiRemoteUser;
 			} else {
@@ -615,11 +684,29 @@ export class ApPersonService implements OnModuleInit {
 		}
 		//#endregion
 
-		if (person.publicKey) {
-			await this.userPublickeysRepository.update({ userId: exist.id }, {
-				keyId: person.publicKey.id,
-				keyPem: person.publicKey.publicKeyPem,
-			});
+		try {
+			// Deleteアクティビティ受信時にもここが走ってsaveがuserforeign key制約エラーを吐くことがある
+			// とりあえずtry-catchで囲っておく
+			const publicKeys = new Map<string, IKey>();
+			if (person.publicKey) {
+				(person.additionalPublicKeys ?? []).forEach(key => publicKeys.set(key.id, key));
+				(Array.isArray(person.publicKey) ? person.publicKey : [person.publicKey]).forEach(key => publicKeys.set(key.id, key));
+
+				await this.userPublickeysRepository.save(Array.from(publicKeys.values(), key => ({
+					keyId: key.id,
+					userId: exist.id,
+					keyPem: key.publicKeyPem,
+				})));
+
+				this.userPublickeysRepository.delete({
+					keyId: Not(In(Array.from(publicKeys.keys()))),
+					userId: exist.id,
+				}).catch(err => {
+					this.logger.error('something happened while deleting remote user public keys:', { userId: exist.id, err });
+				});
+			}
+		} catch (err) {
+			this.logger.error('something happened while updating remote user public keys:', { userId: exist.id, err });
 		}
 
 		let _description: string | null = null;
@@ -664,7 +751,7 @@ export class ApPersonService implements OnModuleInit {
 			exist.movedAt == null ||
 			// 以前のmovingから14日以上経過した場合のみ移行処理を許可
 			// （Mastodonのクールダウン期間は30日だが若干緩めに設定しておく）
-			exist.movedAt.getTime() + 1000 * 60 * 60 * 24 * 14 < updated.movedAt.getTime()
+			exist.movedAt.getTime() + REMOTE_USER_MOVE_COOLDOWN < updated.movedAt.getTime()
 		)) {
 			this.logger.info(`Start to process Move of @${updated.username}@${updated.host} (${uri})`);
 			return this.processRemoteMove(updated, movePreventUris)
@@ -687,9 +774,9 @@ export class ApPersonService implements OnModuleInit {
 	 * リモートサーバーからフェッチしてMisskeyに登録しそれを返します。
 	 */
 	@bindThis
-	public async resolvePerson(uri: string, resolver?: Resolver): Promise<MiLocalUser | MiRemoteUser> {
+	public async resolvePerson(uri: string, resolver?: Resolver, withRenewal = false): Promise<MiLocalUser | MiRemoteUser> {
 		//#region このサーバーに既に登録されていたらそれを返す
-		const exist = await this.fetchPerson(uri);
+		const exist = withRenewal ? await this.fetchPersonWithRenewal(uri) : await this.fetchPerson(uri);
 		if (exist) return exist;
 		//#endregion
 

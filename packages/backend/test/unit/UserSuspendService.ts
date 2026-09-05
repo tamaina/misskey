@@ -32,6 +32,7 @@ import { ApDeliverManagerService } from '@/core/activitypub/ApDeliverManagerServ
 import { RelayService } from '@/core/RelayService.js';
 import { ApLoggerService } from '@/core/activitypub/ApLoggerService.js';
 import { MiRemoteUser } from '@/models/User.js';
+import { UserKeypairService } from '@/core/UserKeypairService.js';
 
 function genHost() {
 	return randomString() + '.example.com';
@@ -95,6 +96,21 @@ describe('UserSuspendService', () => {
 				UserSuspendService,
 				AccountUpdateService,
 				ApDeliverManagerService,
+				{
+					provide: AccountUpdateService.name,
+					useExisting: AccountUpdateService,
+				},
+				{
+					provide: ApDeliverManagerService.name,
+					useExisting: ApDeliverManagerService,
+				},
+				{
+					provide: UserKeypairService,
+					useFactory: () => ({
+						refreshAndPrepareEd25519KeyPair: vi.fn(),
+						getLocalUserPrivateKeyPem: vi.fn(),
+					}),
+				},
 				{
 					provide: UserEntityService,
 					useFactory: () => ({
