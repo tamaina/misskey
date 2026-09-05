@@ -74,47 +74,47 @@ jobs:
         if: always()
         run: |
           cd packages/backend/test-federation
-          docker compose logs -t redis.test
+          docker compose logs --tail 300 -t redis.test
       - name: 'Setup Log'
         if: always()
         run: |
           cd packages/backend/test-federation
-          docker compose logs -t setup
+          docker compose logs --tail 300 -t setup
       - name: 'DB A Log'
         if: always()
         run: |
           cd packages/backend/test-federation
-          docker compose logs -t db.a.test
+          docker compose logs --tail 300 -t db.a.test
       - name: 'DB B Log'
         if: always()
         run: |
           cd packages/backend/test-federation
-          docker compose logs -t db.b.test
+          docker compose logs --tail 300 -t db.b.test
       - name: 'Daemon Log'
         if: always()
         run: |
           cd packages/backend/test-federation
-          docker compose logs -t daemon
+          docker compose logs --tail 300 -t daemon
       - name: 'Misskey A Log'
         if: always()
         run: |
           cd packages/backend/test-federation
-          docker compose logs -t misskey.a.test
+          docker compose logs --tail 300 -t misskey.a.test
       - name: 'Misskey B Log'
         if: always()
         run: |
           cd packages/backend/test-federation
-          docker compose logs -t misskey.b.test
+          docker compose logs --tail 300 -t misskey.b.test
       - name: 'Nginx A Log'
         if: always()
         run: |
           cd packages/backend/test-federation
-          docker compose logs -t a.test
+          docker compose logs --tail 300 -t a.test
       - name: 'Nginx B Log'
         if: always()
         run: |
           cd packages/backend/test-federation
-          docker compose logs -t b.test
+          docker compose logs --tail 300 -t b.test
       - name: Stop servers
         if: always()
         run: |
