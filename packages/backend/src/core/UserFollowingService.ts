@@ -240,7 +240,7 @@ export class UserFollowingService implements OnModuleInit {
 		await this.usersRepository.manager.transaction(async manager => {
 			const currentFollower = await manager.getRepository(this.usersRepository.target).findOneOrFail({
 				where: { id: follower.id },
-				lock: { mode: 'pessimistic_write' },
+				lock: { mode: 'for_no_key_update' },
 			});
 			await manager.getRepository(this.followingsRepository.target).insert({
 				id: this.idService.gen(),

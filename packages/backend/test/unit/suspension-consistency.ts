@@ -105,6 +105,13 @@ describe('suspension consistency', () => {
 		expect(await following.isMutual(a.id, b.id)).toBe(true);
 	});
 
+	test('reciprocal follows can be inserted concurrently without a deadlock', async () => {
+		const a = await user();
+		const b = await user();
+		await Promise.all([follow(a, b), follow(b, a)]);
+		expect(await following.isMutual(a.id, b.id)).toBe(true);
+	});
+
 	test('statistics rank active relationships, not stale instance counters', async () => {
 		const prefix = secureRndstr(8);
 		const hosts = [`${prefix}-active.example.com`, `${prefix}-suspended.example.com`, `${prefix}-other.example.com`];
