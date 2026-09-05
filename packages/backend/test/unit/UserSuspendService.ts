@@ -5,7 +5,8 @@
 
 process.env.NODE_ENV = 'test';
 
-import { beforeAll, beforeEach, describe, expect, test, vi } from 'vitest';
+import { afterAll, beforeAll, beforeEach, describe, expect, test, vi } from 'vitest';
+import { In } from 'typeorm';
 import type { Mocked } from 'vitest';
 import { Test } from '@nestjs/testing';
 import { setTimeout } from 'node:timers/promises';
@@ -43,6 +44,7 @@ describe('UserSuspendService', () => {
 	let globalEventService: Mocked<GlobalEventService>;
 	let apRendererService: Mocked<ApRendererService>;
 	let moderationLogService: Mocked<ModerationLogService>;
+	const createdUserIds: string[] = [];
 
 	async function createUser(data: Partial<MiUser> = {}): Promise<MiUser> {
 		const user = {
@@ -55,6 +57,7 @@ describe('UserSuspendService', () => {
 		} as MiUser;
 
 		await usersRepository.insert(user);
+		createdUserIds.push(user.id);
 		return user;
 	}
 
@@ -136,6 +139,13 @@ describe('UserSuspendService', () => {
 
 	beforeEach(() => {
 		vi.clearAllMocks();
+		userEntityService.isLocalUser.mockReturnValue(false);
+	});
+
+	afterAll(async () => {
+		await followingsRepository.delete([{ followerId: In(createdUserIds) }, { followeeId: In(createdUserIds) }]);
+		await usersRepository.delete({ id: In(createdUserIds) });
+		await app.close();
 	});
 
 	describe('suspend', () => {
