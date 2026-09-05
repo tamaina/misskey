@@ -29,9 +29,6 @@ export class APMultipleKeys1708980134301 {
         await queryRunner.query(`ALTER TABLE "user_publickey" DROP CONSTRAINT "PK_0db6a5fdb992323449edc8ee421"`);
         await queryRunner.query(`ALTER TABLE "user_publickey" ADD CONSTRAINT "PK_10c146e4b39b443ede016f6736d" PRIMARY KEY ("userId")`);
         await queryRunner.query(`ALTER TABLE "user_publickey" ADD CONSTRAINT "FK_10c146e4b39b443ede016f6736d" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE NO ACTION`);
-        await queryRunner.query(`ALTER TABLE "user_profile" ALTER COLUMN "followersVisibility" DROP DEFAULT`);
-        await queryRunner.query(`ALTER TABLE "user_profile" ALTER COLUMN "followersVisibility" TYPE "public"."user_profile_followersVisibility_enum_old" USING "followersVisibility"::"text"::"public"."user_profile_followersVisibility_enum_old"`);
-        await queryRunner.query(`ALTER TABLE "user_profile" ALTER COLUMN "followersVisibility" SET DEFAULT 'public'`);
         await queryRunner.query(`ALTER TABLE "user_keypair" DROP COLUMN "ed25519PrivateKey"`);
         await queryRunner.query(`ALTER TABLE "user_keypair" DROP COLUMN "ed25519PublicKey"`);
         await queryRunner.query(`CREATE UNIQUE INDEX "IDX_171e64971c780ebd23fae140bb" ON "user_publickey" ("keyId") `);

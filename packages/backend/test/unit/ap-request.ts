@@ -4,6 +4,7 @@
  */
 
 import * as assert from 'assert';
+import { verify } from 'node:crypto';
 import { describe, expect, test } from 'vitest';
 
 import { assertActivityMatchesUrl, FetchAllowSoftFailMask } from '@/core/activitypub/misc/check-against-url.js';
@@ -38,6 +39,23 @@ async function getKeyPair(level: string) {
 	}
 	throw new Error('Invalid level');
 }
+
+test.each(['GET', 'POST'])('RSA %s signatures survive request parsing and queue serialization', async method => {
+	const keypair = await genRsaKeyPair();
+	const key = { keyId: 'https://example.com/users/alice#main-key', privateKeyPem: keypair.privateKey };
+	const args = { level: '00', key, url: 'https://example.com/inbox?cursor=1', body: '{}', additionalHeaders: {} };
+	const signed = method === 'POST' ? await createSignedPost(args) : await createSignedGet(args);
+	const parsed = parseRequestSignature(signed.request);
+	assert.strictEqual(parsed.version, 'draft');
+	if (parsed.version !== 'draft') throw new Error('Expected draft signature');
+	assert.strictEqual(parsed.value.keyId, key.keyId);
+	assert.strictEqual(parsed.value.params.algorithm, 'rsa-sha256');
+	const queued = JSON.parse(JSON.stringify(parsed.value));
+	assert.strictEqual(await verifyDraftSignature(queued, keypair.publicKey), true);
+	assert.strictEqual(verify('RSA-SHA256', Buffer.from(queued.signingString), keypair.publicKey, Buffer.from(queued.params.signature, 'base64')), true);
+	queued.signingString += 'changed';
+	assert.strictEqual(await verifyDraftSignature(queued, keypair.publicKey), false);
+});
 
 describe('ap-request post', () => {
 	const url = 'https://example.com/inbox';
