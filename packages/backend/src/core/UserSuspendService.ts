@@ -40,9 +40,7 @@ export class UserSuspendService {
 
 	@bindThis
 	public async suspend(user: MiUser, moderator: MiUser): Promise<void> {
-		await this.usersRepository.update(user.id, {
-			isSuspended: true,
-		});
+		await this.updateSuspendedState(user.id, true);
 
 		this.moderationLogService.log(moderator, 'suspend', {
 			userId: user.id,
@@ -54,33 +52,23 @@ export class UserSuspendService {
 			await this.postSuspend(user, false).catch(err => {
 				this.logger.error('postSuspend failed', { userId: user.id, err });
 			});
-			await this.suspendFollowings(user).catch(err => {
-				this.logger.error('suspendFollowings failed', { userId: user.id, err });
-			});
 		})();
 	}
 
 	@bindThis
 	public async suspendFromRemote(user: { id: MiRemoteUser['id']; host: MiRemoteUser['host'] }): Promise<void> {
-		await this.usersRepository.update(user.id, {
-			isRemoteSuspended: true,
-		});
+		if (!await this.updateSuspendedState(user.id, true, 'isRemoteSuspended')) return;
 
 		(async () => {
 			await this.postSuspend(user, true).catch(err => {
 				this.logger.error('postSuspend from remote failed', { userId: user.id, err });
-			});
-			await this.suspendFollowings(user).catch(err => {
-				this.logger.error('suspendFollowings from remote failed', { userId: user.id, err });
 			});
 		})();
 	}
 
 	@bindThis
 	public async unsuspend(user: MiUser, moderator: MiUser): Promise<void> {
-		await this.usersRepository.update(user.id, {
-			isSuspended: false,
-		});
+		await this.updateSuspendedState(user.id, false);
 
 		this.moderationLogService.log(moderator, 'unsuspend', {
 			userId: user.id,
@@ -92,24 +80,16 @@ export class UserSuspendService {
 			await this.postUnsuspend(user, false).catch(err => {
 				this.logger.error('postUnsuspend failed', { userId: user.id, err });
 			});
-			await this.restoreFollowings(user).catch(err => {
-				this.logger.error('restoreFollowings failed', { userId: user.id, err });
-			});
 		})();
 	}
 
 	@bindThis
 	public async unsuspendFromRemote(user: { id: MiRemoteUser['id']; host: MiRemoteUser['host'] }): Promise<void> {
-		await this.usersRepository.update(user.id, {
-			isRemoteSuspended: false,
-		});
+		if (!await this.updateSuspendedState(user.id, false, 'isRemoteSuspended')) return;
 
 		(async () => {
 			await this.postUnsuspend(user, true).catch(err => {
 				this.logger.error('postUnsuspend from remote failed', { userId: user.id, err });
-			});
-			await this.restoreFollowings(user).catch(err => {
-				this.logger.error('restoreFollowings from remote failed', { userId: user.id, err });
 			});
 		})();
 	}
@@ -148,38 +128,20 @@ export class UserSuspendService {
 	}
 
 	@bindThis
-	private async suspendFollowings(follower: { id: MiUser['id'] }) {
-		await this.followingsRepository.update(
-			{
-				followerId: follower.id,
-			},
-			{
-				isFollowerSuspended: true,
-			}
-		);
-	}
-
-	@bindThis
-	private async restoreFollowings(_follower: { id: MiUser['id'] }) {
-		// 最新の情報を取得
-		const follower = await this.usersRepository.findOneBy({ id: _follower.id });
-		if (follower == null) {
-			// ユーザーが削除されている場合は何もしないでおく
-			return;
-		}
-		if (this.userEntityService.isSuspendedEither(follower)) {
-			// フォロー関係を復元しない
-			return;
-		}
-
-		// フォロー関係を復元（isFollowerSuspended: false）に変更
-		await this.followingsRepository.update(
-			{
-				followerId: follower.id,
-			},
-			{
-				isFollowerSuspended: false,
-			}
-		);
+	private async updateSuspendedState(userId: MiUser['id'], value: boolean, field: 'isSuspended' | 'isRemoteSuspended' = 'isSuspended'): Promise<boolean> {
+		return await this.usersRepository.manager.transaction(async manager => {
+			const users = manager.getRepository(this.usersRepository.target);
+			// Share the row lock with follow insertion and the other suspension flag.
+			const current = await users.findOne({ where: { id: userId }, lock: { mode: 'for_no_key_update' } });
+			if (current == null) return false;
+			const changed = current[field] !== value;
+			await users.update(userId, { [field]: value });
+			current[field] = value;
+			await manager.getRepository(this.followingsRepository.target).update(
+				{ followerId: userId },
+				{ isFollowerSuspended: current.isSuspended || current.isRemoteSuspended },
+			);
+			return changed;
+		});
 	}
 }

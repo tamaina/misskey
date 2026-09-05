@@ -643,7 +643,6 @@ export class ApPersonService implements OnModuleInit {
 			movedToUri: person.movedTo ?? null,
 			alsoKnownAs: person.alsoKnownAs ? toArray(person.alsoKnownAs) : null,
 			isExplorable: person.discoverable,
-			isRemoteSuspended: person.suspended === true,
 			...(await this.resolveAvatarAndBanner(exist, person.icon, person.image).catch(() => ({}))),
 		} as Partial<MiRemoteUser> & Pick<MiRemoteUser, 'isBot' | 'isCat' | 'isLocked' | 'movedToUri' | 'alsoKnownAs' | 'isExplorable'>;
 
@@ -673,12 +672,12 @@ export class ApPersonService implements OnModuleInit {
 		}
 
 		//#region suspend
-		if (exist.isRemoteSuspended === false && person.suspended === true) {
+		if (person.suspended === true) {
 			// リモートサーバーでアカウントが凍結された
 			this.logger.info(`Remote User Suspended: acct=${exist.username}@${exist.host} id=${exist.id} uri=${exist.uri}`);
 			await this.userSuspendService.suspendFromRemote({ id: exist.id, host: exist.host });
 		}
-		if (exist.isRemoteSuspended === true && person.suspended === false) {
+		if (person.suspended === false) {
 			// リモートサーバーでアカウントが解凍された
 			this.logger.info(`Remote User Unsuspended: acct=${exist.username}@${exist.host} id=${exist.id} uri=${exist.uri}`);
 			await this.userSuspendService.unsuspendFromRemote({ id: exist.id, host: exist.host });
@@ -742,7 +741,7 @@ export class ApPersonService implements OnModuleInit {
 
 		await this.updateFeatured(exist.id, resolver).catch(err => this.logger.error(err));
 
-		const updated = { ...exist, ...updates };
+		const updated = await this.usersRepository.findOneByOrFail({ id: exist.id }) as MiRemoteUser;
 
 		this.cacheService.uriPersonCache.set(uri, updated);
 
