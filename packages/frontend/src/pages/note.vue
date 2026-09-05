@@ -9,7 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<Transition :name="prefer.s.animation ? 'fade' : ''" mode="out-in">
 			<div v-if="note">
 				<div v-if="showNext" class="_margin">
-					<MkNotesTimeline direction="up" :withControl="false" :pullToRefresh="false" class="" :paginator="showNext === 'channel' ? nextChannelPaginator : nextUserPaginator" :noGap="true"/>
+					<MkNotesTimeline direction="up" :withControl="false" :pullToRefresh="false" class="" :paginator="showNext === 'channel' ? nextChannelPaginator : nextUserPaginator" :noGap="true" :forceDisableInfiniteScroll="true" />
 				</div>
 
 				<div class="_margin">
@@ -76,6 +76,12 @@ const note = ref<null | Misskey.entities.Note>(CTX_NOTE);
 const clips = ref<Misskey.entities.Clip[]>();
 const showPrev = ref<'user' | 'channel' | false>(false);
 const showNext = ref<'user' | 'channel' | false>(false);
+const initialTab = computed<'reactions' | 'replies' | 'renotes' | undefined>(() => {
+	if (['reactions', 'replies', 'renotes'].includes(props.initialTab ?? '')) {
+		return props.initialTab as 'reactions' | 'replies' | 'renotes';
+	}
+	return undefined;
+});
 const error = ref();
 
 const prevUserPaginator = markRaw(new Paginator('users/notes', {

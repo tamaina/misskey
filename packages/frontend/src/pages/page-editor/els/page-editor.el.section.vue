@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <!-- eslint-disable vue/no-mutating-props -->
-<XContainer :draggable="true" @remove="() => emit('remove')">
+<XContainer :draggable="true" :dragStartCallback="dragStartCallback" @remove="() => emit('remove')">
 	<template #header><i class="ti ti-note"></i> {{ props.modelValue.title }}</template>
 	<template #func>
 		<button class="_button" @click="rename()">
@@ -35,6 +35,7 @@ import { getPageBlockList } from '@/pages/page-editor/common.js';
 const XBlocks = defineAsyncComponent(() => import('../page-editor.blocks.vue'));
 
 const props = defineProps<{
+	dragStartCallback?: (ev: DragEvent) => void;
 	modelValue: Extract<Misskey.entities.PageBlock, { type: 'section'; }>,
 }>();
 
@@ -74,7 +75,35 @@ async function add() {
 	if (canceled || type == null) return;
 
 	const id = genId();
-	children.value.push({ id, type });
+
+	// TODO: page-editor.vueのと共通化
+	if (type === 'text') {
+		children.value.push({
+			id,
+			type,
+			text: '',
+		});
+	} else if (type === 'section') {
+		children.value.push({
+			id,
+			type,
+			title: '',
+			children: [],
+		});
+	} else if (type === 'image') {
+		children.value.push({
+			id,
+			type,
+			fileId: null,
+		});
+	} else if (type === 'note') {
+		children.value.push({
+			id,
+			type,
+			detailed: false,
+			note: null,
+		});
+	}
 }
 
 onMounted(() => {
