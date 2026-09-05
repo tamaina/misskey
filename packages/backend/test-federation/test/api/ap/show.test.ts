@@ -1,13 +1,25 @@
-import { strictEqual, rejects } from 'node:assert';
-import { createAccount, fetchAdmin, resolveRemoteUser, sleep, type LoginUser } from '../../utils.js';
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
 
-const [aAdmin, bAdmin] = await Promise.all([
-	fetchAdmin('a.test'),
-	fetchAdmin('b.test'),
-]);
+import { strictEqual, rejects } from 'node:assert';
+import { afterAll, beforeAll, beforeEach, describe, test } from 'vitest';
+import { createAccount, fetchAdmin, resolveRemoteUser, type LoginUser } from '../../utils.js';
+
+const aAdmin = await fetchAdmin('a.test');
 
 describe('API ap/show', () => {
 	let alice: LoginUser, bob: LoginUser;
+	let originalAllowExternalApRedirect: boolean;
+
+	beforeAll(async () => {
+		originalAllowExternalApRedirect = (await aAdmin.client.request('admin/meta', {})).allowExternalApRedirect;
+	});
+
+	afterAll(async () => {
+		await aAdmin.client.request('admin/update-meta', { allowExternalApRedirect: originalAllowExternalApRedirect });
+	});
 
 	beforeEach(async () => {
 		[alice, bob] = await Promise.all([
@@ -41,26 +53,14 @@ describe('API ap/show', () => {
 			strictEqual(res.object.id, alice.id);
 		});
 
-		test('resolve a fetched remote user by local profile url (https://a.test/@bob@b.test)', async () => {
-			await aAdmin.client.request('admin/update-meta', { allowExternalApRedirect: true });
+		test.each([true, false])('resolve a fetched remote user by local profile url with allowExternalApRedirect=%s', async allowExternalApRedirect => {
+			// #16484 resolves stored identities directly, without an external redirect.
+			await aAdmin.client.request('admin/update-meta', { allowExternalApRedirect });
 			await resolveRemoteUser('b.test', bob.id, alice);
 
 			const res = await alice.client.request('ap/show', { uri: `https://a.test/@${bob.username}@b.test` });
 			strictEqual(res.type, 'User');
 			strictEqual(res.object.uri, `https://b.test/users/${bob.id}`);
-		});
-
-		test('throws in resolving a fetched remote user by local profile url when allowExternalApRedirect: false', async () => {
-			await aAdmin.client.request('admin/update-meta', { allowExternalApRedirect: false });
-			await resolveRemoteUser('b.test', bob.id, alice);
-
-			await rejects(
-				async () => await alice.client.request('ap/show', { uri: `https://a.test/@${bob.username}@b.test` }),
-				(err: any) => {
-					strictEqual(err.code, 'NO_SUCH_OBJECT');
-					return true;
-				},
-			);
 		});
 
 		test('throws in resolving a non-fetched remote user by local profile url (https://a.test/@bob@b.test)', async () => {
@@ -81,7 +81,6 @@ describe('API ap/show', () => {
 	describe('Note resolution', () => {
 		test('resolve a remote note by note uri', async () => {
 			const note = (await bob.client.request('notes/create', { text: 'hello from Bob' })).createdNote;
-			await sleep();
 
 			const res = await alice.client.request('ap/show', { uri: `https://b.test/notes/${note.id}` });
 			strictEqual(res.type, 'Note');
@@ -93,7 +92,6 @@ describe('API ap/show', () => {
 
 		test('resolve a local note by note uri', async () => {
 			const note = (await alice.client.request('notes/create', { text: 'hello from Alice' })).createdNote;
-			await sleep();
 
 			const res = await alice.client.request('ap/show', { uri: `https://a.test/notes/${note.id}` });
 			strictEqual(res.type, 'Note');

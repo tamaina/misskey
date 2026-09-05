@@ -47,7 +47,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 										</MkInput>
 									</SearchMarker>
 									<SearchMarker>
-										<MkInput v-model="smtpPass" type="password">
+										<MkInput v-model="smtpPass" type="password" autocomplete="new-password">
 											<template #label><SearchLabel>{{ i18n.ts.smtpPass }}</SearchLabel></template>
 										</MkInput>
 									</SearchMarker>
@@ -107,7 +107,7 @@ const smtpPass = ref(meta.smtpPass);
 
 async function testEmail() {
 	const { canceled, result: destination } = await os.inputText({
-		title: i18n.ts.destination,
+		title: 'To',
 		type: 'email',
 		default: instance.maintainerEmail ?? '',
 		placeholder: 'test@example.com',

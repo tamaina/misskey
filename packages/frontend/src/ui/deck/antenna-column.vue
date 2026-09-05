@@ -14,8 +14,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onMounted, ref, useTemplateRef, watch, defineAsyncComponent } from 'vue';
+import { onMounted, ref, useTemplateRef, watch, defineAsyncComponent, provide } from 'vue';
 import XColumn from './column.vue';
+import type * as Misskey from 'misskey-js';
 import type { entities as MisskeyEntities } from 'misskey-js';
 import type { Column } from '@/deck.js';
 import type { MenuItem } from '@/types/menu.js';
@@ -35,6 +36,14 @@ const props = defineProps<{
 
 const timeline = useTemplateRef('timeline');
 const soundSetting = ref<SoundStore>(props.column.soundSetting ?? { type: null, volume: 1 });
+const antenna = ref<Misskey.entities.Antenna | null>(null);
+
+provide('currentAntenna', antenna);
+
+watch(() => props.column.antennaId, async (antennaId) => {
+	if (antennaId == null) return;
+	antenna.value = await misskeyApi('antennas/show', { antennaId });
+}, { immediate: true });
 
 onMounted(() => {
 	if (props.column.antennaId == null) {
@@ -51,22 +60,24 @@ watch(soundSetting, v => {
 
 async function setAntenna() {
 	const antennas = await misskeyApi('antennas/list');
-	const { canceled, result: antenna } = await os.select<MisskeyEntities.Antenna | '_CREATE_'>({
+	const { canceled, result: antennaIdOrOperation } = await os.select({
 		title: i18n.ts.selectAntenna,
 		items: [
-			{ value: '_CREATE_', text: i18n.ts.createNew },
+			{ value: '_CREATE_', label: i18n.ts.createNew },
 			(antennas.length > 0 ? {
-				sectionTitle: i18n.ts.createdAntennas,
+				type: 'group' as const,
+				label: i18n.ts.createdAntennas,
 				items: antennas.map(x => ({
-					value: x, text: x.name,
+					value: x.id, label: x.name,
 				})),
 			} : undefined),
 		],
-		default: props.column.antennaId,
+		default: antennas.find(x => x.id === props.column.antennaId)?.id,
 	});
-	if (canceled || antenna == null) return;
 
-	if (antenna === '_CREATE_') {
+	if (canceled || antennaIdOrOperation == null) return;
+
+	if (antennaIdOrOperation === '_CREATE_') {
 		const { dispose } = await os.popupAsyncWithDialog(import('@/components/MkAntennaEditorDialog.vue').then(x => x.default), {}, {
 			created: (newAntenna: MisskeyEntities.Antenna) => {
 				antennasCache.delete();
@@ -82,14 +93,17 @@ async function setAntenna() {
 		return;
 	}
 
+	const selectedAntenna = antennas.find(x => x.id === antennaIdOrOperation);
+	if (selectedAntenna == null) return;
+
 	updateColumn(props.column.id, {
-		antennaId: antenna.id,
-		timelineNameCache: antenna.name,
+		antennaId: selectedAntenna.id,
+		timelineNameCache: selectedAntenna.name,
 	});
 }
 
 function editAntenna() {
-	os.pageWindow('my/antennas/' + props.column.antennaId);
+	os.pageWindow('/my/antennas/' + props.column.antennaId);
 }
 
 const menu: MenuItem[] = [
