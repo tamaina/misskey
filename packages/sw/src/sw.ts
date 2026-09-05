@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { get, set } from 'idb-keyval';
+import { get } from 'idb-keyval';
 import * as Misskey from 'misskey-js';
 import { FETCH_TIMEOUT_MS } from '@/const.js';
 import type { PushNotificationDataMap } from '@/types.js';
@@ -12,6 +12,7 @@ import type { Locale } from 'i18n';
 import { createEmptyNotification, createNotification } from '@/scripts/create-notification.js';
 import { swLang } from '@/scripts/lang.js';
 import * as swos from '@/scripts/operations.js';
+import { respondToShare } from '@/scripts/share.js';
 
 async function respondToNavigation(request: Request): Promise<Response> {
 	const controller = new AbortController();
@@ -91,28 +92,8 @@ globalThis.addEventListener('activate', ev => {
 globalThis.addEventListener('fetch', ev => {
 	//#region /sw/share
 	const url = new URL(ev.request.url);
-	if (url.pathname === '/sw/share') {
-		ev.respondWith((async () => {
-			const responseUrl = new URL(ev.request.url);
-			responseUrl.pathname = '/share';
-			const formData = await ev.request.formData();
-
-			// とりあえず初期化 (IndexedDBの削除は時間がかかる可能性があるため空の配列をセット)
-			await set('share-url-temp', []);
-			if (formData.has('files')) {
-				const files = formData.getAll('files');
-				if (files.length > 0 && files.every(file => file instanceof Blob)) {
-					set('share-files-temp', files);
-				}
-			}
-
-			formData.delete('files');
-			for (const [key, value] of formData.entries()) {
-				responseUrl.searchParams.set(key, value.toString());
-			}
-
-			return Response.redirect(responseUrl, 303);
-		})());
+	if (url.origin === globalThis.location.origin && url.pathname === '/sw/share' && ev.request.method === 'POST') {
+		ev.respondWith(respondToShare(ev.request));
 		return;
 	}
 
@@ -128,6 +109,7 @@ globalThis.addEventListener('fetch', ev => {
 
 	if (!isHTMLRequest) return;
 	ev.respondWith(respondToNavigation(ev.request));
+	//#endregion
 });
 
 globalThis.addEventListener('push', ev => {

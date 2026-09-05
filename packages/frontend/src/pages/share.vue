@@ -32,9 +32,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 // SPECIFICATION: https://misskey-hub.net/docs/for-users/features/share-form/
 
-import { ref, computed } from 'vue';
+import { ref, computed, onBeforeUnmount } from 'vue';
 import * as Misskey from 'misskey-js';
-import { get, del } from 'idb-keyval';
+import { readSharedFiles, discardSharedFiles } from '@@/js/shared-files.js';
+import { $i } from '@/i.js';
 import MkButton from '@/components/MkButton.vue';
 import MkPostForm from '@/components/MkPostForm.vue';
 import * as os from '@/os.js';
@@ -71,6 +72,14 @@ const localOnly = ref(localOnlyQuery === '0' ? false : localOnlyQuery === '1' ? 
 const files = ref([] as Misskey.entities.DriveFile[]);
 const visibleUsers = ref([] as Misskey.entities.UserDetailed[]);
 const tempFiles = ref([] as File[]);
+const shareId = urlParams.get('shareId');
+const shareAccountId = $i?.id ?? null;
+
+function discardShare() {
+	return discardSharedFiles(shareId, shareAccountId).catch(err => console.error('Failed to clear shared files:', err));
+}
+
+onBeforeUnmount(() => { void discardShare(); });
 
 async function init() {
 	let noteText = '';
@@ -198,10 +207,15 @@ async function init() {
 
 	//#region Local files
 	// If the browser supports IndexedDB, try to get the temporary files from temp.
-	if (typeof window !== 'undefined' ? !!(window.indexedDB && typeof window.indexedDB.open === 'function') : true) {
-		const filesFromIdb = await get<File[]>('share-files-temp');
-		if (Array.isArray(filesFromIdb) && filesFromIdb.length > 0 && filesFromIdb.every(file => file instanceof Blob)) {
-			tempFiles.value = filesFromIdb;
+	if (shareId && window.indexedDB) {
+		try {
+			const filesFromIdb = await readSharedFiles(shareId, shareAccountId);
+			if (Array.isArray(filesFromIdb) && filesFromIdb.length > 0 && filesFromIdb.every(file => file instanceof Blob)) {
+				tempFiles.value = filesFromIdb;
+			}
+		} catch (err) {
+			console.error('Failed to read shared files:', err);
+			os.alert({ type: 'error', title: i18n.ts.error, text: err instanceof Error ? err.message : String(err) });
 		}
 	}
 
@@ -225,7 +239,8 @@ async function init() {
 
 init();
 
-function close(): void {
+async function close(): Promise<void> {
+	await discardShare();
 	window.close();
 
 	// 閉じなければ100ms後タイムラインに
@@ -234,14 +249,15 @@ function close(): void {
 	}, 100);
 }
 
-function goToMisskey(): void {
+async function goToMisskey(): Promise<void> {
+	await discardShare();
 	window.location.href = '/';
 }
 
 function onPosted(): void {
 	state.value = 'posted';
 	// SWが保存したファイルは投稿が完了するまでIndexedDBに保持
-	del('share-files-temp');
+	void discardShare();
 	postMessageToParentWindow('misskey:shareForm:shareCompleted');
 }
 
