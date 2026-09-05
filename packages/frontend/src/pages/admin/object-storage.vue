@@ -58,7 +58,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						</SearchMarker>
 
 						<SearchMarker>
-							<MkInput v-model="objectStorageSecretKey" type="password">
+							<MkInput v-model="objectStorageSecretKey" type="password" autocomplete="new-password">
 								<template #prefix><i class="ti ti-key"></i></template>
 								<template #label><SearchLabel>Secret key</SearchLabel></template>
 							</MkInput>
@@ -109,7 +109,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { ref, computed } from 'vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkInput from '@/components/MkInput.vue';
-import FormSuspense from '@/components/form/suspense.vue';
 import FormSplit from '@/components/form/split.vue';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';

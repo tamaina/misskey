@@ -13,11 +13,31 @@ import type {
 	Role,
 	ReversiGameDetailed,
 	SystemWebhook,
-	UserLite,
 	ChatRoom,
 } from './autogen/models.js';
 
-export const notificationTypes = ['note', 'follow', 'mention', 'reply', 'renote', 'quote', 'reaction', 'pollVote', 'pollEnded', 'receiveFollowRequest', 'followRequestAccepted', 'groupInvited', 'app', 'roleAssigned', 'chatRoomInvitationReceived', 'achievementEarned'] as const;
+export const notificationTypes = [
+	'note',
+	'follow',
+	'mention',
+	'reply',
+	'renote',
+	'quote',
+	'reaction',
+	'pollEnded',
+	'scheduledNotePosted',
+	'scheduledNotePostFailed',
+	'receiveFollowRequest',
+	'followRequestAccepted',
+	'app',
+	'roleAssigned',
+	'chatRoomInvitationReceived',
+	'achievementEarned',
+	'exportCompleted',
+	'test',
+	'login',
+	'createToken',
+] as const;
 
 export const noteVisibilities = ['public', 'home', 'followers', 'specified'] as const;
 
@@ -78,6 +98,7 @@ export const permissions = [
 	'read:admin:show-moderation-log',
 	'read:admin:show-user',
 	'write:admin:suspend-user',
+	'write:admin:unset-mfa',
 	'write:admin:unset-user-avatar',
 	'write:admin:unset-user-banner',
 	'write:admin:unsuspend-user',
@@ -154,6 +175,7 @@ export const moderationLogTypes = [
 	'createAvatarDecoration',
 	'updateAvatarDecoration',
 	'deleteAvatarDecoration',
+	'unsetMfa',
 	'unsetUserAvatar',
 	'unsetUserBanner',
 	'createSystemWebhook',
@@ -170,9 +192,52 @@ export const moderationLogTypes = [
 	'updateProxyAccountDescription',
 ] as const;
 
+export const rolePolicies = [
+	'gtlAvailable',
+	'ltlAvailable',
+	'canPublicNote',
+	'mentionLimit',
+	'canInvite',
+	'inviteLimit',
+	'inviteLimitCycle',
+	'inviteExpirationTime',
+	'canManageCustomEmojis',
+	'canManageAvatarDecorations',
+	'canSearchNotes',
+	'canSearchUsers',
+	'canUseTranslator',
+	'canHideAds',
+	'canCreateChannel',
+	'driveCapacityMb',
+	'maxFileSizeMb',
+	'alwaysMarkNsfw',
+	'canUpdateBioMedia',
+	'pinLimit',
+	'antennaLimit',
+	'wordMuteLimit',
+	'webhookLimit',
+	'clipLimit',
+	'noteEachClipsLimit',
+	'userListLimit',
+	'userEachUserListsLimit',
+	'rateLimitFactor',
+	'avatarDecorationLimit',
+	'canImportAntennas',
+	'canImportBlocking',
+	'canImportFollowing',
+	'canImportMuting',
+	'canImportUserLists',
+	'chatAvailability',
+	'uploadableFileTypes',
+	'noteDraftLimit',
+	'scheduledNoteLimit',
+	'watermarkAvailable',
+] as const;
+
 export const queueTypes = [
 	'system',
 	'endedPollNotification',
+	'postScheduledNote',
 	'deliver',
 	'inbox',
 	'db',
@@ -398,6 +463,11 @@ export type ModerationLogPayloads = {
 	deleteAvatarDecoration: {
 		avatarDecorationId: string;
 		avatarDecoration: AvatarDecoration;
+	};
+	unsetMfa: {
+		userId: string;
+		userUsername: string;
+		userHost: string | null;
 	};
 	unsetUserAvatar: {
 		userId: string;
