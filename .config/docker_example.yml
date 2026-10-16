@@ -221,12 +221,12 @@ id: 'aidx'
 #threadPoolSize: 1
 
 # Job concurrency per worker
-#deliverJobConcurrency: 16
+#deliverJobConcurrency: 128
 #inboxJobConcurrency: 4
 #relationshipJobConcurrency: 16
 
 # Job rate limiter
-#deliverJobPerSec: 1024
+#deliverJobPerSec: 2048
 #inboxJobPerSec: 64
 
 # Job attempts
