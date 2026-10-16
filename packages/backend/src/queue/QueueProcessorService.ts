@@ -266,9 +266,9 @@ export class QueueProcessorService implements OnApplicationShutdown {
 			}, {
 				...baseQueueOptions(this.config, QUEUE.DELIVER),
 				autorun: false,
-				concurrency: this.config.deliverJobConcurrency ?? 16,
+				concurrency: this.config.deliverJobConcurrency ?? 128,
 				limiter: {
-					max: this.config.deliverJobPerSec ?? 1024,
+					max: this.config.deliverJobPerSec ?? 2048,
 					duration: 1000,
 				},
 				settings: {
